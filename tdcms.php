@@ -25,3 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 session_start();
 
+require_once("bootstrap.php");
+
+//$woo = new  DaveBaker\Core\Model\Base;

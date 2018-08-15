@@ -1,7 +1,10 @@
 <?php
 
-class AbstractModel
+namespace DaveBaker\Core\Model;
+
+abstract class Base
 {
+    
     public function __construct()
     {
 
