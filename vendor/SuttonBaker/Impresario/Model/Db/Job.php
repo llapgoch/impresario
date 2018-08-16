@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Model\Db;
 
-class Job
+class Job extends \DaveBaker\Core\Model\Db\Base
 {
 
 }
