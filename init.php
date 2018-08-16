@@ -32,28 +32,6 @@ add_action('plugins_loaded', function(){
         )
     );
     $job = $app->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job');
-
-    $job->setHorse("neighh!");
-
-    var_dump($job->getHorse());
-
-    $job2 = $app->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job');
-
-    var_dump($job2->getHorse());
-
-    $app2 = new DaveBaker\Core\App(
-        "impresario2",
-        new \DaveBaker\Core\WP\Object\Manager(
-            new \SuttonBaker\Impresario\WP\Config\Object
-        )
-    );
-
-    $job3 = $app2->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job');
-    $job3->setHorse("Woo");
-
-    var_dump($job3->getHorse());
-    var_dump($job->getHorse());
-    exit;
 });
 
 
