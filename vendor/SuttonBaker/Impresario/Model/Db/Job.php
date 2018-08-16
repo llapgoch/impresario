@@ -1,8 +1,8 @@
 <?php
 
-namespace SuttonBaker\Impressario\Model;
+namespace SuttonBaker\Impresario\Model\Db;
 
-class Job extends AbstractModel
+class Job
 {
 
 }
