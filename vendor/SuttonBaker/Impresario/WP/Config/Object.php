@@ -18,7 +18,11 @@ class Object extends \DaveBaker\Core\WP\Config\Object
             '\DaveBaker\Core\WP\Installer\Manager' => [
                 'definition' => '\SuttonBaker\Impresario\WP\Installer\Manager',
                 'singleton' => true
-            ]
+            ],
+            '\DaveBaker\Core\WP\Config\Page' => [
+                'definition' => '\SuttonBaker\Impresario\WP\Config\Page',
+                'singleton' => true
+            ],
         ]);
     }
 }

@@ -6,6 +6,13 @@ class Manager extends \DaveBaker\Core\WP\Installer\Manager
 {
     protected function install()
     {
-        var_dump("Installing");
+        $pageManager = $this->app->getPageManager();
+
+        $pageManager->createPage(
+            'job_list',
+            [
+                "post_title" => "Job List"
+            ]
+        );
     }
 }

@@ -31,7 +31,8 @@ add_action('plugins_loaded', function(){
             new \SuttonBaker\Impresario\WP\Config\Object
         )
     );
-    $job = $app->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job');
+
+    $app->getObjectManager()->get('\SuttonBaker\Impresario\Main', [$app]);
 });
 
 
