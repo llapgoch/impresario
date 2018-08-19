@@ -7,17 +7,17 @@ class Table
     implements \DaveBaker\Core\WP\Block\BlockInterface
 {
     public function toHtml(){
-        return "Block to HTML";
+        return "Block to HTML " . $this->getGoose() . "<br />";
     }
 
     public function preDispatch()
     {
-        var_dump("pre dispatch");
+        parent::preDispatch();
     }
 
     public function postDispatch()
     {
         parent::postDispatch();
-        var_dump("post dispatch");
+
     }
 }

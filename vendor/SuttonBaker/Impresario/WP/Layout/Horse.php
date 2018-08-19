@@ -9,9 +9,27 @@ class Horse extends \DaveBaker\Core\WP\Layout\Base
         // Create blocks here
 
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList */
-        $tableList = $this->getApp()->getObjectManager()->get('\SuttonBaker\Impresario\WP\Block\Job\Table');
-        $tableList2 = $this->getApp()->getObjectManager()->get('\SuttonBaker\Impresario\WP\Block\Job\Table');
+        $tableList = $this->getApp()->getObjectManager()->get(
+            '\SuttonBaker\Impresario\WP\Block\Job\Table',
+            ["job.table.four"]
+        )->setGoose("Block 4");
 
-        return [$tableList, $tableList2];
+        /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
+        $tableList2 = $this->getApp()->getObjectManager()->get(
+            '\SuttonBaker\Impresario\WP\Block\Job\Table',
+            ['job.table.five']
+        )->setGoose("Block 5")
+            ->setOrder('after', 'job.table.one');
+
+        /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
+        $tableList3 = $this->getApp()->getObjectManager()->get(
+            '\SuttonBaker\Impresario\WP\Block\Job\Table',
+            ['job.table.six']
+        )->setGoose("Block 6");
+
+
+
+        return [$tableList, $tableList2, $tableList3];
     }
+
 }
