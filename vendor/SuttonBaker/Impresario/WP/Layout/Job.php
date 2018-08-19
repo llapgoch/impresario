@@ -12,13 +12,16 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
         $tableList = $this->getApp()->getObjectManager()->get(
             '\SuttonBaker\Impresario\WP\Block\Job\Table',
             ["job.table.one"]
-        )->setGoose("Block 1");
+        )->setGoose("Block 1")
+            ->setOrder('after', 'job.table.three');
+
 
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
         $tableList2 = $this->getApp()->getObjectManager()->get(
             '\SuttonBaker\Impresario\WP\Block\Job\Table',
             ['job.table.two']
         )->setGoose("Block 2");
+
 
 
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */

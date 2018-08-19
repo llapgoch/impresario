@@ -14,5 +14,12 @@ class Manager extends \DaveBaker\Core\WP\Installer\Manager
                 "post_title" => "Job List"
             ]
         );
+
+        $pageManager->createPage(
+            'job_display',
+            [
+                "post_title" => "Job Display"
+            ]
+        );
     }
 }
