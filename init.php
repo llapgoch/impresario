@@ -27,12 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 add_action('plugins_loaded', function(){
     $app = new DaveBaker\Core\App(
         "impresario",
+        new \SuttonBaker\Impresario\Main(),
         new \DaveBaker\Core\WP\Object\Manager(
             new \SuttonBaker\Impresario\WP\Config\Object
         )
     );
-
-    $app->getObjectManager()->get('\SuttonBaker\Impresario\Main', [$app]);
 });
 
 

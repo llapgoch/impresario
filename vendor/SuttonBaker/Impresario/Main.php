@@ -3,31 +3,38 @@
 namespace SuttonBaker\Impresario;
 
 class Main
+    extends \DaveBaker\Core\WP\Main\Base
+    implements \DaveBaker\Core\WP\Main\MainInterface
 {
-    protected $app;
 
-    public function __construct(
-      \DaveBaker\Core\App $app
-    ) {
-        $this->app = $app;
+    public function init() {
+        /** \wpdb */
+        global $wpdb;
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Job $job */
-        $job = $app->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job');
+        /** @var \SuttonBaker\Impresario\Model\Db\Job\Collection $job */
+        $job = $this->getApp()->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job\Collection');
 
-        $job->load(1);
+//        $job->getSelect()->where(
+//            "name= ? ",
+//            'Gary'
+//        );
+//        echo "<pre>";
+//
+//
+//        foreach($job->load() as $job){
+//            var_dump($job->getData());
+//        }
+//
+//        exit;
 
-        $job->setName("Goose");
-        $job->setTest(101);
-        $job->setDateCreated("2018-01-01");
-        $job->save();
-
-        /** @var \SuttonBaker\Impresario\Model\Db\Job\Collection $jobCollection */
-        $jobCollection = $app->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job\Collection');
-        $jobCollection->getSelect()->order("name ASC");
-        $items = $jobCollection->load();
-
-
-
+    }
+    
+    public function registerLayouts()
+    {
+        $this->getApp()->getPageManager()->registerLayouts([
+            $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Job'),
+            $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Horse')
+        ]);
     }
 
 
