@@ -9,4 +9,15 @@ class Table
     public function toHtml(){
         return "Block to HTML";
     }
+
+    public function preDispatch()
+    {
+        var_dump("pre dispatch");
+    }
+
+    public function postDispatch()
+    {
+        parent::postDispatch();
+        var_dump("post dispatch");
+    }
 }
