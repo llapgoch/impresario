@@ -31,7 +31,7 @@ class Main
     
     public function registerLayouts()
     {
-        $this->getApp()->getPageManager()->registerLayouts([
+        $this->getApp()->getLayoutManager()->registerLayouts([
             $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Job'),
             $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Horse')
         ]);

@@ -9,30 +9,35 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
         // Create blocks here
 
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList */
-        $tableList = $this->getApp()->getObjectManager()->get(
-            '\SuttonBaker\Impresario\WP\Block\Job\Table',
-            ["job.table.one"]
-        )->setGoose("Block 1")
-            ->setOrder('after', 'job.table.three');
-
+        $tableList = $this->getApp()->getBlockManager()->createBlock(
+        '\SuttonBaker\Impresario\WP\Block\Job\Table',
+        "job.table.one"
+    )->setGoose("Block 1");
 
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
-        $tableList2 = $this->getApp()->getObjectManager()->get(
+        $tableList2 = $this->getApp()->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\WP\Block\Job\Table',
-            ['job.table.two']
+            "job.table.two"
         )->setGoose("Block 2");
 
+        $testInner = $this->getApp()->getBlockManager()->createBlock(
+            '\SuttonBaker\Impresario\WP\Block\Test',
+            'test.inner'
+        )->setTitle("INNER");
+
+        $tableList2->addChildBlock(
+            $this->getApp()->getBlockManager()->createBlock(
+                '\SuttonBaker\Impresario\WP\Block\Test',
+                'test'
+            )->setTitle("Child Block")
+                ->addChildBlock($testInner)
+                ->setColor("red")
+        );
 
 
-        /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
-        $tableList3 = $this->getApp()->getObjectManager()->get(
-            '\SuttonBaker\Impresario\WP\Block\Job\Table',
-            ['job.table.three']
-        )->setGoose("Block 3");
+        $this->getApp()->getBlockManager()->removeBlock("job.table.one");
+//        $this->getApp()->getBlockManager()->removeBlock("test");
 
-
-
-
-        return [$tableList, $tableList2, $tableList3];
+        return [$tableList, $tableList2];
     }
 }

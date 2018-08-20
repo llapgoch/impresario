@@ -34,4 +34,6 @@ add_action('plugins_loaded', function(){
     );
 });
 
+const DS = DIRECTORY_SEPARATOR;
+
 

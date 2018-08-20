@@ -23,6 +23,10 @@ class Object extends \DaveBaker\Core\WP\Config\Object
                 'definition' => '\SuttonBaker\Impresario\WP\Config\Page',
                 'singleton' => true
             ],
+            '\DaveBaker\Core\WP\Config\Layout' => [
+                'definition' => '\SuttonBaker\Impresario\WP\Config\Layout',
+                'singleton' => true
+            ],
         ]);
     }
 }

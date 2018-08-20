@@ -1,0 +1,9 @@
+<?php
+/** @var DaveBaker\Core\WP\Block\Template $this */
+?>
+
+<h2 style="color:<?php echo $this->getColor();?>;"><?php echo $this->getTitle(); ?></h2>
+<div class="content">
+    This is from the plugin master
+    <?php echo $this->getChildHtml('');?>
+</div>
