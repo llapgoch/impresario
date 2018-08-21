@@ -13,7 +13,7 @@ class Table
     public function preDispatch()
     {
         parent::preDispatch();
-        var_dump("predispatch " . $this->getGoose());
+//        var_dump("predispatch " . $this->getGoose());
     }
 
     public function postDispatch()
