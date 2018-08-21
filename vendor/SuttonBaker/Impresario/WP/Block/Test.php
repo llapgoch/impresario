@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\WP\Block;
 
-class Test extends \DaveBaker\Core\WP\Block\Template\Base
+class Test extends \DaveBaker\Core\WP\Block\Template
 {
     public function init()
     {
