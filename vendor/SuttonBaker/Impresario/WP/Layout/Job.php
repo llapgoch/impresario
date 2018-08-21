@@ -15,8 +15,39 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'test.inner'
             )->setTitle("INNER")
-            ));
+        ));
     }
+
+    public function registerAction()
+    {
+        $this->addBlock(
+            $this->getApp()->getBlockManager()->createBlock(
+                '\SuttonBaker\Impresario\WP\Block\Test',
+                'login.block'
+            )->setTitle("INNER")
+            ->setAction('register_form')
+        );
+
+
+        $this->addBlock(
+            $this->getApp()->getBlockManager()->createBlock(
+                '\SuttonBaker\Impresario\WP\Block\Test',
+                'login.block2'
+            )->setTitle("INNER")
+                ->setAction('register_form')
+        );
+
+        $this->addBlock(
+            $this->getApp()->getBlockManager()->createBlock(
+                '\SuttonBaker\Impresario\WP\Block\Test',
+                'login.block3'
+            )->setTitle("INNER")
+                ->setAction('register_form')
+        );
+
+        
+    }
+
     public function jobListAction()
     {
         // Create blocks here
@@ -67,7 +98,6 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
 
         ));
 
-//        $this->getApp()->getBlockManager()->removeBlock("job.table.one");
 //        $this->getApp()->getBlockManager()->removeBlock("test");
 
 

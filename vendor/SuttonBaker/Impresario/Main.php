@@ -31,10 +31,11 @@ class Main
     
     public function registerLayouts()
     {
-        $this->getApp()->getLayoutManager()->registerLayouts([
-            $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Job'),
-            $this->app->getObjectManager()->get('\SuttonBaker\Impresario\WP\Layout\Horse')
+        $this->getApp()->getLayoutManager()->register([
+            '\SuttonBaker\Impresario\WP\Layout\Job',
+            '\SuttonBaker\Impresario\WP\Layout\Horse'
         ]);
+        
     }
 
 
