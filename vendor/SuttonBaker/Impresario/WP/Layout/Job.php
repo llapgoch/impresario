@@ -4,24 +4,24 @@ namespace SuttonBaker\Impresario\WP\Layout;
 
 class Job extends \DaveBaker\Core\WP\Layout\Base
 {
-    public function defaultAction()
+    public function defaultHandle()
     {
-        $this->addBlock($this->getApp()->getBlockManager()->createBlock(
+        $this->addBlock($this->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\WP\Block\Test',
             'test.outer'
         )->setTitle("OUTER")
             ->setShortcode('body_content')
-            ->addChildBlock($this->getApp()->getBlockManager()->createBlock(
+            ->addChildBlock($this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'test.inner'
             )->setTitle("INNER")
         ));
     }
 
-    public function registerAction()
+    public function registerHandle()
     {
         $this->addBlock(
-            $this->getApp()->getBlockManager()->createBlock(
+            $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block'
             )->setTitle("INNER")
@@ -30,7 +30,7 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
 
 
         $this->addBlock(
-            $this->getApp()->getBlockManager()->createBlock(
+            $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block2'
             )->setTitle("INNER")
@@ -38,17 +38,17 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
         );
 
         $this->addBlock(
-            $this->getApp()->getBlockManager()->createBlock(
+            $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block3'
             )->setTitle("INNER")
                 ->setAction('register_form')
         );
 
-        
+
     }
 
-    public function jobListAction()
+    public function jobListHandle()
     {
         // Create blocks here
 
@@ -82,16 +82,16 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
 
 
 
-        $this->addBlock($this->getApp()->getBlockManager()->createBlock(
+        $this->addBlock($this->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\WP\Block\Test',
             'test.action.outer'
-        )->setTitle("ACTION OUTER")
+        )->setTitle("ACTION OUTER")->setColor('grey')
             ->setAction('test_action')
-            ->addChildBlock($this->getApp()->getBlockManager()->createBlock(
+            ->addChildBlock($this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'test.action.inner'
             )->setTitle("ACTION INNER"))
-            ->addChildBlock($this->getApp()->getBlockManager()->createBlock(
+            ->addChildBlock($this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'test.action.inner.two'
             )->setTitle("ACTION INNER 2")
