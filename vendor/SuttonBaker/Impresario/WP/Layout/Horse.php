@@ -4,9 +4,10 @@ namespace SuttonBaker\Impresario\WP\Layout;
 
 class Horse extends \DaveBaker\Core\WP\Layout\Base
 {
-    
+
     public function jobListAction()
     {
+        return;
         /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList */
         $tableList = $this->getApp()->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\WP\Block\Job\Table',

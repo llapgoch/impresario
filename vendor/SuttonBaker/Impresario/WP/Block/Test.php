@@ -6,7 +6,7 @@ class Test extends \DaveBaker\Core\WP\Block\Template
 {
     public function init()
     {
-        $this->setColor('blue');
+        $this->setColor('red');
         $this->setTemplate('/test/span.phtml');
     }
 
