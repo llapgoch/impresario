@@ -2,9 +2,11 @@
 
 namespace SuttonBaker\Impresario\WP\Installer;
 
-class Manager extends \DaveBaker\Core\WP\Installer\Manager
+class Manager
+    extends \DaveBaker\Core\WP\Installer\Manager
+    implements \DaveBaker\Core\WP\Installer\InstallerInterface
 {
-    protected function install()
+    public function install()
     {
         $pageManager = $this->app->getPageManager();
 
