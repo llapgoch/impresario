@@ -14,7 +14,7 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
             ->addChildBlock($this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'test.inner'
-            )->setTitle("INNER")
+            )->setTitle("INNER 1")
         ));
     }
 
@@ -24,16 +24,16 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
             $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block'
-            )->setTitle("INNER")
+            )->setTitle("INNER 1")
             ->setAction('register_form')
+                ->setOrder('after', 'login.block2')
         );
-
 
         $this->addBlock(
             $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block2'
-            )->setTitle("INNER")
+            )->setTitle("INNER 2")
                 ->setAction('register_form')
         );
 
@@ -41,47 +41,14 @@ class Job extends \DaveBaker\Core\WP\Layout\Base
             $this->getBlockManager()->createBlock(
                 '\SuttonBaker\Impresario\WP\Block\Test',
                 'login.block3'
-            )->setTitle("INNER")
+            )->setTitle("INNER 3")
                 ->setAction('register_form')
+                ->setOrder('before', 'login.block')
         );
-
-
     }
 
     public function jobListHandle()
     {
-        // Create blocks here
-
-//        /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList */
-//        $tableList = $this->getApp()->getBlockManager()->createBlock(
-//        '\SuttonBaker\Impresario\WP\Block\Job\Table',
-//        "job.table.one"
-//    )->setGoose("Block 1")->setShortcode('body_content');
-//
-//        /** @var \SuttonBaker\Impresario\WP\Block\Job\Table $tableList2 */
-//        $tableList2 = $this->getApp()->getBlockManager()->createBlock(
-//            '\SuttonBaker\Impresario\WP\Block\Job\Table',
-//            "job.table.two"
-//        )->setGoose("Block 2")->setShortcode('body_content');
-//
-//
-//        $testInner = $this->getApp()->getBlockManager()->createBlock(
-//            '\SuttonBaker\Impresario\WP\Block\Test',
-//            'test.inner'
-//        )->setTitle("INNER");
-//
-//        $tableList2->addChildBlock(
-//            $this->getApp()->getBlockManager()->createBlock(
-//                '\SuttonBaker\Impresario\WP\Block\Test',
-//                'test'
-//            )->setTitle("Child Block")
-//                ->addChildBlock($testInner)
-//                ->setColor("red")
-//        );
-
-
-
-
         $this->addBlock($this->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\WP\Block\Test',
             'test.action.outer'

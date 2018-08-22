@@ -10,8 +10,13 @@ class Test extends \DaveBaker\Core\WP\Block\Template
         $this->setTemplate('/test/span.phtml');
     }
 
-    public function preDispatch()
+    protected function _preDispatch()
     {
-        return parent::preDispatch();
+        return parent::_preDispatch();
+    }
+
+    protected function _postDispatch()
+    {
+        return parent::_preDispatch();
     }
 }

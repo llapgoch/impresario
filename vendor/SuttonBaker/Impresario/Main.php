@@ -28,7 +28,15 @@ class Main
 //        exit;
 
     }
-    
+
+    public function registerControllers()
+    {
+        $this->getApp()->getContollerManager()->register([
+            "default" => "\SuttonBaker\Impresario\WP\Controller\DefaultController",
+            "job_list" => "\SuttonBaker\Impresario\WP\Controller\JobListController"
+        ]);
+    }
+
     public function registerLayouts()
     {
         $this->getApp()->getLayoutManager()->register([
@@ -37,6 +45,8 @@ class Main
         ]);
         
     }
+
+
 
 
 }
