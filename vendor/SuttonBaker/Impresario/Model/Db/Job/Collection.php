@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Model\Db\Job;
 
-class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
+class Collection extends \DaveBaker\Core\WP\Model\Db\Collection\Base
 {
     protected function init()
     {

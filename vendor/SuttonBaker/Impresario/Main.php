@@ -12,7 +12,7 @@ class Main
         global $wpdb;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Job\Collection $job */
-        $job = $this->getApp()->getObjectManager()->get('\SuttonBaker\Impresario\Model\Db\Job\Collection');
+        $job = $this->getApp()->getObjectManager()->getModel('\SuttonBaker\Impresario\Model\Db\Job');
 
 //        $job->getSelect()->where(
 //            "name= ? ",
@@ -32,8 +32,8 @@ class Main
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            "default" => "\SuttonBaker\Impresario\WP\Controller\DefaultController",
-            "job_list" => "\SuttonBaker\Impresario\WP\Controller\JobListController"
+            "default" => '\SuttonBaker\Impresario\WP\Controller\DefaultController',
+            "job_list" => '\SuttonBaker\Impresario\WP\Controller\JobListController'
         ]);
     }
 
