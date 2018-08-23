@@ -15,12 +15,11 @@ class DefaultController
 
 
         $f = function($context){
-
+//            var_dump("shenanigans!");
         };
 
         $this->addEvent('model_job_create', $f);
-
-        $this->addEvent('model_job_create', [$this, 'callbackBaby']);
+        $this->addEvent('model_job_load', [$this, 'callbackBaby']);
 
 
         $this->addEvent('wp_login_errors', function(\WP_Error $errors){
@@ -39,7 +38,7 @@ class DefaultController
 
     public function callbackBaby($context)
     {
-        var_dump('yeah');
+//        var_dump('yeah');
     }
 
     protected function _postDispatch()
