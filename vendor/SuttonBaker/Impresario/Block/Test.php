@@ -1,8 +1,8 @@
 <?php
 
-namespace SuttonBaker\Impresario\WP\Block;
+namespace SuttonBaker\Impresario\Block;
 
-class Test extends \DaveBaker\Core\WP\Block\Template
+class Test extends \DaveBaker\Core\Block\Template
 {
     public function init()
     {

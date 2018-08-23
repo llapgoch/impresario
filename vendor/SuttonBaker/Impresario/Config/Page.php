@@ -1,8 +1,8 @@
 <?php
 
-namespace SuttonBaker\Impresario\WP\Config;
+namespace SuttonBaker\Impresario\Config;
 
-class Page extends \DaveBaker\Core\WP\Config\Page
+class Page extends \DaveBaker\Core\Config\Page
 {
     public function __construct()
     {

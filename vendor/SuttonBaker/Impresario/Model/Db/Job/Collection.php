@@ -2,10 +2,14 @@
 
 namespace SuttonBaker\Impresario\Model\Db\Job;
 
-class Collection extends \DaveBaker\Core\WP\Model\Db\Collection\Base
+class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
 {
+    /**
+     * @return $this
+     */
     protected function init()
     {
         $this->dbClass = '\SuttonBaker\Impresario\Model\Db\Job';
+        return $this;
     }
 }

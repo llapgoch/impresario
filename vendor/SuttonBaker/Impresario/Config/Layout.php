@@ -1,7 +1,7 @@
 <?php
-namespace SuttonBaker\Impresario\WP\Config;
+namespace SuttonBaker\Impresario\Config;
 
-class Layout extends \DaveBaker\Core\WP\Config\Layout
+class Layout extends \DaveBaker\Core\Config\Layout
 {
     public function __construct()
     {

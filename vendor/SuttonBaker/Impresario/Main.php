@@ -3,8 +3,8 @@
 namespace SuttonBaker\Impresario;
 
 class Main
-    extends \DaveBaker\Core\WP\Main\Base
-    implements \DaveBaker\Core\WP\Main\MainInterface
+    extends \DaveBaker\Core\Main\Base
+    implements \DaveBaker\Core\Main\MainInterface
 {
 
     public function init() {
@@ -12,7 +12,7 @@ class Main
         global $wpdb;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Job\Collection $job */
-        $job = $this->getApp()->getObjectManager()->getModel('\SuttonBaker\Impresario\Model\Db\Job');
+//        $job = $this->getApp()->getObjectManager()->getModel('\SuttonBaker\Impresario\Model\Db\Job');
 
 //        $job->getSelect()->where(
 //            "name= ? ",
@@ -32,16 +32,16 @@ class Main
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            "default" => '\SuttonBaker\Impresario\WP\Controller\DefaultController',
-            "job_list" => '\SuttonBaker\Impresario\WP\Controller\JobListController'
+            "default" => '\SuttonBaker\Impresario\Controller\DefaultController',
+            "job_list" => '\SuttonBaker\Impresario\Controller\JobListController'
         ]);
     }
 
     public function registerLayouts()
     {
         $this->getApp()->getLayoutManager()->register([
-            '\SuttonBaker\Impresario\WP\Layout\Job',
-            '\SuttonBaker\Impresario\WP\Layout\Horse'
+            '\SuttonBaker\Impresario\Layout\Job',
+            '\SuttonBaker\Impresario\Layout\Horse'
         ]);
         
     }

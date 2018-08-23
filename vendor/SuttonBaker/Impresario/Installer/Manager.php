@@ -1,10 +1,10 @@
 <?php
 
-namespace SuttonBaker\Impresario\WP\Installer;
+namespace SuttonBaker\Impresario\Installer;
 
 class Manager
-    extends \DaveBaker\Core\WP\Installer\Manager
-    implements \DaveBaker\Core\WP\Installer\InstallerInterface
+    extends \DaveBaker\Core\Installer\Manager
+    implements \DaveBaker\Core\Installer\InstallerInterface
 {
     public function install()
     {

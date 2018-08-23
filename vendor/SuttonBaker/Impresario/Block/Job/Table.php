@@ -1,10 +1,10 @@
 <?php
 
-namespace SuttonBaker\Impresario\WP\Block\Job;
+namespace SuttonBaker\Impresario\Block\Job;
 
 class Table
-    extends \DaveBaker\Core\WP\Block\Base
-    implements \DaveBaker\Core\WP\Block\BlockInterface
+    extends \DaveBaker\Core\Block\Base
+    implements \DaveBaker\Core\Block\BlockInterface
 {
     public function toHtml(){
         return "Block to HTML " . $this->getGoose() . "<br />";
