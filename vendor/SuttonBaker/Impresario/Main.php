@@ -41,7 +41,7 @@ class Main
     {
         $this->getApp()->getLayoutManager()->register([
             '\SuttonBaker\Impresario\Layout\Job',
-            '\SuttonBaker\Impresario\Layout\Horse'
+            '\SuttonBaker\Impresario\Layout\Quote'
         ]);
         
     }
