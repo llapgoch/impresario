@@ -6,16 +6,13 @@ class Job extends \DaveBaker\Core\Layout\Base
 {
     public function defaultHandle()
     {
-//        $this->addBlock($this->getBlockManager()->createBlock(
-//            '\SuttonBaker\Impresario\Block\Test',
-//            'test.outer'
-//        )->setTitle("OUTER")
-//            ->setShortcode('body_content')
-//            ->addChildBlock($this->getBlockManager()->createBlock(
-//                '\SuttonBaker\Impresario\Block\Test',
-//                'test.inner'
-//            )->setTitle("INNER 1")
-//            ));
+
+    }
+
+    public function registerHandle()
+    {
+
+        
     }
 
     public function jobListHandle()

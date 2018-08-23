@@ -9,14 +9,20 @@ class JobListController
 
     public function execute()
     {
-        $job = $this->getApp()->getObjectManager()->getModel('\SuttonBaker\Impresario\Model\Db\Job');
-        $job->load(1);
+        // Form submission
+        if($this->getRequest()->getPostParam('action')){
+            /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
+            $configurator = $this->createObject('\SuttonBaker\Impresario\Form\Rules\JobConfigurator', [$this->getApp()]);
 
-//        $job->setUpdatedAt($helper->getDbTime(1527025178));
+            /** @var \DaveBaker\Form\Validation\Validator $validator */
+            $validator = $this->createObject('\DaveBaker\Form\Validation\Validator', [$this->getApp()])
+                ->setValues($this->getRequest()->getPostParams())
+                ->configurate($configurator);
 
-//        $job->save();
-//
-        $job = $this->getApp()->getObjectManager()->getModel('\SuttonBaker\Impresario\Model\Db\Job');
-//        $job->setName('Date test')->save();
+
+            var_dump(count($configurator->getRules()));
+            var_dump($validator->validate());
+        }
+        
     }
 }

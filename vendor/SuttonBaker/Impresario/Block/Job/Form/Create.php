@@ -13,15 +13,29 @@ class Create extends \DaveBaker\Form\Block\Form
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Text')
+                ->setElementName('horse')
             ->addAttributes(['fox' => 'socks'])
         );
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Text')
+            ->setElementName('goose')
         );
 
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Password')
+            $this->createBlock('\DaveBaker\Form\Block\Input\Text')
+            ->setElementName('moose')
+        );
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Input\Hidden')
+                ->setElementName('action')
+                ->setElementValue(1)
+        );
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Input\Submit')
+                ->setElementValue("Submit")
         );
 
     }
