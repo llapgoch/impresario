@@ -11,18 +11,31 @@ class JobListController
     {
         // Form submission
         if($this->getRequest()->getPostParam('action')){
+            $postParams = $this->getRequest()->getPostParams();
+
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createObject('\SuttonBaker\Impresario\Form\Rules\JobConfigurator', [$this->getApp()]);
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\Rules\JobConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
-            $validator = $this->createObject('\DaveBaker\Form\Validation\Validator', [$this->getApp()])
-                ->setValues($this->getRequest()->getPostParams())
+            $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
+                ->setValues($postParams)
                 ->configurate($configurator);
 
-
-            var_dump(count($configurator->getRules()));
-            var_dump($validator->validate());
+            if(!$validator->validate()){
+                $this->hydrateFormData();
+            }
         }
-        
+    }
+
+    protected function hydrateFormData()
+    {
+        /** @var \DaveBaker\Form\BlockApplicator $applicator */
+        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
+
+        $applicator->configure(
+            $this->getApp()->getBlockManager()->getBlock('job.list.form'),
+            $this->getRequest()->getPostParams()
+        );
+
     }
 }

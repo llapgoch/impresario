@@ -6,31 +6,32 @@ class JobConfigurator
     extends \DaveBaker\Form\Validation\Rule\Configurator\Base
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
-    public function _collate()
+    protected function _collate()
     {
         $this->addRule(
-            $this->createRule('Required')->configure('horse', 'Horse', $this->getValue('horse'))
+            $this->createRule('Required', 'horse', 'Horse')
         );
 
         $this->addRule(
-            $this->createRule('Numeric')->configure('goose', 'Goose', $this->getValue('goose'))
+            $this->createRule('Numeric', 'goose', 'Goose')
         );
 
         $this->addRule(
-            $this->createRule('Numeric')->configure('moose', 'Moose', $this->getValue('moose'))
+            $this->createRule('Numeric', 'moose', 'Moose')
         );
 
         $this->addRule(
-            $this->createRule('NumberCompare\GreaterEqual')
-                ->configure('moose', 'Moose', $this->getValue('moose'))
+            $this->createRule('Required', 'bio', 'Biography')
+        );
+
+        $this->addRule(
+            $this->createRule('Date', 'date_field', 'Created Date')
+        );
+
+        $this->addRule(
+            $this->createRule('NumericCompare\GreaterEqual', 'moose', 'Moose')
                 ->setCompareNumber(100)
         );
-
-
-
-//        $this->addRule(
-//            $this->createRule('Numeric')->configure('age', 'Age', $this->getValue('age'))
-//        );
 
     }
 }

@@ -34,6 +34,16 @@ class Create extends \DaveBaker\Form\Block\Form
         );
 
         $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Textarea')
+                ->setElementName('bio')
+        );
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Input\Date')
+                ->setElementName('date_field')
+        );
+
+        $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Submit')
                 ->setElementValue("Submit")
         );
