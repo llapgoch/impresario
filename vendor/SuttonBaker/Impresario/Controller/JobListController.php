@@ -22,15 +22,25 @@ class JobListController
                 ->configurate($configurator);
 
             if(!$validator->validate()){
-                $this->hydrateFormData();
+                $this->prepareFormErrors($validator);
             }
         }
     }
 
-    protected function hydrateFormData()
-    {
+    protected function prepareFormErrors(
+        \DaveBaker\Form\Validation\Validator $validator
+    ) {
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
+
+        // Create main error block
+        /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
+        $errorBlock = $this->getApp()->getBlockManager()->createBlock(
+            '\DaveBaker\Form\Block\Error\Main',
+            'job.list.form.errors'
+        );
+
+        $errorBlock->set
 
         $applicator->configure(
             $this->getApp()->getBlockManager()->getBlock('job.list.form'),
