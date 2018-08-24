@@ -9,6 +9,9 @@ class JobListController
 
     public function execute()
     {
+        wp_enqueue_script('jquery-ui-datepicker');
+        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+
         // Form submission
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
@@ -30,6 +33,11 @@ class JobListController
     protected function prepareFormErrors(
         \DaveBaker\Form\Validation\Validator $validator
     ) {
+        /** @var \DaveBaker\Form\Block\Form $jobListForm */
+        if(!($jobListForm = $this->getApp()->getBlockManager()->getBlock('job.list.form'))){
+            return;
+        }
+
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
@@ -38,12 +46,14 @@ class JobListController
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
             'job.list.form.errors'
-        );
+        )->setOrder('after', 'title')->addErrors($validator->getErrors());
 
-        $errorBlock->set
 
+        $jobListForm->addChildBlock($errorBlock);
+
+        // Sets the values back onto the form element
         $applicator->configure(
-            $this->getApp()->getBlockManager()->getBlock('job.list.form'),
+            $jobListForm,
             $this->getRequest()->getPostParams()
         );
 

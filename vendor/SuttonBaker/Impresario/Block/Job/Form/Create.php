@@ -14,7 +14,7 @@ class Create extends \DaveBaker\Form\Block\Form
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'horse')
                 ->setElementName('horse')
-            ->addAttributes(['fox' => 'socks'])
+            ->addAttribute(['fox' => 'socks'])
         );
 
         $this->addChildBlock(
@@ -39,8 +39,9 @@ class Create extends \DaveBaker\Form\Block\Form
         );
 
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Date', 'date_field')
+            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'date_field')
                 ->setElementName('date_field')
+                ->addClass('js-date-picker')
         );
 
         $this->addChildBlock(
