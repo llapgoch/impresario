@@ -7,7 +7,7 @@ namespace SuttonBaker\Impresario\Installer;
  */
 class Impresario
     extends \DaveBaker\Core\Installer\Base
-
+    implements \DaveBaker\Core\Installer\InstallerInterface
 {
     /**
      * @throws \DaveBaker\Core\Db\Exception

@@ -13,9 +13,6 @@ class Object extends \DaveBaker\Core\Config\Object
             '\DaveBaker\Core\Config\Installer' => [
                 'definition' => '\SuttonBaker\Impresario\Config\Installer'
             ],
-            '\DaveBaker\Core\Installer\Manager' => [
-                'definition' => '\SuttonBaker\Impresario\Installer\Impresario'
-            ],
             '\DaveBaker\Core\Config\Page' => [
                 'definition' => '\SuttonBaker\Impresario\Config\Page'
             ],
