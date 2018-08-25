@@ -35,6 +35,7 @@ class Main
 
     /**
      * @throws \DaveBaker\Core\Layout\Exception
+     * @throws \DaveBaker\Core\Object\Exception
      */
     public function registerLayouts()
     {
