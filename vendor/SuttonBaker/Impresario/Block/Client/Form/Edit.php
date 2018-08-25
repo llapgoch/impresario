@@ -1,18 +1,25 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Job\Form;
-
-class Create extends \DaveBaker\Form\Block\Form
+namespace SuttonBaker\Impresario\Block\Client\Form;
+/**
+ * Class Edit
+ * @package SuttonBaker\Impresario\Block\Client\Form
+ */
+class Edit extends \DaveBaker\Form\Block\Form
 {
+    /**
+     * @return \DaveBaker\Form\Block\Form|void
+     * @throws \DaveBaker\Core\App\Exception
+     */
     protected function _preDispatch()
     {
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Core\Block\Html\Heading', 'title')
-            ->setHeading('Create a new Job')
+            ->setHeading('Edit Client')
         );
 
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'horse')
+            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'name')
                 ->setElementName('horse')
             ->addAttribute(['fox' => 'socks'])
         );

@@ -1,7 +1,10 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller;
-
+/**
+ * Class DefaultController
+ * @package SuttonBaker\Impresario\Controller
+ */
 class DefaultController
     extends \DaveBaker\Core\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
@@ -9,30 +12,15 @@ class DefaultController
 
     public function execute()
     {
+        /** @var \SuttonBaker\Impresario\Model\Db\Job $job */
+        $job = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Job')->load(1);
+        /** @var \DaveBaker\Core\Helper\Date $date */
+        $date = $this->getApp()->getHelper('Date');
+//        $job->setName('DB Date Test')->setTest('Test Entry')->save();
 
-        $blocks = $this->getApp()->getBlockManager()->getAllRenderedBlocks();
-        $allBlocks = $this->getApp()->getBlockManager()->getAllBlocks();
-
-
-        $f = function($context){
-//            var_dump("shenanigans!");
-        };
-
-        $this->addEvent('model_job_create', $f);
-        $this->addEvent('model_job_load', [$this, 'callbackBaby']);
-
-
-        $this->addEvent('wp_login_errors', function(\WP_Error $errors){
-           $errors->remove('incorrect_password');
-            $errors->add('boogaloo', 'Your horse can\'t whisper at night');
-
-            return $errors;
-        });
-
-//        $this->removeEvent('model_job_create', [$this, 'callbackBaby']);
-//        $this->removeEvent('model_job_create', $f);
-
-//        $this->removeEvent('model_job_create');
+        var_dump(
+            $date->utcDbDateTimeToLocalOutput($job->getCreatedAt())
+        );
 
     }
 

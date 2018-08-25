@@ -1,7 +1,10 @@
 <?php
 
 namespace SuttonBaker\Impresario\Config;
-
+/**
+ * Class Page
+ * @package SuttonBaker\Impresario\Config
+ */
 class Page extends \DaveBaker\Core\Config\Page
 {
     public function __construct()

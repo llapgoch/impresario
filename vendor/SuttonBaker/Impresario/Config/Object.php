@@ -1,7 +1,10 @@
 <?php
 
 namespace SuttonBaker\Impresario\Config;
-
+/**
+ * Class Object
+ * @package SuttonBaker\Impresario\Config
+ */
 class Object extends \DaveBaker\Core\Config\Object
 {
     public function __construct()

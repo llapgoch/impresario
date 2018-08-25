@@ -1,6 +1,10 @@
 <?php
-namespace SuttonBaker\Impresario\Config;
 
+namespace SuttonBaker\Impresario\Config;
+/**
+ * Class Layout
+ * @package SuttonBaker\Impresario\Config
+ */
 class Layout extends \DaveBaker\Core\Config\Layout
 {
     public function __construct()

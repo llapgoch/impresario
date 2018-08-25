@@ -1,11 +1,17 @@
 <?php
 
 namespace SuttonBaker\Impresario\Form\Rules;
-
+/**
+ * Class JobConfigurator
+ * @package SuttonBaker\Impresario\Form\Rules
+ */
 class JobConfigurator
     extends \DaveBaker\Form\Validation\Rule\Configurator\Base
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
+    /**
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     */
     protected function _collate()
     {
         $this->addRule(
