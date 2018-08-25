@@ -21,4 +21,17 @@ class Client extends \DaveBaker\Core\Layout\Base
 
         );
     }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     */
+    public function clientListHandle()
+    {
+        $this->addBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Client\ClientList',
+                'client.list'
+            )->setShortcode('body_content')
+        );
+    }
 }

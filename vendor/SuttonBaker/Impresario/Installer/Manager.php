@@ -24,6 +24,13 @@ class Manager
             ]
         );
 
+        $pageManager->createPage(
+            'client_list',
+            [
+                "post_title" => "Client List"
+            ]
+        );
+
 
         $this->deltaTable('client',
             'CREATE TABLE `{{tableName}}` (
