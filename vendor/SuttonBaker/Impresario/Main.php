@@ -10,19 +10,21 @@ class Main
     implements \DaveBaker\Core\Main\MainInterface
 {
 
+    public function init(){}
 
-    public function init() {
-
-    }
-
+    /**
+     * @throws \DaveBaker\Core\Object\Exception
+     */
     public function registerControllers()
     {
-//        $this->getApp()->getContollerManager()->register([
-//            "default" => '\SuttonBaker\Impresario\Controller\DefaultController',
-//            "job_list" => '\SuttonBaker\Impresario\Controller\JobListController'
-//        ]);
+        $this->getApp()->getContollerManager()->register([
+            "default" => '\SuttonBaker\Impresario\Controller\ClientEditController'
+        ]);
     }
 
+    /**
+     * @throws \DaveBaker\Core\Layout\Exception
+     */
     public function registerLayouts()
     {
         $this->getApp()->getLayoutManager()->register([

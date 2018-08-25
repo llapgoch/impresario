@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Form\Rules;
  * Class JobConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
  */
-class JobConfigurator
+class ClientConfigurator
     extends \DaveBaker\Form\Validation\Rule\Configurator\Base
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
@@ -15,29 +15,31 @@ class JobConfigurator
     protected function _collate()
     {
         $this->addRule(
-            $this->createRule('Required', 'horse', 'Horse')
+            $this->createRule('Required', 'name', 'Name')
         );
 
         $this->addRule(
-            $this->createRule('Numeric', 'goose', 'Goose')
+            $this->createRule('Required', 'address_line1', 'Address Line 1')
         );
 
         $this->addRule(
-            $this->createRule('Numeric', 'moose', 'Moose')
+            $this->createRule('Required', 'postcode', 'Postcode')
         );
 
         $this->addRule(
-            $this->createRule('Required', 'bio', 'Biography')
+            $this->createRule('Required', 'sales_contact_phone', 'Sales Phone Number')
         );
 
         $this->addRule(
-            $this->createRule('Date', 'date_field', 'Created Date')
+            $this->createRule('Required', 'sales_contact', 'Sales Contact Name')
         );
 
         $this->addRule(
-            $this->createRule('NumericCompare\GreaterEqual', 'moose', 'Moose')
-                ->setCompareNumber(100)
+            $this->createRule('Required', 'accounts_contact_phone', 'Accounts Phone Number')
         );
 
+        $this->addRule(
+            $this->createRule('Required', 'accounts_contact', 'Accounts Contact Name')
+        );
     }
 }
