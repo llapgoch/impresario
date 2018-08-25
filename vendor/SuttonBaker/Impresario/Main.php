@@ -23,6 +23,17 @@ class Main
     }
 
     /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function registerInstallers()
+    {
+        $this->getApp()->getInstallerManager()->register([
+            '\SuttonBaker\Impresario\Installer\Impresario'
+        ]);
+    }
+
+    /**
      * @throws \DaveBaker\Core\Layout\Exception
      */
     public function registerLayouts()

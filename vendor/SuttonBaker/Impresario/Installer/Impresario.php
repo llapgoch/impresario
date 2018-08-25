@@ -5,9 +5,9 @@ namespace SuttonBaker\Impresario\Installer;
  * Class Manager
  * @package SuttonBaker\Impresario\Installer
  */
-class Manager
-    extends \DaveBaker\Core\Installer\Manager
-    implements \DaveBaker\Core\Installer\InstallerInterface
+class Impresario
+    extends \DaveBaker\Core\Installer\Base
+
 {
     /**
      * @throws \DaveBaker\Core\Db\Exception
