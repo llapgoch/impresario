@@ -15,7 +15,7 @@ class ClientConfigurator
     protected function _collate()
     {
         $this->addRule(
-            $this->createRule('Required', 'name', 'Name')
+            $this->createRule('Required', 'client_name', 'Name')
         );
 
         $this->addRule(

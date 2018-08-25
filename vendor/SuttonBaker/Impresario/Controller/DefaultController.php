@@ -12,8 +12,8 @@ class DefaultController
 
     public function execute()
     {
-        /** @var \SuttonBaker\Impresario\Model\Db\Job $job */
-        $job = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Job')->load(1);
+        /** @var \SuttonBaker\Impresario\Model\Db\Client $job */
+        $job = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load(1);
         /** @var \DaveBaker\Core\Helper\Date $date */
         $date = $this->getApp()->getHelper('Date');
 //        $job->setName('DB Date Test')->setTest('Test Entry')->save();

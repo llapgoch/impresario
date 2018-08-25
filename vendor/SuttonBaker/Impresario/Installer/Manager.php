@@ -27,8 +27,8 @@ class Manager
 
         $this->deltaTable('client',
             'CREATE TABLE `{{tableName}}` (
-              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-              `name` varchar(255) DEFAULT NULL,
+              `client_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `client_name` varchar(255) DEFAULT NULL,
               `address_line1` varchar(255) DEFAULT NULL,
               `address_line2` varchar(255) DEFAULT NULL,
               `address_line3` varchar(255) DEFAULT NULL,
@@ -39,7 +39,7 @@ class Manager
               `sales_contact` varchar(255) DEFAULT NULL,
               `accounts_contact_phone` varchar(255) DEFAULT NULL,
               `accounts_contact` varchar(255) DEFAULT NULL,
-              PRIMARY KEY (`id`)
+              PRIMARY KEY (`client_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
         );
         

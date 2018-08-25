@@ -29,9 +29,24 @@ class ClientEditController
                 ->configurate($configurator);
 
             if(!$validator->validate()){
-                $this->prepareFormErrors($validator);
+                return $this->prepareFormErrors($validator);
             }
+
+            $this->saveFormValues();
         }
+    }
+
+
+    /**
+     * @return $this
+     */
+    protected function saveFormValues()
+    {
+        $data = $this->getRequest()->getPostParams();
+        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+        $client->setData($data)->save();
+
+        return $this;
     }
 
     /**

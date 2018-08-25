@@ -29,7 +29,7 @@ class Edit extends \DaveBaker\Form\Block\Form
         );
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.name')
-                ->setElementName('name')
+                ->setElementName('client_name')
                 ->addAttribute(['id' => 'edit_form_name'])
         );
 
@@ -47,6 +47,7 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->addAttribute(['id' => 'edit_form_address_line1'])
         );
 
+        // Address Line 2
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.address2.label')
                 ->setLabelName('Address Line 2')
@@ -59,6 +60,7 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->addAttribute(['id' => 'edit_form_address_line2'])
         );
 
+        // Address Line 3
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.address3.label')
                 ->setLabelName('Address Line 3')
@@ -70,6 +72,8 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->setElementName('address_line3')
                 ->addAttribute(['id' => 'edit_form_address_line3'])
         );
+
+        // Postcode
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.postcode.label')
@@ -83,6 +87,7 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->addAttribute(['id' => 'edit_form_postcode'])
         );
 
+        // County
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.county.label')
                 ->setLabelName('County')
@@ -160,15 +165,10 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->setElementValue(1)
         );
 
-//        $this->addChildBlock(
-//            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'date_field')
-//                ->setElementName('date_field')
-//                ->addClass('js-date-picker')
-//        );
-
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Submit', 'submit')
+            $this->createBlock('\DaveBaker\Form\Block\Input\Submit', 'client.form.edit.submit')
                 ->setElementValue("Submit")
+                ->setElementName('client_submit')
         );
 
     }

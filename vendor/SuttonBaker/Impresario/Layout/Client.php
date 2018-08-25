@@ -17,7 +17,8 @@ class Client extends \DaveBaker\Core\Layout\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Client\Form\Edit',
                 'client.form.edit'
-            )->setShortcode('body_content')
+            )->setElementName('client_edit_form')->setShortcode('body_content')->setFormAction("")
+
         );
     }
 }

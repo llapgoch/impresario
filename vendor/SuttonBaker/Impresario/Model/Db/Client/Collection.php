@@ -1,6 +1,6 @@
 <?php
 
-namespace SuttonBaker\Impresario\Model\Db\Job;
+namespace SuttonBaker\Impresario\Model\Db\Client;
 
 class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
 {
@@ -9,7 +9,7 @@ class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
      */
     protected function init()
     {
-        $this->dbClass = '\SuttonBaker\Impresario\Model\Db\Job';
+        $this->dbClass = '\SuttonBaker\Impresario\Model\Db\Client';
         return $this;
     }
 }
