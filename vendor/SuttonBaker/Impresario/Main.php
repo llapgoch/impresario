@@ -13,12 +13,14 @@ class Main
     public function init(){}
 
     /**
+     * @throws \DaveBaker\Core\Controller\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            "default" => '\SuttonBaker\Impresario\Controller\ClientEditController'
+            "client_edit" => '\SuttonBaker\Impresario\Controller\ClientEditController'
         ]);
     }
 

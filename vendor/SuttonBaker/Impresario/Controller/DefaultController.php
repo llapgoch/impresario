@@ -18,9 +18,7 @@ class DefaultController
         $date = $this->getApp()->getHelper('Date');
 //        $job->setName('DB Date Test')->setTest('Test Entry')->save();
 
-        var_dump(
-            $date->utcDbDateTimeToLocalOutput($job->getCreatedAt())
-        );
+
 
     }
 

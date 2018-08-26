@@ -33,7 +33,6 @@ class Impresario
             ]
         );
 
-
         $this->deltaTable('client',
             'CREATE TABLE `{{tableName}}` (
               `client_id` int(11) unsigned NOT NULL AUTO_INCREMENT,

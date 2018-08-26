@@ -1,20 +1,44 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller;
-
+/**
+ * Class ClientEditController
+ * @package SuttonBaker\Impresario\Controller
+ */
 class ClientEditController
     extends \DaveBaker\Core\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
+    /** @var \DaveBaker\Form\Block\Form $clientEditForm */
+    protected $clientEditForm;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
     public function execute()
     {
+        /** @var \DaveBaker\Form\Block\Form $clientEditForm */
+        if(!($this->clientEditForm = $this->getApp()->getBlockManager()->getBlock('client.form.edit'))){
+            return;
+        }
+
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+
+        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+
+        if($clientId = (int) $this->getRequest()->getParam('client_id')){
+            // We're loading, fellas!
+            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
+            $client->load($clientId);
+
+            if(!$client->getId()){
+                $this->redirectToPage('client_list');
+            }
+        }
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -33,12 +57,24 @@ class ClientEditController
             }
 
             $this->saveFormValues();
+            $this->redirectToPage('client_list');
+        }
+
+        /** @var \DaveBaker\Form\BlockApplicator $applicator */
+        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
+
+        // Apply the values to the form element
+        if($client->getId()) {
+            $applicator->configure(
+                $this->clientEditForm,
+                $client->getData()
+            );
         }
     }
 
-
     /**
      * @return $this
+     * @throws \DaveBaker\Core\Object\Exception
      */
     protected function saveFormValues()
     {
@@ -52,15 +88,12 @@ class ClientEditController
     /**
      * @param \DaveBaker\Form\Validation\Validator $validator
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Exception
      */
     protected function prepareFormErrors(
         \DaveBaker\Form\Validation\Validator $validator
     ) {
-        /** @var \DaveBaker\Form\Block\Form $clientEditForm */
-        if(!($clientEditForm = $this->getApp()->getBlockManager()->getBlock('client.form.edit'))){
-            return;
-        }
-
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
@@ -71,14 +104,12 @@ class ClientEditController
             'client.edit.form.errors'
         )->setOrder('after', 'client.form.edit.heading')->addErrors($validator->getErrors());
 
-
-        $clientEditForm->addChildBlock($errorBlock);
+        $this->clientEditForm->addChildBlock($errorBlock);
 
         // Sets the values back onto the form element
         $applicator->configure(
-            $clientEditForm,
+            $this->clientEditForm,
             $this->getRequest()->getPostParams()
         );
-
     }
 }

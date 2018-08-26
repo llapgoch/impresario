@@ -10,6 +10,7 @@ class Edit extends \DaveBaker\Form\Block\Form
     /**
      * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
     {
@@ -155,8 +156,7 @@ class Edit extends \DaveBaker\Form\Block\Form
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Hidden', 'client.form.edit.id')
-                ->setElementName('id')
-                ->setElementValue('')
+                ->setElementName('client_id')
         );
 
         $this->addChildBlock(
