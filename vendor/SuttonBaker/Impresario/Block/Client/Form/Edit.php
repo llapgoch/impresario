@@ -14,10 +14,18 @@ class Edit extends \DaveBaker\Form\Block\Form
      */
     protected function _preDispatch()
     {
+        $heading = 'Add Client';
+        $editMode = false;
+
+        if($clientId = $this->getRequest()->getParam('client_id')){
+            $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load($clientId);
+            $heading = "Edit '{$client->getClientName()}'";
+            $editMode = true;
+        }
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Core\Block\Html\Heading', 'client.form.edit.heading')
-                ->setHeading('Edit Client')
+                ->setHeading($heading)
         );
 
         // Name
@@ -167,7 +175,7 @@ class Edit extends \DaveBaker\Form\Block\Form
 
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Input\Submit', 'client.form.edit.submit')
-                ->setElementValue("Submit")
+                ->setElementValue($editMode ? "Update Client" : "Add Client")
                 ->setElementName('client_submit')
         );
 

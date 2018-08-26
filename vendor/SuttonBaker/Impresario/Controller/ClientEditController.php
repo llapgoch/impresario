@@ -14,6 +14,8 @@ class ClientEditController
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
@@ -30,18 +32,9 @@ class ClientEditController
 
         $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
 
-        if($clientId = (int) $this->getRequest()->getParam('client_id')){
-            // We're loading, fellas!
-            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
-            $client->load($clientId);
-
-            if(!$client->getId()){
-                $this->redirectToPage('client_list');
-            }
-        }
-
         // Form submission
         if($this->getRequest()->getPostParam('action')){
+
             $postParams = $this->getRequest()->getPostParams();
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
@@ -58,6 +51,17 @@ class ClientEditController
 
             $this->saveFormValues();
             $this->redirectToPage('client_list');
+        }
+
+
+        if($clientId = (int) $this->getRequest()->getParam('client_id')){
+            // We're loading, fellas!
+            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
+            $client->load($clientId);
+
+            if(!$client->getId()){
+                $this->redirectToPage('client_list');
+            }
         }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
