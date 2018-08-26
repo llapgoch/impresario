@@ -9,7 +9,7 @@ class Impresario
     extends \DaveBaker\Core\Installer\Base
     implements \DaveBaker\Core\Installer\InstallerInterface
 {
-    protected $installerCode = 'impresario';
+    protected $installerCode = 'impresario_application';
     /**
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception

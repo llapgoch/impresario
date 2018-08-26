@@ -7,7 +7,10 @@ namespace SuttonBaker\Impresario\Config;
  */
 class Installer extends \DaveBaker\Core\Config\Installer
 {
-    protected $config = [
-        'impresario' => '0.0.1'
-    ];
+    public function __construct()
+    {
+        $this->mergeConfig([
+            'impresario_application' => '0.0.1'
+        ]);
+    }
 }
