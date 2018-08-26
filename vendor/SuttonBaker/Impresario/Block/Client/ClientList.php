@@ -31,6 +31,20 @@ class ClientList
             // add edit for each one
             foreach($clients as $client){
                 $client->setData('edit_column',  $this->getLinkHtml($client));
+
+                if($client->getData('created_at')) {
+                    $createdDate = $this->getApp()->getHelper('Date')
+                        ->utcDbDateTimeToShortLocalOutput($client->getData('created_at'));
+
+                    $client->setData('created_at', $createdDate);
+                }
+
+                if($client->getUpdatedAt()) {
+                    $updatedAt = $this->getApp()->getHelper('Date')
+                        ->utcDbDateTimeToShortLocalOutput($client->getData('updated_at'));
+
+                    $client->setData('updated_at', $updatedAt);
+                }
             }
 
             $this->addChildBlock(
