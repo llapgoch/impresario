@@ -12,11 +12,18 @@ class ClientList
     /**
      * @return \DaveBaker\Core\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
     {
-        $clients = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client\Collection')->load();
+        /** @var \SuttonBaker\Impresario\Model\Db\Client\Collection $clients */
+        $clientCollection = $this->createAppObject(
+            '\SuttonBaker\Impresario\Model\Db\Client\Collection');
+
+        $clientCollection->getSelect()->where('is_deleted = ?', '0');
+        $clientItems = $clientCollection->load();
 
         $this->addChildBlock(
             $this->createBlock(
@@ -25,11 +32,11 @@ class ClientList
             )->setTemplate('client/list/action_bar.phtml')
         );
 
-        if(count($clients)) {
-            $headers = array_keys($clients[0]->getData());
+        if(count($clientItems)) {
+            $headers = array_keys($clientItems[0]->getData());
             $headers[] = 'edit_column';
             // add edit for each one
-            foreach($clients as $client){
+            foreach($clientItems as $client){
                 $client->setData('edit_column',  $this->getLinkHtml($client));
 
                 if($client->getData('created_at')) {
@@ -51,7 +58,7 @@ class ClientList
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     'client.list.table'
-                )->setHeaders($headers)->setRecords($clients)->addEscapeExcludes('edit_column')
+                )->setHeaders($headers)->setRecords($clientItems)->addEscapeExcludes('edit_column')
             );
         }
     }

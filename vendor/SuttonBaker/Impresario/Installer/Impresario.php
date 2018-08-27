@@ -49,6 +49,7 @@ class Impresario
               `sales_contact` varchar(255) DEFAULT NULL,
               `accounts_contact_phone` varchar(255) DEFAULT NULL,
               `accounts_contact` varchar(255) DEFAULT NULL,
+              `is_deleted` int(1) DEFAULT 0
               PRIMARY KEY (`client_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
         );
