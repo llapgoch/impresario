@@ -2,18 +2,19 @@
 
 namespace SuttonBaker\Impresario\Controller;
 /**
- * Class ClientEditController
+ * Class EnquiryEditController
  * @package SuttonBaker\Impresario\Controller
  */
-class ClientEditController
+class EnquiryEditController
     extends \DaveBaker\Core\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-    /** @var \DaveBaker\Form\Block\Form $clientEditForm */
-    protected $clientEditForm;
+    /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
+    protected $enquiryEditForm;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -22,15 +23,14 @@ class ClientEditController
      */
     public function execute()
     {
-        /** @var \DaveBaker\Form\Block\Form $clientEditForm */
-        if(!($this->clientEditForm = $this->getApp()->getBlockManager()->getBlock('client.form.edit'))){
+        if(!($this->enquiryEditForm = $this->getApp()->getBlockManager()->getBlock('enquiry.form.edit'))){
             return;
         }
 
-//        wp_enqueue_script('jquery-ui-datepicker');
-//        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+        wp_enqueue_script('jquery-ui-datepicker');
+        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+        $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -38,7 +38,7 @@ class ClientEditController
             $postParams = $this->getRequest()->getPostParams();
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\Rules\ClientConfigurator');
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\Rules\EnquiryConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
             $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
@@ -49,19 +49,19 @@ class ClientEditController
                 return $this->prepareFormErrors($validator);
             }
 
-            $clientName = $this->getRequest()->getPostParam('client_name');
+            $enquiryReference = $this->getRequest()->getPostParam('our_reference');
             $this->saveFormValues();
-            $this->redirectToPage('client_list');
+            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
         }
 
 
-        if($clientId = (int) $this->getRequest()->getParam('client_id')){
+        if($enquiryId = (int) $this->getRequest()->getParam('enquiry_id')){
             // We're loading, fellas!
-            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
-            $client->load($clientId);
 
-            if(!$client->getId()){
-                $this->redirectToPage('client_list');
+            $enquiry->load($enquiryId);
+
+            if(!$enquiry->getId()){
+                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
             }
         }
 
@@ -69,10 +69,10 @@ class ClientEditController
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
         // Apply the values to the form element
-        if($client->getId()) {
+        if($enquiry->getId()) {
             $applicator->configure(
-                $this->clientEditForm,
-                $client->getData()
+                $this->enquiryEditForm,
+                $enquiry->getData()
             );
         }
     }
@@ -84,10 +84,10 @@ class ClientEditController
     protected function saveFormValues()
     {
         $data = $this->getRequest()->getPostParams();
-        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+        $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
-        $this->addMessage("The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'));
-        $client->setData($data)->save();
+        $this->addMessage("The enquiry '{$data["our_reference"]}' has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
+        $enquiry->setData($data)->save();
 
         return $this;
     }
@@ -109,14 +109,14 @@ class ClientEditController
         /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
-            'client.edit.form.errors'
-        )->setOrder('after', 'client.form.edit.heading')->addErrors($validator->getErrors());
+            'enquiry.edit.form.errors'
+        )->setOrder('after', 'enquiry.form.edit.heading')->addErrors($validator->getErrors());
 
-        $this->clientEditForm->addChildBlock($errorBlock);
+        $this->enquiryEditForm->addChildBlock($errorBlock);
 
         // Sets the values back onto the form element
         $applicator->configure(
-            $this->clientEditForm,
+            $this->enquiryEditForm,
             $this->getRequest()->getPostParams()
         );
     }

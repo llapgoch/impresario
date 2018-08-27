@@ -17,19 +17,29 @@ class Impresario
      */
     public function install()
     {
+
+        $this->installClient();
+        $this->installEnquiry();
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Core\Page\Exception
+     */
+    protected function installClient()
+    {
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
-            'client_edit',
-            [
-                "post_title" => "Client Edit"
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT, [
+                "post_title" => "Edit Client"
             ]
         );
 
         $pageManager->createPage(
-            'client_list',
-            [
-                "post_title" => "Client List"
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST, [
+                "post_title" => "Clients"
             ]
         );
 
@@ -53,6 +63,45 @@ class Impresario
               PRIMARY KEY (`client_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
         );
-        
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Core\Page\Exception
+     */
+    protected function installEnquiry()
+    {
+        $pageManager = $this->app->getPageManager();
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT, [
+                "post_title" => "Edit Enquiry"
+            ]
+        );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST, [
+                "post_title" => "Enquiries"
+            ]
+        );
+
+        $this->deltaTable('enquiry',
+            'CREATE TABLE `{{tableName}}` (
+              `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `our_reference` varchar(255) DEFAULT NULL,
+              `cleint_reference` varchar(255) DEFAULT NULL,
+              `client_id` int(11) DEFAULT NULL,
+              `site_name` varchar(255) DEFAULT NULL,
+              `date_received` datetime DEFAULT NULL,
+              `owner` int(11) DEFAULT NULL,
+              `status` varchar(255) DEFAULT NULL,
+              `target_date` datetime DEFAULT NULL,
+              `created_at` datetime DEFAULT NULL,
+              `updated_at` datetime DEFAULT NULL,
+              `is_deleted` int(1) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
+        );
     }
 }

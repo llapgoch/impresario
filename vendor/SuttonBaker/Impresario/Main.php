@@ -20,8 +20,8 @@ class Main
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            "client_edit" => '\SuttonBaker\Impresario\Controller\ClientEditController',
-            "client_list" => '\SuttonBaker\Impresario\Controller\ClientListController'
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT => '\SuttonBaker\Impresario\Controller\ClientEditController',
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\ClientListController'
         ]);
     }
 
@@ -44,6 +44,7 @@ class Main
     {
         $this->getApp()->getLayoutManager()->register([
             '\SuttonBaker\Impresario\Layout\Client',
+            '\SuttonBaker\Impresario\Layout\Enquiry'
         ]);
         
     }

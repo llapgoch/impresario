@@ -2,10 +2,10 @@
 
 namespace SuttonBaker\Impresario\Controller;
 /**
- * Class ClientListController
+ * Class EnquiryListController
  * @package SuttonBaker\Impresario\Controller
  */
-class ClientListController
+class EnquiryListController
     extends \DaveBaker\Core\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
@@ -19,17 +19,17 @@ class ClientListController
     {
         $action = $this->getRequest()->getPostParam('action');
 
-        // Perform client deletes
-        if(($clientId = $this->getRequest()->getPostParam('client_id')) && $action == self::DELETE_ACTION){
-            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
-            $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load($clientId);
+        // Perform enquiry deletes
+        if(($enquiryId = $this->getRequest()->getPostParam('enquiry_id')) && $action == self::DELETE_ACTION){
+            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\ $enquiry */
+            $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($enquiryId);
 
-            if(!$client->getId()){
+            if(!$enquiry->getId()){
                 return;
             }
 
-            $client->setIsDeleted(1)->save();
-            $this->addMessage('The client has been removed');
+            $enquiry->setIsDeleted(1)->save();
+            $this->addMessage('The enquiry has been removed');
             $this->getResponse()->redirectReferer();
         }
     }
