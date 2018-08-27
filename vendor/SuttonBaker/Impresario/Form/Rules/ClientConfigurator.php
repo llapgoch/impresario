@@ -27,6 +27,14 @@ class ClientConfigurator
         );
 
         $this->addRule(
+            $this->createRule('Required', 'county', 'County')
+        );
+
+        $this->addRule(
+            $this->createRule('Directory\Country', 'country_code', 'Country')
+        );
+
+        $this->addRule(
             $this->createRule('Required', 'sales_contact_phone', 'Sales Phone Number')
         );
 

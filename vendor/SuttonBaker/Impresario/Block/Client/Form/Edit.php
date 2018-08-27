@@ -10,7 +10,10 @@ class Edit extends \DaveBaker\Form\Block\Form
     /**
      * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\SelectConnector\Exception
      */
     protected function _preDispatch()
     {
@@ -29,17 +32,6 @@ class Edit extends \DaveBaker\Form\Block\Form
         );
 
         // Name
-
-        $clientCollection = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client\Collection');
-        $selectConnector = $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection')
-            ->configure($clientCollection, 'client_name', 'client_id');
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Select', 'client.form.edit.select')
-                ->setElementName('client.form.edit.select')
-                ->setSelectOptions($selectConnector->getData())->setElementValue(4)
-        );
-
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.edit.name.label')
                 ->setLabelName('Client Name')
@@ -105,7 +97,9 @@ class Edit extends \DaveBaker\Form\Block\Form
                 ->addAttribute(['id' => 'edit_form_postcode'])
         );
 
+
         // County
+
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.county.label')
                 ->setLabelName('County')
@@ -116,6 +110,25 @@ class Edit extends \DaveBaker\Form\Block\Form
             $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.county')
                 ->setElementName('county')
                 ->addAttribute(['id' => 'edit_form_county'])
+        );
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.country.label')
+                ->setLabelName('Country')
+                ->setForId('edit_form_country')
+        );
+
+        /** @var \DaveBaker\Core\Model\Db\Directory\Country $countryCollection */
+        $countryCollection = $this->createAppObject('\DaveBaker\Core\Model\Db\Directory\Country\Collection');
+        /** @var \DaveBaker\Form\SelectConnector\Collection $selectConnector */
+        $selectConnector = $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection')
+            ->configure($countryCollection, 'country_code', 'country_name');
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Form\Block\Select', 'client.form.edit.country_id')
+                ->setElementName('country_code')
+                ->setSelectOptions($selectConnector->getData())
+                ->setElementValue($this->getApp()->getHelper('Directory')->getDefaultCountryCode())
         );
 
         // Sales contact phone

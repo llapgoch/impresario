@@ -42,7 +42,7 @@ class Impresario
               `address_line3` varchar(255) DEFAULT NULL,
               `postcode` varchar(255) DEFAULT NULL,
               `county` varchar(255) DEFAULT NULL,
-              `country_id` int(11) DEFAULT NULL,
+              `country_code` varchar(4) DEFAULT NULL,
               `created_at` DATETIME DEFAULT NULL,
               `updated_at` DATETIME DEFAULT NULL,
               `sales_contact_phone` varchar(255) DEFAULT NULL,
