@@ -1,6 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller;
+use DaveBaker\Core\Definitions\Messages;
+use \SuttonBaker\Impresario\Definition\Page;
+
 /**
  * Class ClientEditController
  * @package SuttonBaker\Impresario\Controller
@@ -14,6 +17,7 @@ class ClientEditController
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -51,7 +55,7 @@ class ClientEditController
 
             $clientName = $this->getRequest()->getPostParam('client_name');
             $this->saveFormValues();
-            $this->redirectToPage('client_list');
+            $this->redirectToPage(Page::CLIENT_LIST);
         }
 
 
@@ -60,8 +64,14 @@ class ClientEditController
             /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
             $client->load($clientId);
 
+            if($client->getIsDeleted()){
+                $this->addMessage('The client has been deleted', Messages::ERROR);
+                $this->redirectToPage(Page::CLIENT_LIST);
+            }
+
             if(!$client->getId()){
-                $this->redirectToPage('client_list');
+                $this->addMessage('The client does not exist', Messages::ERROR);
+                $this->redirectToPage(Page::CLIENT_LIST);
             }
         }
 
