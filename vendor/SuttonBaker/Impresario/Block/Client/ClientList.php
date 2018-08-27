@@ -12,7 +12,7 @@ class ClientList
     /**
      * @return \DaveBaker\Core\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -35,9 +35,12 @@ class ClientList
         if(count($clientItems)) {
             $headers = array_keys($clientItems[0]->getData());
             $headers[] = 'edit_column';
+            $headers[] = 'delete_column';
             // add edit for each one
             foreach($clientItems as $client){
                 $client->setData('edit_column',  $this->getLinkHtml($client));
+
+                $client->setData('delete_column', $this->getDeleteBlockHtml($client->getId()));
 
                 if($client->getData('created_at')) {
                     $createdDate = $this->getApp()->getHelper('Date')
@@ -58,7 +61,7 @@ class ClientList
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     'client.list.table'
-                )->setHeaders($headers)->setRecords($clientItems)->addEscapeExcludes('edit_column')
+                )->setHeaders($headers)->setRecords($clientItems)->addEscapeExcludes(['edit_column', 'delete_column'])
             );
         }
     }
@@ -81,6 +84,40 @@ class ClientList
     protected function getLinkHtml(\SuttonBaker\Impresario\Model\Db\Client $client)
     {
         return "<a href={$this->getClientEditUrl($client)}>" . $this->escapeHtml('Edit Client') . "</a>";
+    }
+
+    /**
+     * @param $clientId
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getDeleteBlockHtml($clientId)
+    {
+        /** @var \DaveBaker\Form\Block\Form $form */
+        $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "client.list.delete.{$clientId}")
+            ->setElementName('client_delete');
+
+        /** @var \DaveBaker\Form\Block\Input\Submit $submit */
+        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "client.list.delete.submit.{$clientId}");
+
+        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
+        $id = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "client.list.delete.id.{$clientId}");
+
+        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
+        $action = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "client.list.delete.action.{$clientId}");
+
+        $submit->setElementName('submit')
+            ->setElementValue("Delete");
+
+        $id->setElementValue($clientId)->setElementName('client_id');
+        $action->setElementName('action')->setElementValue('delete');
+
+        $form->addChildBlock([$submit, $id, $action]);
+
+        return $form->render();
     }
 
 }

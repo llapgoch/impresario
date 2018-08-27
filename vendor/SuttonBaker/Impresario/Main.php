@@ -20,7 +20,8 @@ class Main
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            "client_edit" => '\SuttonBaker\Impresario\Controller\ClientEditController'
+            "client_edit" => '\SuttonBaker\Impresario\Controller\ClientEditController',
+            "client_list" => '\SuttonBaker\Impresario\Controller\ClientListController'
         ]);
     }
 
