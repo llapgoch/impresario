@@ -49,6 +49,7 @@ class ClientEditController
                 return $this->prepareFormErrors($validator);
             }
 
+            $clientName = $this->getRequest()->getPostParam('client_name');
             $this->saveFormValues();
             $this->redirectToPage('client_list');
         }
@@ -84,6 +85,9 @@ class ClientEditController
     {
         $data = $this->getRequest()->getPostParams();
         $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+
+        $this->addMessage("The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'));
+
         $client->setData($data)->save();
 
         return $this;
@@ -92,6 +96,7 @@ class ClientEditController
     /**
      * @param \DaveBaker\Form\Validation\Validator $validator
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      */

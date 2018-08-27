@@ -32,6 +32,10 @@ class ClientList
             )->setTemplate('client/list/action_bar.phtml')
         );
 
+        $this->addChildBlock(
+            $this->getMessagesBlock()
+        );
+
         if(count($clientItems)) {
             $headers = array_keys($clientItems[0]->getData());
             $headers[] = 'edit_column';
