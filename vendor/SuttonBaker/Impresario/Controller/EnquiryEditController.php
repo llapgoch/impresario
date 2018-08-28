@@ -16,6 +16,7 @@ class EnquiryEditController
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
@@ -27,6 +28,9 @@ class EnquiryEditController
             return;
         }
 
+        /** @var \DaveBaker\Core\Helper\Date $helper */
+        $helper = $this->getApp()->getHelper('Date');
+
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
@@ -35,6 +39,22 @@ class EnquiryEditController
         // Form submission
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
+
+            // Don't save a completed user if status isn't completed
+            if (isset($postParams['status'])) {
+                if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE) {
+                    $postParams['completed_by_id'] = null;
+                }
+            }
+
+            // Convert dates to DB
+            if (isset($postParams['date_received'])){
+                $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
+            }
+
+            if(isset($postParams['target_date'])){
+                $postParams['target_date'] = $helper->localDateToDb($postParams['target_date']);
+            }
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
             $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\EnquiryConfigurator');
@@ -48,17 +68,16 @@ class EnquiryEditController
                 return $this->prepareFormErrors($validator);
             }
 
-            $this->saveFormValues();
+            $this->saveFormValues($postParams);
             $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
         }
 
-
-        if($enquiryId = (int) $this->getRequest()->getParam('enquiry_id')){
+        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
             // We're loading, fellas!
+            $modelInstance->load($instanceId);
 
-            $modelInstance->load($enquiryId);
-
-            if(!$modelInstance->getId()){
+            if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
+                $this->addMessage('The enquiry does not exist', Messages::ERROR);
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
             }
         }
@@ -68,36 +87,33 @@ class EnquiryEditController
 
         // Apply the values to the form element
         if($modelInstance->getId()) {
+            $data = $modelInstance->getData();
+
+            if($modelInstance->getDateReceived()){
+                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReceived());
+            }
+
+            if($modelInstance->getTargetDate()){
+                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getTargetDate());
+            }
+
             $applicator->configure(
                 $this->enquiryEditForm,
-                $modelInstance->getData()
+                $data
             );
         }
     }
 
     /**
-     * @return $this
+     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function saveFormValues()
+    protected function saveFormValues($data)
     {
-        $data = $this->getRequest()->getPostParams();
-
-        // Don't save a completed user if status isn't completed
-        if(isset($data['status'])){
-            if($data['status'] !== \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE){
-                $data['completed_by_id'] = null;
-            }
-        }
-
-
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
         $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
-
         $this->addMessage("The enquiry has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
-
         $enquiry->setData($data)->save();
-
         return $this;
     }
 

@@ -65,7 +65,7 @@ class ClientEditController
             $client->load($clientId);
 
             if($client->getIsDeleted()){
-                $this->addMessage('The client has been deleted', Messages::ERROR);
+                $this->addMessage('The client does not exist', Messages::ERROR);
                 $this->redirectToPage(Page::CLIENT_LIST);
             }
 

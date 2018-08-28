@@ -21,6 +21,10 @@ class EnquiryConfigurator
         );
 
         $this->addRule(
+            $this->createRule('DateCompare\Past', 'date_received', 'Date Received')
+        );
+
+        $this->addRule(
             $this->createRule('Required', 'client_reference', 'Client Reference')
         );
 
@@ -35,6 +39,11 @@ class EnquiryConfigurator
         $this->addRule(
             $this->createRule('Required', 'site_name', 'Site Name')
         );
+
+        $this->addRule(
+            $this->createRule('Date', 'target_date', 'Target Date')
+        );
+
 
         // Conditional Rules
 

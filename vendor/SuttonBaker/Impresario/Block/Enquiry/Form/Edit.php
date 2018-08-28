@@ -73,17 +73,20 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'name' => 'notes',
                 'labelName' => 'Notes',
                 'type' => 'TextArea'
-            ],
-            [
+            ], [
                 'name' => 'status',
                 'labelName' => 'Enquiry Status',
                 'type' => 'Select'
-            ],
-            [
+            ], [
                 'name' => 'completed_by_id',
                 'labelName' => 'Completed By',
                 'type' => 'Select'
-            ],[
+            ], [
+                'name' => 'target_date',
+                'labelName' => 'Target Date',
+                'class' => 'js-date-picker',
+                'type' => 'Input\Text'
+            ], [
                 'name' => 'submit',
                 'type' => 'Input\Submit',
                 'value' => 'Update Enquiry'
