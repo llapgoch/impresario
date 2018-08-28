@@ -5,15 +5,15 @@ namespace SuttonBaker\Impresario\Controller;
 use DaveBaker\Core\Definitions\Messages;
 
 /**
- * Class EnquiryEditController
+ * Class TaskEditController
  * @package SuttonBaker\Impresario\Controller
  */
-class EnquiryEditController
+class TaskEditController
     extends \DaveBaker\Core\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-    /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
-    protected $enquiryEditForm;
+    /** @var \DaveBaker\Form\Block\Form $editForm */
+    protected $editForm;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -27,7 +27,7 @@ class EnquiryEditController
      */
     public function execute()
     {
-        if(!($this->enquiryEditForm = $this->getApp()->getBlockManager()->getBlock('enquiry.form.edit'))){
+        if(!($this->seditForm = $this->getApp()->getBlockManager()->getBlock('task.form.edit'))){
             return;
         }
 
@@ -37,7 +37,7 @@ class EnquiryEditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
+        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -45,14 +45,14 @@ class EnquiryEditController
 
             // Don't save a completed user if status isn't completed
             if (isset($postParams['status'])) {
-                if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE) {
-                    $postParams['completed_by_id'] = null;
+                if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE) {
+                    $postParams['date_completed'] = null;
                 }
             }
 
             // Convert dates to DB
-            if (isset($postParams['date_received'])){
-                $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
+            if (isset($postParams['target_date'])){
+                $postParams['target_date'] = $helper->localDateToDb($postParams['date_received']);
             }
 
             if(isset($postParams['target_date'])){
@@ -60,7 +60,7 @@ class EnquiryEditController
             }
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\EnquiryConfigurator');
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\TaskConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
             $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
@@ -72,16 +72,16 @@ class EnquiryEditController
             }
 
             $this->saveFormValues($postParams);
-            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
+            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::TASK_LIST);
         }
 
-        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
+        if($instanceId = (int) $this->getRequest()->getParam('task_id')){
             // We're loading, fellas!
             $modelInstance->load($instanceId);
 
             if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
-                $this->addMessage('The enquiry does not exist', Messages::ERROR);
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
+                $this->addMessage('The task does not exist', Messages::ERROR);
+                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::TASK_LIST);
             }
         }
 
@@ -101,7 +101,7 @@ class EnquiryEditController
             }
 
             $applicator->configure(
-                $this->enquiryEditForm,
+                $this->editForm,
                 $data
             );
         }
@@ -119,10 +119,10 @@ class EnquiryEditController
 
         $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
-        $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
-        $this->addMessage("The enquiry has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
-        $enquiry->setData($data)->save();
+        /** @var \SuttonBaker\Impresario\Model\Db\Task $modelInstance */
+        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task');
+        $this->addMessage("The task has been " . ($data['task_id'] ? 'updated' : 'added'));
+        $modelInstance->setData($data)->save();
         return $this;
     }
 
@@ -143,14 +143,14 @@ class EnquiryEditController
         /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
-            'enquiry.edit.form.errors'
-        )->setOrder('after', 'enquiry.form.edit.heading')->addErrors($validator->getErrors());
+            'task.edit.form.errors'
+        )->setOrder('after', 'task.form.edit.heading')->addErrors($validator->getErrors());
 
-        $this->enquiryEditForm->addChildBlock($errorBlock);
+        $this->editForm->addChildBlock($errorBlock);
 
         // Sets the values back onto the form element
         $applicator->configure(
-            $this->enquiryEditForm,
+            $this->editForm,
             $this->getRequest()->getPostParams()
         );
     }
