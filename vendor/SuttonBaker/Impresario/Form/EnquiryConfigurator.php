@@ -1,11 +1,11 @@
 <?php
 
-namespace SuttonBaker\Impresario\Form\Rules;
+namespace SuttonBaker\Impresario\Form;
 /**
- * Class JobConfigurator
+ * Class EnquiryConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
  */
-class ClientConfigurator
+class EnquiryConfigurator
     extends \DaveBaker\Form\Validation\Rule\Configurator\Base
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
@@ -15,6 +15,7 @@ class ClientConfigurator
      */
     protected function _collate()
     {
+
         $this->addRule(
             $this->createRule('Date', 'date_received', 'Date Received')
         );
@@ -34,6 +35,14 @@ class ClientConfigurator
         $this->addRule(
             $this->createRule('Required', 'site_name', 'Site Name')
         );
+
+        // Conditional Rules
+
+        if($this->getValue('status') == \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE){
+            $this->addRule(
+                $this->createRule('User', 'completed_by_id', 'Completed By')
+            );
+        }
 
     }
 }

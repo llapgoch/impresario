@@ -30,15 +30,14 @@ class EnquiryEditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
+        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
-
             $postParams = $this->getRequest()->getPostParams();
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\Rules\EnquiryConfigurator');
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\EnquiryConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
             $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
@@ -49,7 +48,6 @@ class EnquiryEditController
                 return $this->prepareFormErrors($validator);
             }
 
-            $enquiryReference = $this->getRequest()->getPostParam('our_reference');
             $this->saveFormValues();
             $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
         }
@@ -58,9 +56,9 @@ class EnquiryEditController
         if($enquiryId = (int) $this->getRequest()->getParam('enquiry_id')){
             // We're loading, fellas!
 
-            $enquiry->load($enquiryId);
+            $modelInstance->load($enquiryId);
 
-            if(!$enquiry->getId()){
+            if(!$modelInstance->getId()){
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
             }
         }
@@ -69,10 +67,10 @@ class EnquiryEditController
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
         // Apply the values to the form element
-        if($enquiry->getId()) {
+        if($modelInstance->getId()) {
             $applicator->configure(
                 $this->enquiryEditForm,
-                $enquiry->getData()
+                $modelInstance->getData()
             );
         }
     }
@@ -84,9 +82,20 @@ class EnquiryEditController
     protected function saveFormValues()
     {
         $data = $this->getRequest()->getPostParams();
+
+        // Don't save a completed user if status isn't completed
+        if(isset($data['status'])){
+            if($data['status'] !== \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE){
+                $data['completed_by_id'] = null;
+            }
+        }
+
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
         $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
-        $this->addMessage("The enquiry '{$data["our_reference"]}' has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
+        $this->addMessage("The enquiry has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
+
         $enquiry->setData($data)->save();
 
         return $this;

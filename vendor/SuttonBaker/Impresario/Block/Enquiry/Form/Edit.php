@@ -85,16 +85,17 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'type' => 'Select'
             ],[
                 'name' => 'submit',
-                'labelName' => 'Update Enquiry',
                 'type' => 'Input\Submit',
-                'value' => 'Submit'
+                'value' => 'Update Enquiry'
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
-                'value' => $this->getRequest()->getParam($entityId)
+                'value' => $entityId
+            ], [
+                'name' => 'action',
+                'type' => 'Input\Hidden',
+                'value' => 'edit'
             ]
-
-
         ]);
 
         // Set up special values
@@ -118,6 +119,8 @@ class Edit extends \DaveBaker\Form\Block\Form
         // Statuses
         $this->createArraySelectConnector()
             ->configure(Enquiry::getStatuses(), $elements['status_element']);
+
+        $elements['status_element']->setShowFirstOption(false);
 
 
         $this->addChildBlock(array_values($elements));

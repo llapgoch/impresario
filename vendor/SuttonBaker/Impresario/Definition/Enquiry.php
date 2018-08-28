@@ -9,6 +9,8 @@ class Enquiry
 {
     const STATUS_OPEN = 'open';
     const STATUS_COMPLETE = 'complete';
+    const STATUS_ON_HOLD  = 'on_hold';
+    const STATUS_IN_PROGRESS = 'in_progress';
 
     /**
      * @return array
@@ -17,6 +19,8 @@ class Enquiry
     {
         return [
             self::STATUS_OPEN => 'Open',
+            self::STATUS_IN_PROGRESS => 'In Progress',
+            self::STATUS_ON_HOLD => 'On Hold',
             self::STATUS_COMPLETE => 'Complete'
         ];
     }

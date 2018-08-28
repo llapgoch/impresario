@@ -34,7 +34,7 @@ class Enquiry
         $this->deltaTable('enquiry',
             'CREATE TABLE `{{tableName}}` (
               `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-              `cleint_reference` varchar(255) DEFAULT NULL,
+              `client_reference` varchar(255) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
               `date_received` datetime DEFAULT NULL,

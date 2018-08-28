@@ -42,7 +42,7 @@ class ClientEditController
             $postParams = $this->getRequest()->getPostParams();
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\Rules\ClientConfigurator');
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\ClientConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
             $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')

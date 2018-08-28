@@ -1,8 +1,8 @@
 <?php
 
-namespace SuttonBaker\Impresario\Form\Rules;
+namespace SuttonBaker\Impresario\Form;
 /**
- * Class JobConfigurator
+ * Class ClientConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
  */
 class ClientConfigurator
@@ -10,6 +10,7 @@ class ClientConfigurator
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
     /**
+     * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
     protected function _collate()

@@ -13,7 +13,7 @@ class Enquiry extends \DaveBaker\Core\Model\Db\Base
     protected function init()
     {
         $this->tableName = 'enquiry';
-        $this->idColumn = 'client_id';
+        $this->idColumn = 'enquiry_id';
 
         return $this;
     }
