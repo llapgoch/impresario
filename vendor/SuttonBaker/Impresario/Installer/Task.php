@@ -32,7 +32,7 @@ class Task
             ]
         );
 
-        $this->deltaTable('tasks',
+        $this->deltaTable('task',
             'CREATE TABLE `{{tableName}}` (
               `task_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `task_description` text,
