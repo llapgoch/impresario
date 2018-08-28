@@ -29,12 +29,12 @@ class Edit extends \DaveBaker\Form\Block\Form
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
-        $heading = "Add {$prefixName}";
+        $heading = "Create {$prefixName}";
         $editMode = false;
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
-            $heading = "Edit {$prefixName}";
+            $heading = "Update {$prefixName}";
             $editMode = true;
         }
 
@@ -52,18 +52,24 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'name' => 'date_received',
                 'labelName' => 'Date Received',
                 'class' => 'js-date-picker',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
             ], [
                 'name' => 'client_reference',
                 'labelName' => 'Client Reference',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off']
             ], [
                 'name' => 'client_id',
                 'labelName' => 'Client',
                 'type' => 'Select'
             ], [
-                'name' => 'owner_id',
-                'labelName' => 'Owner',
+                'name' => 'project_manager_id',
+                'labelName' => 'Project Manager',
+                'type' => 'Select'
+            ], [
+                'name' => 'engineer_id',
+                'labelName' => 'Engineer',
                 'type' => 'Select'
             ], [
                 'name' => 'site_name',
@@ -85,11 +91,17 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'name' => 'target_date',
                 'labelName' => 'Target Date',
                 'class' => 'js-date-picker',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'attributes' => [
+                    'readonly' => 'readonly',
+                    'autocomplete' => 'off',
+                    'data-date-settings' => json_encode(
+                        ['minDate' => '', 'maxDate' => "+5Y"]
+                    )]
             ], [
                 'name' => 'submit',
                 'type' => 'Input\Submit',
-                'value' => 'Update Enquiry'
+                'value' => $editMode ? 'Update Enquiry' : 'Create Enquiry'
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
@@ -109,10 +121,15 @@ class Edit extends \DaveBaker\Form\Block\Form
             ->configure($clients, 'client_id', 'client_name', $elements['client_id_element']);
 
 
-        // Owner
-        $owners = $this->getApp()->getHelper('User')->getUserCollection();
+        // Project Manager
+        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
         $this->createCollectionSelectConnector()
-            ->configure($owners, 'ID', 'user_login', $elements['owner_id_element']);
+            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
+
+        // Engineer
+        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
+        $this->createCollectionSelectConnector()
+            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
 
         // Completed by Users
         $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();

@@ -37,6 +37,7 @@ class EnquiryList
             $this->getMessagesBlock()
         );
 
+
         if(count($enquiryItems)) {
             $headers = array_keys($enquiryItems[0]->getData());
             $headers[] = 'edit_column';

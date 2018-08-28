@@ -1,6 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller;
+
+use DaveBaker\Core\Definitions\Messages;
+
 /**
  * Class EnquiryEditController
  * @package SuttonBaker\Impresario\Controller
@@ -11,6 +14,7 @@ class EnquiryEditController
 {
     /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
     protected $enquiryEditForm;
+    protected $requiresLogin = true;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -110,6 +114,12 @@ class EnquiryEditController
      */
     protected function saveFormValues($data)
     {
+        if(!$this->getApp()->getHelper('User')->isLoggedIn()){
+            return;
+        }
+
+        $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
         $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
         $this->addMessage("The enquiry has been " . ($data['enquiry_id'] ? 'updated' : 'added'));

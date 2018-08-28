@@ -34,19 +34,20 @@ class Enquiry
         $this->deltaTable('enquiry',
             'CREATE TABLE `{{tableName}}` (
               `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `created_by_id` int(11) DEFAULT NULL,
               `client_reference` varchar(255) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
               `date_received` datetime DEFAULT NULL,
-              `owner_id` int(11) DEFAULT NULL,
               `status` varchar(255) DEFAULT NULL,
               `target_date` datetime DEFAULT NULL,
               `notes` text,
-              `completed_by_id` int(11) DEFAULT NULL,
+              `project_manager_id` int(11) DEFAULT NULL,
+              `engineer_id` int(11) DEFAULT NULL,
               `completed_date` datetime DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
-              `is_deleted` int(1) DEFAULT NULL,
+              `is_deleted` int(1) DEFAULT 0,
               PRIMARY KEY (`enquiry_id`),
               KEY `status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'

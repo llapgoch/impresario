@@ -33,7 +33,11 @@ class EnquiryConfigurator
         );
 
         $this->addRule(
-            $this->createRule('User', 'owner_id', 'Owner')
+            $this->createRule('User', 'project_manager_id', 'Project Manager')
+        );
+
+        $this->addRule(
+            $this->createRule('User', 'engineer_id', 'Engineer')
         );
 
         $this->addRule(
