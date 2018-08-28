@@ -10,6 +10,7 @@ class Edit extends \DaveBaker\Form\Block\Form
     /**
      * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception

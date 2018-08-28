@@ -32,7 +32,8 @@ class Main
     public function registerInstallers()
     {
         $this->getApp()->getInstallerManager()->register([
-            '\SuttonBaker\Impresario\Installer\Impresario'
+            '\SuttonBaker\Impresario\Installer\Client',
+            '\SuttonBaker\Impresario\Installer\Enquiry'
         ]);
     }
 

@@ -3,13 +3,13 @@
 namespace SuttonBaker\Impresario\Installer;
 /**
  * Class Manager
- * @package SuttonBaker\Impresario\Installer
+ * @package SuttonBaker\Impresario\Installer\Client
  */
-class Impresario
+class Client
     extends \DaveBaker\Core\Installer\Base
     implements \DaveBaker\Core\Installer\InstallerInterface
 {
-    protected $installerCode = 'impresario_application';
+    protected $installerCode = 'impresario_client';
     /**
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -18,17 +18,6 @@ class Impresario
     public function install()
     {
 
-        $this->installClient();
-        $this->installEnquiry();
-    }
-
-    /**
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Core\Page\Exception
-     */
-    protected function installClient()
-    {
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
@@ -70,6 +59,16 @@ class Impresario
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Core\Page\Exception
      */
+    protected function installClient()
+    {
+
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Core\Page\Exception
+     */
     protected function installEnquiry()
     {
         $pageManager = $this->app->getPageManager();
@@ -94,7 +93,7 @@ class Impresario
               `client_id` int(11) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
               `date_received` datetime DEFAULT NULL,
-              `owner` int(11) DEFAULT NULL,
+              `owner_id` int(11) DEFAULT NULL,
               `status` varchar(255) DEFAULT NULL,
               `target_date` datetime DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,

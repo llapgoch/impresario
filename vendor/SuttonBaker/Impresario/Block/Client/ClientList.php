@@ -77,7 +77,9 @@ class ClientList
      */
     protected function getClientEditUrl(\SuttonBaker\Impresario\Model\Db\Client $client)
     {
-        return $this->getApp()->getHelper('Url')->getPageUrl('client_edit', ['client_id' => $client->getId()]);
+        return $this->getApp()->getHelper('Url')->getPageUrl(
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT, ['client_id' => $client->getId()]
+        );
     }
 
     /**
