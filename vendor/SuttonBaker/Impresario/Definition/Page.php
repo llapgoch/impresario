@@ -9,6 +9,10 @@ class Page
 {
     const CLIENT_LIST = 'client_list';
     const CLIENT_EDIT = 'client_edit';
+
     const ENQUIRY_LIST = 'enquiry_list';
     const ENQUIRY_EDIT = 'enquiry_edit';
+
+    const TASK_LIST = 'task_list';
+    const TASK_EDIT = 'task_edit';
 }

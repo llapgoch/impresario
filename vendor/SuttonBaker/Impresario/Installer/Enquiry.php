@@ -2,8 +2,8 @@
 
 namespace SuttonBaker\Impresario\Installer;
 /**
- * Class Manager
- * @package SuttonBaker\Impresario\Installer\Enquiry
+ * Class Enquiry
+ * @package SuttonBaker\Impresario\Installer\
  */
 class Enquiry
     extends \DaveBaker\Core\Installer\Base

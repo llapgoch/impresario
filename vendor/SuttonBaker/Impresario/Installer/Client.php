@@ -2,8 +2,8 @@
 
 namespace SuttonBaker\Impresario\Installer;
 /**
- * Class Manager
- * @package SuttonBaker\Impresario\Installer\Client
+ * Class Client
+ * @package SuttonBaker\Impresario\Installer\
  */
 class Client
     extends \DaveBaker\Core\Installer\Base

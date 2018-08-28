@@ -36,7 +36,8 @@ class Main
     {
         $this->getApp()->getInstallerManager()->register([
             '\SuttonBaker\Impresario\Installer\Client',
-            '\SuttonBaker\Impresario\Installer\Enquiry'
+            '\SuttonBaker\Impresario\Installer\Enquiry',
+            '\SuttonBaker\Impresario\Installer\Task'
         ]);
     }
 
