@@ -24,7 +24,9 @@ class Main
             \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT => '\SuttonBaker\Impresario\Controller\ClientEditController',
             \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\ClientListController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT => '\SuttonBaker\Impresario\Controller\EnquiryEditController',
-            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST => '\SuttonBaker\Impresario\Controller\EnquiryListController'
+            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST => '\SuttonBaker\Impresario\Controller\EnquiryListController',
+            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT=> '\SuttonBaker\Impresario\Controller\TaskEditController',
+            \SuttonBaker\Impresario\Definition\Page::TASK_LIST => '\SuttonBaker\Impresario\Controller\TaskListController'
         ]);
     }
 
@@ -49,7 +51,8 @@ class Main
     {
         $this->getApp()->getLayoutManager()->register([
             '\SuttonBaker\Impresario\Layout\Client',
-            '\SuttonBaker\Impresario\Layout\Enquiry'
+            '\SuttonBaker\Impresario\Layout\Enquiry',
+            '\SuttonBaker\Impresario\Layout\Task'
         ]);
         
     }
