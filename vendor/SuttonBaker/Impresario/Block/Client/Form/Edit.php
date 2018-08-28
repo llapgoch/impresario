@@ -128,7 +128,7 @@ class Edit extends \DaveBaker\Form\Block\Form
         $this->addChildBlock(
             $this->createBlock('\DaveBaker\Form\Block\Select', 'client.form.edit.country_id')
                 ->setElementName('country_code')
-                ->setSelectOptions($selectConnector->getData())
+                ->setSelectOptions($selectConnector->getElementData())
                 ->setElementValue($this->getApp()->getHelper('Directory')->getDefaultCountryCode())
         );
 
