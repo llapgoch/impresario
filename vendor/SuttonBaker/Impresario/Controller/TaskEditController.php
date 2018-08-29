@@ -3,17 +3,24 @@
 namespace SuttonBaker\Impresario\Controller;
 
 use DaveBaker\Core\Definitions\Messages;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class TaskEditController
  * @package SuttonBaker\Impresario\Controller
  */
 class TaskEditController
-    extends \DaveBaker\Core\Controller\Base
+    extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
+    const TASK_TYPE_PARAM = 'task_type';
+    const PARENT_ID_PARAM = 'parent_id';
+    const ENTITY_ID_PARAM = 'task_id';
+
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
+    protected $parentItem;
+    protected $taskType;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -27,7 +34,40 @@ class TaskEditController
      */
     public function execute()
     {
-        if(!($this->seditForm = $this->getApp()->getBlockManager()->getBlock('task.form.edit'))){
+        $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
+        $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+        $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
+        $parentItem = null;
+
+        $modelInstance = $this->getTaskHelper()->getTask();
+
+        if($instanceId){
+            // We're loading, fellas!
+            $modelInstance->load($instanceId);
+
+            if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
+                $this->addMessage('The task could not be found', Messages::ERROR);
+                return $this->getResponse()->redirectReferer();
+            }
+
+        }else {
+            if (!$this->getTaskHelper()->isValidTaskType($taskType)) {
+                $this->addMessage('Invalid Task Type');
+                $this->getResponse()->redirectReferer();
+            }
+        }
+
+        $parentItem = $this->getParentItem($modelInstance);
+        $this->parentItem = $parentItem;
+        $this->taskType = $this->getTaskHelper()->getTaskTypeForParent($parentItem);
+
+        if(!$parentItem || !$parentItem->getId()){
+            $this->addMessage('The parent item of the task could not be found');
+            return $this->getResponse()->redirectReferer();
+        }
+
+
+        if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('task.form.edit'))){
             return;
         }
 
@@ -37,8 +77,6 @@ class TaskEditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task');
-
         // Form submission
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
@@ -46,13 +84,14 @@ class TaskEditController
             // Don't save a completed user if status isn't completed
             if (isset($postParams['status'])) {
                 if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE) {
-                    $postParams['date_completed'] = null;
+                    unset($postParams['date_completed']);
+                    unset($postParams['completed_by_id']);
                 }
             }
 
             // Convert dates to DB
-            if (isset($postParams['target_date'])){
-                $postParams['target_date'] = $helper->localDateToDb($postParams['date_received']);
+            if (isset($postParams['date_completed'])){
+                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
             }
 
             if(isset($postParams['target_date'])){
@@ -75,15 +114,7 @@ class TaskEditController
             $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::TASK_LIST);
         }
 
-        if($instanceId = (int) $this->getRequest()->getParam('task_id')){
-            // We're loading, fellas!
-            $modelInstance->load($instanceId);
 
-            if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
-                $this->addMessage('The task does not exist', Messages::ERROR);
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::TASK_LIST);
-            }
-        }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
@@ -92,18 +123,41 @@ class TaskEditController
         if($modelInstance->getId()) {
             $data = $modelInstance->getData();
 
-            if($modelInstance->getDateReceived()){
-                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReceived());
-            }
-
             if($modelInstance->getTargetDate()){
                 $data['target_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getTargetDate());
+            }
+
+            if($modelInstance->getCompletedDate()){
+                $data['completed_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getCompletedDate());
             }
 
             $applicator->configure(
                 $this->editForm,
                 $data
             );
+        }
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Task $instance
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getParentItem(\SuttonBaker\Impresario\Model\Db\Task $instance)
+    {
+        $taskType = null;
+        $parentId = null;
+
+        if($instance->getId()){
+            $taskType = $instance->getTaskType();
+            $parentId = $instance->getParentId();
+        }else{
+            $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
+            $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+        }
+
+        if($taskType == TaskDefinition::TASK_TYPE_ENQUIRY){
+            return $this->getEnquiryHelper()->getEnquiry($parentId);
         }
     }
 
@@ -117,7 +171,16 @@ class TaskEditController
             return;
         }
 
+        // Add created by user
+        if(!$data['task_id']) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
         $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        $data['parent_id'] = $this->parentItem->getId();
+        $data['task_type'] = $this->taskType;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Task $modelInstance */
         $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task');

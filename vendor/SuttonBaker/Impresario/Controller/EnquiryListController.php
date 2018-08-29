@@ -6,7 +6,7 @@ namespace SuttonBaker\Impresario\Controller;
  * @package SuttonBaker\Impresario\Controller
  */
 class EnquiryListController
-    extends \DaveBaker\Core\Controller\Base
+    extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     const DELETE_ACTION = 'delete';

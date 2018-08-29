@@ -8,7 +8,7 @@ use \SuttonBaker\Impresario\Definition\Task;
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Client\Form
  */
-class Edit extends \DaveBaker\Form\Block\Form
+class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'task_id';
     const PREFIX_KEY = 'task';
@@ -49,43 +49,8 @@ class Edit extends \DaveBaker\Form\Block\Form
 
         $elements = $builder->build([
             [
-                'name' => 'date_received',
-                'labelName' => 'Date Received',
-                'class' => 'js-date-picker',
-                'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
-            ], [
-                'name' => 'client_reference',
-                'labelName' => 'Client Reference',
-                'type' => 'Input\Text',
-                'attributes' => ['autocomplete' => 'off']
-            ], [
-                'name' => 'client_id',
-                'labelName' => 'Client',
-                'type' => 'Select'
-            ], [
-                'name' => 'project_manager_id',
-                'labelName' => 'Project Manager',
-                'type' => 'Select'
-            ], [
-                'name' => 'engineer_id',
-                'labelName' => 'Engineer',
-                'type' => 'Select'
-            ], [
-                'name' => 'site_name',
-                'labelName' => 'Site Name',
-                'type' => 'Input\Text'
-            ], [
-                'name' => 'notes',
-                'labelName' => 'Notes',
-                'type' => 'TextArea'
-            ], [
-                'name' => 'status',
-                'labelName' => 'Task Status',
-                'type' => 'Select'
-            ], [
-                'name' => 'completed_by_id',
-                'labelName' => 'Completed By',
+                'name' => 'assigned_to_id',
+                'labelName' => 'Assigned To',
                 'type' => 'Select'
             ], [
                 'name' => 'target_date',
@@ -94,10 +59,32 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'type' => 'Input\Text',
                 'attributes' => [
                     'readonly' => 'readonly',
-                    'autocomplete' => 'off',
-                    'data-date-settings' => json_encode(
-                        ['minDate' => '', 'maxDate' => "+5Y"]
-                    )]
+                    'autocomplete' => 'false',
+                    'data-date-settings' => json_encode(['minDate' => '', 'maxDate' => "+5Y"])
+                ],
+            ], [
+                'name' => 'description',
+                'labelName' => 'Description',
+                'type' => 'TextArea'
+            ], [
+                'name' => 'notes',
+                'labelName' => 'Notes',
+                'type' => 'TextArea'
+            ], [
+                'name' => 'status',
+                'labelName' => 'Status',
+                'type' => 'Select'
+            ], [
+                'name' => 'completed_by_id',
+                'labelName' => 'Completed By',
+                'type' => 'Select'
+            ], [
+                'name' => 'completed_date',
+                'labelName' => 'Completed Date',
+                'type' => 'Select',
+                'class' => 'js-date-picker',
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
             ], [
                 'name' => 'submit',
                 'type' => 'Input\Submit',
@@ -115,21 +102,10 @@ class Edit extends \DaveBaker\Form\Block\Form
 
         // Set up special values
 
-        // Client
-        $clients = $this->getClientHelper()->getClientCollection();
+        // Assigned To
+        $assignedToUsers = $this->getApp()->getHelper('User')->getUserCollection();
         $this->createCollectionSelectConnector()
-            ->configure($clients, 'client_id', 'client_name', $elements['client_id_element']);
-
-
-        // Project Manager
-        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
-
-        // Engineer
-        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
+            ->configure($assignedToUsers , 'ID', 'user_login', $elements['assigned_to_id_element']);
 
         // Completed by Users
         $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
@@ -141,35 +117,7 @@ class Edit extends \DaveBaker\Form\Block\Form
             ->configure(Task::getStatuses(), $elements['status_element']);
 
         $elements['status_element']->setShowFirstOption(false);
-
-
         $this->addChildBlock(array_values($elements));
     }
 
-    /**
-     * @return \SuttonBaker\Impresario\Helper\Client
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function getClientHelper()
-    {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
-    }
-
-    /**
-     * @return \DaveBaker\Form\SelectConnector\Collection
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function createCollectionSelectConnector()
-    {
-        return $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection');
-    }
-
-    /**
-     * @return \DaveBaker\Form\SelectConnector\AssociativeArray
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function createArraySelectConnector()
-    {
-        return $this->createAppObject('\DaveBaker\Form\SelectConnector\AssociativeArray');
-    }
 }

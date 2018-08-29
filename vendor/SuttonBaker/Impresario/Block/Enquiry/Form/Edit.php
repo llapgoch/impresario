@@ -8,7 +8,7 @@ use \SuttonBaker\Impresario\Definition\Enquiry;
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Client\Form
  */
-class Edit extends \DaveBaker\Form\Block\Form
+class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'enquiry_id';
     const PREFIX_KEY = 'enquiry';
@@ -33,9 +33,41 @@ class Edit extends \DaveBaker\Form\Block\Form
         $editMode = false;
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
             $heading = "Update {$prefixName}";
             $editMode = true;
+
+            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
+            $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
+                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY
+            );
+
+            $taskItems = $taskInstance->load();
+            $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
+
+            $this->addChildBlock(
+                $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
+                ->setTag('a')
+                ->setTagText('New Task')
+                ->addAttribute(
+                    ['href' => $this->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                        [
+                            'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
+                            'parent_id' => $entityId
+                        ]
+                    )]
+                )
+            );
+
+
+            $this->addChildBlock(
+                $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
+                    ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
+                        ['edit_column', 'delete_column']
+                )
+            );
         }
 
         $this->addChildBlock(
@@ -112,6 +144,7 @@ class Edit extends \DaveBaker\Form\Block\Form
                 'value' => 'edit'
             ]
         ]);
+
 
         // Set up special values
 

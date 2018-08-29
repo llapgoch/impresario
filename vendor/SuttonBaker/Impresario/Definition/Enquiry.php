@@ -12,6 +12,9 @@ class Enquiry
     const STATUS_ON_HOLD  = 'on_hold';
     const STATUS_IN_PROGRESS = 'in_progress';
 
+    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Enquiry';
+    const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection';
+
     /**
      * @return array
      */

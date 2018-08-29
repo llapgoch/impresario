@@ -6,7 +6,7 @@ namespace SuttonBaker\Impresario\Block\Enquiry;
  * @package SuttonBaker\Impresario\Block\Enquiry
  */
 class EnquiryList
-    extends \DaveBaker\Core\Block\Base
+    extends \SuttonBaker\Impresario\Block\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /**
@@ -20,10 +20,7 @@ class EnquiryList
     protected function _preDispatch()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $enquiryCollection */
-        $enquiryCollection = $this->createAppObject(
-            '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection');
-
-        $enquiryCollection->getSelect()->where('is_deleted = ?', '0');
+        $enquiryCollection = $this->getEnquiryHelper()->getEnquiryCollection();
         $enquiryItems = $enquiryCollection->load();
 
         $this->addChildBlock(
@@ -32,6 +29,8 @@ class EnquiryList
                 'enquiry.list.action.bar'
             )->setTemplate('enquiry/list/action_bar.phtml')
         );
+
+
 
         $this->addChildBlock(
             $this->getMessagesBlock()

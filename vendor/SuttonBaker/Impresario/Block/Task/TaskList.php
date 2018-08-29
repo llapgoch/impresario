@@ -6,10 +6,11 @@ namespace SuttonBaker\Impresario\Block\Task;
  * @package SuttonBaker\Impresario\Block\Task
  */
 class TaskList
-    extends \DaveBaker\Core\Block\Base
+    extends \SuttonBaker\Impresario\Block\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
     const BLOCK_PREFIX = 'task';
+    const COMPLETED_KEY = 'completed';
     /**
      * @return \DaveBaker\Core\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -21,11 +22,31 @@ class TaskList
     protected function _preDispatch()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
-        $instanceCollection = $this->createAppObject(
-            '\SuttonBaker\Impresario\Model\Db\Task\Collection');
+        $instanceCollection = $this->getTaskHelper()->getTaskCollection();
 
-        $instanceCollection->getSelect()->where('is_deleted = ?', '0');
+        if($this->getRequest()->getParam(self::COMPLETED_KEY)){
+            $instanceCollection->getSelect()->where(
+                'status=?',
+                \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE
+            );
+        }
+
+
+
         $instanceItems = $instanceCollection->load();
+
+        $this->addChildBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Component\ActionBar',
+                "{$this->getBlockPrefix()}.list.action.bar"
+            )->addActionItem(
+                'All Tasks',
+                $this->getPageUrl(\SuttonBaker\Impresario\Definition\Page::TASK_LIST)
+            )->addActionItem(
+                'Completed Tasks',
+                $this->getPageUrl(\SuttonBaker\Impresario\Definition\Page::TASK_LIST, ['completed' => 1])
+            )
+        );
 
         $this->addChildBlock(
             $this->getMessagesBlock()

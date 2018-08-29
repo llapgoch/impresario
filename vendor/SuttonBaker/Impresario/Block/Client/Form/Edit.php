@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Block\Client\Form;
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Client\Form
  */
-class Edit extends \DaveBaker\Form\Block\Form
+class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     /**
      * @return \DaveBaker\Form\Block\Form|void

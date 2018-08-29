@@ -6,7 +6,7 @@ namespace SuttonBaker\Impresario\Controller;
  * @package SuttonBaker\Impresario\Controller
  */
 class DefaultController
-    extends \DaveBaker\Core\Controller\Base
+    extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     // Add this to the default handle so all pages require a user to be logged in

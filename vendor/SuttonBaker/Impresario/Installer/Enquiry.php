@@ -35,6 +35,7 @@ class Enquiry
             'CREATE TABLE `{{tableName}}` (
               `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `created_by_id` int(11) DEFAULT NULL,
+              `last_edited_by_id` int(11) DEFAULT NULL,
               `client_reference` varchar(255) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
@@ -45,6 +46,7 @@ class Enquiry
               `project_manager_id` int(11) DEFAULT NULL,
               `engineer_id` int(11) DEFAULT NULL,
               `completed_date` datetime DEFAULT NULL,
+              `completed_by_id` int(11) DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT 0,

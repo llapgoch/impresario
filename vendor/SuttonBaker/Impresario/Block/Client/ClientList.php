@@ -6,7 +6,7 @@ namespace SuttonBaker\Impresario\Block\Client;
  * @package SuttonBaker\Impresario\Block\Client
  */
 class ClientList
-    extends \DaveBaker\Core\Block\Base
+    extends \SuttonBaker\Impresario\Block\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /**

@@ -10,6 +10,7 @@ class Task extends \DaveBaker\Core\Layout\Base
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
      */
     public function taskEditHandle()
     {
@@ -17,7 +18,9 @@ class Task extends \DaveBaker\Core\Layout\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\Form\Edit',
                 'task.form.edit'
-            )->setElementName('task_edit_form')->setShortcode('body_content')->setFormAction("")
+            )->setElementName('task_edit_form')
+                ->setShortcode('body_content')
+                ->setFormAction($this->getApp()->getHelper('Url')->getCurrentUrl())
 
         );
     }

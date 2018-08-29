@@ -9,7 +9,7 @@ use \SuttonBaker\Impresario\Definition\Page;
  * @package SuttonBaker\Impresario\Controller
  */
 class ClientEditController
-    extends \DaveBaker\Core\Controller\Base
+    extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     /** @var \DaveBaker\Form\Block\Form $clientEditForm */
@@ -94,6 +94,14 @@ class ClientEditController
     protected function saveFormValues()
     {
         $data = $this->getRequest()->getPostParams();
+
+        // Add created by user
+        if(!$data['client_id']) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
         $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
 
         $this->addMessage("The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'));

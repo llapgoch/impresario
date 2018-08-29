@@ -9,7 +9,7 @@ use DaveBaker\Core\Definitions\Messages;
  * @package SuttonBaker\Impresario\Controller
  */
 class EnquiryEditController
-    extends \DaveBaker\Core\Controller\Base
+    extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
@@ -108,16 +108,22 @@ class EnquiryEditController
     }
 
     /**
-     * @throws \DaveBaker\Core\Helper\Exception
+     * @param $data
+     * @return $this
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function saveFormValues($data)
     {
         if(!$this->getApp()->getHelper('User')->isLoggedIn()){
-            return;
+            return $this;
         }
 
-        $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+        // Add created by user
+        if(!$data['enquiry_id']) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
         $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');

@@ -35,6 +35,8 @@ class Client
         $this->deltaTable('client',
             'CREATE TABLE `{{tableName}}` (
               `client_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `created_by_id` int(11) DEFAULT NULL,
+              `last_edited_by_id` int(11) DEFAULT NULL,
               `client_name` varchar(255) DEFAULT NULL,
               `address_line1` varchar(255) DEFAULT NULL,
               `address_line2` varchar(255) DEFAULT NULL,
