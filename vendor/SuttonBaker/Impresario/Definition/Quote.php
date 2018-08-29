@@ -24,7 +24,8 @@ class Quote
         return [
             self::STATUS_OPEN => 'Open',
             self::STATUS_WON => "Won",
-            self::STATUS_CLOSED_OUT => 'Lost'
+            self::STATUS_CLOSED_OUT => 'Lost',
+            self::STATUS_CANCELLED => "Cancelled"
         ];
     }
 

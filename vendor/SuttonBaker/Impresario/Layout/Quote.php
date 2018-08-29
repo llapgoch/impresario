@@ -32,7 +32,7 @@ class Quote extends \DaveBaker\Core\Layout\Base
     {
         $this->addBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Quote\TaskList',
+                '\SuttonBaker\Impresario\Block\Quote\QuoteList',
                 'task.list'
             )->setShortcode('body_content')
         );

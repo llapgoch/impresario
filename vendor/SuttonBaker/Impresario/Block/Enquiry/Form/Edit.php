@@ -32,6 +32,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $heading = "Create {$prefixName}";
         $editMode = false;
 
+        $this->addChildBlock($this->getMessagesBlock());
+
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
@@ -46,20 +48,36 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $taskItems = $taskInstance->load();
             $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
 
-            $this->addChildBlock(
-                $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
-                ->setTag('a')
-                ->setTagText('New Task')
-                ->addAttribute(
-                    ['href' => $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-                        [
-                            'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                            'parent_id' => $entityId
-                        ]
-                    )]
-                )
-            );
+            if($entityId) {
+                $this->addChildBlock(
+                    $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
+                        ->setTag('a')
+                        ->setTagText('New Task')
+                        ->addAttribute(
+                            ['href' => $this->getPageUrl(
+                                \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                                [
+                                    'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
+                                    'parent_id' => $entityId
+                                ]
+                            )]
+                        )
+                );
+
+                $this->addChildBlock(
+                    $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
+                        ->setTag('a')
+                        ->setTagText('Create Quote')
+                        ->addAttribute(
+                            ['href' => $this->getPageUrl(
+                                \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
+                                [
+                                    'enquiry_id' => $entityId
+                                ]
+                            )]
+                        )
+                );
+            }
 
 
             $this->addChildBlock(

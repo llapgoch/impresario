@@ -1,6 +1,6 @@
 <?php
 
-namespace SuttonBaker\Impresario\Model\Db\Client;
+namespace SuttonBaker\Impresario\Model\Db\Quote;
 /**
  * Class Collection
  * @package SuttonBaker\Impresario\Model\Db\Client

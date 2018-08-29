@@ -32,8 +32,14 @@ class Enquiry extends \DaveBaker\Core\Helper\Base
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getEnquiry($enquiryId)
+    public function getEnquiry($enquiryId = '')
     {
-        return $this->createAppObject(EnquiryDefinition::DEFINITION_MODEL)->load($enquiryId);
+        $enquiry = $this->createAppObject(EnquiryDefinition::DEFINITION_MODEL);
+
+        if($enquiryId){
+            $enquiry->load($enquiryId);
+        }
+
+        return $enquiry;
     }
 }

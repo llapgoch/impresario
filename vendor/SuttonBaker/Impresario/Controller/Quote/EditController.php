@@ -15,11 +15,16 @@ class EditController
 {
     const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'quote_id';
+    const ENQUIRY_ID_PARAM = 'enquiry_id';
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
+    /** @var \SuttonBaker\Impresario\Model\Db\Quote */
     protected $parentItem;
-
+    /** @var \SuttonBaker\Impresario\Model\Db\Enquiry */
+    protected $enquiryItem;
+    /** @var \SuttonBaker\Impresario\Model\Db\Quote */
+    protected $modelInstance;
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -34,29 +39,46 @@ class EditController
     public function execute()
     {
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-        $parentItem = null;
+        $this->parentItem = $this->getQuoteHelper()->getQuote();
+        $this->enquiryItem = $this->getEnquiryHelper()->getEnquiry();
+        $this->modelInstance = $this->getQuoteHelper()->getQuote();
 
-        $modelInstance = $this->getQuoteHelper();
 
         if($instanceId){
             // We're loading, fellas!
-            $modelInstance->load($instanceId);
+            $this->modelInstance->load($instanceId);
 
-            if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
+            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
                 $this->addMessage('The quote could not be found', Messages::ERROR);
                 return $this->getResponse()->redirectReferer();
             }
 
         }
 
-        if( $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM)) {
-            $this->getQuoteHelper()->getQuote($parentItem);
-            $this->parentItem = $parentItem;
 
-            if(!$parentItem->getId()){
-                $this->addMessage('The parent quote could not be found');
+
+        if($enquiryId = $this->getRequest()->getParam(self::ENQUIRY_ID_PARAM)) {
+            $this->enquiryItem->load($enquiryId);
+
+            if(!$this->enquiryItem->getId()){
+                $this->addMessage('The enquiry could not be found');
                 return $this->getResponse()->redirectReferer();
             }
+        } else {
+            if ($enquiryId = $this->modelInstance->getEnquiryId()) {
+                $this->enquiryItem->load($enquiryId);
+
+                if(!$this->enquiryItem->getId()){
+                    $this->addMessage('The enquiry could not be found');
+                    return $this->getResponse()->redirectReferer();
+                }
+
+            }
+        }
+
+        if(!$this->enquiryItem->getId() && !$this->parentItem->getId()){
+            $this->addMessage('A quote must be derived from an enquiry or another quote');
+            return $this->getResponse()->redirectReferer();
         }
 
 
@@ -76,24 +98,17 @@ class EditController
 
             // Don't save a completed user if status isn't completed
             if (isset($postParams['status'])) {
-                if ($postParams['status'] !== QuoteDefinition::STATUS_COMPLETE) {
+                if ($postParams['status'] == QuoteDefinition::STATUS_OPEN) {
                     unset($postParams['date_completed']);
                     unset($postParams['completed_by_id']);
                 }
             }
 
             // Convert dates to DB
-            if (isset($postParams['date_completed'])){
-                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
-            }
-
-            if(isset($postParams['target_date'])){
-                $postParams['target_date'] = $helper->localDateToDb($postParams['target_date']);
-            }
-
-            if(isset($postParams['date_received'])){
+            if (isset($postParams['date_received'])){
                 $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
             }
+
 
             if(isset($postParams['date_required'])){
                 $postParams['date_required'] = $helper->localDateToDb($postParams['date_required']);
@@ -102,6 +117,15 @@ class EditController
             if(isset($postParams['date_return_by'])){
                 $postParams['date_return_by'] = $helper->localDateToDb($postParams['date_return_by']);
             }
+
+            if(isset($postParams['date_returned'])){
+                $postParams['date_returned'] = $helper->localDateToDb($postParams['date_returned']);
+            }
+
+            if(isset($postParams['date_completed'])){
+                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
+            }
+
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
             $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\QuoteConfigurator');
@@ -125,27 +149,31 @@ class EditController
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
         // Apply the values to the form element
-        if($modelInstance->getId()) {
-            $data = $modelInstance->getData();
+        if($this->modelInstance->getId()) {
+            $data = $this->modelInstance->getData();
 
-            if($modelInstance->getTargetDate()){
-                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getTargetDate());
+            if($this->modelInstance->getDateReturned()){
+                $data['date_returned'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReturned());
             }
 
-            if($modelInstance->getDateCompleted()){
-                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateCompleted());
+            if($this->modelInstance->getTargetDate()){
+                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getTargetDate());
             }
 
-            if($modelInstance->getDateReceived()){
-                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReceived());
+            if($this->modelInstance->getDateCompleted()){
+                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateCompleted());
             }
 
-            if($modelInstance->getDateRequired()){
-                $data['date_required'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateRequired());
+            if($this->modelInstance->getDateReceived()){
+                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReceived());
             }
 
-            if($modelInstance->getDateReturnBy()){
-                $data['date_return_by'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReturnBy());
+            if($this->modelInstance->getDateRequired()){
+                $data['date_required'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateRequired());
+            }
+
+            if($this->modelInstance->getDateReturnBy()){
+                $data['date_return_by'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReturnBy());
             }
 
 
@@ -173,6 +201,18 @@ class EditController
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        if(!$this->modelInstance->getClientId()) {
+            $data['client_id'] = $this->enquiryItem->getClientId();
+        }
+
+        if(!$this->modelInstance->getEnquiryId()){
+            $data['enquiry_id'] = $this->enquiryItem->getEnquiryId();
+        }
+
+        if(!$this->modelInstance->getParentId() && $this->parentItem->getId()){
+            $data['parent_id'] = $this->parentItem->getId();
+        }
 
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote $modelInstance */

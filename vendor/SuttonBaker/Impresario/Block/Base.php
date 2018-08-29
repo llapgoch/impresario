@@ -34,4 +34,13 @@ class Base extends \DaveBaker\Core\Block\Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Qute
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getQuoteHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
+    }
+
 }

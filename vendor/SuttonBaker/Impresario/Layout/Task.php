@@ -32,7 +32,7 @@ class Task extends \DaveBaker\Core\Layout\Base
     {
         $this->addBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TaskList',
+                '\SuttonBaker\Impresario\Block\Task\QuoteList',
                 'task.list'
             )->setShortcode('body_content')
         );

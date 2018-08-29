@@ -20,10 +20,6 @@ class QuoteConfigurator
         );
 
         $this->addRule(
-            $this->createRule('\SuttonBaker\Impresario\Form\Rule\Client', 'client_id', 'Client')
-        );
-
-        $this->addRule(
             $this->createRule('Required', 'project_name', 'Project Name')
         );
 
@@ -39,7 +35,7 @@ class QuoteConfigurator
         );
 
         $this->addRule(
-            $this->createRule('Date', 'date_required', 'Date Required')
+            $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
         $this->addRule(
@@ -55,17 +51,59 @@ class QuoteConfigurator
         );
 
         $this->addRule(
-            $this->createRule('Number', 'net_cost', 'Net Cost')
+            $this->createRule('Numeric', 'net_cost', 'Net Cost')
         );
 
         $this->addRule(
-            $this->createRule('Number', 'net_sell', 'Net Sell')
+            $this->createRule('Numeric', 'net_sell', 'Net Sell')
         );
 
         if($this->getValue('date_returned')) {
             $this->addRule(
                 $this->createRule('DateCompare\Past', 'date_returned', 'Date Returned')
             );
+        }
+
+        if($this->getValue('date_completed')) {
+            $this->addRule(
+                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
+            );
+        }
+
+        if($this->getValue('completed_by_id')) {
+            $this->addRule(
+                $this->createRule('User', 'completed_by_id', 'Completed By')
+            );
+        }
+
+        if(($this->getValue('date_completed') && !$this->getValue('completed_by_id')) ||
+            (!$this->getValue('date_completed') && $this->getValue('completed_by_id'))
+        ){
+            $dateCompleted = $this->getValue('date_completed');
+            $completedById = $this->getValue('completed_by_id');
+
+            $ruleInstance = $this->createRule('Custom', 'date_completed');
+
+            $this->addRule($ruleInstance->setValidationMethod(function($value, $ruleInstance) use($completedById) {
+                    if($completedById && !$value){
+                        return $ruleInstance->createError('\'Date Completed\' must be set if \'Completed By\' has been chosen');
+                    }
+
+                    return true;
+                }
+            ));
+
+
+            $ruleInstance = $this->createRule('Custom', 'completed_by_id');
+
+            $this->addRule($ruleInstance->setValidationMethod(function($value, $ruleInstance) use($dateCompleted) {
+                    if($dateCompleted && !$value){
+                        return $ruleInstance->createError();
+                    }
+
+                    return true;
+                }
+                ));
         }
 
         $this->addRule(
