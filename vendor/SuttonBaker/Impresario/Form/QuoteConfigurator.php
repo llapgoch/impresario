@@ -75,7 +75,7 @@ class QuoteConfigurator
 
         // Conditional Rules
 
-        if($this->getValue('status') == \SuttonBaker\Impresario\Definition\Quote::STATUS_COMPLETE){
+        if($this->getValue('status') == \SuttonBaker\Impresario\Definition\Quote::STATUS_WON){
             $this->addRule(
                 $this->createRule('User', 'completed_by_id', 'Completed By')
             );

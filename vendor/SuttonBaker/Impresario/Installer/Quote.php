@@ -21,43 +21,47 @@ class Quote
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
-                "post_title" => "Edit Task"
+            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT, [
+                "post_title" => "Edit Quote"
             ]
         );
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::TASK_LIST, [
-                "post_title" => "Tasks"
+            \SuttonBaker\Impresario\Definition\Page::QUOTE_LIST, [
+                "post_title" => "Quote Register"
             ]
         );
 
-        $this->deltaTable('task',
-            'CREATE TABLE `{{tableName}}` (
-              `task_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        $this->deltaTable('quote',
+            "CREATE TABLE `{{tableName}}` (
+                `quote_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `date_received` datetime DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
-              `description` text,
-              `notes` text,
-              `created_by_id` int(11) DEFAULT NULL,
-              `last_edited_by_id` int(11) DEFAULT NULL,
-              `assigned_to_id` int(11) DEFAULT NULL,
-              `task_type` varchar(255) DEFAULT NULL,
+              `client_id` int(11) DEFAULT NULL,
+              `enquiry_id` int(11) DEFAULT NULL,
               `parent_id` int(11) DEFAULT NULL,
-              `target_date` datetime DEFAULT NULL,
-              `priority` varchar(20) DEFAULT NULL,
-              `status` varchar(10) DEFAULT NULL,
+              `project_name` varchar(255) DEFAULT NULL,
+              `site_name` varchar(255) DEFAULT NULL,
+              `client_requested_by` varchar(255) DEFAULT NULL,
+              `client_reference` varchar(255) DEFAULT NULL,
+              `date_required` datetime DEFAULT NULL,
+              `project_manager_id` int(11) DEFAULT NULL,
+              `estimator_id` int(11) DEFAULT NULL,
+              `date_return_by` datetime DEFAULT NULL,
+              `net_cost` decimal(10,4) DEFAULT NULL,
+              `net_sell` decimal(10,4) DEFAULT NULL,
+              `date_returned` datetime DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
               `completed_by_id` int(11) DEFAULT NULL,
+              `status` varchar(20) DEFAULT NULL,
+              `comments` text,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
-              `is_deleted` int(1) DEFAULT 0,
-              PRIMARY KEY (`task_id`),
-              KEY `priority` (`priority`),
-              KEY `status` (`status`),
-              KEY `task_id` (`task_id`,`priority`),
-              KEY `task_id_2` (`task_id`,`priority`,`status`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
+              `is_deleted` int(1) DEFAULT '0',
+              PRIMARY KEY (`quote_id`),
+              KEY `status` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
         );
     }
 

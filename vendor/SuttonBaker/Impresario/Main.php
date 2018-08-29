@@ -41,7 +41,8 @@ class Main
         $this->getApp()->getInstallerManager()->register([
             '\SuttonBaker\Impresario\Installer\Client',
             '\SuttonBaker\Impresario\Installer\Enquiry',
-            '\SuttonBaker\Impresario\Installer\Task'
+            '\SuttonBaker\Impresario\Installer\Task',
+            '\SuttonBaker\Impresario\Installer\Quote'
         ]);
     }
 
@@ -54,7 +55,8 @@ class Main
         $this->getApp()->getLayoutManager()->register([
             '\SuttonBaker\Impresario\Layout\Client',
             '\SuttonBaker\Impresario\Layout\Enquiry',
-            '\SuttonBaker\Impresario\Layout\Task'
+            '\SuttonBaker\Impresario\Layout\Task',
+            '\SuttonBaker\Impresario\Layout\Quote'
         ]);
         
     }

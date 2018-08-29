@@ -11,8 +11,9 @@ class Quote
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Quote\Collection';
 
     const STATUS_OPEN = 'open';
-    const STATUS_COMPLETE = 'complete';
+    const STATUS_WON = 'won';
     const STATUS_CLOSED_OUT = 'closed_out';
+    const STATUS_CANCELLED = 'cancelled';
 
 
     /**
@@ -22,7 +23,8 @@ class Quote
     {
         return [
             self::STATUS_OPEN => 'Open',
-            self::STATUS_COMPLETE => 'Complete'
+            self::STATUS_WON => "Won",
+            self::STATUS_CLOSED_OUT => 'Lost'
         ];
     }
 

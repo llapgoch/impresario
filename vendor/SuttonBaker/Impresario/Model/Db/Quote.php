@@ -17,4 +17,16 @@ class Quote extends \DaveBaker\Core\Model\Db\Base
 
         return $this;
     }
+
+    /**
+     * @return float
+     */
+    public function getProfit()
+    {
+        if($this->hasNetCost() && $this->hasNetSell()){
+            return max(0, $this->getNetSell() - $this->getNetCost());
+        }
+
+        return 0;
+    }
 }
