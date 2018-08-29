@@ -75,6 +75,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Status',
                 'type' => 'Select'
             ], [
+                'name' => 'priority',
+                'labelName' => 'Priority',
+                'type' => 'Select'
+            ], [
                 'name' => 'completed_by_id',
                 'labelName' => 'Completed By',
                 'type' => 'Select'
@@ -115,6 +119,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         // Statuses
         $this->createArraySelectConnector()
             ->configure(Task::getStatuses(), $elements['status_element']);
+
+        // Priority
+        $this->createArraySelectConnector()
+            ->configure(Task::getPriorities(), $elements['priority_element']);
 
         $elements['status_element']->setShowFirstOption(false);
         $this->addChildBlock(array_values($elements));
