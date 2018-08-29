@@ -1,14 +1,14 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller;
+namespace SuttonBaker\Impresario\Controller\Enquiry;
 
 use DaveBaker\Core\Definitions\Messages;
 
 /**
  * Class EnquiryEditController
- * @package SuttonBaker\Impresario\Controller
+ * @package SuttonBaker\Impresario\Controller\Enquiry
  */
-class EnquiryEditController
+class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {

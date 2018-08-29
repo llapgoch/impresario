@@ -9,7 +9,7 @@ class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
      */
     protected function init()
     {
-        $this->dbClass = '\SuttonBaker\Impresario\Model\Db\Task';
+        $this->dbClass = \SuttonBaker\Impresario\Definition\Task::DEFINITION_MODEL;
         return $this;
     }
 }

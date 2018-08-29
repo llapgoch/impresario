@@ -4,6 +4,8 @@ namespace SuttonBaker\Impresario\Definition;
 /**
  * Class Page
  * @package SuttonBaker\Impresario\Definition
+ *
+ * Contains a list of layout handles for each defined page
  */
 class Page
 {
@@ -15,4 +17,7 @@ class Page
 
     const TASK_LIST = 'task_list';
     const TASK_EDIT = 'task_edit';
+
+    const QUOTE_LIST = 'quote_list';
+    const QUOTE_EDIT = 'quote_edit';
 }

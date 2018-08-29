@@ -1,11 +1,11 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller;
+namespace SuttonBaker\Impresario\Controller\Task;
 /**
- * Class TaskListController
- * @package SuttonBaker\Impresario\Controller
+ * Class ListController
+ * @package SuttonBaker\Impresario\Controller\Task
  */
-class TaskListController
+class ListController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {

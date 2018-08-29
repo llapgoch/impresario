@@ -41,7 +41,7 @@ class TaskConfigurator
             );
 
             $this->addRule(
-                $this->createRule('DateCompare\Past', 'completed_date', 'Completed Date')
+                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
             );
         }
 

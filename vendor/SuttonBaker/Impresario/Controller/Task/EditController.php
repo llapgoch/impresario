@@ -1,15 +1,15 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller;
+namespace SuttonBaker\Impresario\Controller\Task;
 
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
- * Class TaskEditController
- * @package SuttonBaker\Impresario\Controller
+ * Class EditController
+ * @package SuttonBaker\Impresario\Controller\Task
  */
-class TaskEditController
+class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
@@ -127,8 +127,8 @@ class TaskEditController
                 $data['target_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getTargetDate());
             }
 
-            if($modelInstance->getCompletedDate()){
-                $data['completed_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getCompletedDate());
+            if($modelInstance->getDateCompleted()){
+                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateCompleted());
             }
 
             $applicator->configure(
@@ -177,8 +177,6 @@ class TaskEditController
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-        $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
         $data['parent_id'] = $this->parentItem->getId();
         $data['task_type'] = $this->taskType;
 

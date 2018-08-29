@@ -2,14 +2,15 @@
 
 namespace SuttonBaker\Impresario\Installer;
 /**
- * Class Enquiry
+ * Class Quote
  * @package SuttonBaker\Impresario\Installer\
  */
-class Enquiry
+class Quote
     extends \DaveBaker\Core\Installer\Base
     implements \DaveBaker\Core\Installer\InstallerInterface
 {
-    protected $installerCode = 'impresario_enquiry';
+    protected $installerCode = 'impresario_quote';
+
     /**
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -20,38 +21,42 @@ class Enquiry
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT, [
-                "post_title" => "Edit Enquiry"
+            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
+                "post_title" => "Edit Task"
             ]
         );
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST, [
-                "post_title" => "Enquiries"
+            \SuttonBaker\Impresario\Definition\Page::TASK_LIST, [
+                "post_title" => "Tasks"
             ]
         );
 
-        $this->deltaTable('enquiry',
+        $this->deltaTable('task',
             'CREATE TABLE `{{tableName}}` (
-              `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `task_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
-              `client_reference` varchar(255) DEFAULT NULL,
-              `client_id` int(11) DEFAULT NULL,
-              `site_name` varchar(255) DEFAULT NULL,
-              `date_received` datetime DEFAULT NULL,
-              `status` varchar(255) DEFAULT NULL,
-              `target_date` datetime DEFAULT NULL,
+              `description` text,
               `notes` text,
-              `project_manager_id` int(11) DEFAULT NULL,
-              `engineer_id` int(11) DEFAULT NULL,
+              `created_by_id` int(11) DEFAULT NULL,
+              `last_edited_by_id` int(11) DEFAULT NULL,
+              `assigned_to_id` int(11) DEFAULT NULL,
+              `task_type` varchar(255) DEFAULT NULL,
+              `parent_id` int(11) DEFAULT NULL,
+              `target_date` datetime DEFAULT NULL,
+              `priority` varchar(20) DEFAULT NULL,
+              `status` varchar(10) DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
               `completed_by_id` int(11) DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT 0,
-              PRIMARY KEY (`enquiry_id`),
-              KEY `status` (`status`)
+              PRIMARY KEY (`task_id`),
+              KEY `priority` (`priority`),
+              KEY `status` (`status`),
+              KEY `task_id` (`task_id`,`priority`),
+              KEY `task_id_2` (`task_id`,`priority`,`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
         );
     }

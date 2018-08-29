@@ -35,4 +35,13 @@ class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Quote
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getQuoteHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
+    }
+
 }

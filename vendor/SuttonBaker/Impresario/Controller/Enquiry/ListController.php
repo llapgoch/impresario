@@ -1,11 +1,11 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller;
+namespace SuttonBaker\Impresario\Controller\Enquiry;
 /**
  * Class EnquiryListController
- * @package SuttonBaker\Impresario\Controller
+ * @package SuttonBaker\Impresario\Controller\Enquiry
  */
-class EnquiryListController
+class ListController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {

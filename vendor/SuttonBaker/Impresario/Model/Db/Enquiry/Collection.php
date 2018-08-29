@@ -9,7 +9,7 @@ class Collection extends \DaveBaker\Core\Model\Db\Collection\Base
      */
     protected function init()
     {
-        $this->dbClass = '\SuttonBaker\Impresario\Model\Db\Enquiry';
+        $this->dbClass = \SuttonBaker\Impresario\Definition\Enquiry::DEFINITION_MODEL;
         return $this;
     }
 }

@@ -83,8 +83,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Completed By',
                 'type' => 'Select'
             ], [
-                'name' => 'completed_date',
-                'labelName' => 'Completed Date',
+                'name' => 'date_completed',
+                'labelName' => 'Date Completed',
                 'type' => 'Select',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
