@@ -22,7 +22,20 @@ class Task extends Base
             '\SuttonBaker\Impresario\Model\Db\Task\Collection'
         );
 
+        $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
         $collection->getSelect()->where('is_deleted=?', '0');
+
+        $collection->joinLeft(
+            $userTable,
+            "{$userTable}.ID={{task}}.assigned_to_id",
+            ['assigned_to_name' => 'user_login']
+        );
+
+        $collection->joinLeft(
+            $userTable,
+            "{$userTable}.ID={{task}}.created_by_id",
+            ['created_by_name' => 'user_login']
+        );
 
         return $collection;
     }
@@ -45,6 +58,24 @@ class Task extends Base
         }
 
         return $collection;
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusDisplayName($status)
+    {
+        return $this->getDisplayName($status, TaskDefinition::getStatuses());
+    }
+
+    /**
+     * @param $priority
+     * @return mixed|string
+     */
+    public function getPriorityDisplayName($priority)
+    {
+        return $this->getDisplayName($priority, TaskDefinition::getPriorities());
     }
 
     /**
@@ -90,6 +121,10 @@ class Task extends Base
         return $task;
     }
 
+    /**
+     * @param $parentInstance
+     * @return string
+     */
     public function getTaskTypeForParent($parentInstance)
     {
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Enquiry){

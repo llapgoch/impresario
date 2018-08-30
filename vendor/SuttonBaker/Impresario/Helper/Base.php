@@ -8,6 +8,18 @@ namespace SuttonBaker\Impresario\Helper;
 class Base extends \DaveBaker\Core\Helper\Base
 {
     /**
+     * @param string $key
+     * @param array $items
+     * @return mixed|string
+     */
+    protected function getDisplayName($key, $items = []){
+        if(isset($items[$key])){
+            return $items[$key];
+        }
+
+        return '';
+    }
+    /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception
      */

@@ -21,6 +21,18 @@ class Task
     const TASK_TYPE_ENQUIRY = 'enquiry';
     const TASK_TYPE_QUOTE = 'quote';
 
+    const TABLE_HEADERS = [
+        'task_id' => 'ID',
+        'created_by_name' => 'Created By',
+        'status' => 'Status',
+        'assigned_to_name' => 'Assigned To',
+        'task_type' => 'Type',
+        'target_date' => 'Target Date',
+        'priority' => 'Priority',
+        'edit_column' => '',
+        'delete_column' => ''
+    ];
+
     /**
      * @return array
      */

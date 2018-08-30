@@ -23,11 +23,38 @@ class Quote extends Base
             QuoteDefinition::DEFINITION_COLLECTION
         );
 
+        $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
         $collection->getSelect()->where('is_deleted=?', '0');
+
+        $collection->joinLeft(
+            $userTable,
+            "{$userTable}.ID={{quote}}.project_manager_id",
+            ['project_manager_name' => 'user_login']
+        );
+
+        $collection->joinLeft(
+            $userTable,
+            "{$userTable}.ID={{quote}}.estimator_id",
+            ['estimator_name' => 'user_login']
+        );
+
+        $collection->joinLeft(
+            $userTable,
+            "{$userTable}.ID={{quote}}.created_by_id",
+            ['created_by_name' => 'user_login']
+        );
 
         return $collection;
     }
 
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusDisplayName($status)
+    {
+        return $this->getDisplayName($status, QuoteDefinition::getStatuses());
+    }
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection

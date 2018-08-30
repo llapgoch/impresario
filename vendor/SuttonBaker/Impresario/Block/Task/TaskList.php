@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block\Task;
+
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
  * Class TaskList
  * @package SuttonBaker\Impresario\Block\Task
@@ -54,9 +56,7 @@ class TaskList
 
 
         if(count($instanceItems)) {
-            $headers = array_keys($instanceItems[0]->getData());
-            $headers[] = 'edit_column';
-            $headers[] = 'delete_column';
+            $tableHeaders = TaskDefinition::TABLE_HEADERS;
             // add edit for each one
             foreach($instanceItems as $instanceItem){
                 $instanceItem->setData('edit_column',  $this->getLinkHtml($instanceItem));
@@ -76,13 +76,17 @@ class TaskList
 
                     $instanceItem->setData('updated_at', $updatedAt);
                 }
+
+                if($value = $instanceItem->getPriority()){
+                    $instanceItem = 
+                }
             }
 
             $this->addChildBlock(
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     "{$this->getBlockPrefix()}.list.table"
-                )->setHeaders($headers)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
+                )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
             );
         }
     }

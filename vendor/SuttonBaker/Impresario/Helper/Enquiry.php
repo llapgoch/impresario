@@ -47,13 +47,7 @@ class Enquiry extends Base
      */
     public function getStatusDisplayName($status)
     {
-        $statuses = EnquiryDefinition::getStatuses();
-
-        if(isset($statuses[$status])){
-            return $statuses[$status];
-        }
-
-        return '';
+        return $this->getDisplayName($status, EnquiryDefinition::getStatuses());
     }
 
     /**

@@ -15,6 +15,20 @@ class Quote
     const STATUS_CLOSED_OUT = 'closed_out';
     const STATUS_CANCELLED = 'cancelled';
 
+    const TABLE_HEADERS = [
+        'quote_id' => 'ID',
+        'client_reference' => 'Client Reference',
+        'status' => 'Status',
+        'date_received' => 'Date Received',
+        'created_by_name' => 'Created By',
+        'client' => 'Client',
+        'project_name' => 'Project Name',
+        'project_manager_name' => 'Project Manager',
+        'estimator_name' => 'Estimator',
+        'edit_column' => '',
+        'delete_column' => ''
+    ];
+
 
     /**
      * @return array

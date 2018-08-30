@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block\Quote;
+
+use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 /**
  * Class QuoteList
  * @package SuttonBaker\Impresario\Block\Quote
@@ -11,13 +13,15 @@ class QuoteList
 {
     const BLOCK_PREFIX = 'quote';
     const COMPLETED_KEY = 'completed';
+
     /**
-     * @return \DaveBaker\Core\Block\Base|void
+     * @return \SuttonBaker\Impresario\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     protected function _preDispatch()
     {
@@ -25,34 +29,25 @@ class QuoteList
         $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes();
         $instanceItems = $instanceCollection->load();
 
-
         $this->addChildBlock(
             $this->getMessagesBlock()
         );
 
-
         if(count($instanceItems)) {
-            $headers = array_keys($instanceItems[0]->getData());
-            $headers[] = 'edit_column';
-            $headers[] = 'delete_column';
+            $tableHeaders = QuoteDefinition::TABLE_HEADERS;
             // add edit for each one
             foreach($instanceItems as $instanceItem){
                 $instanceItem->setData('edit_column',  $this->getLinkHtml($instanceItem));
-
                 $instanceItem->setData('delete_column', $this->getDeleteBlockHtml($instanceItem->getId()));
 
-                if($instanceItem->getData('created_at')) {
-                    $createdDate = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($instanceItem->getData('created_at'));
-
-                    $instanceItem->setData('created_at', $createdDate);
+                if($value = $instanceItem->getDateReceived()) {
+                    $instanceItem->setDateReceived(
+                        $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($value)
+                    );
                 }
 
-                if($instanceItem->getUpdatedAt()) {
-                    $updatedAt = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($instanceItem->getData('updated_at'));
-
-                    $instanceItem->setData('updated_at', $updatedAt);
+                if($value = $instanceItem->getStatus()){
+                    $instanceItem->setStatus($this->getQuoteHelper()->getStatusDisplayName($value));
                 }
             }
 
@@ -60,7 +55,7 @@ class QuoteList
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     "{$this->getBlockPrefix()}.list.table"
-                )->setHeaders($headers)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
+                )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
             );
         }
     }
