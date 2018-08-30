@@ -21,6 +21,10 @@ class TaskConfigurator
         );
 
         $this->addRule(
+            $this->createRule('Required', 'priority', 'Priority')
+        );
+
+        $this->addRule(
             $this->createRule('Date', 'target_date', 'Target Date')
         );
 

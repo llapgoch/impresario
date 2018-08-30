@@ -33,11 +33,12 @@ class Task extends \DaveBaker\Core\Helper\Base
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getTaskCollectionForEntity($entity, $status = '')
+    public function getTaskCollectionForEntity($entityId, $entity, $status = '')
     {
         $collection = $this->getTaskCollection();
 
         $collection->getSelect()->where('task_type=?', $entity);
+        $collection->getSelect()->where('parent_id=?', $entityId);
 
         if($status) {
             $collection->getSelect()->where('status=?', $status);
@@ -93,6 +94,10 @@ class Task extends \DaveBaker\Core\Helper\Base
     {
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Enquiry){
             return TaskDefinition::TASK_TYPE_ENQUIRY;
+        }
+
+        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Quote){
+            return TaskDefinition::TASK_TYPE_QUOTE;
         }
     }
 }

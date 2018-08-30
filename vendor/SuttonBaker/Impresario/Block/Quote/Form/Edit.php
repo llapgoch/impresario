@@ -43,6 +43,45 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setHeading($heading)
         );
 
+        $this->addChildBlock($this->getMessagesBlock());
+
+
+        if($entityId) {
+            $this->addChildBlock(
+                $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
+                    ->setTag('a')
+                    ->setTagText('New Task')
+                    ->addAttribute(
+                        ['href' => $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                            [
+                                'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
+                                'parent_id' => $entityId
+                            ],
+                            $this->getApp()->getHelper('Url')->getCurrentUrl()
+                        )]
+                    )
+            );
+        }
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
+        $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
+            $entityId,
+            \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
+            \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
+        );
+
+        $taskItems = $taskInstance->load();
+        $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
+
+        $this->addChildBlock(
+            $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
+                ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
+                    ['edit_column', 'delete_column']
+                )
+        );
+
+
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit");

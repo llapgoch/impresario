@@ -42,7 +42,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
             $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
-                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY
+                $entityId,
+                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
+                \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
             );
 
             $taskItems = $taskInstance->load();
@@ -78,7 +80,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         )
                 );
             }
-
 
             $this->addChildBlock(
                 $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
