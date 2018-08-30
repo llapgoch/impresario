@@ -95,8 +95,6 @@ class QuoteConfigurator
             );
         }
 
-
-
         if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
             $statusRule = $this->createRule('Custom', 'status', 'Status');
             $statusRule->setMainError('Status must not be \'Open\' if \'Completed By\' or \'Date Completed\' have been set')

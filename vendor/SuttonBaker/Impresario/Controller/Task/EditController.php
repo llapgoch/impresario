@@ -37,23 +37,17 @@ class EditController
     ];
 
     /**
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @return \DaveBaker\Core\App\Response|object|\SuttonBaker\Impresario\Controller\Base
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Form\Exception
-     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
-    public function execute()
+    public function _preDispatch()
     {
+        // Set instance values before the blocks are created
         $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-        $parentItem = null;
 
-        $this->modelInstance = $this->getTaskHelper()->getTask();
+        $this->setModelInstance($this->getTaskHelper()->getTask());
 
         if($instanceId){
             // We're loading, fellas!
@@ -71,11 +65,13 @@ class EditController
             }
         }
 
-        $parentItem = $this->getParentItem($this->modelInstance);
-        $this->parentItem = $parentItem;
-        $this->taskType = $this->getTaskHelper()->getTaskTypeForParent($parentItem);
+        $this->modelInstance->setTaskType($this->taskType);
+        $this->modelInstance->setParentId($parentId);
 
-        if(!$parentItem || !$parentItem->getId()){
+        $this->setParentItem($this->getParentItem($this->modelInstance));
+        $this->setTaskType($this->getTaskHelper()->getTaskTypeForParent($this->parentItem));
+
+        if(!$this->parentItem || !$this->parentItem->getId()){
             $this->addMessage('The parent item of the task could not be found');
             return $this->getResponse()->redirectReferer();
         }
@@ -84,8 +80,20 @@ class EditController
             $this->addMessage('Invalid parent type');
             return $this->getResponse()->redirectReferer();
         }
+    }
 
-
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     */
+    public function execute()
+    {
         if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('task.form.edit'))){
             return;
         }
@@ -128,8 +136,6 @@ class EditController
             }
         }
 
-
-
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
@@ -150,6 +156,37 @@ class EditController
                 $data
             );
         }
+    }
+
+
+    /**
+     * @param $modelInstance
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function setModelInstance($modelInstance)
+    {
+        $this->modelInstance = $modelInstance;
+        $this->getApp()->getRegistry()->register('model_instance', $modelInstance);
+    }
+
+    /**
+     * @param $parentItem
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function setParentItem($parentItem)
+    {
+        $this->parentItem = $parentItem;
+        $this->getApp()->getRegistry()->register('parent_item', $parentItem);
+    }
+
+    /**
+     * @param string $taskType
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function setTaskType($taskType)
+    {
+        $this->taskType = $taskType;
+        $this->getApp()->getRegistry()->register('task_type', $taskType);
     }
 
     /**

@@ -32,10 +32,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $heading = "Create {$prefixName}";
         $editMode = false;
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
-            $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task')->load($entityId);
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $parentItem = $this->getApp()->getRegistry()->get('parent_item');
+        $taskType = $this->getApp()->getRegistry()->get('task_type');
+
+        if($entityInstance->getId()){
             $heading = "Update {$prefixName}";
             $editMode = true;
+        }elseif( $parentItem && $parentItem->getId()){
+            $heading = "Create Task For " . TaskDefinition::getTaskTypeLabel($taskType) . " '{$parentItem->getSiteName()}'";
         }
 
         $this->addChildBlock(
@@ -71,12 +76,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Notes',
                 'type' => 'TextArea'
             ], [
-                'name' => 'status',
-                'labelName' => 'Status',
-                'type' => 'Select'
-            ], [
                 'name' => 'priority',
                 'labelName' => 'Priority',
+                'type' => 'Select'
+            ],[
+                'name' => 'status',
+                'labelName' => 'Status',
                 'type' => 'Select'
             ], [
                 'name' => 'completed_by_id',
@@ -88,7 +93,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
+                'attributes' => ['autocomplete' => 'off']
             ], [
                 'name' => 'submit',
                 'type' => 'Input\Submit',
@@ -96,7 +101,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',
-                'value' => $entityId
+                'value' => $entityInstance->getId()
             ], [
                 'name' => 'action',
                 'type' => 'Input\Hidden',

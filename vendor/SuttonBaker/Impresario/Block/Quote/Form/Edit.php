@@ -50,7 +50,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock(
                 $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
                     ->setTag('a')
-                    ->setTagText('New Task')
+                    ->setTagText('Create New Task')
                     ->addAttribute(
                         ['href' => $this->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,

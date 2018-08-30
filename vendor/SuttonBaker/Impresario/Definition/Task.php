@@ -45,12 +45,30 @@ class Task
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskTypes()
     {
         return [
             self::TASK_TYPE_ENQUIRY => 'Enquiry',
-            self::TASK_TYPE_QUOTE => 'quote'
+            self::TASK_TYPE_QUOTE => 'Quote'
         ];
+    }
+
+    /**
+     * @param string $taskType
+     * @return string
+     */
+    public static function getTaskTypeLabel($taskType)
+    {
+        $taskTypes = self::getTaskTypes();
+
+        if(in_array($taskType, array_keys($taskTypes))){
+            return $taskTypes[$taskType];
+        }
+
+        return '';
     }
 
 }
