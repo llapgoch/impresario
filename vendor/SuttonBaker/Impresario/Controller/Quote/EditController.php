@@ -55,14 +55,20 @@ class EditController
 
         }
 
-
-
         if($enquiryId = $this->getRequest()->getParam(self::ENQUIRY_ID_PARAM)) {
-            $this->enquiryItem->load($enquiryId);
+
+            $this->enquiryItem = $this->getEnquiryHelper()->getEnquiry($enquiryId);
 
             if(!$this->enquiryItem->getId()){
                 $this->addMessage('The enquiry could not be found');
                 return $this->getResponse()->redirectReferer();
+            }
+
+            if($this->enquiryItem->getQuoteEntity()->getId()){
+                $this->addMessage('A quote already exists for this enquiry item');
+                return $this->getResponse()->redirectToPage(
+                    \SuttonBaker\Impresario\Definition\Page::QUOTE_LIST
+                );
             }
         } else {
             if ($enquiryId = $this->modelInstance->getEnquiryId()) {
@@ -132,7 +138,10 @@ class EditController
             }
 
             $this->saveFormValues($postParams);
-            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::QUOTE_LIST);
+
+            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
+                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::QUOTE_LIST);
+            }
         }
 
 

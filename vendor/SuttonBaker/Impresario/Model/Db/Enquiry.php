@@ -19,19 +19,27 @@ class Enquiry extends Base
     }
 
     /**
-     * @return Enquiry
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
+     *
+     * Gets the newest non-deleted quote entity for the enquiry
      */
     public function getQuoteEntity()
     {
-        $entity = $this->getEnquiryHelper()->getEnquiry();
+        $quote = $this->getQuoteHelper()->getQuote();
 
-        if($entityId = $this->getEntityId()){
-            $entity->load($entityId);
+        $collection = $this->getQuoteHelper()->getQuoteCollection();
+        $collection->getSelect()->where('enquiry_id=?', $this->getId());
+        $collection->getSelect()->columns(new \Zend_Db_Expr('MAX(quote_id) as max_quote_id'));
+
+        if($firstItem = $collection->firstItem()){
+            $quote->load($firstItem->getMaxQuoteId());
         }
 
-        return $entity;
+        return $quote;
     }
 }

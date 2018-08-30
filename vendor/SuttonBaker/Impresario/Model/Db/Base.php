@@ -35,7 +35,7 @@ abstract class Base extends \DaveBaker\Core\Model\Db\Base
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Helper\Qute
+     * @return \SuttonBaker\Impresario\Helper\Quote
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function getQuoteHelper()

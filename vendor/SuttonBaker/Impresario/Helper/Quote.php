@@ -57,7 +57,7 @@ class Quote extends \DaveBaker\Core\Helper\Base
 
     /**
      * @param $entityId
-     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getQuote($entityId = null)

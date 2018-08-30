@@ -69,7 +69,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 );
 
                 $quoteEntity = $entityInstance->getQuoteEntity();
+                $urlParams = [];
 
+                if($quoteEntity->getId()){
+                    $urlParams['quote_id'] = $quoteEntity->getId();
+                }else{
+                    $urlParams['enquiry_id'] = $entityId;
+                }
 
                 $this->addChildBlock(
                     $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
@@ -78,9 +84,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         ->addAttribute(
                             ['href' => $this->getPageUrl(
                                 \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                                [
-                                    'enquiry_id' => $entityId
-                                ]
+                                $urlParams,
+                                $this->getApp()->getHelper('Url')->getCurrentUrl()
                             )]
                         )
                 );
