@@ -36,10 +36,12 @@ class ClientList
             $this->getMessagesBlock()
         );
 
+
+
         if(count($clientItems)) {
-            $headers = array_keys($clientItems[0]->getData());
-            $headers[] = 'edit_column';
-            $headers[] = 'delete_column';
+            $tableHeaders = \SuttonBaker\Impresario\Definition\Client::TABLE_HEADERS;
+
+
             // add edit for each one
             foreach($clientItems as $client){
                 $client->setData('edit_column',  $this->getLinkHtml($client));
@@ -65,7 +67,7 @@ class ClientList
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     'client.list.table'
-                )->setHeaders($headers)->setRecords($clientItems)->addEscapeExcludes(['edit_column', 'delete_column'])
+                )->setHeaders($tableHeaders)->setRecords($clientItems)->addEscapeExcludes(['edit_column', 'delete_column'])
             );
         }
     }

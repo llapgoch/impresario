@@ -38,27 +38,30 @@ class EnquiryList
 
 
         if(count($enquiryItems)) {
-            $headers = array_keys($enquiryItems[0]->getData());
-            $headers[] = 'edit_column';
-            $headers[] = 'delete_column';
-            // add edit for each one
+           $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
+
+            // Process table values
             foreach($enquiryItems as $enquiry){
                 $enquiry->setData('edit_column',  $this->getLinkHtml($enquiry));
-
                 $enquiry->setData('delete_column', $this->getDeleteBlockHtml($enquiry->getId()));
 
-                if($enquiry->getData('created_at')) {
-                    $createdDate = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($enquiry->getData('created_at'));
 
-                    $enquiry->setData('created_at', $createdDate);
+                if($value = $enquiry->getData('date_received')) {
+                    $enquiry->setData(
+                        'date_received',
+                        $this->getDateHelper()->utcDbDateToShortLocalOutput($value)
+                    );
                 }
 
-                if($enquiry->getUpdatedAt()) {
-                    $updatedAt = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($enquiry->getData('updated_at'));
+                if($value = $enquiry->getTargetDate()) {
+                    $enquiry->setData(
+                        'target_date',
+                        $this->getDateHelper()->utcDbDateToShortLocalOutput($value)
+                    );
+                }
 
-                    $enquiry->setData('updated_at', $updatedAt);
+                if($value = $enquiry->getStatus()) {
+                    $enquiry->setStatus($this->getEnquiryHelper()->getStatusDisplayName($value));
                 }
             }
 
@@ -66,7 +69,7 @@ class EnquiryList
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Table',
                     'enquiry.list.table'
-                )->setHeaders($headers)->setRecords($enquiryItems)->addEscapeExcludes(['edit_column', 'delete_column'])
+                )->setHeaders($tableHeaders)->setRecords($enquiryItems)->addEscapeExcludes(['edit_column', 'delete_column'])
             );
         }
     }

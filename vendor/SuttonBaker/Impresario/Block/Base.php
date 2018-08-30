@@ -8,6 +8,14 @@ namespace SuttonBaker\Impresario\Block;
 class Base extends \DaveBaker\Core\Block\Base
 {
     /**
+     * @return \DaveBaker\Core\Helper\Date
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getDateHelper()
+    {
+        return $this->getApp()->getHelper('Date');
+    }
+    /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception
      */
