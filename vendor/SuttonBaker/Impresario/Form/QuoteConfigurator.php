@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Form;
+
+use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 /**
  * Class QuoteConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
@@ -76,52 +78,75 @@ class QuoteConfigurator
             );
         }
 
-        if(($this->getValue('date_completed') && !$this->getValue('completed_by_id')) ||
-            (!$this->getValue('date_completed') && $this->getValue('completed_by_id'))
-        ){
-            $dateCompleted = $this->getValue('date_completed');
-            $completedById = $this->getValue('completed_by_id');
+        $dateCompleted = $this->getValue('date_completed');
+        $completedById = $this->getValue('completed_by_id');
 
-            $ruleInstance = $this->createRule('Custom', 'date_completed');
 
-            $this->addRule($ruleInstance->setValidationMethod(function($value, $ruleInstance) use($completedById) {
-                    if($completedById && !$value){
-                        return $ruleInstance->createError('\'Date Completed\' must be set if \'Completed By\' has been chosen');
-                    }
+        $dateCompletedRule = $this->createRule('Custom', 'date_completed', 'Date Completed');
+        $dateCompletedRule->setMainError('\'{{niceName}}\' must be set if \'Completed By\' has been chosen')
+            ->setInputError('This must be set');
 
-                    return true;
+
+        $this->addRule($dateCompletedRule->setValidationMethod(
+            function($value, $ruleInstance) use($completedById) {
+
+                if($completedById && !$value){
+                    return $ruleInstance->createError();
                 }
-            ));
+
+                return true;
+            }
+        ));
 
 
-            $ruleInstance = $this->createRule('Custom', 'completed_by_id');
+        $completedRule = $this->createRule('Custom', 'completed_by_id', 'Date Completed');
+        $completedRule->setMainError('\'Completed By\' must be set if \'{{niceName}}\' has been chosen')
+            ->setInputError('This must be set');
 
-            $this->addRule($ruleInstance->setValidationMethod(function($value, $ruleInstance) use($dateCompleted) {
-                    if($dateCompleted && !$value){
-                        return $ruleInstance->createError();
-                    }
-
-                    return true;
+        $this->addRule($completedRule->setValidationMethod(
+            function($value, $ruleInstance) use($dateCompleted) {
+                if($dateCompleted && !$value){
+                    return $ruleInstance->createError();
                 }
-                ));
-        }
 
-        $this->addRule(
-            $this->createRule('Required', 'status', 'Status')
-        );
+                return true;
+            }
+        ));
 
 
-        // Conditional Rules
+        $statusRule = $this->createRule('Custom', 'status', 'Status');
+        $statusRule->setMainError('\'{{niceName}}\' cannot be Open if quote is complete')
+            ->setInputError('This must not be \'Open\'');
 
-        if($this->getValue('status') == \SuttonBaker\Impresario\Definition\Quote::STATUS_WON){
-            $this->addRule(
-                $this->createRule('User', 'completed_by_id', 'Completed By')
-            );
+        $this->addRule($statusRule->setValidationMethod(
+            function($value, $ruleInstance) use($dateCompleted) {
 
-            $this->addRule(
-                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
-            );
-        }
+                if($dateCompleted && $value == QuoteDefinition::STATUS_OPEN){
+                    return $ruleInstance->createError();
+                }
+
+                return true;
+            }
+        ));
+
+        $netCost = $this->getValue('net_cost');
+        $netSell = $this->getValue('net_sell');
+
+        $sellRule = $this->createRule('Custom', 'net_sell', 'Net Sell');
+        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
+            ->setInputError('This must be higher than Net Cost');
+
+        $this->addRule($sellRule->setValidationMethod(
+            function($value, $ruleInstance) use($netCost) {
+
+                if((float) $value < (float) $netCost){
+                    return $ruleInstance->createError();
+                }
+
+                return true;
+            }
+        ));
 
     }
+
 }

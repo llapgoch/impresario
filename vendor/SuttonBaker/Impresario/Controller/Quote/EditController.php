@@ -96,14 +96,6 @@ class EditController
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
 
-            // Don't save a completed user if status isn't completed
-            if (isset($postParams['status'])) {
-                if ($postParams['status'] == QuoteDefinition::STATUS_OPEN) {
-                    unset($postParams['date_completed']);
-                    unset($postParams['completed_by_id']);
-                }
-            }
-
             // Convert dates to DB
             if (isset($postParams['date_received'])){
                 $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
