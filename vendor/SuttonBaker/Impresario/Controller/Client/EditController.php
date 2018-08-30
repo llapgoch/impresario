@@ -31,9 +31,6 @@ class EditController
             return;
         }
 
-//        wp_enqueue_script('jquery-ui-datepicker');
-//        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-
         $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
 
         // Form submission
@@ -135,7 +132,8 @@ class EditController
         // Sets the values back onto the form element
         $applicator->configure(
             $this->clientEditForm,
-            $this->getRequest()->getPostParams()
+            $this->getRequest()->getPostParams(),
+            $validator
         );
     }
 }

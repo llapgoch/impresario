@@ -297,7 +297,8 @@ class EditController
         // Sets the values back onto the form element
         $applicator->configure(
             $this->editForm,
-            $this->getRequest()->getPostParams()
+            $this->getRequest()->getPostParams(),
+            $validator
         );
     }
 }

@@ -24,6 +24,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     protected function _preDispatch()
     {
