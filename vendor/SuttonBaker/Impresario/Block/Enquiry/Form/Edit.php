@@ -114,7 +114,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Date Received',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
+                'value' => $this->getApp()->getHelper('Date')->currentDateShortLocalOutput()
             ], [
                 'name' => 'client_reference',
                 'labelName' => 'Client Reference',

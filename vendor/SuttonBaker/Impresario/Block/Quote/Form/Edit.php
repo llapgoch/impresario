@@ -32,6 +32,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $heading = "Create {$prefixName}";
         $editMode = false;
 
+        $enquiryItem = $this->getApp()->getRegistry()->get('enquiry_item');
+
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
             $heading = "Update {$prefixName}";
@@ -94,14 +96,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Text',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
-            ], [
-                'name' => 'project_name',
-                'labelName' => 'Project Name',
-                'type' => 'Input\Text'
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
+                'value' => $enquiryItem->getId() ? $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($enquiryItem->getDateReceived()) : ''
             ], [
                 'name' => 'site_name',
                 'labelName' => 'Site Name',
+                'type' => 'Input\Text',
+                'value' => $enquiryItem->getSiteName()
+            ], [
+                'name' => 'project_name',
+                'labelName' => 'Project Name',
                 'type' => 'Input\Text'
             ], [
                 'name' => 'client_requested_by',
@@ -110,7 +114,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ],[
                 'name' => 'client_reference',
                 'labelName' => 'Client Reference',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'value' => $enquiryItem->getClientReference()
             ], [
                 'name' => 'date_required',
                 'labelName' => 'Required By Date',
@@ -127,6 +132,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'project_manager_id',
                 'labelName' => 'Project Manager',
                 'type' => 'Select',
+                'value' => $enquiryItem->getProjectManagerId()
             ], [
                 'name' => 'estimator_id',
                 'labelName' => 'Estimator',

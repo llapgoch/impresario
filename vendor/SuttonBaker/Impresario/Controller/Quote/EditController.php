@@ -27,21 +27,21 @@ class EditController
     protected $modelInstance;
 
     /**
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
+     * @return \DaveBaker\Core\App\Response|object|\SuttonBaker\Impresario\Controller\Base|null
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Form\Exception
-     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Select_Exception
      */
-    public function execute()
+    protected function _preDispatch()
     {
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
         $this->parentItem = $this->getQuoteHelper()->getQuote();
         $this->enquiryItem = $this->getEnquiryHelper()->getEnquiry();
         $this->modelInstance = $this->getQuoteHelper()->getQuote();
+
+        $this->getApp()->getRegistry()->register('enquiry_item', $this->enquiryItem);
 
 
         if($instanceId){
@@ -57,7 +57,7 @@ class EditController
 
         if($enquiryId = $this->getRequest()->getParam(self::ENQUIRY_ID_PARAM)) {
 
-            $this->enquiryItem = $this->getEnquiryHelper()->getEnquiry($enquiryId);
+            $this->enquiryItem->load($enquiryId);
 
             if(!$this->enquiryItem->getId()){
                 $this->addMessage('The enquiry could not be found');
@@ -86,8 +86,23 @@ class EditController
             $this->addMessage('A quote must be derived from an enquiry or another quote');
             return $this->getResponse()->redirectReferer();
         }
+    }
 
-
+    /**
+     * @return \DaveBaker\Core\App\Response|object
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function execute()
+    {
         if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('quote.form.edit'))){
             return;
         }

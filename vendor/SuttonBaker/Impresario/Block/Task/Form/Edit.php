@@ -62,6 +62,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Target Date',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
+                'value' => $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($parentItem->getTargetDate()),
                 'attributes' => [
                     'readonly' => 'readonly',
                     'autocomplete' => 'off',
