@@ -70,6 +70,15 @@ class Task extends Base
     }
 
     /**
+     * @param string $taskType
+     * @return mixed|string
+     */
+    public function getTaskTypeDisplayName($taskType)
+    {
+        return $this->getDisplayName($taskType, TaskDefinition::getTaskTypes());
+    }
+
+    /**
      * @param $priority
      * @return mixed|string
      */

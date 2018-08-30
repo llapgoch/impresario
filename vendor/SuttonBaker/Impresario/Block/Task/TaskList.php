@@ -63,22 +63,23 @@ class TaskList
 
                 $instanceItem->setData('delete_column', $this->getDeleteBlockHtml($instanceItem->getId()));
 
-                if($instanceItem->getData('created_at')) {
-                    $createdDate = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($instanceItem->getData('created_at'));
 
-                    $instanceItem->setData('created_at', $createdDate);
-                }
-
-                if($instanceItem->getUpdatedAt()) {
-                    $updatedAt = $this->getApp()->getHelper('Date')
-                        ->utcDbDateTimeToShortLocalOutput($instanceItem->getData('updated_at'));
-
-                    $instanceItem->setData('updated_at', $updatedAt);
+                if($value = $instanceItem->getTargetDate()) {
+                    $instanceItem->setTargetDate(
+                        $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($value)
+                    );
                 }
 
                 if($value = $instanceItem->getPriority()){
-                    $instanceItem = 
+                    $instanceItem->setPriority($this->getTaskHelper()->getPriorityDisplayName($value));
+                }
+
+                if($value = $instanceItem->getTaskType()){
+                    $instanceItem->setTaskType($this->getTaskHelper()->getTaskTypeDisplayName($value));
+                }
+
+                if($value = $instanceItem->getStatus()){
+                    $instanceItem->setStatus($this->getTaskHelper()->getStatusDisplayName($value));
                 }
             }
 
