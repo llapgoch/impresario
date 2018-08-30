@@ -43,13 +43,6 @@ class EditController
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
 
-            // Don't save a completed user if status isn't completed
-            if (isset($postParams['status'])) {
-                if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE) {
-                    $postParams['completed_by_id'] = null;
-                }
-            }
-
             // Convert dates to DB
             if (isset($postParams['date_received'])){
                 $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
@@ -57,6 +50,10 @@ class EditController
 
             if(isset($postParams['target_date'])){
                 $postParams['target_date'] = $helper->localDateToDb($postParams['target_date']);
+            }
+
+            if(isset($postParams['date_completed'])){
+                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
             }
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
@@ -94,6 +91,10 @@ class EditController
 
             if($modelInstance->getDateReceived()){
                 $data['date_received'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReceived());
+            }
+
+            if($modelInstance->getDateCompleted()){
+                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateCompleted());
             }
 
             if($modelInstance->getTargetDate()){

@@ -78,56 +78,41 @@ class QuoteConfigurator
             );
         }
 
+        // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');
         $completedById = $this->getValue('completed_by_id');
+        $statusIsClosed = $this->getValue('status') !== QuoteDefinition::STATUS_OPEN;
+
+        if($statusIsClosed || $this->getValue('date_completed')){
+            $this->addRule(
+                $this->createRule('User', 'completed_by_id', 'Completed By')
+            );
+        }
+
+        if($statusIsClosed || $this->getValue('completed_by_id')){
+            $this->addRule(
+                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
+            );
+        }
 
 
-        $dateCompletedRule = $this->createRule('Custom', 'date_completed', 'Date Completed');
-        $dateCompletedRule->setMainError('\'{{niceName}}\' must be set if \'Completed By\' has been chosen')
-            ->setInputError('This must be set');
 
+        if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
+            $statusRule = $this->createRule('Custom', 'status', 'Status');
+            $statusRule->setMainError('Status must not be \'Open\' if \'Completed By\' or \'Date Completed\' have been set')
+                ->setInputError('This must be set to \'Complete\'');
 
-        $this->addRule($dateCompletedRule->setValidationMethod(
-            function($value, $ruleInstance) use($completedById) {
+            $this->addRule($statusRule->setValidationMethod(
+                function($value, $ruleInstance) use($statusIsClosed) {
 
-                if($completedById && !$value){
-                    return $ruleInstance->createError();
+                    if($statusIsClosed == false){
+                        return $ruleInstance->createError();
+                    }
+
+                    return true;
                 }
-
-                return true;
-            }
-        ));
-
-
-        $completedRule = $this->createRule('Custom', 'completed_by_id', 'Date Completed');
-        $completedRule->setMainError('\'Completed By\' must be set if \'{{niceName}}\' has been chosen')
-            ->setInputError('This must be set');
-
-        $this->addRule($completedRule->setValidationMethod(
-            function($value, $ruleInstance) use($dateCompleted) {
-                if($dateCompleted && !$value){
-                    return $ruleInstance->createError();
-                }
-
-                return true;
-            }
-        ));
-
-
-        $statusRule = $this->createRule('Custom', 'status', 'Status');
-        $statusRule->setMainError('\'{{niceName}}\' cannot be Open if quote is complete')
-            ->setInputError('This must not be \'Open\'');
-
-        $this->addRule($statusRule->setValidationMethod(
-            function($value, $ruleInstance) use($dateCompleted) {
-
-                if($dateCompleted && $value == QuoteDefinition::STATUS_OPEN){
-                    return $ruleInstance->createError();
-                }
-
-                return true;
-            }
-        ));
+            ));
+        }
 
         $netCost = $this->getValue('net_cost');
         $netSell = $this->getValue('net_sell');

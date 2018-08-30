@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Model\Db;
  * Class Quote
  * @package SuttonBaker\Impresario\Model\Db
  */
-class Quote extends \DaveBaker\Core\Model\Db\Base
+class Quote extends Base
 {
     /**
      * @return $this

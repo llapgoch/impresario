@@ -100,14 +100,6 @@ class EditController
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
 
-            // Don't save a completed user if status isn't completed
-            if (isset($postParams['status'])) {
-                if ($postParams['status'] !== \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE) {
-                    unset($postParams['date_completed']);
-                    unset($postParams['completed_by_id']);
-                }
-            }
-
             // Convert dates to DB
             if (isset($postParams['date_completed'])){
                 $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);

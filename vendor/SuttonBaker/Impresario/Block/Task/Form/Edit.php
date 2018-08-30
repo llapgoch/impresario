@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Task\Form;
 
-use \SuttonBaker\Impresario\Definition\Task;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class Edit
@@ -59,7 +59,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => [
                     'readonly' => 'readonly',
-                    'autocomplete' => 'false',
+                    'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '', 'maxDate' => "+5Y"])
                 ],
             ], [
@@ -88,7 +88,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
             ], [
                 'name' => 'submit',
                 'type' => 'Input\Submit',
@@ -118,11 +118,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         // Statuses
         $this->createArraySelectConnector()
-            ->configure(Task::getStatuses(), $elements['status_element']);
+            ->configure(TaskDefinition::getStatuses(), $elements['status_element']);
 
         // Priority
         $this->createArraySelectConnector()
-            ->configure(Task::getPriorities(), $elements['priority_element']);
+            ->configure(TaskDefinition::getPriorities(), $elements['priority_element']);
 
         $elements['status_element']->setShowFirstOption(false);
         $this->addChildBlock(array_values($elements));

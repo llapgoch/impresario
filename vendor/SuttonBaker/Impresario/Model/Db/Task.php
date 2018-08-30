@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Model\Db;
  * Class Task
  * @package SuttonBaker\Impresario\Model\Db
  */
-class Task extends \DaveBaker\Core\Model\Db\Base
+class Task extends Base
 {
     /**
      * @return $this

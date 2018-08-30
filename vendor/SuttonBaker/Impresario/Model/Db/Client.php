@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Model\Db;
  * Class Client
  * @package SuttonBaker\Impresario\Model\Db
  */
-class Client extends \DaveBaker\Core\Model\Db\Base
+class Client extends Base
 {
     /**
      * @return $this

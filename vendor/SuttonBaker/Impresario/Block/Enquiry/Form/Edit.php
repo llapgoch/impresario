@@ -15,11 +15,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const PREFIX_NAME = 'Enquiry';
 
     /**
-     * @return \DaveBaker\Form\Block\Form|void
+     * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
@@ -66,10 +67,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         )
                 );
 
+                $quoteEntity = $entityInstance->getQuoteEntity();
+
+
                 $this->addChildBlock(
-                    $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
+                    $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
                         ->setTag('a')
-                        ->setTagText('Create Quote')
+                        ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
                         ->addAttribute(
                             ['href' => $this->getPageUrl(
                                 \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
@@ -104,7 +108,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Date Received',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
             ], [
                 'name' => 'client_reference',
                 'labelName' => 'Client Reference',
@@ -127,6 +131,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Site Name',
                 'type' => 'Input\Text'
             ], [
+                'name' => 'target_date',
+                'labelName' => 'Target Date',
+                'class' => 'js-date-picker',
+                'type' => 'Input\Text',
+                'attributes' => [
+                    'autocomplete' => 'off',
+                    'data-date-settings' => json_encode(
+                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                    )]
+            ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
                 'type' => 'TextArea'
@@ -139,15 +153,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Completed By',
                 'type' => 'Select'
             ], [
-                'name' => 'target_date',
-                'labelName' => 'Target Date',
+                'name' => 'date_completed',
+                'labelName' => 'Date Completed',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'attributes' => [
-                    'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '', 'maxDate' => "+5Y"]
+                        ['minDate' => '', 'maxDate' => "0"]
                     )]
             ], [
                 'name' => 'submit',

@@ -62,24 +62,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         )]
                     )
             );
+
+
+            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
+            $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $entityId,
+                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
+                \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
+            );
+
+            $taskItems = $taskInstance->load();
+            $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
+
+            $this->addChildBlock(
+                $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
+                    ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
+                        ['edit_column', 'delete_column']
+                    )
+            );
         }
-
-        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
-        $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
-            $entityId,
-            \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
-            \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
-        );
-
-        $taskItems = $taskInstance->load();
-        $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
-                ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
-                    ['edit_column', 'delete_column']
-                )
-        );
 
 
         /** @var \DaveBaker\Form\Builder $builder */
@@ -93,7 +94,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Text',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
+                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off']
             ], [
                 'name' => 'project_name',
                 'labelName' => 'Project Name',
@@ -117,7 +118,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-date-picker',
                 'attributes' => [
                     'readonly' => 'readonly',
-                    'autocomplete' => 'false',
+                    'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]
                     )
@@ -137,7 +138,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-date-picker',
                 'attributes' => [
                     'readonly' => 'readonly',
-                    'autocomplete' => 'false',
+                    'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]
                     )
@@ -155,14 +156,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Returned Date',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
+                'attributes' => ['autocomplete' => 'off']
 
             ],[
                 'name' => 'date_completed',
                 'labelName' => 'Completion Date',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'false']
+                'attributes' => ['autocomplete' => 'off']
 
             ],[
                 'name' => 'completed_by_id',
