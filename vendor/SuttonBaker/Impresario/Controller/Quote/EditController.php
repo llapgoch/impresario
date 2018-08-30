@@ -26,6 +26,20 @@ class EditController
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
     protected $modelInstance;
 
+    /** @var array  */
+    protected $nonUserValues = [
+        'quote_id',
+        'created_by_id',
+        'last_edited_by_id',
+        'client_id',
+        'enquiry_id',
+        'parent_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
+
+
     /**
      * @return \DaveBaker\Core\App\Response|object|\SuttonBaker\Impresario\Controller\Base|null
      * @throws \DaveBaker\Core\Db\Exception
@@ -192,6 +206,13 @@ class EditController
                 $data['date_return_by'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReturnBy());
             }
 
+            if($this->modelInstance->getNetSell()){
+                $data['net_sell'] = (float) $this->modelInstance->getNetSell();
+            }
+
+            if($this->modelInstance->getNetSell()){
+                $data['net_cost'] = (float) $this->modelInstance->getNetCost();
+            }
 
             $applicator->configure(
                 $this->editForm,
@@ -200,9 +221,11 @@ class EditController
         }
     }
 
-
     /**
-     * @throws \DaveBaker\Core\Helper\Exception
+     * @param $data
+     * @return $this|void
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function saveFormValues($data)
@@ -211,8 +234,14 @@ class EditController
             return;
         }
 
+        foreach($this->nonUserValues as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
         // Add created by user
-        if(!$data['quote_id']) {
+        if(!$this->modelInstance->getQuoteId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
         }
 
@@ -230,12 +259,16 @@ class EditController
             $data['parent_id'] = $this->parentItem->getId();
         }
 
+        // Check if we need to create a new quote
+        if($this->modelInstance->getId() && ((float) $this->modelInstance->getNetCost() !== (float) $data['net_cost'] ||
+            (float) $this->modelInstance->getNetSell() !== (float) $data['net_sell'])
+        ) {
+            $this->modelInstance = $this->getQuoteHelper()->duplicateQuote($this->modelInstance);
+        }
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Quote $modelInstance */
-        $modelInstance = $this->createAppObject(QuoteDefinition::DEFINITION_MODEL);
-        $modelInstance->setData($data)->save();
 
-        $this->addMessage("The quote has been " . ($data['quote_id'] ? 'updated' : 'added'));
+        $this->addMessage("The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'added'));
+        $this->modelInstance->setData($data)->save();
         return $this;
     }
 

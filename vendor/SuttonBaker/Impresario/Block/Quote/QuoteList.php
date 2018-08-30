@@ -22,7 +22,7 @@ class QuoteList
     protected function _preDispatch()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $instanceCollection */
-        $instanceCollection = $this->getQuoteHelper()->getQuoteCollection();
+        $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes();
         $instanceItems = $instanceCollection->load();
 
 

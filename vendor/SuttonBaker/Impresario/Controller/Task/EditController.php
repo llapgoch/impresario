@@ -25,11 +25,10 @@ class EditController
     protected $modelInstance;
 
     protected $nonUserValues = [
-        'quote_id',
+        'task_id',
         'created_by_id',
-        'last_edited_by',
-        'client_id',
-        'enquiry_id',
+        'last_edited_by_id',
+        'task_type',
         'parent_id',
         'created_at',
         'updated_at',
@@ -49,6 +48,11 @@ class EditController
 
         $this->setModelInstance($this->getTaskHelper()->getTask());
 
+        if(!$instanceId){
+            $this->modelInstance->setTaskType($this->taskType);
+            $this->modelInstance->setParentId($parentId);
+        }
+
         if($instanceId){
             // We're loading, fellas!
             $this->modelInstance->load($instanceId);
@@ -64,9 +68,6 @@ class EditController
                 $this->getResponse()->redirectReferer();
             }
         }
-
-        $this->modelInstance->setTaskType($this->taskType);
-        $this->modelInstance->setParentId($parentId);
 
         $this->setParentItem($this->getParentItem($this->modelInstance));
         $this->setTaskType($this->getTaskHelper()->getTaskTypeForParent($this->parentItem));
@@ -199,6 +200,7 @@ class EditController
         $taskType = null;
         $parentId = null;
 
+
         if($instance->getId()){
             $taskType = $instance->getTaskType();
             $parentId = $instance->getParentId();
@@ -241,11 +243,9 @@ class EditController
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
+        $this->modelInstance->setData($data)->save();
+        $this->addMessage("The task has been " . ($this->modelInstance->getId() ? 'updated' : 'added'));
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Task $modelInstance */
-        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task');
-        $this->addMessage("The task has been " . ($data['task_id'] ? 'updated' : 'added'));
-        $modelInstance->setData($data)->save();
         return $this;
     }
 

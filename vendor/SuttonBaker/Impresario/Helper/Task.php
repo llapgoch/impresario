@@ -7,7 +7,7 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  * Class Task
  * @package SuttonBaker\Impresario\Helper
  */
-class Task extends \DaveBaker\Core\Helper\Base
+class Task extends Base
 {
 
     /**

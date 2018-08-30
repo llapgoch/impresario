@@ -7,7 +7,7 @@ use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
  * Class Enquiry
  * @package SuttonBaker\Impresario\Helper
  */
-class Enquiry extends \DaveBaker\Core\Helper\Base
+class Enquiry extends Base
 {
 
     /**

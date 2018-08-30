@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Helper;
  * Class Client
  * @package SuttonBaker\Impresario\Helper
  */
-class Client extends \DaveBaker\Core\Helper\Base
+class Client extends Base
 {
 
     /**

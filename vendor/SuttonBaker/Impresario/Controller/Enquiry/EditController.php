@@ -15,6 +15,19 @@ class EditController
     /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
     protected $enquiryEditForm;
 
+    /** @var \SuttonBaker\Impresario\Model\Db\Enquiry */
+    protected $modelInstance;
+
+    /** @var array  */
+    protected $nonUserValues = [
+        'enquiry_id',
+        'created_by_id',
+        'created_at',
+        'updated_at',
+        'is_deleted',
+        'last_edited_by_id'
+    ];
+
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
@@ -37,7 +50,7 @@ class EditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
+        $this->modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -74,9 +87,9 @@ class EditController
 
         if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
             // We're loading, fellas!
-            $modelInstance->load($instanceId);
+            $this->modelInstance->load($instanceId);
 
-            if(!$modelInstance->getId() || $modelInstance->getIsDeleted()){
+            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
                 $this->addMessage('The enquiry does not exist', Messages::ERROR);
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
             }
@@ -86,19 +99,19 @@ class EditController
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
         // Apply the values to the form element
-        if($modelInstance->getId()) {
-            $data = $modelInstance->getData();
+        if($this->modelInstance->getId()) {
+            $data = $this->modelInstance->getData();
 
-            if($modelInstance->getDateReceived()){
-                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateReceived());
+            if($this->modelInstance->getDateReceived()){
+                $data['date_received'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReceived());
             }
 
-            if($modelInstance->getDateCompleted()){
-                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getDateCompleted());
+            if($this->modelInstance->getDateCompleted()){
+                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateCompleted());
             }
 
-            if($modelInstance->getTargetDate()){
-                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($modelInstance->getTargetDate());
+            if($this->modelInstance->getTargetDate()){
+                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getTargetDate());
             }
 
             $applicator->configure(
@@ -119,6 +132,12 @@ class EditController
             return $this;
         }
 
+        foreach($this->nonUserValues as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
         // Add created by user
         if(!$data['enquiry_id']) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
@@ -126,10 +145,8 @@ class EditController
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry */
-        $enquiry = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
-        $this->addMessage("The enquiry has been " . ($data['enquiry_id'] ? 'updated' : 'added'));
-        $enquiry->setData($data)->save();
+        $this->addMessage("The enquiry has been " . ($this->modelInstance->getId() ? 'updated' : 'added'));
+        $this->modelInstance->setData($data)->save();
         return $this;
     }
 

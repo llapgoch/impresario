@@ -3,11 +3,12 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Helper
  */
-class Quote extends \DaveBaker\Core\Helper\Base
+class Quote extends Base
 {
 
     /**
@@ -27,6 +28,36 @@ class Quote extends \DaveBaker\Core\Helper\Base
         return $collection;
     }
 
+
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
+     *
+     * Gets a list of the most recent quotes for display
+     */
+    public function getDisplayQuotes()
+    {
+        $aggregateCollection = $this->getQuoteCollection();
+
+        $aggregateCollection
+            ->getSelect()->columns(new \Zend_Db_Expr('MAX(quote_id) as newest_quote_id'))
+            ->group('enquiry_id');
+
+        $maxIds = $aggregateCollection->getAllValuesFor('newest_quote_id');
+        $collection = $this->getQuoteCollection();
+
+        if(!count($maxIds)){
+            return $collection;
+        }
+
+        $collection->getSelect()->where('quote_id IN (?)', $maxIds);
+
+        return $collection;
+    }
+
     /**
      * @param string $entity
      * @param string $status
@@ -36,7 +67,6 @@ class Quote extends \DaveBaker\Core\Helper\Base
     public function getQuoteCollectionForEnquiry($enquiryId, $status)
     {
         $collection = $this->getQuoteCollection();
-
         $collection->getSelect()->where('enquiry_id=?', $enquiryId);
 
         if($status) {
@@ -69,6 +99,34 @@ class Quote extends \DaveBaker\Core\Helper\Base
         }
 
         return $entity;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function duplicateQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        if(!$quote->getId()){
+            return $quote;
+        }
+
+        $tasksCollection = $this->getTaskHelper()->getTaskCollectionForEntity(
+            $quote->getId(),
+            TaskDefinition::TASK_TYPE_QUOTE
+        );
+
+        $quote->setParentId($quote->getId())->unsQuoteId()->save();
+
+        foreach($tasksCollection->load() as $taskItem){
+            $taskItem->setParentId($quote->getId())->save();
+        }
+
+        return $quote;
     }
 
 }
