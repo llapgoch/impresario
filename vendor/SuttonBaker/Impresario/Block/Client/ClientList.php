@@ -29,7 +29,7 @@ class ClientList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getClientHelper()->getClientCollection()
             ->addOutputProcessors([
-                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
+                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 

@@ -33,7 +33,7 @@ class QuoteList
                 'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
-                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
+                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 

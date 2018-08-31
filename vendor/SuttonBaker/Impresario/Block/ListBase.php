@@ -11,20 +11,29 @@ abstract class ListBase extends Base
     protected abstract function getEditPageIdentifier();
     protected abstract function getBlockPrefix();
 
+    /** @var \SuttonBaker\Impresario\Helper\Listing\Utility */
+    protected $listingUtility;
+
     /**
+     * @param $value
      * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
      * @return string
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getLinkHtml(
+    public function getEditLinkHtml(
         $value,
         \DaveBaker\Core\Model\Db\BaseInterface $instance
     ) {
-        return "<a href={$this->getEditUrl($instance)}>" . $this->escapeHtml('Edit') . "</a>";
+        return $this->getListingUtility()->getEditLinkHtml(
+            $this->getEditPageIdentifier(),
+            $this->getInstanceIdParam(),
+            $value,
+            $instance
+        );
     }
 
     /**
-     * @param mixed $value
+     * @param $value
      * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
      * @return mixed
      * @throws \DaveBaker\Core\App\Exception
@@ -36,43 +45,24 @@ abstract class ListBase extends Base
         $value,
         \DaveBaker\Core\Model\Db\BaseInterface $instance
     ) {
-        $instanceId = $instance->getId();
-        $prefix = $this->getBlockPrefix();
-
-        /** @var \DaveBaker\Form\Block\Form $form */
-        $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "{$prefix}.list.delete.{$instanceId}")
-            ->setElementName("{$prefix}_list_delete");
-
-        /** @var \DaveBaker\Form\Block\Input\Submit $submit */
-        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "{$prefix}.list.delete.submit.{$instanceId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $id = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$prefix}.list.delete.id.{$instanceId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $action = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$prefix}.list.delete.action.{$instanceId}");
-
-        $submit->setElementName('submit')
-            ->setElementValue("Delete");
-
-        $id->setElementValue($instanceId)->setElementName($this->getInstanceIdParam());
-        $action->setElementName('action')->setElementValue('delete');
-
-        $form->addChildBlock([$submit, $id, $action]);
-
-        return $form->render();
+        return $this->getListingUtility()->getDeleteBlockHtml(
+            $this->getInstanceIdParam(),
+            $this->getBlockPrefix(),
+            $value,
+            $instance
+        );
     }
 
     /**
-     * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
-     * @return mixed
+     * @return \SuttonBaker\Impresario\Helper\Listing\Utility
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getEditUrl(\DaveBaker\Core\Model\Db\BaseInterface $instance)
+    protected function getListingUtility()
     {
-        return $this->getApp()->getHelper('Url')->getPageUrl(
-            $this->getEditPageIdentifier(),
-            [$this->getInstanceIdParam() => $instance->getId()]
-        );
+        if(!$this->listingUtility) {
+            $this->listingUtility = $this->createAppObject('\SuttonBaker\Impresario\Helper\Listing\Utility');
+        }
+
+        return $this->listingUtility;
     }
 }
