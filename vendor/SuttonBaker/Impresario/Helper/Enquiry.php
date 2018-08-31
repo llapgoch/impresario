@@ -65,4 +65,13 @@ class Enquiry extends Base
 
         return $enquiry;
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Enquiry\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getStatusOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Enquiry\Status');
+    }
 }

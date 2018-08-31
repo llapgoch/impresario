@@ -10,18 +10,27 @@ class EnquiryList
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /**
-     * @return \DaveBaker\Core\Block\Base|void
+     * @return \SuttonBaker\Impresario\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
     {
+        $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
+
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $enquiryCollection */
-        $enquiryCollection = $this->getEnquiryHelper()->getEnquiryCollection();
-        $enquiryItems = $enquiryCollection->load();
+        $enquiryCollection = $this->getEnquiryHelper()->getEnquiryCollection()
+            ->addOutputProcessors([
+                'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
+                'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
+                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
+                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
+                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
+            ]);
 
         $this->addChildBlock(
             $this->createBlock(
@@ -30,48 +39,14 @@ class EnquiryList
             )->setTemplate('enquiry/list/action_bar.phtml')
         );
 
-
+        $this->addChildBlock($this->getMessagesBlock());
 
         $this->addChildBlock(
-            $this->getMessagesBlock()
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Table',
+                'enquiry.list.table'
+            )->setHeaders($tableHeaders)->setRecords($enquiryCollection->load())->addEscapeExcludes(['edit_column', 'delete_column'])
         );
-
-
-        if(count($enquiryItems)) {
-           $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
-
-            // Process table values
-            foreach($enquiryItems as $enquiry){
-                $enquiry->setData('edit_column',  $this->getLinkHtml($enquiry));
-                $enquiry->setData('delete_column', $this->getDeleteBlockHtml($enquiry->getId()));
-
-
-                if($value = $enquiry->getData('date_received')) {
-                    $enquiry->setData(
-                        'date_received',
-                        $this->getDateHelper()->utcDbDateToShortLocalOutput($value)
-                    );
-                }
-
-                if($value = $enquiry->getTargetDate()) {
-                    $enquiry->setData(
-                        'target_date',
-                        $this->getDateHelper()->utcDbDateToShortLocalOutput($value)
-                    );
-                }
-
-                if($value = $enquiry->getStatus()) {
-                    $enquiry->setStatus($this->getEnquiryHelper()->getStatusDisplayName($value));
-                }
-            }
-
-            $this->addChildBlock(
-                $this->createBlock(
-                    '\DaveBaker\Core\Block\Html\Table',
-                    'enquiry.list.table'
-                )->setHeaders($tableHeaders)->setRecords($enquiryItems)->addEscapeExcludes(['edit_column', 'delete_column'])
-            );
-        }
     }
 
     /**
@@ -92,8 +67,10 @@ class EnquiryList
      * @return string
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getLinkHtml(\SuttonBaker\Impresario\Model\Db\Enquiry $enquiry)
-    {
+    public function getLinkHtml(
+        $value,
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ) {
         return "<a href={$this->getEditUrl($enquiry)}>" . $this->escapeHtml('Edit Enquiry') . "</a>";
     }
 
@@ -105,8 +82,12 @@ class EnquiryList
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getDeleteBlockHtml($enquiryId)
-    {
+    public function getDeleteBlockHtml(
+        $value,
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ) {
+        $enquiryId = $enquiry->getId();
+
         /** @var \DaveBaker\Form\Block\Form $form */
         $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "enquiry.list.delete.{$enquiryId}")
             ->setElementName('enquiry_delete');
