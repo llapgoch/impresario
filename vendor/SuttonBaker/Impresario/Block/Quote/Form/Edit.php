@@ -69,21 +69,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
             );
 
-
-            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
-            $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $entityId,
-                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
-                \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
+            $this->taskTableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Task\TaskTable',
+                "{$prefixKey}.task.table"
             );
 
-            $taskItems = $taskInstance->load();
-            $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
-
-            $this->taskTableBlock = $this->createBlock('\SuttonBaker\Impresario\Block\Task\TaskTable', "{$prefixKey}.task.table");
             $this->taskTableBlock->setInstanceCollection(
-                $this->getTaskHelper()->getTaskCollectionForEntity($entityId, TaskDefinition::TASK_TYPE_QUOTE)
-            )->setEditLinkParams(['horse' => 'goose']);
+                $this->getTaskHelper()->getTaskCollectionForEntity(
+                    $entityId,
+                    TaskDefinition::TASK_TYPE_QUOTE,
+                    TaskDefinition::STATUS_OPEN
+                )
+            )->setEditLinkParams([
+                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+            ]);
 
             $this->addChildBlock($this->taskTableBlock);
         }
@@ -131,7 +130,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]
                     )
-                ],
+                ]
             ], [
                 'name' => 'project_manager_id',
                 'labelName' => 'Project Manager',

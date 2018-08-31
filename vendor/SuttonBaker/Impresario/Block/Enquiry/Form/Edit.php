@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
 use \SuttonBaker\Impresario\Definition\Enquiry;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class Edit
@@ -42,62 +43,45 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $heading = "Update {$prefixName}";
             $editMode = true;
 
-            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $tasks */
-            $taskInstance = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $entityId,
-                \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                \SuttonBaker\Impresario\Definition\Task::STATUS_OPEN
-            );
+            $quoteEntity = $entityInstance->getQuoteEntity();
+            $urlParams = [];
 
-            $taskItems = $taskInstance->load();
-            $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
-
-            if($entityId) {
-                $this->addChildBlock(
-                    $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.task')
-                        ->setTag('a')
-                        ->setTagText('Create New Task')
-                        ->addAttribute(
-                            ['href' => $this->getPageUrl(
-                                \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-                                [
-                                    'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                                    'parent_id' => $entityId
-                                ],
-                                $this->getApp()->getHelper('Url')->getCurrentUrl()
-                            )]
-                        )
-                );
-
-                $quoteEntity = $entityInstance->getQuoteEntity();
-                $urlParams = [];
-
-                if($quoteEntity->getId()){
-                    $urlParams['quote_id'] = $quoteEntity->getId();
-                }else{
-                    $urlParams['enquiry_id'] = $entityId;
-                }
-
-                $this->addChildBlock(
-                    $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
-                        ->setTag('a')
-                        ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
-                        ->addAttribute(
-                            ['href' => $this->getPageUrl(
-                                \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                                $urlParams,
-                                $this->getApp()->getHelper('Url')->getCurrentUrl()
-                            )]
-                        )
-                );
+            if($quoteEntity->getId()){
+                $urlParams['quote_id'] = $quoteEntity->getId();
+            }else{
+                $urlParams['enquiry_id'] = $entityId;
             }
 
             $this->addChildBlock(
-                $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
-                    ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
-                        ['edit_column', 'delete_column']
-                )
+                $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
+                    ->setTag('a')
+                    ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
+                    ->addAttribute(
+                        ['href' => $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
+                            $urlParams,
+                            $this->getApp()->getHelper('Url')->getCurrentUrl()
+                        )]
+                    )
             );
+
+            $this->taskTableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Task\TaskTable',
+                "{$prefixKey}.task.table"
+            );
+
+            $this->taskTableBlock->setInstanceCollection(
+                $this->getTaskHelper()->getTaskCollectionForEntity(
+                    $entityId,
+                    TaskDefinition::TASK_TYPE_ENQUIRY,
+                    TaskDefinition::STATUS_OPEN
+                )
+            )->setEditLinkParams([
+                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+            ]);
+
+            $this->addChildBlock($this->taskTableBlock);
+
         }
 
         $this->addChildBlock(
