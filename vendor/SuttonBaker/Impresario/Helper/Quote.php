@@ -156,4 +156,13 @@ class Quote extends Base
         return $quote;
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getStatusOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status');
+    }
+
 }

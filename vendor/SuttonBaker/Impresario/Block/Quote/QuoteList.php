@@ -2,17 +2,19 @@
 
 namespace SuttonBaker\Impresario\Block\Quote;
 
+use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 /**
  * Class QuoteList
  * @package SuttonBaker\Impresario\Block\Quote
  */
 class QuoteList
-    extends \SuttonBaker\Impresario\Block\Base
+    extends \SuttonBaker\Impresario\Block\ListBase
     implements \DaveBaker\Core\Block\BlockInterface
 {
     const BLOCK_PREFIX = 'quote';
     const COMPLETED_KEY = 'completed';
+    const ID_PARAM = 'quote_id';
 
     /**
      * @return \SuttonBaker\Impresario\Block\Base|void
@@ -25,51 +27,27 @@ class QuoteList
      */
     protected function _preDispatch()
     {
-        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $instanceCollection */
-        $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes();
-        $instanceItems = $instanceCollection->load();
+        $tableHeaders = \SuttonBaker\Impresario\Definition\Quote::TABLE_HEADERS;
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
+        $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
+            ->addOutputProcessors([
+                'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
+                'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
+                'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
+                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
+                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
+            ]);
+
+        $this->addChildBlock($this->getMessagesBlock());
 
         $this->addChildBlock(
-            $this->getMessagesBlock()
-        );
-
-        if(count($instanceItems)) {
-            $tableHeaders = QuoteDefinition::TABLE_HEADERS;
-            // add edit for each one
-            foreach($instanceItems as $instanceItem){
-                $instanceItem->setData('edit_column',  $this->getLinkHtml($instanceItem));
-                $instanceItem->setData('delete_column', $this->getDeleteBlockHtml($instanceItem->getId()));
-
-                if($value = $instanceItem->getDateReceived()) {
-                    $instanceItem->setDateReceived(
-                        $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($value)
-                    );
-                }
-
-                if($value = $instanceItem->getStatus()){
-                    $instanceItem->setStatus($this->getQuoteHelper()->getStatusDisplayName($value));
-                }
-            }
-
-            $this->addChildBlock(
-                $this->createBlock(
-                    '\DaveBaker\Core\Block\Html\Table',
-                    "{$this->getBlockPrefix()}.list.table"
-                )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
-            );
-        }
-    }
-
-    /**
-     * @param \SuttonBaker\Impresario\Model\Db\Quote $instance
-     * @return mixed
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function getEditUrl(\SuttonBaker\Impresario\Model\Db\Quote $instance)
-    {
-        return $this->getApp()->getHelper('Url')->getPageUrl(
-            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-            ['quote_id' => $instance->getId()]
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Table',
+                "{$this->getBlockPrefix()}.list.table"
+            )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
+                ['edit_column', 'delete_column']
+            )
         );
     }
 
@@ -82,47 +60,19 @@ class QuoteList
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Quote $instance
      * @return string
-     * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getLinkHtml(\SuttonBaker\Impresario\Model\Db\Quote $instance)
+    protected function getInstanceIdParam()
     {
-        return "<a href={$this->getEditUrl($instance)}>" . $this->escapeHtml('Edit Quote') . "</a>";
+        return self::ID_PARAM;
     }
 
     /**
-     * @param $instanceId
-     * @return mixed
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
+     * @return string
      */
-    protected function getDeleteBlockHtml($instanceId)
+    protected function getEditPageIdentifier()
     {
-        /** @var \DaveBaker\Form\Block\Form $form */
-        $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "{$this->getBlockPrefix()}.list.delete.{$instanceId}")
-            ->setElementName("{$this->getBlockPrefix()}_delete");
-
-        /** @var \DaveBaker\Form\Block\Input\Submit $submit */
-        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "{$this->getBlockPrefix()}.list.delete.submit.{$instanceId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $id = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$this->getBlockPrefix()}.list.delete.id.{$instanceId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $action = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$this->getBlockPrefix()}.list.delete.action.{$instanceId}");
-
-        $submit->setElementName('submit')
-            ->setElementValue("Delete");
-
-        $id->setElementValue($instanceId)->setElementName("{$this->getBlockPrefix()}_id");
-        $action->setElementName('action')->setElementValue('delete');
-
-        $form->addChildBlock([$submit, $id, $action]);
-
-        return $form->render();
+        return PageDefinition::QUOTE_EDIT;
     }
 
 }
