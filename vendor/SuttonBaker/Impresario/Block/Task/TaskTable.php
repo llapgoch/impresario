@@ -9,19 +9,45 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  * @package SuttonBaker\Impresario\Block\Task
  */
 class TaskTable
-    extends \SuttonBaker\Impresario\Block\Base
+    extends \SuttonBaker\Impresario\Block\Table\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
+    const BLOCK_PREFIX = 'task_table';
+    const ID_PARAM = 'task_id';
+    const COMPLETED_KEY = 'completed';
     /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
     protected $instanceCollection;
+
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
+     */
+    public function getInstanceCollection()
+    {
+        return $this->instanceCollection;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection
+     * @return $this
+     */
+    public function setInstanceCollection(
+        \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection
+    ) {
+        $this->instanceCollection = $instanceCollection;
+        return $this;
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
     {
-        $this->instanceCollection = $this->getTaskHelper()->getTaskCollection()
-            ->addOutputProcessors([
+        if(!$this->instanceCollection){
+            $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
+        }
+
+        $this->instanceCollection->addOutputProcessors([
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
                 'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),
@@ -30,12 +56,6 @@ class TaskTable
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 
-        if($this->getRequest()->getParam(self::COMPLETED_KEY)){
-            $this->instanceCollection->getSelect()->where(
-                'status=?',
-                \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE
-            );
-        }
     }
 
     /**
@@ -56,5 +76,29 @@ class TaskTable
                 ['edit_column', 'delete_column']
             )
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBlockPrefix()
+    {
+        return self::BLOCK_PREFIX;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInstanceIdParam()
+    {
+        return self::ID_PARAM;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getEditPageIdentifier()
+    {
+        return PageDefinition::TASK_EDIT;
     }
 }

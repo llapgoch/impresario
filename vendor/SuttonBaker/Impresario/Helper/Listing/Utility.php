@@ -20,9 +20,10 @@ class Utility
         $pageIdentifier,
         $instanceIdParam,
         $value,
-        \DaveBaker\Core\Model\Db\BaseInterface $instance
+        \DaveBaker\Core\Model\Db\BaseInterface $instance,
+        $params = []
     ) {
-        return "<a href={$this->getEditUrl($pageIdentifier, $instanceIdParam, $instance)}>" . $this->escapeHtml('Edit') . "</a>";
+        return "<a href={$this->getEditUrl($pageIdentifier, $instanceIdParam, $instance, $params)}>" . $this->escapeHtml('Edit') . "</a>";
     }
 
     /**
@@ -74,11 +75,12 @@ class Utility
     protected function getEditUrl(
         $pageIdentifier,
         $instanceIdParam,
-        \DaveBaker\Core\Model\Db\BaseInterface $instance)
-    {
+        \DaveBaker\Core\Model\Db\BaseInterface $instance,
+        $params = []
+    ) {
         return $this->getApp()->getHelper('Url')->getPageUrl(
             $pageIdentifier,
-            [$instanceIdParam => $instance->getId()]
+            array_merge([$instanceIdParam => $instance->getId()], $params)
         );
     }
 }

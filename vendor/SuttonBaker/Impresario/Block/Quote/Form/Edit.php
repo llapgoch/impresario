@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Quote\Form;
 
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class Edit
@@ -13,6 +14,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const ID_KEY = 'quote_id';
     const PREFIX_KEY = 'quote';
     const PREFIX_NAME = 'Quote';
+
+    /** @var \SuttonBaker\Impresario\Block\Task\TaskTable */
+    protected $taskTableBlock;
 
     /**
      * @return \DaveBaker\Form\Block\Form|void
@@ -76,12 +80,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $taskItems = $taskInstance->load();
             $headers = count($taskItems) ? array_keys($taskItems[0]->getData()) : [];
 
-            $this->addChildBlock(
-                $this->createBlock('\DaveBaker\Core\Block\Html\Table', "{$prefixKey}.task.table")
-                    ->setHeaders($headers)->setRecords($taskItems)->addEscapeExcludes(
-                        ['edit_column', 'delete_column']
-                    )
-            );
+            $this->taskTableBlock = $this->createBlock('\SuttonBaker\Impresario\Block\Task\TaskTable', "{$prefixKey}.task.table");
+            $this->taskTableBlock->setInstanceCollection(
+                $this->getTaskHelper()->getTaskCollectionForEntity($entityId, TaskDefinition::TASK_TYPE_QUOTE)
+            )->setEditLinkParams(['horse' => 'goose']);
+
+            $this->addChildBlock($this->taskTableBlock);
         }
 
 
@@ -223,5 +227,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $elements['status_element']->setShowFirstOption(false);
         $this->addChildBlock(array_values($elements));
     }
+
 
 }

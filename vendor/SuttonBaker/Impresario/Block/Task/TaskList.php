@@ -13,18 +13,15 @@ class TaskList
     implements \DaveBaker\Core\Block\BlockInterface
 {
     const BLOCK_PREFIX = 'task';
-    const COMPLETED_KEY = 'completed';
     const ID_PARAM = 'task_id';
 
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function _preRender()
+    protected function _preDispatch()
     {
         $this->addChildBlock(
             $this->createBlock(
@@ -45,8 +42,6 @@ class TaskList
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TaskTable',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())->addEscapeExcludes(
-                ['edit_column', 'delete_column']
             )
         );
     }
