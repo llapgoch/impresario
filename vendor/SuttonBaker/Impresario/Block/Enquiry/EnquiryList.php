@@ -1,14 +1,17 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block\Enquiry;
+
+use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 /**
  * Class EnquiryList
  * @package SuttonBaker\Impresario\Block\Enquiry
  */
 class EnquiryList
-    extends \SuttonBaker\Impresario\Block\Base
+    extends \SuttonBaker\Impresario\Block\ListBase
     implements \DaveBaker\Core\Block\BlockInterface
 {
+    const ID_PARAM = 'enquiry_id';
     /**
      * @return \SuttonBaker\Impresario\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -50,66 +53,19 @@ class EnquiryList
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
-     * @return mixed
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function getEditUrl(\SuttonBaker\Impresario\Model\Db\Enquiry $enquiry)
-    {
-        return $this->getApp()->getHelper('Url')->getPageUrl(
-            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
-            ['enquiry_id' => $enquiry->getId()]
-        );
-    }
-
-    /**
-     * @param \SuttonBaker\Impresario\Model\Db\Enquiry\ $enquiry
      * @return string
-     * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getLinkHtml(
-        $value,
-        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
-    ) {
-        return "<a href={$this->getEditUrl($enquiry)}>" . $this->escapeHtml('Edit Enquiry') . "</a>";
+    protected function getInstanceIdParam()
+    {
+        return self::ID_PARAM;
     }
 
     /**
-     * @param $enquiryId
-     * @return mixed
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
+     * @return string
      */
-    public function getDeleteBlockHtml(
-        $value,
-        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
-    ) {
-        $enquiryId = $enquiry->getId();
-
-        /** @var \DaveBaker\Form\Block\Form $form */
-        $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "enquiry.list.delete.{$enquiryId}")
-            ->setElementName('enquiry_delete');
-
-        /** @var \DaveBaker\Form\Block\Input\Submit $submit */
-        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "enquiry.list.delete.submit.{$enquiryId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $id = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "enquiry.list.delete.id.{$enquiryId}");
-
-        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-        $action = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "enquiry.list.delete.action.{$enquiryId}");
-
-        $submit->setElementName('submit')
-            ->setElementValue("Delete");
-
-        $id->setElementValue($enquiryId)->setElementName('enquiry_id');
-        $action->setElementName('action')->setElementValue('delete');
-
-        $form->addChildBlock([$submit, $id, $action]);
-
-        return $form->render();
+    protected function getEditPageIdentifier()
+    {
+        return PageDefinition::ENQUIRY_EDIT;
     }
 
 }
