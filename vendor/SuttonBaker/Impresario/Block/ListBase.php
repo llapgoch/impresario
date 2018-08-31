@@ -9,6 +9,7 @@ abstract class ListBase extends Base
 {
     protected abstract function getInstanceIdParam();
     protected abstract function getEditPageIdentifier();
+    protected abstract function getBlockPrefix();
 
     /**
      * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
@@ -36,7 +37,7 @@ abstract class ListBase extends Base
         \DaveBaker\Core\Model\Db\BaseInterface $instance
     ) {
         $instanceId = $instance->getId();
-        $prefix = $this->getInstanceIdParam();
+        $prefix = $this->getBlockPrefix();
 
         /** @var \DaveBaker\Form\Block\Form $form */
         $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "{$prefix}.list.delete.{$instanceId}")

@@ -2,17 +2,20 @@
 
 namespace SuttonBaker\Impresario\Block\Task;
 
+use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
  * Class TaskList
  * @package SuttonBaker\Impresario\Block\Task
  */
 class TaskList
-    extends \SuttonBaker\Impresario\Block\Base
+    extends \SuttonBaker\Impresario\Block\ListBase
     implements \DaveBaker\Core\Block\BlockInterface
 {
     const BLOCK_PREFIX = 'task';
     const COMPLETED_KEY = 'completed';
+    const ID_PARAM = 'task_id';
+
     /**
      * @return \DaveBaker\Core\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -23,11 +26,15 @@ class TaskList
      */
     protected function _preDispatch()
     {
+        $tableHeaders = TaskDefinition::TABLE_HEADERS;
+
         /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
         $instanceCollection = $this->getTaskHelper()->getTaskCollection()
             ->addOutputProcessors([
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
+                'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
+                'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),
+                'priority' => $this->getTaskHelper()->getPriorityOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
@@ -38,10 +45,6 @@ class TaskList
                 \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE
             );
         }
-
-
-
-        $instanceItems = $instanceCollection->load();
 
         $this->addChildBlock(
             $this->createBlock(
@@ -60,49 +63,13 @@ class TaskList
             $this->getMessagesBlock()
         );
 
-
-        if(count($instanceItems)) {
-            $tableHeaders = TaskDefinition::TABLE_HEADERS;
-            // add edit for each one
-            foreach($instanceItems as $instanceItem){
-                if($value = $instanceItem->getTargetDate()) {
-                    $instanceItem->setTargetDate(
-                        $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($value)
-                    );
-                }
-
-                if($value = $instanceItem->getPriority()){
-                    $instanceItem->setPriority($this->getTaskHelper()->getPriorityDisplayName($value));
-                }
-
-                if($value = $instanceItem->getTaskType()){
-                    $instanceItem->setTaskType($this->getTaskHelper()->getTaskTypeDisplayName($value));
-                }
-
-                if($value = $instanceItem->getStatus()){
-                    $instanceItem->setStatus($this->getTaskHelper()->getStatusDisplayName($value));
-                }
-            }
-
-            $this->addChildBlock(
-                $this->createBlock(
-                    '\DaveBaker\Core\Block\Html\Table',
-                    "{$this->getBlockPrefix()}.list.table"
-                )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['edit_column', 'delete_column'])
-            );
-        }
-    }
-
-    /**
-     * @param \SuttonBaker\Impresario\Model\Db\Task $instance
-     * @return mixed
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function getEditUrl(\SuttonBaker\Impresario\Model\Db\Task $instance)
-    {
-        return $this->getApp()->getHelper('Url')->getPageUrl(
-            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-            ['task_id' => $instance->getId()]
+        $this->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Table',
+                "{$this->getBlockPrefix()}.list.table"
+            )->setHeaders($tableHeaders)->setRecords($instanceCollection->load())->addEscapeExcludes(
+                ['edit_column', 'delete_column']
+            )
         );
     }
 
@@ -115,52 +82,19 @@ class TaskList
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Task $instance
      * @return string
-     * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getLinkHtml(
-        $value,
-        \SuttonBaker\Impresario\Model\Db\Task $instance)
+    protected function getInstanceIdParam()
     {
-        return "<a href={$this->getEditUrl($instance)}>" . $this->escapeHtml('Edit Task') . "</a>";
+        return self::ID_PARAM;
     }
 
     /**
-     * @param mixed $value
-     * @return \SuttonBaker\Impresario\Model\Db\Task $instance
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
+     * @return string
      */
-//    protected function getDeleteBlockHtml(
-//        $value,
-//        \SuttonBaker\Impresario\Model\Db\Task $instance
-//    ) {
-//        $instanceId = $instance->getId();
-//        /** @var \DaveBaker\Form\Block\Form $form */
-//        $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "{$this->getBlockPrefix()}.list.delete.{$instanceId}")
-//            ->setElementName("{$this->getBlockPrefix()}_delete");
-//
-//        /** @var \DaveBaker\Form\Block\Input\Submit $submit */
-//        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "{$this->getBlockPrefix()}.list.delete.submit.{$instanceId}");
-//
-//        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-//        $id = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$this->getBlockPrefix()}.list.delete.id.{$instanceId}");
-//
-//        /** @var \DaveBaker\Form\Block\Input\Hidden $id */
-//        $action = $this->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$this->getBlockPrefix()}.list.delete.action.{$instanceId}");
-//
-//        $submit->setElementName('submit')
-//            ->setElementValue("Delete");
-//
-//        $id->setElementValue($instanceId)->setElementName("{$this->getBlockPrefix()}_id");
-//        $action->setElementName('action')->setElementValue('delete');
-//
-//        $form->addChildBlock([$submit, $id, $action]);
-//
-//        return $form->render();
-//    }
+    protected function getEditPageIdentifier()
+    {
+        return PageDefinition::TASK_EDIT;
+    }
 
 }

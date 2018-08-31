@@ -12,6 +12,7 @@ class EnquiryList
     implements \DaveBaker\Core\Block\BlockInterface
 {
     const ID_PARAM = 'enquiry_id';
+    const BLOCK_PREFIX = 'enquiry';
     /**
      * @return \SuttonBaker\Impresario\Block\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -48,7 +49,9 @@ class EnquiryList
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Table',
                 'enquiry.list.table'
-            )->setHeaders($tableHeaders)->setRecords($enquiryCollection->load())->addEscapeExcludes(['edit_column', 'delete_column'])
+            )->setHeaders($tableHeaders)->setRecords($enquiryCollection->load())->addEscapeExcludes(
+                ['edit_column', 'delete_column']
+            )
         );
     }
 
@@ -66,6 +69,14 @@ class EnquiryList
     protected function getEditPageIdentifier()
     {
         return PageDefinition::ENQUIRY_EDIT;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBlockPrefix()
+    {
+        return self::BLOCK_PREFIX;
     }
 
 }

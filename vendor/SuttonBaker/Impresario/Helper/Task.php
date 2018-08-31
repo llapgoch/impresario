@@ -144,4 +144,31 @@ class Task extends Base
             return TaskDefinition::TASK_TYPE_QUOTE;
         }
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getStatusOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Task\Status');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getTaskTypeOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Task\Type');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getPriorityOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Task\Priority');
+    }
 }
