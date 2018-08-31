@@ -16,20 +16,16 @@ class TaskList
     const COMPLETED_KEY = 'completed';
     const ID_PARAM = 'task_id';
 
+    /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
+    protected $instanceCollection;
+
     /**
-     * @return \DaveBaker\Core\Block\Base|void
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
+     * @return \SuttonBaker\Impresario\Block\ListBase|void
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
     {
-        $tableHeaders = TaskDefinition::TABLE_HEADERS;
-
-        /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
-        $instanceCollection = $this->getTaskHelper()->getTaskCollection()
+        $this->instanceCollection = $this->getTaskHelper()->getTaskCollection()
             ->addOutputProcessors([
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
@@ -40,34 +36,44 @@ class TaskList
             ]);
 
         if($this->getRequest()->getParam(self::COMPLETED_KEY)){
-            $instanceCollection->getSelect()->where(
+            $this->instanceCollection->getSelect()->where(
                 'status=?',
                 \SuttonBaker\Impresario\Definition\Task::STATUS_COMPLETE
             );
         }
+    }
 
+
+    /**
+     * @return \SuttonBaker\Impresario\Block\ListBase|void
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _preRender()
+    {
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Component\ActionBar',
                 "{$this->getBlockPrefix()}.list.action.bar"
             )->addActionItem(
                 'All Tasks',
-                $this->getPageUrl(\SuttonBaker\Impresario\Definition\Page::TASK_LIST)
+                $this->getPageUrl(PageDefinition::TASK_LIST)
             )->addActionItem(
                 'Completed Tasks',
-                $this->getPageUrl(\SuttonBaker\Impresario\Definition\Page::TASK_LIST, ['completed' => 1])
+                $this->getPageUrl(PageDefinition::TASK_LIST, ['completed' => 1])
             )
         );
 
-        $this->addChildBlock(
-            $this->getMessagesBlock()
-        );
+        $this->addChildBlock($this->getMessagesBlock());
 
         $this->addChildBlock(
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Table',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders($tableHeaders)->setRecords($instanceCollection->load())->addEscapeExcludes(
+            )->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())->addEscapeExcludes(
                 ['edit_column', 'delete_column']
             )
         );

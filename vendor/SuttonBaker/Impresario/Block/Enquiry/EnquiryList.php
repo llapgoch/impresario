@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Enquiry;
 
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
+use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 /**
  * Class EnquiryList
  * @package SuttonBaker\Impresario\Block\Enquiry
@@ -13,21 +14,14 @@ class EnquiryList
 {
     const ID_PARAM = 'enquiry_id';
     const BLOCK_PREFIX = 'enquiry';
-    /**
-     * @return \SuttonBaker\Impresario\Block\Base|void
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
+
+    /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $instanceCollection */
+    protected $instanceCollection;
+
     protected function _preDispatch()
     {
-        $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
-
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $enquiryCollection */
-        $enquiryCollection = $this->getEnquiryHelper()->getEnquiryCollection()
+        $this->instanceCollection = $this->getEnquiryHelper()->getEnquiryCollection()
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
@@ -35,11 +29,24 @@ class EnquiryList
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getLinkHtml']),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Block\ListBase|void
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _preRender()
+    {
+        $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
 
         $this->addChildBlock(
             $this->createBlock(
                 '\DaveBaker\Core\Block\Template',
-                'enquiry.list.action.bar'
+                "{$this->getBlockPrefix()}.list.action.bar"
             )->setTemplate('enquiry/list/action_bar.phtml')
         );
 
@@ -48,10 +55,10 @@ class EnquiryList
         $this->addChildBlock(
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Table',
-                'enquiry.list.table'
-            )->setHeaders($tableHeaders)->setRecords($enquiryCollection->load())->addEscapeExcludes(
-                ['edit_column', 'delete_column']
-            )
+                "{$this->getBlockPrefix()}.list.table'"
+            )->setHeaders(EnquiryDefinition::TABLE_HEADERS)
+                ->setRecords($this->instanceCollection->load())
+                ->addEscapeExcludes(['edit_column', 'delete_column'])
         );
     }
 

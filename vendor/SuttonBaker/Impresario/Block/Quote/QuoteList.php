@@ -27,8 +27,6 @@ class QuoteList
      */
     protected function _preDispatch()
     {
-        $tableHeaders = \SuttonBaker\Impresario\Definition\Quote::TABLE_HEADERS;
-
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
             ->addOutputProcessors([
@@ -45,7 +43,7 @@ class QuoteList
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Table',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
+            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
                 ['edit_column', 'delete_column']
             )
         );
