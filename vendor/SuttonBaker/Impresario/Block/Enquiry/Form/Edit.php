@@ -79,10 +79,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]);
 
             $this->addChildBlock($this->taskTableBlock);
-
         }
-
-
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -163,8 +160,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )]
             ], [
                 'name' => 'submit',
-                'type' => 'Input\Submit',
-                'value' => $editMode ? 'Update Enquiry' : 'Create Enquiry'
+                'type' => '\DaveBaker\Form\Block\Button',
+                'data' => ['button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry']
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',

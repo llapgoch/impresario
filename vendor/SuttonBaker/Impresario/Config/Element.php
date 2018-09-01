@@ -15,12 +15,15 @@ class Element extends \DaveBaker\Core\Config\Element
         $this->mergeConfig([
             'elementClasses' => [
                 'input' => 'form-control',
+                'input-submit' => 'btn btn-primary',
                 'select' => 'form-control',
                 'textarea' => 'form-control',
-                'button' => 'form-control',
+                'button' => 'btn btn-primary',
                 'tile-white' => 'transparent-white',
                 'tile-black' => 'transparent-black',
-                'form' => 'form-horizontal'
+                'form' => 'form-horizontal',
+                'label' => 'col-sm-4 control-label',
+                'form-group' => 'form-group'
             ]
         ]);
 

@@ -1,0 +1,7 @@
+<?php /** @var \DaveBaker\Form\Block\Group $block */ ?>
+<div <?php echo $block->getAttrs();?>>
+    <?php echo $block->getChildHtml('label');?>
+    <div class="col-sm-8">
+        <?php echo $block->getChildHtml('element');?>
+    </div>
+</div>
