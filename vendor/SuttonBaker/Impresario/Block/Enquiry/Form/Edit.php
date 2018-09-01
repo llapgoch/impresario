@@ -85,6 +85,37 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName('enquiry_edit');
 
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
+        //
+//
+//
+//        // Project Manager
+//        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
+//
+//        // Engineer
+//        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
+//
+//        // Completed by Users
+//        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
+//
+//        // Statuses
+//        $this->createArraySelectConnector()
+//            ->configure(Enquiry::getStatuses(), $elements['status_element']);
+//
+//        $elements['status_element']->setShowFirstOption(false);
+
         $elements = $builder->build([
             [
                 'name' => 'date_received',
@@ -104,7 +135,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'client_id',
                 'labelName' => 'Client',
                 'formGroup' => true,
-                'type' => 'Select'
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $clients
+                ]
             ], [
                 'name' => 'project_manager_id',
                 'labelName' => 'Project Manager',
@@ -174,42 +208,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->addChildBlock(array_values($elements));
-
-//        foreach($this->getValueFormElements() as $element){
-//            var_dump($element->getName());
-//        }
-
-
-        // Set up special values
-
-        // Client
-//        $clients = $this->getClientHelper()->getClientCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($clients, 'client_id', 'client_name', $elements['client_id_element']);
-//
-//
-//        // Project Manager
-//        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
-//
-//        // Engineer
-//        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
-//
-//        // Completed by Users
-//        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
-//
-//        // Statuses
-//        $this->createArraySelectConnector()
-//            ->configure(Enquiry::getStatuses(), $elements['status_element']);
-//
-//        $elements['status_element']->setShowFirstOption(false);
-
-
 
     }
 
