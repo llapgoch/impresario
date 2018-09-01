@@ -41,6 +41,15 @@ class EnquiryList
      */
     protected function _preRender()
     {
+
+        $this->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "enquiry.list.heading")
+                ->setHeading("Enquiries")
+                ->setTemplate('core/main-header.phtml')
+        );
+
         $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
 
         $this->addChildBlock(

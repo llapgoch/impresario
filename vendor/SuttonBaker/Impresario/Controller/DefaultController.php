@@ -14,6 +14,6 @@ class DefaultController
 
     public function execute()
     {
-
+        $userData = get_userdata( 1);
     }
 }

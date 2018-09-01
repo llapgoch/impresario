@@ -1,0 +1,28 @@
+<?php /** @var \DaveBaker\Core\Block\Template $block */ ?>
+<section class="tile color <?php echo $block->getClassValueString();?>" <?php echo $block->getAttrs(false);?>>
+    <?php if($block->getHeading()):?>
+        <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2";?>
+        <div class="tile-header">
+            <<?php echo $headingTag;?>><?php echo $block->getHeading();?></<?php echo $headingTag;?>>
+        </div>
+        <?php if($block->getChildHtml('controls')):?>
+            <div class="controls">
+                <?php echo $childHtml; ?>
+            </div>
+        <?php endif; ?>
+    <?php endif;?>
+
+    <?php if($childHtml = $block->getChildHtml('form')):?>
+        <div class="tile-body">
+            <?php echo $childHtml;?>
+        </div>
+    <?php endif;?>
+
+    <?php if($childHtml = $block->getChildHtml('footer')):?>
+        <div class="form-group form-footer">
+            <div class="col-sm-offset-4 col-sm-8">
+                <?php echo $childHtml;?>
+            </div>
+        </div>
+    <?php endif; ?>
+</section>

@@ -10,7 +10,13 @@ class Main
     implements \DaveBaker\Core\Main\MainInterface
 {
 
-    public function init(){}
+    /**
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function init()
+    {
+        $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
+    }
 
     /**
      * @throws \DaveBaker\Core\Controller\Exception
@@ -53,6 +59,7 @@ class Main
     public function registerLayouts()
     {
         $this->getApp()->getLayoutManager()->register([
+            '\SuttonBaker\Impresario\Layout\GlobalLayout',
             '\SuttonBaker\Impresario\Layout\Client',
             '\SuttonBaker\Impresario\Layout\Enquiry',
             '\SuttonBaker\Impresario\Layout\Task',

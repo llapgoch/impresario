@@ -31,16 +31,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-
-        $heading = "Create {$prefixName}";
+        $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $editMode = false;
 
-        $this->addChildBlock($this->getMessagesBlock());
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+        if($entityId){
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
-            $heading = "Update {$prefixName}";
+
             $editMode = true;
 
             $quoteEntity = $entityInstance->getQuoteEntity();
@@ -84,10 +82,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         }
 
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Core\Block\Html\Heading', "{$prefixKey}.form.edit.heading")
-                ->setHeading($heading)
-        );
+
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')

@@ -33,7 +33,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
-        $heading = "Create {$prefixName}";
+        $heading = "Create New {$prefixName}";
         $editMode = false;
 
         $enquiryItem = $this->getApp()->getRegistry()->get('enquiry_item');
@@ -45,8 +45,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Core\Block\Html\Heading', "{$prefixKey}.form.edit.heading")
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "quote.edit.heading")
                 ->setHeading($heading)
+                ->setTemplate('core/main-header.phtml')
         );
 
         $this->addChildBlock($this->getMessagesBlock());

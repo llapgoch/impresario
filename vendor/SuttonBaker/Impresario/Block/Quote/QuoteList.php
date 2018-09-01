@@ -27,6 +27,14 @@ class QuoteList
      */
     protected function _preDispatch()
     {
+        $this->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "quote.list.heading")
+                ->setHeading("Quotes")
+                ->setTemplate('core/main-header.phtml')
+        );
+
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
             ->addOutputProcessors([

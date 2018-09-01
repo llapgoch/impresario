@@ -18,7 +18,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
-        $heading = 'Add Client';
+        $heading = 'Create New Client';
         $editMode = false;
 
         if($clientId = $this->getRequest()->getParam('client_id')){
@@ -28,8 +28,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Core\Block\Html\Heading', 'client.form.edit.heading')
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "client.edit.heading")
                 ->setHeading($heading)
+                ->setTemplate('core/main-header.phtml')
         );
 
         // Name

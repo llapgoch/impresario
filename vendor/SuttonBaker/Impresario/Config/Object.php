@@ -18,6 +18,9 @@ class Object extends \DaveBaker\Core\Config\Object
             ],
             '\DaveBaker\Core\Config\Layout' => [
                 'definition' => '\SuttonBaker\Impresario\Config\Layout'
+            ],
+            '\DaveBaker\Core\Config\Element' => [
+                'definition' => '\SuttonBaker\Impresario\Config\Element'
             ]
         ]);
     }

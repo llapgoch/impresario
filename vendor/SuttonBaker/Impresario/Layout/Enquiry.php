@@ -13,7 +13,23 @@ class Enquiry extends \DaveBaker\Core\Layout\Base
      */
     public function enquiryEditHandle()
     {
+        $entityId = $this->getRequest()->getParam('enquiry_id');
         $this->addBlock(
+            $formContainer = $this->createBlock('\SuttonBaker\Impresario\Block\Form\Container', 'enquiry.edit.form.container')
+                ->setShortcode('body_content')
+        );
+
+        $formContainer->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "enquiry.form.edit.heading")
+                ->setHeading($entityId ? 'Edit Enquity' : 'Create New Enquiry')
+                ->setTemplate('core/main-header.phtml')
+        );
+
+        $formContainer->addChildBlock($this->getBlockManager()->getMessagesBlock());
+
+        $formContainer->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Enquiry\Form\Edit',
                 'enquiry.form.edit'

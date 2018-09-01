@@ -24,6 +24,14 @@ class ClientList
      */
     protected function _preDispatch()
     {
+        $this->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "client.list.heading")
+                ->setHeading("Clients")
+                ->setTemplate('core/main-header.phtml')
+        );
+
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */

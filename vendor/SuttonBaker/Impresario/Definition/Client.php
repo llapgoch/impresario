@@ -8,6 +8,7 @@ namespace SuttonBaker\Impresario\Definition;
 class Client
 {
     const TABLE_HEADERS = [
+        'client_id' => 'ID',
         'client_name' => 'Client Name',
         'address_line1' => 'Address',
         'postcode' => 'Postcode',
