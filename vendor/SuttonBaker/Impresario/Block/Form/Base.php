@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Block\Form;
  * Class Base
  * @package SuttonBaker\Impresario\Block
  */
-class Base extends \DaveBaker\Form\Block\Form
+abstract class Base extends \DaveBaker\Form\Block\Form
 {
     /**
      * @return \SuttonBaker\Impresario\Helper\Task

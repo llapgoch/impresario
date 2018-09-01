@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Helper;
  * Class Base
  * @package SuttonBaker\Impresario\Helper
  */
-class Base extends \DaveBaker\Core\Helper\Base
+abstract class Base extends \DaveBaker\Core\Helper\Base
 {
     /**
      * @param string $key

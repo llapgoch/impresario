@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper\OutputProcessor;
 
-class Base
+abstract class Base
     extends \DaveBaker\Core\Helper\OutputProcessor\Base
 {
     /**

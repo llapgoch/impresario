@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Block;
  * Class Base
  * @package SuttonBaker\Impresario\Block
  */
-class Base extends \DaveBaker\Core\Block\Base
+abstract class Base extends \DaveBaker\Core\Block\Base
 {
     /**
      * @return \DaveBaker\Core\Helper\Date

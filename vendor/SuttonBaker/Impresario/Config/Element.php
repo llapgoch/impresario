@@ -17,7 +17,10 @@ class Element extends \DaveBaker\Core\Config\Element
                 'input' => 'form-control',
                 'select' => 'form-control',
                 'textarea' => 'form-control',
-                'button' => 'form-control'
+                'button' => 'form-control',
+                'tile-white' => 'transparent-white',
+                'tile-black' => 'transparent-black',
+                'form' => 'form-horizontal'
             ]
         ]);
 

@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Controller;
  * Class Base
  * @package SuttonBaker\Impresario\Controller
  */
-class Base
+abstract class Base
     extends \DaveBaker\Core\Controller\Base
 {
     /**

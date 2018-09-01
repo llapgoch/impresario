@@ -92,6 +92,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             [
                 'name' => 'date_received',
                 'labelName' => 'Date Received',
+                'formGroup' => true,
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
@@ -99,29 +100,36 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'client_reference',
                 'labelName' => 'Client Reference',
+                'formGroup' => true,
                 'type' => 'Input\Text',
                 'attributes' => ['autocomplete' => 'off']
             ], [
                 'name' => 'client_id',
                 'labelName' => 'Client',
+                'formGroup' => true,
                 'type' => 'Select'
             ], [
                 'name' => 'project_manager_id',
                 'labelName' => 'Project Manager',
-                'type' => 'Select'
+                'type' => 'Select',
+                'formGroup' => true,
+
             ], [
                 'name' => 'engineer_id',
                 'labelName' => 'Engineer',
-                'type' => 'Select'
+                'type' => 'Select',
+                'formGroup' => true,
             ], [
                 'name' => 'site_name',
                 'labelName' => 'Site Name',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'formGroup' => true,
             ], [
                 'name' => 'target_date',
                 'labelName' => 'Target Date',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
+                'formGroup' => true,
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
@@ -130,18 +138,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
+                'formGroup' => true,
                 'type' => 'TextArea'
             ], [
                 'name' => 'status',
                 'labelName' => 'Enquiry Status',
+                'formGroup' => true,
                 'type' => 'Select'
             ], [
                 'name' => 'completed_by_id',
                 'labelName' => 'Completed By',
+                'formGroup' => true,
                 'type' => 'Select'
             ], [
                 'name' => 'date_completed',
                 'labelName' => 'Date Completed',
+                'formGroup' => true,
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'attributes' => [
@@ -164,38 +176,44 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
+        $this->addChildBlock(array_values($elements));
+
+//        foreach($this->getValueFormElements() as $element){
+//            var_dump($element->getName());
+//        }
+
 
         // Set up special values
 
         // Client
-        $clients = $this->getClientHelper()->getClientCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($clients, 'client_id', 'client_name', $elements['client_id_element']);
+//        $clients = $this->getClientHelper()->getClientCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($clients, 'client_id', 'client_name', $elements['client_id_element']);
+//
+//
+//        // Project Manager
+//        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
+//
+//        // Engineer
+//        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
+//
+//        // Completed by Users
+//        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
+//        $this->createCollectionSelectConnector()
+//            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
+//
+//        // Statuses
+//        $this->createArraySelectConnector()
+//            ->configure(Enquiry::getStatuses(), $elements['status_element']);
+//
+//        $elements['status_element']->setShowFirstOption(false);
 
 
-        // Project Manager
-        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
 
-        // Engineer
-        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
-
-        // Completed by Users
-        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
-
-        // Statuses
-        $this->createArraySelectConnector()
-            ->configure(Enquiry::getStatuses(), $elements['status_element']);
-
-        $elements['status_element']->setShowFirstOption(false);
-
-
-        $this->addChildBlock(array_values($elements));
     }
 
     /**
