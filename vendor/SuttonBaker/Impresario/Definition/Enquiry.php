@@ -8,9 +8,9 @@ namespace SuttonBaker\Impresario\Definition;
 class Enquiry
 {
     const STATUS_OPEN = 'open';
+    const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
+    const STATUS_REPORT_COMPLETE  = 'report_complete';
     const STATUS_COMPLETE = 'complete';
-    const STATUS_ON_HOLD  = 'on_hold';
-    const STATUS_IN_PROGRESS = 'in_progress';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Enquiry';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection';
@@ -35,8 +35,8 @@ class Enquiry
     {
         return [
             self::STATUS_OPEN => 'Open',
-            self::STATUS_IN_PROGRESS => 'In Progress',
-            self::STATUS_ON_HOLD => 'On Hold',
+            self::STATUS_ENGINEER_ASSIGNED => 'Engineer Assigned',
+            self::STATUS_REPORT_COMPLETE => 'Report Complete',
             self::STATUS_COMPLETE => 'Complete'
         ];
     }

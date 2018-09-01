@@ -23,7 +23,7 @@ class Enquiry extends \DaveBaker\Core\Layout\Base
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Heading',
                 "enquiry.form.edit.heading")
-                ->setHeading($entityId ? 'Edit Enquity' : 'Create New Enquiry')
+                ->setHeading($entityId ? 'Edit Enquiry' : 'Create New Enquiry')
                 ->setTemplate('core/main-header.phtml')
         );
 

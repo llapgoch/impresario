@@ -22,9 +22,5 @@ class GlobalEvents extends \DaveBaker\Core\Base
             return $classes;
         });
 
-        $this->addEvent('impressario_get_nav_items', function($classes){
-
-            return "horse";
-        });
     }
 }
