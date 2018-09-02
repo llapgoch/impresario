@@ -9,6 +9,8 @@ class GlobalLayout extends \DaveBaker\Core\Layout\Base
 {
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
      */
     public function defaultHandle()
     {

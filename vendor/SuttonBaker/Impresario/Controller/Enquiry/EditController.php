@@ -171,7 +171,7 @@ class EditController
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
             'enquiry.edit.form.errors'
-        )->setOrder('after', 'enquiry.form.edit.heading')->addErrors($validator->getErrors());
+        )->setOrder('before', '')->addErrors($validator->getErrors());
 
         $this->enquiryEditForm->addChildBlock($errorBlock);
 

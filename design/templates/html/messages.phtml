@@ -1,0 +1,16 @@
+<?php
+/** @var $block \DaveBaker\Core\Block\Html\Messages */
+?>
+<?php if($messagesTypes = $block->getMessages()):?>
+    <div <?php echo $block->getAttrs();?>>
+        <ul>
+            <?php foreach($messagesTypes as $type => $messages):?>
+                <?php foreach($messages as $message):?>
+                    <li class="<?php echo $type;?>">
+                        <?php echo $block->escapeHtml($block->_($message));?>
+                    </li>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>

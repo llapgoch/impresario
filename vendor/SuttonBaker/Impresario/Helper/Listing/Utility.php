@@ -48,7 +48,10 @@ class Utility
             ->setElementName("{$blockPrefix}_list_delete");
 
         /** @var \DaveBaker\Form\Block\Input\Submit $submit */
-        $submit = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Submit', "{$blockPrefix}.list.delete.submit.{$instanceId}");
+        $submit = $this->getApp()->getBlockManager()->createBlock(
+            '\DaveBaker\Form\Block\Button',
+            "{$blockPrefix}.list.delete.submit.{$instanceId}"
+        )->setButtonName('Delete');
 
         /** @var \DaveBaker\Form\Block\Input\Hidden $id */
         $id = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Input\Hidden', "{$blockPrefix}.list.delete.id.{$instanceId}");
@@ -62,7 +65,9 @@ class Utility
         $id->setElementValue($instanceId)->setElementName($instanceIdParam);
         $action->setElementName('action')->setElementValue('delete');
 
-        $form->addChildBlock([$submit, $id, $action]);
+        $form->addChildBlock([$submit, $id, $action])->preDispatch();
+
+        $submit->removeClass('btn-primary')->addClass('btn-red btn-sm');
 
         return $form->render();
     }

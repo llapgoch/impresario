@@ -1,0 +1,12 @@
+<?php /** @var \DaveBaker\Form\Block\Group $block */ ?>
+<div <?php echo $block->getAttrs();?>>
+    <?php if($block->getUseInnerContainer()):?>
+        <div <?php echo $block->makeClassString($block->getContainerClass());?>>
+    <?php endif; ?>
+
+    <?php echo $block->getChildHtml('label');?>
+    <?php echo $block->getChildHtml('element');?>
+    <?php if($block->getUseInnerContainer()):?>
+        </div>
+    <?php endif; ?>
+</div>

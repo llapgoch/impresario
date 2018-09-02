@@ -16,6 +16,8 @@ abstract class Base extends \DaveBaker\Core\Model\Db\Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
     }
 
+
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Enquiry
      * @throws \DaveBaker\Core\Object\Exception

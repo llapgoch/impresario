@@ -19,12 +19,16 @@ class Element extends \DaveBaker\Core\Config\Element
                 'select' => 'form-control',
                 'textarea' => 'form-control',
                 'button' => 'btn btn-primary',
-                'tile-white' => 'transparent-white',
-                'tile-black' => 'transparent-black',
-                'form' => 'form-horizontal',
-                'label' => 'col-sm-4 control-label',
+                'tile' => 'tile',
+                'tile-white' => 'color transparent-white',
+                'tile-black' => 'color transparent-black',
+                'form' => '',
+                'label' => 'control-label',
                 'form-group' => 'form-group',
-                'button-anchor' => 'btn btn-primary'
+                'form-row' => 'form-row',
+                'button-anchor' => 'btn btn-primary',
+                'form-error-message' => 'alert alert-red',
+                'table' => 'table'
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]

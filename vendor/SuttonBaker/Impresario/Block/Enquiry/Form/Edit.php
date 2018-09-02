@@ -62,27 +62,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
             );
 
-            $this->taskTableBlock = $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TaskTable',
-                "{$prefixKey}.task.table"
-            );
-
-            $this->taskTableBlock->setInstanceCollection(
-                $this->getTaskHelper()->getTaskCollectionForEntity(
-                    $entityId,
-                    TaskDefinition::TASK_TYPE_ENQUIRY,
-                    TaskDefinition::STATUS_OPEN
-                )
-            )->setEditLinkParams([
-                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
-            ]);
-
-            $this->addChildBlock($this->taskTableBlock);
         }
-
-        /** @var \DaveBaker\Form\Builder $builder */
-        $builder = $this->createAppObject('\DaveBaker\Form\Builder')
-            ->setFormName('enquiry_edit');
 
         // Clients
         $clients = $this->createCollectionSelectConnector()
@@ -120,69 +100,98 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(Enquiry::getStatuses())->getElementData();
 
+        /** @var \DaveBaker\Form\Builder $builder */
+        $builder = $this->createAppObject('\DaveBaker\Form\Builder')
+            ->setFormName('enquiry_edit')->setGroupTemplate('form/group-vertical.phtml');
+
         $elements = $builder->build([
             [
                 'name' => 'date_received',
-                'labelName' => 'Date Received',
+                'labelName' => 'Date Received *',
                 'formGroup' => true,
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
-                'value' => $this->getApp()->getHelper('Date')->currentDateShortLocalOutput()
-            ], [
-                'name' => 'client_reference',
-                'labelName' => 'Client Reference',
-                'formGroup' => true,
-                'type' => 'Input\Text',
-                'attributes' => ['autocomplete' => 'off']
-            ], [
-                'name' => 'client_id',
-                'labelName' => 'Client',
-                'formGroup' => true,
-                'type' => 'Select',
-                'data' => [
-                    'select_options' => $clients
+                'value' => $this->getApp()->getHelper('Date')->currentDateShortLocalOutput(),
+                'rowIdentifier' => 'date_received_row',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
                 ]
-            ], [
-                'name' => 'project_manager_id',
-                'labelName' => 'Project Manager',
-                'type' => 'Select',
-                'formGroup' => true,
-                'data' => [
-                    'select_options' => $projectManagers
-                ]
-            ], [
-                'name' => 'engineer_id',
-                'labelName' => 'Engineer',
-                'type' => 'Select',
-                'formGroup' => true,
-                'data' => [
-                    'select_options' => $engineers
-                ]
-            ], [
-                'name' => 'site_name',
-                'labelName' => 'Site Name',
-                'type' => 'Input\Text',
-                'formGroup' => true,
             ], [
                 'name' => 'target_date',
-                'labelName' => 'Target Date',
+                'labelName' => 'Target Date *',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'formGroup' => true,
+                'rowIdentifier' => 'date_received_row',
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]
-                    )]
+                    )
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
             ], [
+                'name' => 'site_name',
+                'labelName' => 'Site Name *',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+            ], [
+                'name' => 'client_id',
+                'labelName' => 'Client *',
+                'formGroup' => true,
+                'type' => 'Select',
+                'rowIdentifier' => 'client_row_one',
+                'data' => [
+                    'select_options' => $clients
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'client_reference',
+                'labelName' => 'Client Reference *',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'client_row_one',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],[
+                'name' => 'project_manager_id',
+                'labelName' => 'Project Manager *',
+                'type' => 'Select',
+                'formGroup' => true,
+                'rowIdentifier' => 'pm_engineer',
+                'data' => [
+                    'select_options' => $projectManagers
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'engineer_id',
+                'labelName' => 'Engineer *',
+                'type' => 'Select',
+                'formGroup' => true,
+                'rowIdentifier' => 'pm_engineer',
+                'data' => [
+                    'select_options' => $engineers
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],[
                 'name' => 'notes',
                 'labelName' => 'Notes',
                 'formGroup' => true,
                 'type' => 'TextArea'
             ], [
                 'name' => 'status',
-                'labelName' => 'Enquiry Status',
+                'labelName' => 'Enquiry Status *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'data' => [
@@ -222,6 +231,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'value' => 'edit'
             ]
         ]);
+
+        if($entityId) {
+            $this->taskTableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Task\TaskTable',
+                "{$prefixKey}.task.table"
+            )->setOrder('after', 'enquiry.edit.notes.form.group');
+
+            $this->taskTableBlock->setInstanceCollection(
+                $this->getTaskHelper()->getTaskCollectionForEntity(
+                    $entityId,
+                    TaskDefinition::TASK_TYPE_ENQUIRY,
+                    TaskDefinition::STATUS_OPEN
+                )
+            )->setEditLinkParams([
+                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+            ]);
+
+            $this->addChildBlock($this->taskTableBlock);
+        }
 
         $this->addChildBlock(array_values($elements));
     }

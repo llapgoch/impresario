@@ -15,7 +15,6 @@ class Black
      */
     public function init()
     {
-
         parent::init();
         $this->addTagIdentifier('tile-black');
     }

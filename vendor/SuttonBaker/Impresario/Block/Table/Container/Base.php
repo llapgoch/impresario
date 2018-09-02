@@ -1,6 +1,6 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Table;
+namespace SuttonBaker\Impresario\Block\Table\Container;
 /**
  * Class Base
  * @package SuttonBaker\Impresario\Block\Table

@@ -1,5 +1,5 @@
 <?php /** @var \DaveBaker\Core\Block\Template $block */ ?>
-<section class="tile color <?php echo $block->getClassValueString();?>" <?php echo $block->getAttrs(false);?>>
+<section <?php echo $block->getAttrs();?>>
     <?php if($block->getHeading()):?>
         <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2";?>
         <div class="tile-header">

@@ -17,7 +17,6 @@ class EnquiryConfigurator
      */
     protected function _collate()
     {
-
         $this->addRule(
             $this->createRule('Date', 'date_received', 'Date Received')
         );
@@ -48,6 +47,10 @@ class EnquiryConfigurator
 
         $this->addRule(
             $this->createRule('Date', 'target_date', 'Target Date')
+        );
+
+        $this->addRule(
+            $this->createRule('Required', 'status', 'Status')
         );
 
 

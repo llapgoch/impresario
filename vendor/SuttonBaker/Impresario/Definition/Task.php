@@ -23,13 +23,12 @@ class Task
 
     const TABLE_HEADERS = [
         'task_id' => 'ID',
-        'created_by_name' => 'Created By',
+        'created_by_name' => 'Creator',
         'status' => 'Status',
-        'assigned_to_name' => 'Assigned To',
+        'assigned_to_name' => 'Assignee',
         'task_type' => 'Type',
-        'target_date' => 'Target Date',
+        'target_date' => 'Target',
         'priority' => 'Priority',
-        'edit_column' => '',
         'delete_column' => ''
     ];
 
@@ -43,6 +42,19 @@ class Task
             self::PRIORITY_MEDIUM => 'Medium',
             self::PRIORITY_HIGH => 'High',
             self::PRIORITY_CRITICAL => 'Critical'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRowClasses()
+    {
+        return [
+            self::PRIORITY_LOW => 'table-info',
+            self::PRIORITY_MEDIUM => 'table-success',
+            self::PRIORITY_HIGH => 'table-warning',
+            self::PRIORITY_CRITICAL => 'table'
         ];
     }
 

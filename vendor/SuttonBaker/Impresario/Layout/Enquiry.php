@@ -25,7 +25,7 @@ class Enquiry extends Base
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Heading',
                 "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading($entityId ? 'Edit Enquiry' : 'Create New Enquiry')
+                ->setHeading('Enquiries')
                 ->setTemplate('core/main-header.phtml')
                 ->setShortcode('body_content')
         );
@@ -40,6 +40,7 @@ class Enquiry extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
+                ->setHeading($entityId ? '<strong>Update</strong> Enquiry' : '<strong>Create an </strong>Enquiry')
                 ->setShortcode('body_content')
         );
 
