@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller\Client;
+use DaveBaker\Core\Definitions\Messages;
+
 /**
  * Class ClientListController
  * @package SuttonBaker\Impresario\Controller\Client
@@ -29,7 +31,7 @@ class ListController
             }
 
             $client->setIsDeleted(1)->save();
-            $this->addMessage('The client has been removed');
+            $this->addMessage('The client has been removed', Messages::SUCCESS);
             $this->getResponse()->redirectReferer();
         }
     }

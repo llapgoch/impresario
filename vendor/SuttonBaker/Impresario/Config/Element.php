@@ -24,6 +24,9 @@ class Element extends \DaveBaker\Core\Config\Element
                 'form' => 'form-horizontal',
                 'label' => 'col-sm-4 control-label',
                 'form-group' => 'form-group'
+            ],
+            'elementAttributes' => [
+                'textarea' => ['rows' => 8]
             ]
         ]);
 

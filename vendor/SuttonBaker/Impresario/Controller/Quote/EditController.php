@@ -63,7 +63,7 @@ class EditController
             $this->modelInstance->load($instanceId);
 
             if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
-                $this->addMessage('The quote could not be found', Messages::ERROR);
+                $this->addMessage('The quote could not be found');
                 return $this->getResponse()->redirectReferer();
             }
 
@@ -267,7 +267,10 @@ class EditController
         }
 
 
-        $this->addMessage("The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'added'));
+        $this->addMessage(
+            "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'added'),
+            Messages::SUCCESS
+        );
         $this->modelInstance->setData($data)->save();
         return $this;
     }

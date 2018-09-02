@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller\Task;
+use DaveBaker\Core\Definitions\Messages;
+
 /**
  * Class ListController
  * @package SuttonBaker\Impresario\Controller\Task
@@ -29,7 +31,7 @@ class ListController
             }
 
             $instanceObject->setIsDeleted(1)->save();
-            $this->addMessage('The task has been removed');
+            $this->addMessage('The task has been removed', Messages::SUCCESS);
             $this->getResponse()->redirectReferer();
         }
     }

@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller\Enquiry;
+use DaveBaker\Core\Definitions\Messages;
+
 /**
  * Class EnquiryListController
  * @package SuttonBaker\Impresario\Controller\Enquiry
@@ -29,7 +31,7 @@ class ListController
             }
 
             $enquiry->setIsDeleted(1)->save();
-            $this->addMessage('The enquiry has been removed');
+            $this->addMessage('The enquiry has been removed', Messages::SUCCESS);
             $this->getResponse()->redirectReferer();
         }
     }

@@ -20,13 +20,27 @@ class Enquiry extends Base
         $entityId = $this->getRequest()->getParam('enquiry_id');
 
 
+
+        $this->addBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "{$this->getBlockPrefix()}.form.edit.heading")
+                ->setHeading($entityId ? 'Edit Enquiry' : 'Create New Enquiry')
+                ->setTemplate('core/main-header.phtml')
+                ->setShortcode('body_content')
+        );
+
+        $this->addBlock(
+            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
+        );
+
+
         $this->addBlock(
             /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setShortcode('body_content')
-                ->setHeading('Edit')
         );
 
         $mainTile->addChildBlock(
@@ -34,28 +48,12 @@ class Enquiry extends Base
                 '\SuttonBaker\Impresario\Block\Enquiry\Form\Edit',
                 "{$this->getBlockPrefix()}.form.edit",
                 'content'
-            )->setElementName('enquiry_edit_form')->setFormAction($this->getUrlHelper()->getCurrentUrl())
+            )->setElementName('enquiry_edit_form')
 
         );
 
 
 
-
-//        $this->addBlock(
-//            $formContainer = $this->createBlock('\SuttonBaker\Impresario\Block\Form\Container', 'enquiry.edit.form.container')
-//                ->setShortcode('body_content')
-//        );
-//
-//        $formContainer->addChildBlock(
-//            $this->createBlock(
-//                '\DaveBaker\Core\Block\Html\Heading',
-//                "enquiry.form.edit.heading")
-//                ->setHeading($entityId ? 'Edit Enquiry' : 'Create New Enquiry')
-//                ->setTemplate('core/main-header.phtml')
-//        );
-//
-//        $formContainer->addChildBlock($this->getBlockManager()->getMessagesBlock());
-//
 
     }
 

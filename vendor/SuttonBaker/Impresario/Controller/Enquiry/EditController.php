@@ -145,7 +145,10 @@ class EditController
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-        $this->addMessage("The enquiry has been " . ($this->modelInstance->getId() ? 'updated' : 'added'));
+        $this->addMessage(
+            "The enquiry has been " . ($this->modelInstance->getId() ? 'updated' : 'added'),
+            Messages::SUCCESS
+        );
         $this->modelInstance->setData($data)->save();
         return $this;
     }

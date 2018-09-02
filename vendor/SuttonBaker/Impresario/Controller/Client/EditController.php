@@ -62,12 +62,12 @@ class EditController
             $client->load($clientId);
 
             if($client->getIsDeleted()){
-                $this->addMessage('The client does not exist', Messages::ERROR);
+                $this->addMessage('The client does not exist');
                 $this->redirectToPage(Page::CLIENT_LIST);
             }
 
             if(!$client->getId()){
-                $this->addMessage('The client does not exist', Messages::ERROR);
+                $this->addMessage('The client does not exist');
                 $this->redirectToPage(Page::CLIENT_LIST);
             }
         }
@@ -101,7 +101,10 @@ class EditController
 
         $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
 
-        $this->addMessage("The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'));
+        $this->addMessage(
+            "The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'),
+            Messages::SUCCESS
+        );
         $client->setData($data)->save();
 
         return $this;

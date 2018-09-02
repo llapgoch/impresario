@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller\Quote;
+use DaveBaker\Core\Definitions\Messages;
+
 /**
  * Class ListController
  * @package SuttonBaker\Impresario\Controller\Quote
@@ -29,7 +31,7 @@ class ListController
             }
 
             $instanceObject->setIsDeleted(1)->save();
-            $this->addMessage('The quote has been removed');
+            $this->addMessage('The quote has been removed', Messages::SUCCESS);
             $this->getResponse()->redirectReferer();
         }
     }
