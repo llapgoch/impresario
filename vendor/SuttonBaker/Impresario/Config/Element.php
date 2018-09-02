@@ -23,7 +23,8 @@ class Element extends \DaveBaker\Core\Config\Element
                 'tile-black' => 'transparent-black',
                 'form' => 'form-horizontal',
                 'label' => 'col-sm-4 control-label',
-                'form-group' => 'form-group'
+                'form-group' => 'form-group',
+                'button-anchor' => 'btn btn-primary'
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]

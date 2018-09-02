@@ -51,8 +51,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             }
 
             $this->addChildBlock(
-                $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\Tag', 'create.quote')
-                    ->setTag('a')
+                $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\ButtonAnchor', 'create.quote')
                     ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
                     ->addAttribute(
                         ['href' => $this->getPageUrl(
@@ -85,6 +84,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName('enquiry_edit');
 
+        // Clients
         $clients = $this->createCollectionSelectConnector()
             ->configure(
                 $this->getClientHelper()->getClientCollection(),
@@ -92,29 +92,33 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'client_name'
             )->getElementData();
 
-        //
-//
-//
-//        // Project Manager
-//        $projectManagers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($projectManagers, 'ID', 'user_login', $elements['project_manager_id_element']);
-//
-//        // Engineer
-//        $engineers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($engineers, 'ID', 'user_login', $elements['engineer_id_element']);
-//
-//        // Completed by Users
-//        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
-//        $this->createCollectionSelectConnector()
-//            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
-//
-//        // Statuses
-//        $this->createArraySelectConnector()
-//            ->configure(Enquiry::getStatuses(), $elements['status_element']);
-//
-//        $elements['status_element']->setShowFirstOption(false);
+
+        // PMs
+        $projectManagers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'user_login'
+            )->getElementData();
+
+        // Engineers
+        $engineers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'user_login'
+            )->getElementData();
+
+        // Completed Users
+        $completedUsers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'user_login'
+            )->getElementData();
+
+        // Statuses
+        $statuses = $this->createArraySelectConnector()->configure(Enquiry::getStatuses())->getElementData();
 
         $elements = $builder->build([
             [
@@ -144,12 +148,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Project Manager',
                 'type' => 'Select',
                 'formGroup' => true,
-
+                'data' => [
+                    'select_options' => $projectManagers
+                ]
             ], [
                 'name' => 'engineer_id',
                 'labelName' => 'Engineer',
                 'type' => 'Select',
                 'formGroup' => true,
+                'data' => [
+                    'select_options' => $engineers
+                ]
             ], [
                 'name' => 'site_name',
                 'labelName' => 'Site Name',
@@ -175,12 +184,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'status',
                 'labelName' => 'Enquiry Status',
                 'formGroup' => true,
-                'type' => 'Select'
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $statuses
+                ]
             ], [
                 'name' => 'completed_by_id',
                 'labelName' => 'Completed By',
                 'formGroup' => true,
-                'type' => 'Select'
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $completedUsers
+                ]
             ], [
                 'name' => 'date_completed',
                 'labelName' => 'Date Completed',
@@ -195,7 +210,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry']
+                'data' => ['button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry'],
+                'class' => 'btn-block'
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
@@ -208,9 +224,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->addChildBlock(array_values($elements));
-
-
-
     }
 
     /**
