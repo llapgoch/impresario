@@ -14,6 +14,80 @@ class EditController
 {
     /** @var \DaveBaker\Form\Block\Form $clientEditForm */
     protected $clientEditForm;
+    protected $modelInstance;
+
+    protected $nonUserValues = [
+        'client_id',
+        'created_by_id',
+        'last_edited_by_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     */
+    public function _preDispatch()
+    {
+
+        $this->modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
+        $this->getApp()->getRegistry()->register('model_instance', $this->modelInstance);
+
+
+        if($clientId = (int) $this->getRequest()->getParam('client_id')){
+            // We're loading, fellas!
+            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
+            $this->modelInstance->load($clientId);
+
+            if($this->modelInstance->getIsDeleted()){
+                $this->addMessage('The client does not exist');
+                $this->redirectToPage(Page::CLIENT_LIST);
+            }
+
+            if(!$this->modelInstance->getId()){
+                $this->addMessage('The client does not exist');
+                $this->redirectToPage(Page::CLIENT_LIST);
+            }
+        }
+
+
+    }
+
+    /**
+     * @return $this
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function saveFormValues($data)
+    {
+        foreach($this->nonUserValues as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
+        // Add created by user
+        if(!$data['client_id']) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+
+        $this->addMessage(
+            "The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'),
+            Messages::SUCCESS
+        );
+        $this->modelInstance->setData($data)->save();
+
+        return $this;
+    }
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -30,8 +104,6 @@ class EditController
         if(!($this->clientEditForm = $this->getApp()->getBlockManager()->getBlock('client.form.edit'))){
             return;
         }
-
-        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -51,63 +123,20 @@ class EditController
             }
 
             $clientName = $this->getRequest()->getPostParam('client_name');
-            $this->saveFormValues();
+            $this->saveFormValues($postParams);
             $this->redirectToPage(Page::CLIENT_LIST);
-        }
-
-
-        if($clientId = (int) $this->getRequest()->getParam('client_id')){
-            // We're loading, fellas!
-            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
-            $client->load($clientId);
-
-            if($client->getIsDeleted()){
-                $this->addMessage('The client does not exist');
-                $this->redirectToPage(Page::CLIENT_LIST);
-            }
-
-            if(!$client->getId()){
-                $this->addMessage('The client does not exist');
-                $this->redirectToPage(Page::CLIENT_LIST);
-            }
         }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
         // Apply the values to the form element
-        if($client->getId()) {
+        if($this->modelInstance->getId()) {
             $applicator->configure(
                 $this->clientEditForm,
-                $client->getData()
+                $this->modelInstance->getData()
             );
         }
-    }
-
-    /**
-     * @return $this
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function saveFormValues()
-    {
-        $data = $this->getRequest()->getPostParams();
-
-        // Add created by user
-        if(!$data['client_id']) {
-            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-        }
-
-        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
-        $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client');
-
-        $this->addMessage(
-            "The client '{$data["client_name"]}' has been " . ($data['client_id'] ? 'updated' : 'added'),
-            Messages::SUCCESS
-        );
-        $client->setData($data)->save();
-
-        return $this;
     }
 
     /**
@@ -128,7 +157,7 @@ class EditController
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
             'client.edit.form.errors'
-        )->setOrder('after', 'client.form.edit.heading')->addErrors($validator->getErrors());
+        )->setOrder('before', '')->addErrors($validator->getErrors());
 
         $this->clientEditForm->addChildBlock($errorBlock);
 

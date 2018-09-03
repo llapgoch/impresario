@@ -7,6 +7,9 @@ namespace SuttonBaker\Impresario\Block\Client\Form;
  */
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
+    const ID_KEY = 'client_id';
+    const PREFIX_KEY = 'client';
+    const PREFIX_NAME = 'Client';
     /**
      * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
@@ -18,8 +21,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
-        $heading = 'Create New Client';
+        $heading = 'Add a New Client';
         $editMode = false;
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+
+        if($entityInstance->getId()){
+            $editMode = true;
+        }
 
         if($clientId = $this->getRequest()->getParam('client_id')){
             $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load($clientId);
@@ -27,183 +38,134 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $editMode = true;
         }
 
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "client.edit.heading")
-                ->setHeading($heading)
-                ->setTemplate('core/main-header.phtml')
-        );
-
-        // Name
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.edit.name.label')
-                ->setLabelName('Client Name')
-                ->setForId('edit_form_name')
-        );
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.name')
-                ->setElementName('client_name')
-                ->addAttribute(['id' => 'edit_form_name'])
-        );
-
-        // Address Line 1
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.address1.label')
-                ->setLabelName('Address Line 1')
-                ->setForId('edit_form_address_line1')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.address_line1')
-                ->setElementName('address_line1')
-                ->addAttribute(['id' => 'edit_form_address_line1'])
-        );
-
-        // Address Line 2
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.address2.label')
-                ->setLabelName('Address Line 2')
-                ->setForId('edit_form_address_line2')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.address_line2')
-                ->setElementName('address_line2')
-                ->addAttribute(['id' => 'edit_form_address_line2'])
-        );
-
-        // Address Line 3
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.address3.label')
-                ->setLabelName('Address Line 3')
-                ->setForId('edit_form_address_line3')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.address_line3')
-                ->setElementName('address_line3')
-                ->addAttribute(['id' => 'edit_form_address_line3'])
-        );
-
-        // Postcode
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.postcode.label')
-                ->setLabelName('Postcode')
-                ->setForId('edit_form_postcode')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.postcode')
-                ->setElementName('postcode')
-                ->addAttribute(['id' => 'edit_form_postcode'])
-        );
-
-
-        // County
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.county.label')
-                ->setLabelName('County')
-                ->setForId('edit_form_county')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.county')
-                ->setElementName('county')
-                ->addAttribute(['id' => 'edit_form_county'])
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.country.label')
-                ->setLabelName('Country')
-                ->setForId('edit_form_country')
-        );
-
         /** @var \DaveBaker\Core\Model\Db\Directory\Country $countryCollection */
         $countryCollection = $this->createAppObject('\DaveBaker\Core\Model\Db\Directory\Country\Collection');
         /** @var \DaveBaker\Form\SelectConnector\Collection $selectConnector */
-        $selectConnector = $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection')
-            ->configure($countryCollection, 'country_code', 'country_name');
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Select', 'client.form.edit.country_id')
-                ->setElementName('country_code')
-                ->setSelectOptions($selectConnector->getElementData())
-                ->setElementValue($this->getApp()->getHelper('Directory')->getDefaultCountryCode())
-        );
-
-        // Sales contact phone
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.sales.contact.phone.label')
-                ->setLabelName('Sales Phone Number')
-                ->setForId('edit_form_sales_contact_phone')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.sales.contact.phone')
-                ->setElementName('sales_contact_phone')
-                ->addAttribute(['id' => 'edit_form_sales_contact_phone'])
-        );
-
-        // Sales contact name
-        $this->addChildBlock(
-        $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.sales.contact.name.label')
-            ->setLabelName('Sales Contact Name')
-            ->setForId('edit_form_sales_contact_name')
-         );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.sales.contact.name')
-                ->setElementName('sales_contact')
-                ->addAttribute(['id' => 'edit_form_sales_contact_name'])
-        );
+        $countries = $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection')
+            ->configure($countryCollection, 'country_code', 'country_name')->getElementData();
 
 
-        // Accounts contact phone
-        $this->addChildBlock(
-        $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.accounts.phone.label')
-            ->setLabelName('Accounts Phone Number')
-            ->setForId('edit_form_accounts_contact_phone')
-        );
+        $builder = $this->createAppObject('\DaveBaker\Form\Builder')
+            ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.sales.contact')
-                ->setElementName('accounts_contact_phone')
-                ->addAttribute(['id' => 'edit_form_accounts_contact_phone'])
-        );
+        $elements = $builder->build([
+            [
+                'name' => 'client_name',
+                'labelName' => 'Client Name *',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+                'rowIdentifier' => 'client_name',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ],  [
+                'name' => 'address_line1',
+                'labelName' => 'Address Line 1 *',
+                'type' => 'Input\Text',
+                'formGroup' => true
+            ], [
+                'name' => 'address_line2',
+                'labelName' => 'Address Line 2',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'addresses',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'address_line3',
+                'labelName' => 'Address Line 3',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'addresses',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'postcode',
+                'rowIdentifier' => 'postcode_country',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+                'labelName' => 'Postcode *',
+                'type' => 'Input\Text'
+            ], [
+                'name' => 'county',
+                'rowIdentifier' => 'postcode_country',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+                'labelName' => 'County *',
+                'type' => 'Input\Text'
+            ], [
+                'name' => 'country_code',
+                'rowIdentifier' => 'postcode_country',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+                'labelName' => 'Country *',
+                'type' => 'Select',
+                'value' => $this->getApp()->getHelper('Directory')->getDefaultCountryCode(),
+                'data' => [
+                    'select_options' => $countries
+                ]
+            ], [
+                'name' => 'sales_contact_phone',
+                'rowIdentifier' => 'sales_contact',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'labelName' => 'Sales Phone Number *',
+                'type' => 'Input\Text'
+            ], [
+                'name' => 'sales_contact',
+                'labelName' => 'Sales Contact Name *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'sales_contact',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
 
-        // Accounts contact name
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Label', 'client.form.accounts.contact.label')
-                ->setLabelName('Accounts Contact Name')
-                ->setForId('edit_form_accounts_contact_name')
-        );
+            ],[
+                'name' => 'accounts_contact_phone',
+                'labelName' => 'Accounts Phone Number *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'accounts_contact',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
+                'name' => 'accounts_contact',
+                'labelName' => 'Accounts Contact Name *',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+                'rowIdentifier' => 'accounts_contact',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
+                'name' => 'submit',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'data' => ['button_name' => $editMode ? 'Update Client' : 'Add New Client'],
+                'class' => 'btn-block'
+            ], [
+                'name' => 'task_id',
+                'type' => 'Input\Hidden',
+                'value' => $entityInstance->getId()
+            ], [
+                'name' => 'action',
+                'type' => 'Input\Hidden',
+                'value' => 'edit'
+            ]
+        ]);
 
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Text', 'client.form.edit.account.contact')
-                ->setElementName('accounts_contact')
-                ->addAttribute(['id' => 'edit_form_accounts_contact_name'])
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Hidden', 'client.form.edit.id')
-                ->setElementName('client_id')
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Hidden', 'client.form.edit.action')
-                ->setElementName('action')
-                ->setElementValue(1)
-        );
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Form\Block\Input\Submit', 'client.form.edit.submit')
-                ->setElementValue($editMode ? "Update Client" : "Add Client")
-                ->setElementName('client_submit')
-        );
+        $this->addChildBlock(array_values($elements));
 
     }
 }
