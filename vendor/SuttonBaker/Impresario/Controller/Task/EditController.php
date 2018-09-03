@@ -41,6 +41,7 @@ class EditController
      */
     public function _preDispatch()
     {
+
         // Set instance values before the blocks are created
         $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);

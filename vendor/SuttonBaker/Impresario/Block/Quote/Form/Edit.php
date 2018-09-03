@@ -32,15 +32,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-
-        $heading = "Create New {$prefixName}";
         $editMode = false;
 
         $enquiryItem = $this->getApp()->getRegistry()->get('enquiry_item');
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
-            $heading = "Update {$prefixName}";
             $editMode = true;
         }
 

@@ -37,19 +37,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $taskType = $this->getApp()->getRegistry()->get('task_type');
 
         if($entityInstance->getId()){
-            $heading = "Update {$prefixName}";
             $editMode = true;
-        }elseif( $parentItem && $parentItem->getId()){
-            $heading = "Create Task For " . TaskDefinition::getTaskTypeLabel($taskType) . " '{$parentItem->getSiteName()}'";
         }
-
-        $this->addChildBlock($this->getMessagesBlock());
-
-        $this->addChildBlock(
-            $this->createBlock('\DaveBaker\Core\Block\Html\Heading', "{$prefixKey}.form.edit.heading")
-                ->setHeading($heading)
-        );
-
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')

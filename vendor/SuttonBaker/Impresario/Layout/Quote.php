@@ -85,6 +85,8 @@ class Quote extends Base
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
      */
     public function quoteListHandle()
     {
