@@ -293,7 +293,7 @@ class EditController
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
             'quote.edit.form.errors'
-        )->setOrder('after', 'quote.form.edit.heading')->addErrors($validator->getErrors());
+        )->setOrder('before', '')->addErrors($validator->getErrors());
 
         $this->editForm->addChildBlock($errorBlock);
 

@@ -23,9 +23,12 @@ class Quote extends Base
      */
     public function quoteEditHandle()
     {
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote $entityInstance */
+        $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Quote');
+
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             /** @var \SuttonBaker\Impresario\Model\Db\Quote $entityInstance */
-            $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Quote')->load($entityId);
+            $entityInstance->load($entityId);
             $editMode = true;
         }
 
@@ -62,26 +65,22 @@ class Quote extends Base
         );
 
 
-        // TODO: Change this for enquiry
-//        if($entityId) {
-//            $urlParams = [];
-//
-//            $mainTile->addChildBlock(
-//                $quoteLink = $mainTile->createBlock(
-//                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
-//                    'create.quote.link',
-//                    'header_elements'
-//                )
-//                    ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
-//                    ->addAttribute(
-//                        ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-//                            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-//                            $urlParams,
-//                            true
-//                        )]
-//                    )
-//            );
-//        }
+        if($entityInstance->getEnquiryId()) {
+            $mainTile->addChildBlock(
+                $quoteLink = $mainTile->createBlock(
+                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                    'view.enquiry.link',
+                    'header_elements'
+                )->setTagText('View Enquiry')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
+                        ['enquiry_id' => $entityInstance->getEnquiryId()],
+                        true
+                    )]
+                )
+            );
+        }
     }
 
     /**

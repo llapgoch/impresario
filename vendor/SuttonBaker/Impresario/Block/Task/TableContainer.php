@@ -8,7 +8,7 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  * Class TaskTable
  * @package SuttonBaker\Impresario\Block\Task
  */
-class TaskTable
+class TableContainer
     extends \SuttonBaker\Impresario\Block\Table\Container\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
@@ -68,27 +68,38 @@ class TaskTable
         );
 
 
-        $tileBlock->addChildBlock(
-            $tableBlock = $tileBlock->createBlock(
-                '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                "task.list.table",
-                'content'
-            )->setStatusKey('priority')
-                ->setRowStatusClasses(TaskDefinition::getRowClasses())
-                ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
-                ->addEscapeExcludes(['delete_column']
-                )
-        );
+        if(count($this->instanceCollection->load())) {
+            $tileBlock->addChildBlock(
+                $tableBlock = $tileBlock->createBlock(
+                    '\SuttonBaker\Impresario\Block\Table\StatusLink',
+                    "task.list.table",
+                    'content'
+                )->setStatusKey('priority')
+                    ->setRowStatusClasses(TaskDefinition::getRowClasses())
+                    ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
+                    ->addEscapeExcludes(['delete_column']
+                    )
+            );
 
-        $tableBlock->setLinkCallback(
-            function($headerKey, $record){
-                return $this->getPageUrl(
-                    \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-                    ['task_id' => $record->getId()],
-                    true
-                );
-            }
-        );
+            $tableBlock->setLinkCallback(
+                function ($headerKey, $record) {
+                    return $this->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                        ['task_id' => $record->getId()],
+                        true
+                    );
+                }
+            );
+        }else{
+            $tileBlock->addChildBlock(
+                $tableBlock = $tileBlock->createBlock(
+                    '\DaveBaker\Core\Block\Html\Tag',
+                    "task.list.no.records",
+                    'content'
+                )->setTagText('No tasks have currently been created')
+            );
+        }
+
 
     }
 

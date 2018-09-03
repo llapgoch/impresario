@@ -52,7 +52,7 @@ class TaskList
 
         $this->addChildBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TaskTable',
+                '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->getBlockPrefix()}.list.table"
             )
         );

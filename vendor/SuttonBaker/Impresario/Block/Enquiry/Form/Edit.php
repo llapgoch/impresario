@@ -181,7 +181,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'completed_by_id',
                 'labelName' => 'Completed By',
+                'rowIdentifier' => 'creation_data',
                 'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
                 'type' => 'Select',
                 'data' => [
                     'select_options' => $completedUsers
@@ -191,6 +195,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Date Completed',
                 'formGroup' => true,
                 'class' => 'js-date-picker',
+                'rowIdentifier' => 'creation_data',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
                 'type' => 'Input\Text',
                 'attributes' => [
                     'autocomplete' => 'off',
@@ -215,7 +223,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         if($entityId) {
             $this->taskTableBlock = $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TaskTable',
+                '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$prefixKey}.task.table"
             )->setOrder('after', 'enquiry.edit.notes.form.group');
 

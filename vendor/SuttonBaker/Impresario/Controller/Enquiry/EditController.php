@@ -82,7 +82,10 @@ class EditController
             }
 
             $this->saveFormValues($postParams);
-            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
+
+            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
+                return $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
+            }
         }
 
         if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
