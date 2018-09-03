@@ -47,6 +47,7 @@ class TaskTable
      */
     protected function _preDispatch()
     {
+
         if(!$this->instanceCollection){
             $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
         }
@@ -66,6 +67,7 @@ class TaskTable
             )->setHeading('Active <strong>Tasks</strong>')
         );
 
+
         $tileBlock->addChildBlock(
             $tileBlock->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
@@ -75,7 +77,7 @@ class TaskTable
                 ->setRowStatusClasses(TaskDefinition::getRowClasses())
                 ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
                 ->addEscapeExcludes(['delete_column']
-                )->addClass('table-hover')->removeHeader(['task_type', 'task_id', 'status', 'delete_column'])
+                )
         );
 
     }

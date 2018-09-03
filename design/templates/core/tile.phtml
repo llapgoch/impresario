@@ -4,6 +4,12 @@
         <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2";?>
         <div class="tile-header">
             <<?php echo $headingTag;?>><?php echo $block->getHeading();?></<?php echo $headingTag;?>>
+
+            <?php if($childHtml = $this->getChildHtml('header_elements')):;?>
+                <div class="header-bar">
+                    <?php echo $childHtml; ?>
+                </div>
+            <?php endif; ?>
         </div>
         <?php if($block->getChildHtml('controls')):?>
             <div class="controls">

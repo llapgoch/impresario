@@ -12,8 +12,10 @@ class StatusLink
     protected function init()
     {
         parent::init();
-        $this->setTemplate('html/table-links.phtml');
+        $this->setTemplate('html/table/link-status.phtml');
+        $this->addTagIdentifier('table-status-rows');
     }
+
     /**
      * @param \DaveBaker\Core\Model\Db\BaseInterface $record
      * @return mixed|string

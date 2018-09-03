@@ -28,7 +28,8 @@ class Element extends \DaveBaker\Core\Config\Element
                 'form-row' => 'form-row',
                 'button-anchor' => 'btn btn-primary',
                 'form-error-message' => 'alert alert-red',
-                'table' => 'table'
+                'table' => 'table',
+                'table-status-rows' => 'table-status-rows'
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]
