@@ -19,7 +19,7 @@
     <?php endif;?>
 
     <?php if($childHtml = $block->getChildHtml('content')):?>
-        <div class="tile-body">
+        <div class="tile-body <?php echo $this->getTileBodyClass();?>">
             <?php echo $childHtml;?>
         </div>
     <?php endif;?>

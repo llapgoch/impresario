@@ -17,14 +17,13 @@ class Enquiry
 
     const TABLE_HEADERS = [
         'enquiry_id' => 'ID',
-        'client_reference' => 'Client Reference',
+        'client_reference' => 'Client Ref',
         'status' => 'Status',
-        'site_name' => 'Site Name',
+        'site_name' => 'Site',
         'date_received' => 'Date Received',
         'target_date' => 'Target Date',
         'project_manager_name' => 'Project Manager',
         'engineer_name' => 'Engineer',
-        'edit_column' => '',
         'delete_column' => ''
     ];
 
@@ -38,6 +37,19 @@ class Enquiry
             self::STATUS_ENGINEER_ASSIGNED => 'Engineer Assigned',
             self::STATUS_REPORT_COMPLETE => 'Report Complete',
             self::STATUS_COMPLETE => 'Complete'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRowClasses()
+    {
+        return [
+            self::STATUS_OPEN => 'danger',
+            self::STATUS_ENGINEER_ASSIGNED => 'warning',
+            self::STATUS_REPORT_COMPLETE => 'warning',
+            self::STATUS_COMPLETE => 'success'
         ];
     }
 }

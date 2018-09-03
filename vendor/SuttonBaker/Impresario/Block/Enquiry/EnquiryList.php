@@ -42,32 +42,34 @@ class EnquiryList
     protected function _preRender()
     {
 
+        $tableHeaders = EnquiryDefinition::TABLE_HEADERS;
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
+        $instanceItems = $this->getEnquiryHelper()->getEnquiryCollection()
+            ->addOutputProcessors([
+                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml']),
+                'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
+                'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
+            ]);
+
         $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "enquiry.list.heading")
-                ->setHeading("Enquiries")
-                ->setTemplate('core/main-header.phtml')
+            $tableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Table\StatusLink',
+                'enquiry.list.table'
+            )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
+                ['edit_column', 'delete_column']
+            )->setStatusKey('status')
+                ->setRowStatusClasses(EnquiryDefinition::getRowClasses())
         );
 
-        $tableHeaders = \SuttonBaker\Impresario\Definition\Enquiry::TABLE_HEADERS;
-
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Template',
-                "{$this->getBlockPrefix()}.list.action.bar"
-            )->setTemplate('enquiry/list/action_bar.phtml')
-        );
-
-        $this->addChildBlock($this->getMessagesBlock());
-
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Table',
-                "{$this->getBlockPrefix()}.list.table'"
-            )->setHeaders(EnquiryDefinition::TABLE_HEADERS)
-                ->setRecords($this->instanceCollection->load())
-                ->addEscapeExcludes(['edit_column', 'delete_column'])
+        $tableBlock->setLinkCallback(
+            function ($headerKey, $record) {
+                return $this->getPageUrl(
+                    \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
+                    ['enquiry_id' => $record->getId()]
+                );
+            }
         );
     }
 

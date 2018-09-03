@@ -51,10 +51,10 @@ class Task
     public static function getRowClasses()
     {
         return [
-            self::PRIORITY_LOW => 'table-info',
-            self::PRIORITY_MEDIUM => 'table-success',
-            self::PRIORITY_HIGH => 'table-warning',
-            self::PRIORITY_CRITICAL => 'table-danger'
+            self::PRIORITY_LOW => 'info',
+            self::PRIORITY_MEDIUM => 'success',
+            self::PRIORITY_HIGH => 'warning',
+            self::PRIORITY_CRITICAL => 'danger'
         ];
     }
 
