@@ -40,20 +40,60 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $editMode = true;
         }
 
+        // PMs
+        $assignedToUsers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'user_login'
+            )->getElementData();
+
+
+        // Completed Users
+        $completedUsers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'user_login'
+            )->getElementData();
+
+        // Statuses
+        $statuses = $this->createArraySelectConnector()->configure(
+            TaskDefinition::getStatuses()
+        )->getElementData();
+
+        // Priorities
+        $priorities = $this->createArraySelectConnector()->configure(
+            TaskDefinition::getPriorities()
+        )->getElementData();
+
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
-            ->setFormName("{$prefixKey}_edit");
+            ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
         $elements = $builder->build([
             [
                 'name' => 'assigned_to_id',
-                'labelName' => 'Assigned To',
-                'type' => 'Select'
+                'labelName' => 'Assigned To *',
+                'type' => 'Select',
+                'rowIdentifier' => 'assigned_target_date',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'data' => [
+                    'select_options' => $assignedToUsers
+                ],
             ], [
                 'name' => 'target_date',
-                'labelName' => 'Target Date',
+                'labelName' => 'Target Date *',
                 'class' => 'js-date-picker',
+                'rowIdentifier' => 'assigned_target_date',
                 'type' => 'Input\Text',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
                 'value' => $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($parentItem->getTargetDate()),
                 'attributes' => [
                     'readonly' => 'readonly',
@@ -62,35 +102,72 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'description',
-                'labelName' => 'Description',
-                'type' => 'TextArea'
+                'labelName' => 'Description *',
+                'type' => 'TextArea',
+                'formGroup' => true
             ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
-                'type' => 'TextArea'
+                'type' => 'TextArea',
+                'formGroup' => true
             ], [
                 'name' => 'priority',
-                'labelName' => 'Priority',
-                'type' => 'Select'
+                'rowIdentifier' => 'priority_status',
+                'labelName' => 'Priority *',
+                'formGroup' => true,
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'data' => [
+                    'select_options' => $priorities,
+                    'show_first_option' => false
+                ],
+
             ],[
                 'name' => 'status',
-                'labelName' => 'Status',
-                'type' => 'Select'
+                'rowIdentifier' => 'priority_status',
+                'labelName' => 'Status *',
+                'formGroup' => true,
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'data' => [
+                    'select_options' => $statuses,
+                    'show_first_option' => false
+
+                ],
+
             ], [
                 'name' => 'completed_by_id',
+                'rowIdentifier' => 'completed_data',
+                'formGroup' => true,
                 'labelName' => 'Completed By',
-                'type' => 'Select'
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'data' => [
+                    'select_options' => $completedUsers
+                ],
             ], [
                 'name' => 'date_completed',
+                'rowIdentifier' => 'completed_data',
+                'formGroup' => true,
                 'labelName' => 'Date Completed',
                 'type' => 'Select',
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
                 'attributes' => ['autocomplete' => 'off']
             ], [
                 'name' => 'submit',
-                'type' => 'Input\Submit',
-                'value' => $editMode ? 'Update Task' : 'Create Task'
+                'type' => '\DaveBaker\Form\Block\Button',
+                'data' => ['button_name' => $editMode ? 'Update Task' : 'Create Task'],
+                'class' => 'btn-block'
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',
@@ -102,27 +179,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
-        // Set up special values
-
-        // Assigned To
-        $assignedToUsers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($assignedToUsers , 'ID', 'user_login', $elements['assigned_to_id_element']);
-
-        // Completed by Users
-        $completedUsers = $this->getApp()->getHelper('User')->getUserCollection();
-        $this->createCollectionSelectConnector()
-            ->configure($completedUsers, 'ID', 'user_login', $elements['completed_by_id_element']);
-
-        // Statuses
-        $this->createArraySelectConnector()
-            ->configure(TaskDefinition::getStatuses(), $elements['status_element']);
-
-        // Priority
-        $this->createArraySelectConnector()
-            ->configure(TaskDefinition::getPriorities(), $elements['priority_element']);
-
-        $elements['status_element']->setShowFirstOption(false);
         $this->addChildBlock(array_values($elements));
     }
 

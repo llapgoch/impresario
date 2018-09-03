@@ -251,7 +251,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Quote' : 'Create Quote',],
+                'data' => ['button_name' => $editMode ? 'Update Quote' : 'Create Quote'],
                 'class' => 'btn-block'
             ], [
                 'name' => 'quote_id',

@@ -49,11 +49,10 @@ class Task extends Base
         $parentItem = $this->getApp()->getRegistry()->get('parent_item');
         $taskType = $this->getApp()->getRegistry()->get('task_type');
 
-        if($entityInstance->getId()){
-            $heading = "Update Task";
-            $editMode = true;
-        }elseif( $parentItem && $parentItem->getId()){
-            $heading = "Create Task For " . TaskDefinition::getTaskTypeLabel($taskType) . " '{$parentItem->getSiteName()}'";
+        if($parentItem && $parentItem->getId()){
+            $heading = ($entityInstance->getId() ? "Update" : "Create") .
+                " Task For " . TaskDefinition::getTaskTypeLabel($taskType) .
+                " '{$parentItem->getSiteName()}'";
         }
 
         $this->addBlock(
@@ -61,6 +60,7 @@ class Task extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
+                ->setHeading($heading)
                 ->setShortcode('body_content')
         );
 
