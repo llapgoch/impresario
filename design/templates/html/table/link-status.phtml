@@ -13,13 +13,12 @@
             </tr>
             </thead>
 
-
             <tbody>
             <?php foreach($block->getRecords() as $record): ?>
                 <tr class="<?php echo $block->getRowClass($record);?>">
                     <?php foreach($block->getHeaderKeys() as $k => $header): ?>
                         <td>
-                            <?php if($link = $block->getlink($record)):?>
+                            <?php if($link = $block->getlink($k, $record)):?>
                                 <a href="<?php echo $link;?>">
                             <?php endif;?>
 

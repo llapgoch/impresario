@@ -8,16 +8,25 @@ namespace SuttonBaker\Impresario\Layout;
 class Enquiry extends Base
 {
     protected $blockPrefix = 'enquiry';
+    const ID_KEY = 'enquiry_id';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     public function enquiryEditHandle()
     {
-        $entityId = $this->getRequest()->getParam('enquiry_id');
+        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
+            $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
+            $editMode = true;
+            $quoteEntity = $entityInstance->getQuoteEntity();
+        }
 
 
 
@@ -54,8 +63,31 @@ class Enquiry extends Base
         );
 
 
+        if($entityId) {
+            $urlParams = [];
 
+            if ($quoteEntity->getId()) {
+                $urlParams['quote_id'] = $quoteEntity->getId();
+            } else {
+                $urlParams['enquiry_id'] = $entityId;
+            }
 
+            $mainTile->addChildBlock(
+                $quoteLink = $mainTile->createBlock(
+                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                    'create.quote.link',
+                    'header_elements'
+                )
+                    ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
+                    ->addAttribute(
+                        ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
+                            $urlParams,
+                            true
+                        )]
+                    )
+            );
+        }
     }
 
     /**

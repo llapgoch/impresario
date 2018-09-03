@@ -54,7 +54,7 @@ class Task
             self::PRIORITY_LOW => 'table-info',
             self::PRIORITY_MEDIUM => 'table-success',
             self::PRIORITY_HIGH => 'table-warning',
-            self::PRIORITY_CRITICAL => 'table'
+            self::PRIORITY_CRITICAL => 'table-danger'
         ];
     }
 

@@ -69,7 +69,7 @@ class TaskTable
 
 
         $tileBlock->addChildBlock(
-            $tileBlock->createBlock(
+            $tableBlock = $tileBlock->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "task.list.table",
                 'content'
@@ -78,6 +78,16 @@ class TaskTable
                 ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
                 ->addEscapeExcludes(['delete_column']
                 )
+        );
+
+        $tableBlock->setLinkCallback(
+            function($headerKey, $record){
+                return $this->getPageUrl(
+                    \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                    ['task_id' => $record->getId()],
+                    true
+                );
+            }
         );
 
     }

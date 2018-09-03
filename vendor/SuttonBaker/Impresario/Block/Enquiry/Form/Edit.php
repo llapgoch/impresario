@@ -42,26 +42,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $editMode = true;
 
             $quoteEntity = $entityInstance->getQuoteEntity();
-            $urlParams = [];
-
-            if($quoteEntity->getId()){
-                $urlParams['quote_id'] = $quoteEntity->getId();
-            }else{
-                $urlParams['enquiry_id'] = $entityId;
-            }
-
-            $this->addChildBlock(
-                $quoteLink = $this->createBlock('\DaveBaker\Core\Block\Html\ButtonAnchor', 'create.quote')
-                    ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
-                    ->addAttribute(
-                        ['href' => $this->getPageUrl(
-                            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                            $urlParams,
-                            $this->getApp()->getHelper('Url')->getCurrentUrl()
-                        )]
-                    )
-            );
-
         }
 
         // Clients

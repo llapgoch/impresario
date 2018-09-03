@@ -8,6 +8,8 @@ namespace SuttonBaker\Impresario\Block\Table;
 class StatusLink
     extends \DaveBaker\Core\Block\Html\Table
 {
+    /** @var mixed */
+    protected $linkCallback;
 
     protected function init()
     {
@@ -36,6 +38,31 @@ class StatusLink
         }
 
         return '';
+    }
+
+    /**
+     * @param \DaveBaker\Core\Model\Db\BaseInterface $record
+     * @return mixed|string
+     */
+    public function getLink(
+        $headerKey,
+        \DaveBaker\Core\Model\Db\BaseInterface $record
+    ) {
+        if($this->linkCallback){
+           return call_user_func_array($this->linkCallback, [$headerKey, $record]);
+        }
+
+        return '';
+    }
+
+    /**
+     * @param $linkCallback
+     * @return $this
+     */
+    public function setLinkCallback($linkCallback)
+    {
+        $this->linkCallback = $linkCallback;
+        return $this;
     }
 
     /**

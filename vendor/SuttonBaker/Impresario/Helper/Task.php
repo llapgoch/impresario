@@ -18,25 +18,34 @@ class Task extends Base
      */
     public function getTaskCollection()
     {
+        /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $collection */
         $collection = $this->createAppObject(
             '\SuttonBaker\Impresario\Model\Db\Task\Collection'
         );
 
+        /** @var \Zend_Db_Select $select */
+        $select = $collection->getSelect();
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
-        $collection->getSelect()->where('is_deleted=?', '0');
+
+        $select->where('is_deleted=?', '0');
+
 
         $collection->joinLeft(
             $userTable,
             "{$userTable}.ID={{task}}.assigned_to_id",
             ['assigned_to_name' => 'user_login']
-        );
-
-        $collection->joinLeft(
+        )->joinLeft(
             $userTable,
             "{$userTable}.ID={{task}}.created_by_id",
             ['created_by_name' => 'user_login']
-        );
-
+        )->order(new \Zend_Db_Expr(sprintf(
+            "FIELD({{task}}.priority,'%s', '%s', '%s', '%s')",
+            TaskDefinition::PRIORITY_CRITICAL,
+            TaskDefinition::PRIORITY_HIGH,
+            TaskDefinition::PRIORITY_MEDIUM,
+            TaskDefinition::PRIORITY_LOW)
+        ))->order('{{task}}.target_date');
+        
         return $collection;
     }
 
