@@ -7,8 +7,10 @@ namespace SuttonBaker\Impresario\Layout;
  */
 class Enquiry extends Base
 {
-    protected $blockPrefix = 'enquiry';
     const ID_KEY = 'enquiry_id';
+
+    /** @var string  */
+    protected $blockPrefix = 'enquiry';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -27,7 +29,6 @@ class Enquiry extends Base
             $editMode = true;
             $quoteEntity = $entityInstance->getQuoteEntity();
         }
-
 
 
         $this->addBlock(

@@ -45,7 +45,7 @@ class Task extends Base
             TaskDefinition::PRIORITY_MEDIUM,
             TaskDefinition::PRIORITY_LOW)
         ))->order('{{task}}.target_date');
-        
+
         return $collection;
     }
 

@@ -174,6 +174,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Enquiry Status *',
                 'formGroup' => true,
                 'type' => 'Select',
+                'show_first_option' => false,
                 'data' => [
                     'select_options' => $statuses
                 ]
