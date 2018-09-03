@@ -9,14 +9,11 @@ class Client
 {
     const TABLE_HEADERS = [
         'client_id' => 'ID',
-        'client_name' => 'Client Name',
-        'address_line1' => 'Address',
-        'postcode' => 'Postcode',
-        'sales_contact_phone' => 'Sales Phone Number',
+        'client_name' => 'Name',
+        'sales_contact_phone' => 'Sales Number',
         'sales_contact' => 'Sales Contact',
-        'accounts_contact_phone' => 'Accounts Phone Number',
+        'accounts_contact_phone' => 'Accounts Number',
         'accounts_contact' => 'Accounts Contact',
-        'edit_column' => "",
         'delete_column' => ""
     ];
 }

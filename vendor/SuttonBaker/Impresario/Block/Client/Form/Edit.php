@@ -21,7 +21,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
-        $heading = 'Add a New Client';
+        $heading = 'Create a New Client';
         $editMode = false;
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
@@ -34,7 +34,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         if($clientId = $this->getRequest()->getParam('client_id')){
             $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load($clientId);
-            $heading = "Edit '{$client->getClientName()}'";
+            $heading = "Update '{$client->getClientName()}'";
             $editMode = true;
         }
 
@@ -152,7 +152,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Client' : 'Add New Client'],
+                'data' => ['button_name' => $editMode ? 'Update Client' : 'Create a New Client'],
                 'class' => 'btn-block'
             ], [
                 'name' => 'task_id',

@@ -24,13 +24,6 @@ class ClientList
      */
     protected function _preDispatch()
     {
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "client.list.heading")
-                ->setHeading("Clients")
-                ->setTemplate('core/main-header.phtml')
-        );
 
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
 
@@ -42,21 +35,21 @@ class ClientList
             ]);
 
         $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Template',
-                'client.list.action.bar'
-            )->setTemplate('client/list/action_bar.phtml')
-        );
-
-        $this->addChildBlock($this->getMessagesBlock());
-
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Table',
+            $tableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'client.list.table'
             )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
                 ['edit_column', 'delete_column']
-            )
+            )->addClass('table-striped')
+        );
+
+        $tableBlock->setLinkCallback(
+            function ($headerKey, $record) {
+                return $this->getPageUrl(
+                    \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT,
+                    ['client_id' => $record->getId()]
+                );
+            }
         );
     }
 

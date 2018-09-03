@@ -43,15 +43,12 @@ class Client extends Base
             $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
         );
 
-
-
-
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($entityId ? "Update Client" : "Add New Client")
+                ->setHeading($entityId ? "Update Client" : "Create a New Client")
                 ->setShortcode('body_content')
         );
 
@@ -67,16 +64,56 @@ class Client extends Base
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function clientListHandle()
     {
+
         $this->addBlock(
             $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "{$this->getBlockPrefix()}.form.edit.heading")
+                ->setHeading('Clients')
+                ->setTemplate('core/main-header.phtml')
+                ->setShortcode('body_content')
+        );
+
+        $this->addBlock(
+            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
+        );
+
+        $this->addBlock(
+        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            $mainTile = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\Tile\Black',
+                "{$this->getBlockPrefix()}.tile.main")
+                ->setHeading("Client List")
+                ->setShortcode('body_content')
+        );
+
+        $mainTile->addChildBlock(
+            $createLink = $mainTile->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                'create.client.link',
+                'header_elements'
+            )
+                ->setTagText('Create a New Client')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT
+                    )]
+                )
+        );
+
+        $mainTile->addChildBlock(
+            $mainTile->createBlock(
                 '\SuttonBaker\Impresario\Block\Client\ClientList',
-                'client.list'
-            )->setShortcode('body_content')
+                'client.list',
+                'content'
+            )
         );
     }
 }
