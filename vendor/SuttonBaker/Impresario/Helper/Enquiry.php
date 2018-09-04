@@ -38,6 +38,14 @@ class Enquiry extends Base
             ['engineer_name' => 'user_login']
         );
 
+        $collection->order(new \Zend_Db_Expr(sprintf(
+                "FIELD({{enquiry}}.status,'%s', '%s', '%s', '%s')",
+                EnquiryDefinition::STATUS_OPEN,
+                EnquiryDefinition::STATUS_ENGINEER_ASSIGNED,
+                EnquiryDefinition::STATUS_REPORT_COMPLETE,
+                EnquiryDefinition::STATUS_COMPLETE)
+        ))->order('{{enquiry}}.target_date');
+
         return $collection;
     }
 
