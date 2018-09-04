@@ -85,16 +85,43 @@ class Quote extends Base
 
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function quoteListHandle()
     {
         $this->addBlock(
             $this->createBlock(
+                '\DaveBaker\Core\Block\Html\Heading',
+                "{$this->getBlockPrefix()}.form.edit.heading")
+                ->setHeading('Quotes')
+                ->setTemplate('core/main-header.phtml')
+                ->setShortcode('body_content')
+        );
+
+        $this->addBlock(
+            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
+        );
+
+        $this->addBlock(
+        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            $mainTile = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\Tile\Black',
+                "{$this->getBlockPrefix()}.tile.main")
+                ->setHeading("Quote Register")
+                ->setShortcode('body_content')
+                ->setTileBodyClass('nopadding')
+        );
+
+
+        $mainTile->addChildBlock(
+            $mainTile->createBlock(
                 '\SuttonBaker\Impresario\Block\Quote\QuoteList',
-                'task.list'
-            )->setShortcode('body_content')
+                "{$this->getBlockPrefix()}.list",
+                'content'
+            )
         );
     }
 }

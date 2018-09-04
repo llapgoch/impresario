@@ -20,8 +20,8 @@ class Enquiry
         'client_reference' => 'Client Ref',
         'status' => 'Status',
         'site_name' => 'Site',
-        'date_received' => 'Date Received',
-        'target_date' => 'Target Date',
+        'date_received' => 'Received',
+        'target_date' => 'Target',
         'project_manager_name' => 'Project Manager',
         'engineer_name' => 'Engineer',
         'delete_column' => ''

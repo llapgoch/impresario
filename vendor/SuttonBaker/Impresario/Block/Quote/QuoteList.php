@@ -27,33 +27,33 @@ class QuoteList
      */
     protected function _preDispatch()
     {
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "quote.list.heading")
-                ->setHeading("Quotes")
-                ->setTemplate('core/main-header.phtml')
-        );
-
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
             ->addOutputProcessors([
-                'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
+                'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 
-        $this->addChildBlock($this->getMessagesBlock());
-
         $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Table',
+            $tableBlock = $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
             )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
                 ['edit_column', 'delete_column']
-            )
+            )->setStatusKey('status')
+                ->setRowStatusClasses(QuoteDefinition::getRowClasses())
+        );
+
+        $tableBlock->setLinkCallback(
+            function ($headerKey, $record) {
+                return $this->getPageUrl(
+                    \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
+                    ['quote_id' => $record->getId()]
+                );
+            }
         );
     }
 

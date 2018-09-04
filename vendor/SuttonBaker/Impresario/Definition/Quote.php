@@ -17,15 +17,14 @@ class Quote
 
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
-        'client_reference' => 'Client Reference',
+        'client_name' => 'Client',
+        'client_reference' => 'Client Ref',
         'status' => 'Status',
-        'date_received' => 'Date Received',
-        'created_by_name' => 'Created By',
-        'client' => 'Client',
-        'project_name' => 'Project Name',
+        'date_received' => 'Received',
+        'created_by_name' => 'Creator',
+        'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
         'estimator_name' => 'Estimator',
-        'edit_column' => '',
         'delete_column' => ''
     ];
 
@@ -40,6 +39,19 @@ class Quote
             self::STATUS_WON => "Won",
             self::STATUS_CLOSED_OUT => 'Lost',
             self::STATUS_CANCELLED => "Cancelled"
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRowClasses()
+    {
+        return [
+            self::STATUS_OPEN => 'danger',
+            self::STATUS_CLOSED_OUT => 'warning',
+            self::STATUS_CANCELLED => 'warning',
+            self::STATUS_WON => 'success'
         ];
     }
 

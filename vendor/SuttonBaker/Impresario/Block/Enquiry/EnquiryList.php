@@ -56,10 +56,9 @@ class EnquiryList
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                'enquiry.list.table'
-            )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
-                ['edit_column', 'delete_column']
-            )->setStatusKey('status')
+                'enquiry.list.table')
+                ->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(['delete_column'])
+                ->setStatusKey('status')
                 ->setRowStatusClasses(EnquiryDefinition::getRowClasses())
         );
 

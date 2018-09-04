@@ -19,12 +19,13 @@ class Quote extends Base
      */
     public function getQuoteCollection()
     {
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
         $collection = $this->createAppObject(
             QuoteDefinition::DEFINITION_COLLECTION
         );
 
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
-        $collection->getSelect()->where('is_deleted=?', '0');
+        $collection->where('{{quote}}.is_deleted=?', '0');
 
         $collection->joinLeft(
             $userTable,
@@ -42,6 +43,12 @@ class Quote extends Base
             $userTable,
             "{$userTable}.ID={{quote}}.created_by_id",
             ['created_by_name' => 'user_login']
+        );
+
+        $collection->joinLeft(
+            "{{client}}",
+            "{{client}}.client_id={{quote}}.client_id",
+            ['client_name' => 'client_name']
         );
 
         return $collection;

@@ -92,6 +92,7 @@ class Client extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading("Client List")
                 ->setShortcode('body_content')
+                ->setTileBodyClass('nopadding')
         );
 
         $mainTile->addChildBlock(
