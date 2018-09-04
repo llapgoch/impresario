@@ -39,8 +39,6 @@ class Task
               `last_edited_by_id` int(11) DEFAULT NULL,
               `description` text,
               `notes` text,
-              `created_by_id` int(11) DEFAULT NULL,
-              `last_edited_by_id` int(11) DEFAULT NULL,
               `assigned_to_id` int(11) DEFAULT NULL,
               `task_type` varchar(255) DEFAULT NULL,
               `parent_id` int(11) DEFAULT NULL,
