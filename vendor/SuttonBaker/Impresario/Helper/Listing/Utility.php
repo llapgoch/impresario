@@ -45,7 +45,8 @@ class Utility
 
         /** @var \DaveBaker\Form\Block\Form $form */
         $form = $this->getApp()->getBlockManager()->createBlock('\DaveBaker\Form\Block\Form', "{$blockPrefix}.list.delete.{$instanceId}")
-            ->setElementName("{$blockPrefix}_list_delete");
+            ->setElementName("{$blockPrefix}_list_delete")
+            ->addClass('js-delete-confirm');
 
         /** @var \DaveBaker\Form\Block\Input\Submit $submit */
         $submit = $this->getApp()->getBlockManager()->createBlock(

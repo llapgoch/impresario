@@ -38,40 +38,5 @@ class TaskConfigurator
             $this->createRule('Required', 'description', 'Description')
         );
 
-
-        // Conditional Rules
-        $dateCompleted = $this->getValue('date_completed');
-        $completedById = $this->getValue('completed_by_id');
-        $statusIsClosed = $this->getValue('status') == TaskDefinition::STATUS_COMPLETE;
-
-        if($statusIsClosed || $this->getValue('date_completed')){
-            $this->addRule(
-                $this->createRule('User', 'completed_by_id', 'Completed By')
-            );
-        }
-
-        if($statusIsClosed || $this->getValue('completed_by_id')){
-            $this->addRule(
-                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
-            );
-        }
-
-        if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
-            $statusRule = $this->createRule('Custom', 'status', 'Status');
-            $statusRule->setMainError('Status must not be \'Open\' if \'Completed By\' or \'Date Completed\' have been set')
-                ->setInputError('This must be set to \'Complete\'');
-
-            $this->addRule($statusRule->setValidationMethod(
-                function($value, $ruleInstance) use($statusIsClosed) {
-
-                    if($statusIsClosed == false){
-                        return $ruleInstance->createError();
-                    }
-
-                    return true;
-                }
-            ));
-        }
-
     }
 }

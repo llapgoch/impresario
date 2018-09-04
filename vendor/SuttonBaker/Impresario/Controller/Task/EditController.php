@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Controller\Task;
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use SuttonBaker\Impresario\Installer\Task;
 
 /**
  * Class EditController
@@ -240,6 +241,13 @@ class EditController
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $data['task_type'] = $this->taskType;
             $data['parent_id'] = $this->parentItem->getId();
+        }
+
+        // Only set the completed date when the status changes from open to complete
+        if($data['status'] == TaskDefinition::STATUS_COMPLETE &&
+            $this->modelInstance->getStatus() !== TaskDefinition::STATUS_COMPLETE){
+
+            $data['date_completed'] = $this->getDateHelper()->utcTimestampToDb();
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();

@@ -73,6 +73,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
+                'name' => 'description',
+                'labelName' => 'Description *',
+                'type' => 'Textarea',
+                'formGroup' => true
+            ], [
                 'name' => 'assigned_to_id',
                 'labelName' => 'Assigned To *',
                 'type' => 'Select',
@@ -100,11 +105,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '', 'maxDate' => "+5Y"])
                 ],
-            ], [
-                'name' => 'description',
-                'labelName' => 'Description *',
-                'type' => 'Textarea',
-                'formGroup' => true
             ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
@@ -137,32 +137,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'select_options' => $statuses,
                     'show_first_option' => false
 
-                ],
-
-            ], [
-                'name' => 'completed_by_id',
-                'rowIdentifier' => 'completed_data',
-                'formGroup' => true,
-                'labelName' => 'Completed By',
-                'type' => 'Select',
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-                'data' => [
-                    'select_options' => $completedUsers
-                ],
-            ], [
-                'name' => 'date_completed',
-                'rowIdentifier' => 'completed_data',
-                'formGroup' => true,
-                'labelName' => 'Date Completed',
-                'type' => 'Select',
-                'class' => 'js-date-picker',
-                'type' => 'Input\Text',
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-                'attributes' => ['autocomplete' => 'off']
+                ]
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',

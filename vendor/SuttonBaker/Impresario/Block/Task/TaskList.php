@@ -25,23 +25,6 @@ class TaskList
     {
 
 
-
-
-//        $this->addChildBlock(
-//            $this->createBlock(
-//                '\SuttonBaker\Impresario\Block\Component\ActionBar',
-//                "{$this->getBlockPrefix()}.list.action.bar"
-//            )->addActionItem(
-//                'All Tasks',
-//                $this->getPageUrl(PageDefinition::TASK_LIST)
-//            )->addActionItem(
-//                'Completed Tasks',
-//                $this->getPageUrl(PageDefinition::TASK_LIST, ['completed' => 1])
-//            )
-//        );
-
-
-
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
