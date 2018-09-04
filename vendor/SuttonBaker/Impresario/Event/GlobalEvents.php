@@ -22,5 +22,9 @@ class GlobalEvents extends \DaveBaker\Core\Base
             return $classes;
         });
 
+        $this->addEvent('edit_post_link', function(){
+            return '';
+        });
+
     }
 }

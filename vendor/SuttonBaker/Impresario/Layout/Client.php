@@ -90,7 +90,7 @@ class Client extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Client List")
+                ->setHeading("Client <strong>List</strong>")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );

@@ -119,7 +119,7 @@ class Enquiry extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Enquiry List")
+                ->setHeading("Enquiry <strong>List</strong>")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );
