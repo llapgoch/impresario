@@ -265,7 +265,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 $tableBlock->removeHeader(['delete_column', 'status', 'task_id']);
             }
 
-            $addButton = $tableBlock->createBlock(
+            $addButton = $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Tag',
                 'create.task.button',
                 'header_elements'
