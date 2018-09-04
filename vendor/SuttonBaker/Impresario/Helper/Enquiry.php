@@ -27,14 +27,14 @@ class Enquiry extends Base
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
 
         $collection->joinLeft(
-            $userTable,
-            "{$userTable}.ID={{enquiry}}.assigned_to_id",
-            ['project_manager_name' => 'user_login']
+            ['user_assigned' => $userTable],
+            "user_assigned.ID={{enquiry}}.assigned_to_id",
+            ['assigned_to_name' => 'user_login']
         );
 
         $collection->joinLeft(
-            $userTable,
-            "{$userTable}.ID={{enquiry}}.engineer_id",
+            ['engineer_user' => $userTable],
+            "engineer_user.ID={{enquiry}}.engineer_id",
             ['engineer_name' => 'user_login']
         );
 
