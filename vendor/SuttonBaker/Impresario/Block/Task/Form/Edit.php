@@ -103,12 +103,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'description',
                 'labelName' => 'Description *',
-                'type' => 'TextArea',
+                'type' => 'Textarea',
                 'formGroup' => true
             ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
-                'type' => 'TextArea',
+                'type' => 'Textarea',
                 'formGroup' => true
             ], [
                 'name' => 'priority',
