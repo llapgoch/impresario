@@ -11,6 +11,9 @@ class Quote extends Base
 
     /** @var string  */
     protected $blockPrefix = 'quote';
+    /** @var string  */
+    protected $headingName = 'Quotes';
+    protected $icon = 'fa-calculator';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -32,19 +35,7 @@ class Quote extends Base
             $editMode = true;
         }
 
-
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Quote Register')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
+        $this->addHeading()->addMessages();
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
@@ -92,18 +83,7 @@ class Quote extends Base
      */
     public function quoteListHandle()
     {
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Quotes')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
+        $this->addHeading()->addMessages();
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */

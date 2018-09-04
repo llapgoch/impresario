@@ -11,6 +11,8 @@ class Client extends Base
 
     /** @var string  */
     protected $blockPrefix = 'client';
+    protected $headingName = 'Clients';
+    protected $icon = 'fa-address-book';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -29,19 +31,9 @@ class Client extends Base
             $editMode = true;
         }
 
+        $this->addHeading();
+        $this->addMessages();
 
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Clients')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
@@ -72,18 +64,8 @@ class Client extends Base
     public function clientListHandle()
     {
 
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Clients')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
+        $this->addHeading();
+        $this->addMessages();
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
@@ -117,4 +99,6 @@ class Client extends Base
             )
         );
     }
+
+
 }

@@ -10,9 +10,10 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 class Task extends Base
 {
     const ID_KEY = 'task_id';
-
     /** @var string  */
     protected $blockPrefix = 'task';
+    protected $headingName = 'Tasks';
+    protected $icon = 'fa-th-list';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -31,19 +32,7 @@ class Task extends Base
             $editMode = true;
         }
 
-
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Tasks')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
+        $this->addHeading()->addMessages();
 
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
         $parentItem = $this->getApp()->getRegistry()->get('parent_item');
@@ -82,6 +71,8 @@ class Task extends Base
      */
     public function taskListHandle()
     {
+        $this->addHeading()->addMessages();
+
         $this->addBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TaskList',

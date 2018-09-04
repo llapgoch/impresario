@@ -27,7 +27,7 @@ class Element extends \DaveBaker\Core\Config\Element
                 'form-group' => 'form-group',
                 'form-row' => 'form-row',
                 'button-anchor' => 'btn btn-primary',
-                'form-error-message' => 'alert alert-red',
+                'form-error-message' => 'alert alert-danger',
                 'table' => 'table',
                 'table-status-rows' => 'table-status-rows'
             ],

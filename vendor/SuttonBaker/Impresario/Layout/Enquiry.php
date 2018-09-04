@@ -11,6 +11,8 @@ class Enquiry extends Base
 
     /** @var string  */
     protected $blockPrefix = 'enquiry';
+    protected $headingName = 'Enquiries';
+    protected $icon = 'fa-thumb-tack';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -30,20 +32,8 @@ class Enquiry extends Base
             $quoteEntity = $entityInstance->getQuoteEntity();
         }
 
-
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Enquiries')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
-
+        $this->addHeading();
+        $this->addMessages();
 
         $this->addBlock(
             /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
@@ -101,18 +91,7 @@ class Enquiry extends Base
     public function enquiryListHandle()
     {
 
-        $this->addBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Enquiries')
-                ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
-        );
-
-        $this->addBlock(
-            $this->getBlockManager()->getMessagesBlock()->setShortcode('body_content')
-        );
+      $this->addHeading()->addMessages();
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */

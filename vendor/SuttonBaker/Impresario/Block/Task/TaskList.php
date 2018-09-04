@@ -25,15 +25,7 @@ class TaskList
     {
 
 
-        $this->addChildBlock(
-            $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
-                ->setHeading('Tasks')
-                ->setTemplate('core/main-header.phtml')
-        );
 
-        $this->addChildBlock($this->getMessagesBlock());
 
 //        $this->addChildBlock(
 //            $this->createBlock(

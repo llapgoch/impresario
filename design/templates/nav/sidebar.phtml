@@ -3,7 +3,7 @@
     <?php foreach($block->getNavItems() as $navItem):?>
         <li>
             <a href="<?php echo $navItem['link'];?>">
-                <i class="fa fa-tachometer"></i> <?php echo $block->_($navItem['name']);?>
+                <i class="fa <?php echo $navItem['icon'];?>"></i> <?php echo $block->_($navItem['name']);?>
                 <!--            <span class="badge badge-red">1</span>-->
             </a>
         </li>

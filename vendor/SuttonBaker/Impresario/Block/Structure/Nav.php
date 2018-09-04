@@ -18,33 +18,39 @@ class Nav extends \DaveBaker\Core\Block\Template
         $navItems = [];
 
         $navItems[] = [
-          'name' => 'Clients',
-          'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST)
+            'name' => 'Clients',
+            'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST),
+            'icon' => 'fa-address-book'
         ];
 
         $navItems[] = [
             'name' => 'Create Client',
-            'link' => $this->getPageUrl(PageDefintion::CLIENT_EDIT)
+            'link' => $this->getPageUrl(PageDefintion::CLIENT_EDIT),
+            'icon' => 'fa-plus'
         ];
 
         $navItems[] = [
             'name' => 'Enquiries',
-            'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST)
+            'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST),
+            'icon' => 'fa-thumb-tack'
         ];
 
         $navItems[] = [
             'name' => 'Create Enquiry',
-            'link' => $this->getPageUrl(PageDefintion::ENQUIRY_EDIT)
+            'link' => $this->getPageUrl(PageDefintion::ENQUIRY_EDIT),
+            'icon' => 'fa-plus'
         ];
 
         $navItems[] = [
             'name' => 'Quotes',
-            'link' => $this->getPageUrl(PageDefintion::QUOTE_LIST)
+            'link' => $this->getPageUrl(PageDefintion::QUOTE_LIST),
+            'icon' => 'fa-calculator'
         ];
 
         $navItems[] = [
             'name' => 'Tasks',
-            'link' => $this->getPageUrl(PageDefintion::TASK_LIST)
+            'link' => $this->getPageUrl(PageDefintion::TASK_LIST),
+            'icon' => 'fa-th-list'
         ];
 
         return $navItems;
