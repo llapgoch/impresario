@@ -39,12 +39,20 @@ class Task extends Base
             "{$userTable}.ID={{task}}.created_by_id",
             ['created_by_name' => 'user_login']
         )->order(new \Zend_Db_Expr(sprintf(
+                "FIELD({{task}}.status,'%s', '%s')",
+                TaskDefinition::STATUS_OPEN,
+                TaskDefinition::STATUS_COMPLETE
+                )
+            )
+        )
+        ->order(new \Zend_Db_Expr(sprintf(
             "FIELD({{task}}.priority,'%s', '%s', '%s', '%s')",
             TaskDefinition::PRIORITY_CRITICAL,
             TaskDefinition::PRIORITY_HIGH,
             TaskDefinition::PRIORITY_MEDIUM,
             TaskDefinition::PRIORITY_LOW)
         ))->order('{{task}}.target_date');
+
 
         return $collection;
     }
