@@ -250,6 +250,10 @@ class EditController
             $data['date_completed'] = $this->getDateHelper()->utcTimestampToDb();
         }
 
+        if($data['status'] == TaskDefinition::STATUS_OPEN){
+            $data['date_completed'] = null;
+        }
+
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->modelInstance->setData($data)->save();
