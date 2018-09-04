@@ -25,9 +25,14 @@ class Enquiry extends Base
      */
     public function enquiryEditHandle()
     {
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
-            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
-            $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry */
+        if(!($entityInstance = $this->getApp()->getRegistry()->get('model_instance'))){
+            return;
+        }
+
+        $quoteEntity = null;
+
+        if($entityId = $entityInstance->getId()){
             $editMode = true;
             $quoteEntity = $entityInstance->getQuoteEntity();
         }
@@ -54,31 +59,24 @@ class Enquiry extends Base
         );
 
 
-        if($entityId) {
-            $urlParams = [];
-
-            if ($quoteEntity->getId()) {
-                $urlParams['quote_id'] = $quoteEntity->getId();
-            } else {
-                $urlParams['enquiry_id'] = $entityId;
-            }
-
+        if($quoteEntity && $quoteEntity->getId()) {
             $mainTile->addChildBlock(
                 $quoteLink = $mainTile->createBlock(
                     '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                    'create.quote.link',
+                    'view.quote.link',
                     'header_elements'
                 )
-                    ->setTagText($quoteEntity->getId() ? 'View Quote' : 'Create Quote')
+                    ->setTagText('View Quote')
                     ->addAttribute(
                         ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                            $urlParams,
+                            ['quote_id' => $quoteEntity->getId()],
                             true
                         )]
                     )
             );
         }
+
     }
 
     /**

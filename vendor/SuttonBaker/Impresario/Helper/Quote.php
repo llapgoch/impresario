@@ -10,6 +10,18 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  */
 class Quote extends Base
 {
+    /**
+     * @var array
+     *
+     * Values to bring across when creating a quote from an enquiry
+     */
+    protected $enquiryDataValues = [
+        'date_received',
+        'client_id',
+        'enquiry_id',
+        'site_name',
+        'client_reference'
+    ];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
@@ -108,6 +120,66 @@ class Quote extends Base
         }
 
         return $collection;
+    }
+
+    /**
+     * @param $enquiryId
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function getNewestQuoteForEnquiry($enquiryId)
+    {
+        $collection = $this->getDisplayQuotes()
+            ->where('enquiry_id=?', $enquiryId);
+
+        $items = $collection->load();
+
+        if(count($items)){
+            return $items[0];
+        }
+
+        return $this->getQuote();
+    }
+
+    /**
+     * @param $enquiryId
+     * @return \DaveBaker\Core\Model\Db\Base|null|\SuttonBaker\Impresario\Model\Db\Quote|null
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
+     * @throws \Exception
+     */
+    public function createQuoteFromEnquiry($enquiryId)
+    {
+        $enquiry = $this->getEnquiryHelper()->getEnquiry($enquiryId);
+
+        if(!$enquiry->getId()){
+            return null;
+        }
+
+        $quote = $this->getNewestQuoteForEnquiry($enquiryId);
+
+        if($quote->getId()){
+            throw new \Exception("Quote has already been created for enquiry {$enquiryId}");
+        }
+
+        foreach($this->enquiryDataValues as $key){
+            $quote->setData($key, $enquiry->getData($key));
+        }
+
+        $currentUserId = $this->getUserHelper()->getCurrentUserId();
+
+        $quote->setLastEditedById($currentUserId)
+            ->setCreatedById($currentUserId)
+            ->setCreatedBy($currentUserId)
+            ->setStatus(QuoteDefinition::STATUS_OPEN);
+
+        return $quote->save();
     }
 
     /**

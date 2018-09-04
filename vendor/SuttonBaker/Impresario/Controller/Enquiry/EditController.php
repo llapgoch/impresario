@@ -3,6 +3,8 @@
 namespace SuttonBaker\Impresario\Controller\Enquiry;
 
 use DaveBaker\Core\Definitions\Messages;
+use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
+use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 
 /**
  * Class EnquiryEditController
@@ -14,9 +16,11 @@ class EditController
 {
     /** @var \DaveBaker\Form\Block\Form $enquiryEditForm */
     protected $enquiryEditForm;
-
     /** @var \SuttonBaker\Impresario\Model\Db\Enquiry */
     protected $modelInstance;
+    /** @var bool  */
+    protected $editMode = false;
+
 
     /** @var array  */
     protected $nonUserValues = [
@@ -29,14 +33,42 @@ class EditController
     ];
 
     /**
+     * @return \SuttonBaker\Impresario\Controller\Base|void
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _preDispatch()
+    {
+        $this->modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
+
+        $this->getApp()->getRegistry()->register('model_instance', $this->modelInstance);
+
+        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')) {
+            // We're loading, fellas!
+            $this->modelInstance->load($instanceId);
+            $this->editMode = true;
+        }
+
+        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
+            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+                $this->addMessage('The enquiry does not exist', Messages::ERROR);
+                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
+            }
+        }
+    }
+
+    /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     public function execute()
     {
@@ -50,12 +82,6 @@ class EditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        $this->modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
-
-        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')) {
-            // We're loading, fellas!
-            $this->modelInstance->load($instanceId);
-        }
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -87,18 +113,8 @@ class EditController
             }
 
             $this->saveFormValues($postParams);
-
-            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-                return $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
-            }
         }
 
-        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
-            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
-                $this->addMessage('The enquiry does not exist', Messages::ERROR);
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
-            }
-        }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
@@ -129,7 +145,11 @@ class EditController
     /**
      * @param $data
      * @return $this
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     protected function saveFormValues($data)
     {
@@ -150,12 +170,33 @@ class EditController
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
+        $this->modelInstance->setData($data)->save();
+
+        // Create a quote if enquiry is complete
+        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE){
+            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($this->modelInstance->getId());
+
+            if(!$quote->getId()) {
+                $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($this->modelInstance->getId());
+
+                $this->addMessage('A new quote has been created for the enquiry', Messages::SUCCESS);
+
+                $this->redirectToPage(
+                    PageDefinition::QUOTE_EDIT,
+                    ['quote_id' => $quote->getId()]
+                );
+            }
+        }
+
         $this->addMessage(
-            "The enquiry has been " . ($this->modelInstance->getId() ? 'updated' : 'added'),
+            "The enquiry has been " . ($this->editMode ? 'updated' : 'created'),
             Messages::SUCCESS
         );
 
-        $this->modelInstance->setData($data)->save();
+        if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
+            return $this->redirectToPage(PageDefinition::ENQUIRY_LIST);
+        }
+
         return $this;
     }
 

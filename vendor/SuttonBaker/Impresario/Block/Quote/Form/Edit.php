@@ -34,8 +34,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixName = self::PREFIX_NAME;
         $editMode = false;
 
-        $enquiryItem = $this->getApp()->getRegistry()->get('enquiry_item');
-
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
             $editMode = true;
@@ -87,14 +85,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'date_received_row',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
-                ],
-                'value' => $enquiryItem->getId() ? $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($enquiryItem->getDateReceived()) : ''
+                ]
             ], [
                 'name' => 'site_name',
                 'labelName' => 'Site Name *',
                 'formGroup' => true,
-                'type' => 'Input\Text',
-                'value' => $enquiryItem->getSiteName()
+                'type' => 'Input\Text'
             ], [
                 'name' => 'project_name',
                 'formGroup' => true,
@@ -106,7 +102,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Client Reference *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
-                'value' => $enquiryItem->getClientReference(),
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ],
@@ -148,8 +143,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
-                ],
-                'value' => $enquiryItem->getProjectManagerId()
+                ]
             ], [
                 'name' => 'estimator_id',
                 'rowIdentifier' => 'project_manager_estimator',

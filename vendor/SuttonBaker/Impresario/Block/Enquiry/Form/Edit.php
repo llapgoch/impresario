@@ -34,7 +34,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $editMode = false;
 
-
         if($entityId){
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
@@ -208,7 +207,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'show_first_option' => false,
                 'data' => [
-                    'select_options' => $statuses
+                    'select_options' => $statuses,
+                    'show_first_option' => false
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'

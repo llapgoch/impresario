@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Quote;
 
 use DaveBaker\Core\Definitions\Messages;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 
 /**
@@ -41,64 +42,28 @@ class EditController
 
 
     /**
-     * @return \DaveBaker\Core\App\Response|object|\SuttonBaker\Impresario\Controller\Base|null
-     * @throws \DaveBaker\Core\Db\Exception
+     * @return bool|\SuttonBaker\Impresario\Controller\Base
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
      */
     protected function _preDispatch()
     {
-        $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-        $this->parentItem = $this->getQuoteHelper()->getQuote();
-        $this->enquiryItem = $this->getEnquiryHelper()->getEnquiry();
-        $this->modelInstance = $this->getQuoteHelper()->getQuote();
 
-        $this->getApp()->getRegistry()->register('enquiry_item', $this->enquiryItem);
-
-
-        if($instanceId){
-            // We're loading, fellas!
-            $this->modelInstance->load($instanceId);
-
-            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
-                $this->addMessage('The quote could not be found');
-                return $this->getResponse()->redirectReferer();
-            }
-
+        if(!($instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM))){
+            return $this->getResponse()->redirectReferer(
+                $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST)
+            );
         }
 
-        if($enquiryId = $this->getRequest()->getParam(self::ENQUIRY_ID_PARAM)) {
+        $this->modelInstance = $this->getQuoteHelper()->getQuote($instanceId);
 
-            $this->enquiryItem->load($enquiryId);
+        if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+            $this->addMessage('The quote could not be found');
 
-            if(!$this->enquiryItem->getId()){
-                $this->addMessage('The enquiry could not be found');
-                return $this->getResponse()->redirectReferer();
-            }
-
-            if($this->enquiryItem->getQuoteEntity()->getId()){
-                $this->addMessage('A quote already exists for this enquiry item');
-                return $this->getResponse()->redirectToPage(
-                    \SuttonBaker\Impresario\Definition\Page::QUOTE_LIST
-                );
-            }
-        } else {
-            if ($enquiryId = $this->modelInstance->getEnquiryId()) {
-                $this->enquiryItem->load($enquiryId);
-
-                if(!$this->enquiryItem->getId()){
-                    $this->addMessage('The enquiry could not be found');
-                    return $this->getResponse()->redirectReferer();
-                }
-
-            }
-        }
-
-        if(!$this->enquiryItem->getId() && !$this->parentItem->getId()){
-            $this->addMessage('A quote must be derived from an enquiry or another quote');
-            return $this->getResponse()->redirectReferer();
+            return $this->getResponse()->redirectReferer(
+                $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST)
+            );
         }
     }
 
@@ -121,38 +86,13 @@ class EditController
             return;
         }
 
-        /** @var \DaveBaker\Core\Helper\Date $helper */
-        $helper = $this->getApp()->getHelper('Date');
 
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
-            $postParams = $this->getRequest()->getPostParams();
-
-            // Convert dates to DB
-            if (isset($postParams['date_received'])){
-                $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
-            }
-
-
-            if(isset($postParams['date_required'])){
-                $postParams['date_required'] = $helper->localDateToDb($postParams['date_required']);
-            }
-
-            if(isset($postParams['date_return_by'])){
-                $postParams['date_return_by'] = $helper->localDateToDb($postParams['date_return_by']);
-            }
-
-            if(isset($postParams['date_returned'])){
-                $postParams['date_returned'] = $helper->localDateToDb($postParams['date_returned']);
-            }
-
-            if(isset($postParams['date_completed'])){
-                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
-            }
-
+            $postParams = $this->modifyFormValuesForSave($this->getRequest()->getPostParams());
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
             $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\QuoteConfigurator');
@@ -173,10 +113,10 @@ class EditController
             }
         }
 
-
-
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
+        /** @var \DaveBaker\Core\Helper\Date $helper */
+        $helper = $this->getApp()->getHelper('Date');
 
         // Apply the values to the form element
         if($this->modelInstance->getId()) {
@@ -221,11 +161,41 @@ class EditController
         }
     }
 
+    protected function modifyFormValuesForSave($postParams)
+    {
+        /** @var \DaveBaker\Core\Helper\Date $helper */
+        $helper = $this->getApp()->getHelper('Date');
+
+        // Convert dates to DB
+        if (isset($postParams['date_received'])){
+            $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
+        }
+
+        if(isset($postParams['date_required'])){
+            $postParams['date_required'] = $helper->localDateToDb($postParams['date_required']);
+        }
+
+        if(isset($postParams['date_return_by'])){
+            $postParams['date_return_by'] = $helper->localDateToDb($postParams['date_return_by']);
+        }
+
+        if(isset($postParams['date_returned'])){
+            $postParams['date_returned'] = $helper->localDateToDb($postParams['date_returned']);
+        }
+
+        if(isset($postParams['date_completed'])){
+            $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
+        }
+
+        return $postParams;
+    }
+
     /**
      * @param $data
-     * @return $this|void
+     * @return $this
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function saveFormValues($data)
@@ -234,11 +204,15 @@ class EditController
             return;
         }
 
+        /** @var \DaveBaker\Core\Helper\Date $helper */
+        $helper = $this->getApp()->getHelper('Date');
+
         foreach($this->nonUserValues as $nonUserValue){
             if(isset($data[$nonUserValue])){
                 unset($data[$nonUserValue]);
             }
         }
+
 
         // Add created by user
         if(!$this->modelInstance->getQuoteId()) {
@@ -246,31 +220,30 @@ class EditController
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
-        if(!$this->modelInstance->getClientId()) {
-            $data['client_id'] = $this->enquiryItem->getClientId();
-        }
-
-        if(!$this->modelInstance->getEnquiryId()){
-            $data['enquiry_id'] = $this->enquiryItem->getEnquiryId();
-        }
-
-        if(!$this->modelInstance->getParentId() && $this->parentItem->getId()){
-            $data['parent_id'] = $this->parentItem->getId();
-        }
+        $messageSet = false;
 
         // Check if we need to create a new quote
-        if($this->modelInstance->getId() && ((float) $this->modelInstance->getNetCost() !== (float) $data['net_cost'] ||
-            (float) $this->modelInstance->getNetSell() !== (float) $data['net_sell'])
-        ) {
-            $this->modelInstance = $this->getQuoteHelper()->duplicateQuote($this->modelInstance);
+        if((float) $this->modelInstance->getNetCost() && (float) $this->modelInstance->getNetSell()) {
+            if (((float)$this->modelInstance->getNetCost() !== (float)$data['net_cost'] ||
+                (float)$this->modelInstance->getNetSell() !== (float)$data['net_sell'])
+            ) {
+                $this->modelInstance = $this->getQuoteHelper()->duplicateQuote($this->modelInstance);
+                $messageSet = true;
+
+                $this->addMessage(
+                    "The quote has been revised based on changes to Net Sell or Net Cost",
+                    Messages::SUCCESS
+                );
+            }
         }
 
+        if(!$messageSet) {
+            $this->addMessage(
+                "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+                Messages::SUCCESS
+            );
+        }
 
-        $this->addMessage(
-            "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'added'),
-            Messages::SUCCESS
-        );
         $this->modelInstance->setData($data)->save();
         return $this;
     }

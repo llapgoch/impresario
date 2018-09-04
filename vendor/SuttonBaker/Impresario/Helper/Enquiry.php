@@ -59,11 +59,11 @@ class Enquiry extends Base
     }
 
     /**
-     * @param $enquiryId
+     * @param int|null $enquiryId
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getEnquiry($enquiryId = '')
+    public function getEnquiry($enquiryId = null)
     {
         $enquiry = $this->createAppObject(EnquiryDefinition::DEFINITION_MODEL);
 
