@@ -40,20 +40,20 @@ class Quote extends Base
         $collection->where('{{quote}}.is_deleted=?', '0');
 
         $collection->joinLeft(
-            $userTable,
-            "{$userTable}.ID={{quote}}.project_manager_id",
+            ['project_manager_user' => $userTable],
+            "project_manager_user.ID={{quote}}.project_manager_id",
             ['project_manager_name' => 'user_login']
         );
 
         $collection->joinLeft(
-            $userTable,
-            "{$userTable}.ID={{quote}}.estimator_id",
+            ['estimator_user' => $userTable],
+            "estimator_user.ID={{quote}}.estimator_id",
             ['estimator_name' => 'user_login']
         );
 
         $collection->joinLeft(
-            $userTable,
-            "{$userTable}.ID={{quote}}.created_by_id",
+            ['created_by_user' => $userTable],
+            "created_by_user.ID={{quote}}.created_by_id",
             ['created_by_name' => 'user_login']
         );
 
