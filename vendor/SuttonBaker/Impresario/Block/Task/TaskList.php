@@ -35,18 +35,18 @@ class TaskList
 
         $this->addChildBlock($this->getMessagesBlock());
 
-        $this->addChildBlock(
-            $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Component\ActionBar',
-                "{$this->getBlockPrefix()}.list.action.bar"
-            )->addActionItem(
-                'All Tasks',
-                $this->getPageUrl(PageDefinition::TASK_LIST)
-            )->addActionItem(
-                'Completed Tasks',
-                $this->getPageUrl(PageDefinition::TASK_LIST, ['completed' => 1])
-            )
-        );
+//        $this->addChildBlock(
+//            $this->createBlock(
+//                '\SuttonBaker\Impresario\Block\Component\ActionBar',
+//                "{$this->getBlockPrefix()}.list.action.bar"
+//            )->addActionItem(
+//                'All Tasks',
+//                $this->getPageUrl(PageDefinition::TASK_LIST)
+//            )->addActionItem(
+//                'Completed Tasks',
+//                $this->getPageUrl(PageDefinition::TASK_LIST, ['completed' => 1])
+//            )
+//        );
 
 
 
@@ -54,7 +54,7 @@ class TaskList
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->getBlockPrefix()}.list.table"
-            )
+            )->setTileDefinitionClass('\SuttonBaker\Impresario\Block\Core\Tile\Black')
         );
     }
 

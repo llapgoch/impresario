@@ -17,6 +17,8 @@ class TableContainer
     const COMPLETED_KEY = 'completed';
     /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
     protected $instanceCollection;
+    /** @var string  */
+    protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
@@ -36,6 +38,25 @@ class TableContainer
         $this->instanceCollection = $instanceCollection;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getTileDefinitionClass()
+    {
+        return $this->tileDefinitionClass;
+    }
+
+    /**
+     * @param $tileDefinitionClass
+     * @return $this
+     */
+    public function setTileDefinitionClass($tileDefinitionClass)
+    {
+        $this->tileDefinitionClass = $tileDefinitionClass;
+        return $this;
+    }
+
 
     /**
      * @return \SuttonBaker\Impresario\Block\Table\Base|void
@@ -62,9 +83,9 @@ class TableContainer
 
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Core\Tile\White',
+                $this->getTileDefinitionClass(),
                 'task.tile.block'
-            )->setHeading('Active <strong>Tasks</strong>')
+            )->setHeading('Task <strong>List</strong>')->setTileBodyClass('nopadding')
         );
 
 
