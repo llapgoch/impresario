@@ -43,7 +43,7 @@ class Enquiry
               `status` varchar(255) DEFAULT NULL,
               `target_date` datetime DEFAULT NULL,
               `notes` text,
-              `assigned_to` int(11) DEFAULT NULL,
+              `assigned_to_id` int(11) DEFAULT NULL,
               `engineer_id` int(11) DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
