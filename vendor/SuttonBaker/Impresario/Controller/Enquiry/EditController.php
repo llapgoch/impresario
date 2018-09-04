@@ -52,6 +52,11 @@ class EditController
 
         $this->modelInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry');
 
+        if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')) {
+            // We're loading, fellas!
+            $this->modelInstance->load($instanceId);
+        }
+
         // Form submission
         if($this->getRequest()->getPostParam('action')){
             $postParams = $this->getRequest()->getPostParams();
@@ -89,9 +94,6 @@ class EditController
         }
 
         if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
-            // We're loading, fellas!
-            $this->modelInstance->load($instanceId);
-
             if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
                 $this->addMessage('The enquiry does not exist', Messages::ERROR);
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
@@ -142,7 +144,7 @@ class EditController
         }
 
         // Add created by user
-        if(!$data['enquiry_id']) {
+        if(!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
         }
 
@@ -152,6 +154,7 @@ class EditController
             "The enquiry has been " . ($this->modelInstance->getId() ? 'updated' : 'added'),
             Messages::SUCCESS
         );
+
         $this->modelInstance->setData($data)->save();
         return $this;
     }

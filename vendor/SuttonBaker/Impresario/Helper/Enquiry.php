@@ -28,7 +28,7 @@ class Enquiry extends Base
 
         $collection->joinLeft(
             $userTable,
-            "{$userTable}.ID={{enquiry}}.project_manager_id",
+            "{$userTable}.ID={{enquiry}}.assigned_to_id",
             ['project_manager_name' => 'user_login']
         );
 

@@ -34,11 +34,7 @@ class EnquiryConfigurator
         );
 
         $this->addRule(
-            $this->createRule('User', 'project_manager_id', 'Project Manager')
-        );
-
-        $this->addRule(
-            $this->createRule('User', 'engineer_id', 'Engineer')
+            $this->createRule('User', 'assigned_to_id', 'Assigned To')
         );
 
         $this->addRule(
@@ -56,26 +52,18 @@ class EnquiryConfigurator
 
         // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');
-        $completedById = $this->getValue('completed_by_id');
         $statusIsClosed = $this->getValue('status') == EnquiryDefinition::STATUS_COMPLETE;
 
-        if($statusIsClosed || $this->getValue('date_completed')){
+        if($this->getValue('status') !== EnquiryDefinition::STATUS_OPEN){
             $this->addRule(
-                $this->createRule('User', 'completed_by_id', 'Completed By')
+                $this->createRule('User', 'engineer_id', 'Engineer')
+                ->setMainError('An engineer must be assigned for this enquiry\'s status')
             );
         }
 
-        if($statusIsClosed || $this->getValue('completed_by_id')){
-            $this->addRule(
-                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
-            );
-        }
-
-
-
-        if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
+        if($this->getValue('date_completed')){
             $statusRule = $this->createRule('Custom', 'status', 'Status');
-            $statusRule->setMainError('Status must be \'Complete\' if \'Completed By\' or \'Date Completed\' have been set')
+            $statusRule->setMainError('Status must be \'Complete\' if \'Date Completed\' has been set')
                 ->setInputError('This must be set to \'Complete\'');
 
             $this->addRule($statusRule->setValidationMethod(

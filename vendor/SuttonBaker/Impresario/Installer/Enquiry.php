@@ -43,10 +43,9 @@ class Enquiry
               `status` varchar(255) DEFAULT NULL,
               `target_date` datetime DEFAULT NULL,
               `notes` text,
-              `project_manager_id` int(11) DEFAULT NULL,
+              `assigned_to` int(11) DEFAULT NULL,
               `engineer_id` int(11) DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
-              `completed_by_id` int(11) DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT 0,
@@ -55,5 +54,4 @@ class Enquiry
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
         );
     }
-
 }

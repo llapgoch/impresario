@@ -54,7 +54,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
 
         // PMs
-        $projectManagers = $this->createCollectionSelectConnector()
+        $assignedToUsers = $this->createCollectionSelectConnector()
             ->configure(
                 $this->getApp()->getHelper('User')->getUserCollection(),
                 'ID',
@@ -86,6 +86,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
+                'name' => 'site_name',
+                'labelName' => 'Site Name *',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+            ], [
+
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
                 'formGroup' => true,
@@ -114,11 +120,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
-                'name' => 'site_name',
-                'labelName' => 'Site Name *',
-                'type' => 'Input\Text',
-                'formGroup' => true,
-            ], [
                 'name' => 'client_id',
                 'labelName' => 'Client *',
                 'formGroup' => true,
@@ -141,23 +142,23 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ],[
-                'name' => 'project_manager_id',
-                'labelName' => 'Project Manager *',
+                'name' => 'assigned_to_id',
+                'labelName' => 'Assigned To *',
                 'type' => 'Select',
                 'formGroup' => true,
-                'rowIdentifier' => 'pm_engineer',
+                'rowIdentifier' => 'assigned_engineer',
                 'data' => [
-                    'select_options' => $projectManagers
+                    'select_options' => $assignedToUsers
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
             ], [
                 'name' => 'engineer_id',
-                'labelName' => 'Engineer *',
+                'labelName' => 'Engineer',
                 'type' => 'Select',
                 'formGroup' => true,
-                'rowIdentifier' => 'pm_engineer',
+                'rowIdentifier' => 'assigned_engineer',
                 'data' => [
                     'select_options' => $engineers
                 ],
@@ -172,24 +173,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'status',
                 'labelName' => 'Enquiry Status *',
+                'rowIdentifier' => 'creation_data',
                 'formGroup' => true,
                 'type' => 'Select',
                 'show_first_option' => false,
                 'data' => [
                     'select_options' => $statuses
-                ]
-            ], [
-                'name' => 'completed_by_id',
-                'labelName' => 'Completed By',
-                'rowIdentifier' => 'creation_data',
-                'formGroup' => true,
+                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ],
-                'type' => 'Select',
-                'data' => [
-                    'select_options' => $completedUsers
-                ]
             ], [
                 'name' => 'date_completed',
                 'labelName' => 'Date Completed',

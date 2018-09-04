@@ -22,7 +22,7 @@ class Enquiry
         'site_name' => 'Site',
         'date_received' => 'Received',
         'target_date' => 'Target',
-        'project_manager_name' => 'Project Manager',
+        'assigned_to_name' => 'Assignee',
         'engineer_name' => 'Engineer',
         'delete_column' => ''
     ];
