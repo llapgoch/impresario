@@ -15,7 +15,7 @@ class Installer extends \DaveBaker\Core\Config\Installer
         $this->mergeConfig([
             'impresario_client' => '0.0.5',
             'impresario_enquiry' => '0.0.92',
-            'impresario_task' => '0.0.5',
+            'impresario_task' => '0.0.6',
             'impresario_quote' => '0.0.4'
         ]);
     }

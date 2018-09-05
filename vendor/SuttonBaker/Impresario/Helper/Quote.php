@@ -218,7 +218,16 @@ class Quote extends Base
 
         $quote->setIsSuperseded(1)->save();
 
-        return $quote;
+        $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
+            $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE
+        )->load();
+
+        foreach($taskItems as $taskItem){
+            $taskItem->setIsSuperseded(1)->save();
+        }
+
+
+        return $newQuote;
     }
 
     /**

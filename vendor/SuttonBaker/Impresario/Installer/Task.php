@@ -46,6 +46,7 @@ class Task
               `priority` varchar(20) DEFAULT NULL,
               `status` varchar(10) DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
+              `is_superseded` int(1) DEFAULT 0,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT 0,

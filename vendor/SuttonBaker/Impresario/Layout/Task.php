@@ -74,7 +74,7 @@ class Task extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-            $this->createBlock(
+            $taskList = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TaskList',
                 'task.list'
             )->setShortcode('body_content')

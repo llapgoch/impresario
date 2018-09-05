@@ -19,6 +19,12 @@ class ListController
      */
     protected function _preDispatch()
     {
+
+        $this->addEvent('block_predispatch_before_task_list_table', function($context){
+            $context->getObject()->setShowSuperseeded(false);
+        });
+
+
         $action = $this->getRequest()->getPostParam('action');
 
         // Perform task deletes
@@ -38,6 +44,8 @@ class ListController
 
     public function execute()
     {
-        // TODO: Implement execute() method.
+//        if($taskTable = $this->getApp()->getBlockManager()->getBlock('task.list.table')){
+//            $taskTable->setShowsuperseded(false);
+//        }
     }
 }

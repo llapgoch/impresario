@@ -28,7 +28,7 @@ class TaskList
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
-                "{$this->getBlockPrefix()}.list.table"
+                "{$this->getBlockPrefix()}.list.table.container"
             )->setTileDefinitionClass('\SuttonBaker\Impresario\Block\Core\Tile\Black')
         );
     }
