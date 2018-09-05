@@ -53,6 +53,12 @@ class Nav extends \DaveBaker\Core\Block\Template
             'icon' => 'fa-th-list'
         ];
 
+        $navItems[] = [
+            'name' => 'Projects',
+            'link' => $this->getPageUrl(PageDefintion::PROJECT_LIST),
+            'icon' => 'fa-ravelry'
+        ];
+
         return $navItems;
     }
 }

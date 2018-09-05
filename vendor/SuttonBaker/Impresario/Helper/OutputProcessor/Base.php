@@ -40,4 +40,13 @@ abstract class Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
+    }
 }

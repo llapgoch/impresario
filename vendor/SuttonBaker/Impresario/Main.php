@@ -34,7 +34,9 @@ class Main
             \SuttonBaker\Impresario\Definition\Page::TASK_EDIT => '\SuttonBaker\Impresario\Controller\Task\EditController',
             \SuttonBaker\Impresario\Definition\Page::TASK_LIST => '\SuttonBaker\Impresario\Controller\Task\ListController',
             \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT => '\SuttonBaker\Impresario\Controller\Quote\EditController',
-            \SuttonBaker\Impresario\Definition\Page::QUOTE_LIST => '\SuttonBaker\Impresario\Controller\Quote\ListController'
+            \SuttonBaker\Impresario\Definition\Page::QUOTE_LIST => '\SuttonBaker\Impresario\Controller\Quote\ListController',
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\EditController',
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\ListController'
         ]);
     }
 
@@ -48,7 +50,8 @@ class Main
             '\SuttonBaker\Impresario\Installer\Client',
             '\SuttonBaker\Impresario\Installer\Enquiry',
             '\SuttonBaker\Impresario\Installer\Task',
-            '\SuttonBaker\Impresario\Installer\Quote'
+            '\SuttonBaker\Impresario\Installer\Quote',
+            '\SuttonBaker\Impresario\Installer\Project'
         ]);
     }
 
@@ -63,7 +66,8 @@ class Main
             '\SuttonBaker\Impresario\Layout\Client',
             '\SuttonBaker\Impresario\Layout\Enquiry',
             '\SuttonBaker\Impresario\Layout\Task',
-            '\SuttonBaker\Impresario\Layout\Quote'
+            '\SuttonBaker\Impresario\Layout\Quote',
+            '\SuttonBaker\Impresario\Layout\Project'
         ]);
         
     }

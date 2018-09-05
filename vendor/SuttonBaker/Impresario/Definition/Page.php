@@ -20,4 +20,7 @@ class Page
 
     const QUOTE_LIST = 'quote_list';
     const QUOTE_EDIT = 'quote_edit';
+
+    const PROJECT_LIST = 'project_list';
+    const PROJECT_EDIT = 'project_edit';
 }
