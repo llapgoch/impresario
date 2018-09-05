@@ -229,6 +229,26 @@ class Quote extends Base
 
         return $newQuote;
     }
+    /**
+    * @param \SuttonBaker\Impresario\Model\Db\Quote $enquiry
+    * @throws \DaveBaker\Core\Db\Exception
+    * @throws \DaveBaker\Core\Event\Exception
+    * @throws \DaveBaker\Core\Object\Exception
+    */
+    public function deleteQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        $tasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+            $quote->getId(),
+            TaskDefinition::TASK_TYPE_QUOTE
+        )->load();
+
+        foreach($tasks as $task){
+            $task->setIsDeleted(1)->save();
+        }
+
+        $quote->setIsDeleted(1)->save();
+    }
 
     /**
      * @param $parentId

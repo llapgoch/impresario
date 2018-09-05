@@ -14,7 +14,9 @@ class ListController
     const DELETE_ACTION = 'delete';
 
     /**
-     * @return \DaveBaker\Core\Controller\Base|void
+     * @return \SuttonBaker\Impresario\Controller\Base|void
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preDispatch()
@@ -30,7 +32,8 @@ class ListController
                 return;
             }
 
-            $enquiry->setIsDeleted(1)->save();
+            $this->getEnquiryHelper()->deleteEnquiry($enquiry);
+
             $this->addMessage('The enquiry has been removed', Messages::SUCCESS);
             $this->getResponse()->redirectReferer();
         }

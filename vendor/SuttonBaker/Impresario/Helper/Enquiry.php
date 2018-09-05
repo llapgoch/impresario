@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Helper
@@ -72,6 +73,27 @@ class Enquiry extends Base
         }
 
         return $enquiry;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function deleteEnquiry(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ) {
+        $tasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+            $enquiry->getId(),
+            TaskDefinition::TASK_TYPE_ENQUIRY
+        )->load();
+
+        foreach($tasks as $task){
+            $task->setIsDeleted(1)->save();
+        }
+
+        $enquiry->setIsDeleted(1)->save();
     }
 
     /**
