@@ -170,7 +170,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
-            ],[
+            ], [
                 'name' => 'assigned_to_id',
                 'labelName' => 'Assigned To *',
                 'type' => 'Select',

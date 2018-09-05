@@ -20,6 +20,9 @@ class Quote extends Base
         'client_id',
         'enquiry_id',
         'site_name',
+        'po_number',
+        'mi_number',
+        'nm_mw_number',
         'client_reference'
     ];
 

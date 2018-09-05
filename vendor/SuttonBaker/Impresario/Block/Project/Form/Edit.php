@@ -124,9 +124,38 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
-                ],
-
-            ],  [
+                ]
+            ], [
+                'name' => 'po_number',
+                'labelName' => 'PO Number',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'po_mi_mw_numbers',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'mi_number',
+                'labelName' => 'MI Number',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'po_mi_mw_numbers',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'nm_mw_number',
+                'labelName' => 'NM/MW Number',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'po_mi_mw_numbers',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'project_manager_id',
                 'formGroup' => true,
                 'rowIdentifier' => 'project_manager_foreman',
