@@ -108,10 +108,6 @@ class EditController
             }
 
             $this->saveFormValues($postParams);
-
-            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::QUOTE_LIST);
-            }
         }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
@@ -193,11 +189,12 @@ class EditController
 
     /**
      * @param $data
-     * @return $this
+     * @return $this|void
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
      */
     protected function saveFormValues($data)
     {
@@ -238,6 +235,28 @@ class EditController
             }
         }
 
+
+        $this->modelInstance->setData($data)->save();
+
+        // Create a project
+        $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
+
+        if($data['status'] == QuoteDefinition::STATUS_WON && !$project){
+            $project = $this->getProjectHelper()->createProjectFromQuote($this->modelInstance->getId());
+
+            $messageSet = true;
+
+            $this->addMessage(
+                "A new project has been created for the quote",
+                Messages::SUCCESS
+            );
+
+            return $this->redirectToPage(
+                \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
+                'project_id' => $project->getId
+            );
+        }
+
         if(!$messageSet) {
             $this->addMessage(
                 "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
@@ -245,8 +264,9 @@ class EditController
             );
         }
 
-        $this->modelInstance->setData($data)->save();
-        return $this;
+        if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
+            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::QUOTE_LIST);
+        }
     }
 
     /**
