@@ -33,15 +33,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixName = self::PREFIX_NAME;
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $editMode = false;
+        $quoteEntity = null;
 
         $this->addClass('js-enquiry-form');
 
         if($entityId){
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
-
             $editMode = true;
-
             $quoteEntity = $entityInstance->getQuoteEntity();
         }
 
@@ -253,7 +252,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'enquiry_data',
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
-                    'hasQuote' => ($quoteEntity->getId() ? 1 : 0),
+                    'hasQuote' => ($quoteEntity && $quoteEntity->getId() ? 1 : 0),
                     'completedStatus' => Enquiry::STATUS_COMPLETE
                 ]),
                 'class' => 'js-enquiry-data'

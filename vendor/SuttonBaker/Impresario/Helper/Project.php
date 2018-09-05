@@ -87,8 +87,10 @@ class Project extends Base
 
 
     /**
-     * @param string $quoteId
-     * @return \SuttonBaker\Impresario\Model\Db\Project
+     * @param $quoteId
+     * @return mixed|null
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getProjectForQuote($quoteId)
@@ -96,7 +98,7 @@ class Project extends Base
         $collection = $this->getProjectCollection();
         $collection->getSelect()->where('quote_id=?', $quoteId);
 
-        if($item = $collection->getFirstItem()){
+        if($item = $collection->firstItem()){
             return $item;
         }
 

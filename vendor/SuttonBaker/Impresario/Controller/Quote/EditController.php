@@ -60,9 +60,7 @@ class EditController
         if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
             $this->addMessage('The quote could not be found');
 
-            return $this->getResponse()->redirectReferer(
-                $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST)
-            );
+            $this->redirectToPage(Page::QUOTE_LIST);
         }
     }
 
@@ -189,7 +187,7 @@ class EditController
 
     /**
      * @param $data
-     * @return $this|void
+     * @return \DaveBaker\Core\App\Response|null
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
@@ -239,22 +237,24 @@ class EditController
         $this->modelInstance->setData($data)->save();
 
         // Create a project
-        $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
 
-        if($data['status'] == QuoteDefinition::STATUS_WON && !$project){
-            $project = $this->getProjectHelper()->createProjectFromQuote($this->modelInstance->getId());
 
-            $messageSet = true;
+        if($data['status'] == QuoteDefinition::STATUS_WON) {
+            if (!$this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId())) {
 
-            $this->addMessage(
-                "A new project has been created for the quote",
-                Messages::SUCCESS
-            );
+                $project = $this->getProjectHelper()->createProjectFromQuote($this->modelInstance->getId());
+                $messageSet = true;
 
-            return $this->redirectToPage(
-                \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
-                'project_id' => $project->getId
-            );
+                $this->addMessage(
+                    "A new project has been created for the quote",
+                    Messages::SUCCESS
+                );
+
+                return $this->redirectToPage(
+                    \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
+                    ['project_id' => $project->getId]
+                );
+            }
         }
 
         if(!$messageSet) {
