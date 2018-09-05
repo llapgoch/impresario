@@ -19,11 +19,7 @@ class ListController
      */
     protected function _preDispatch()
     {
-
-        $this->addEvent('block_predispatch_before_task_list_table', function($context){
-            $context->getObject()->setShowSuperseeded(false);
-        });
-
+        $this->addEvents();
 
         $action = $this->getRequest()->getPostParam('action');
 
@@ -42,10 +38,17 @@ class ListController
         }
     }
 
-    public function execute()
+    public function execute(){}
+
+    /**
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function addEvents()
     {
-//        if($taskTable = $this->getApp()->getBlockManager()->getBlock('task.list.table')){
-//            $taskTable->setShowsuperseded(false);
-//        }
+        // Don't display tasks which have been superseded
+        $this->addEvent('block_predispatch_before_task_list_table_container', function($context){
+            $context->getObject()->setShowSuperseded(false);
+        });
+
     }
 }

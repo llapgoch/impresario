@@ -23,8 +23,6 @@ class TaskList
      */
     protected function _preDispatch()
     {
-
-
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
