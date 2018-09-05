@@ -32,7 +32,6 @@ class EditController
         'quote_id',
         'created_by_id',
         'last_edited_by_id',
-        'client_id',
         'enquiry_id',
         'parent_id',
         'created_at',

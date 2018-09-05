@@ -20,6 +20,7 @@ class Task
 
     const TASK_TYPE_ENQUIRY = 'enquiry';
     const TASK_TYPE_QUOTE = 'quote';
+    const TASK_TYPE_PROJECT = 'project';
 
     const TABLE_HEADERS = [
         'task_id' => 'ID',
@@ -76,7 +77,8 @@ class Task
     {
         return [
             self::TASK_TYPE_ENQUIRY => 'Enquiry',
-            self::TASK_TYPE_QUOTE => 'Quote'
+            self::TASK_TYPE_QUOTE => 'Quote',
+            self::TASK_TYPE_Project => 'Project'
         ];
     }
 

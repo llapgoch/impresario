@@ -63,6 +63,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'user_login'
             )->getElementData();
 
+        // Clients
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(
             QuoteDefinition::getStatuses()
@@ -97,13 +105,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Project Name *',
                 'type' => 'Input\Text'
             ], [
+                'name' => 'client_id',
+                'formGroup' => true,
+                'rowIdentifier' => 'client_reference_row',
+                'labelName' => 'Client',
+                'data' => [
+                    'select_options' => $clients
+                ],
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'client_reference',
                 'formGroup' => true,
                 'labelName' => 'Client Reference *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'client_requested_by',
@@ -112,9 +132,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'date_required',
                 'formGroup' => true,

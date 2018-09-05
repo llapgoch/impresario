@@ -1,12 +1,12 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Quote;
+namespace SuttonBaker\Impresario\Block\Project;
 
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
-use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 /**
  * Class ProjectList
- * @package SuttonBaker\Impresario\Block\Quote
+ * @package SuttonBaker\Impresario\Block\Project
  */
 class ProjectList
     extends \SuttonBaker\Impresario\Block\ListBase

@@ -1,8 +1,9 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Quote\Form;
+namespace SuttonBaker\Impresario\Block\Project\Form;
 
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
@@ -11,9 +12,9 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  */
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
-    const ID_KEY = 'quote_id';
-    const PREFIX_KEY = 'quote';
-    const PREFIX_NAME = 'Quote';
+    const ID_KEY = 'project_id';
+    const PREFIX_KEY = 'project';
+    const PREFIX_NAME = 'Project';
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
@@ -35,7 +36,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $editMode = false;
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
-            $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
+            $entityInstance = $this->getProjectHelper()->getProject($entityId);
             $editMode = true;
         }
 
@@ -48,24 +49,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )->getElementData();
 
         // Engineers
-        $estimators = $this->createCollectionSelectConnector()
+        $foremen = $this->createCollectionSelectConnector()
             ->configure(
                 $this->getApp()->getHelper('User')->getUserCollection(),
                 'ID',
                 'user_login'
             )->getElementData();
 
-        // Completed Users
-        $completedUsers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(
-            QuoteDefinition::getStatuses()
+            ProjectDefinition::getStatuses()
         )->getElementData();
 
 
@@ -85,6 +79,23 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'date_received_row',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'date_required',
+                'formGroup' => true,
+                'labelName' => 'Required By Date *',
+                'type' => 'Input\Text',
+                'class' => 'js-date-picker',
+                'rowIdentifier' => 'date_received_row',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'attributes' => [
+                    'readonly' => 'readonly',
+                    'autocomplete' => 'off',
+                    'data-date-settings' => json_encode(
+                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                    )
                 ]
             ], [
                 'name' => 'site_name',
@@ -115,27 +126,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ],
 
-            ], [
-                'name' => 'date_required',
-                'formGroup' => true,
-                'labelName' => 'Required By Date *',
-                'type' => 'Input\Text',
-                'class' => 'js-date-picker',
-                'rowIdentifier' => 'date_received_row',
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-                'attributes' => [
-                    'readonly' => 'readonly',
-                    'autocomplete' => 'off',
-                    'data-date-settings' => json_encode(
-                        ['minDate' => '0', 'maxDate' => "+5Y"]
-                    )
-                ]
-            ], [
+            ],  [
                 'name' => 'project_manager_id',
                 'formGroup' => true,
-                'rowIdentifier' => 'project_manager_estimator',
+                'rowIdentifier' => 'project_manager_foreman',
                 'labelName' => 'Project Manager *',
                 'data' => [
                     'select_options' => $projectManagers
@@ -145,12 +139,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
-                'name' => 'estimator_id',
-                'rowIdentifier' => 'project_manager_estimator',
+                'name' => 'assigned_foreman_id',
+                'rowIdentifier' => 'project_manager_foreman',
                 'formGroup' => true,
-                'labelName' => 'Estimator *',
+                'labelName' => 'Foreman *',
                 'data' => [
-                    'select_options' => $estimators
+                    'select_options' => $foremen
                 ],
                 'type' => 'Select',
                 'formGroupSettings' => [
@@ -190,58 +184,42 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ]
             ], [
-                'name' => 'date_return_by',
+                'name' => 'actual_cost',
                 'formGroup' => true,
-                'labelName' => 'Return By Date *',
-                'rowIdentifier' => 'returned_dates',
+                'labelName' => 'Actual Cost',
+                'type' => 'Input\Text',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'project_start_date',
+                'formGroup' => true,
+                'labelName' => 'Project Start Date *',
+                'rowIdentifier' => 'project_dates',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => [
                     'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                        ['minDate' => '-1W', 'maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
             ], [
-                'name' => 'date_returned',
+                'name' => 'project_end_date',
                 'formGroup' => true,
-                'labelName' => 'Returned Date',
-                'rowIdentifier' => 'returned_dates',
+                'labelName' => 'Project End Date *',
+                'rowIdentifier' => 'project_dates',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => ['autocomplete' => 'off'],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
-                'name' => 'date_completed',
-                'formGroup' => true,
-                'labelName' => 'Completion Date',
-                'rowIdentifier' => 'completion_fields',
-                'type' => 'Input\Text',
-                'class' => 'js-date-picker',
-                'attributes' => ['autocomplete' => 'off'],
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ]
-
-            ],[
-                'name' => 'completed_by_id',
-                'formGroup' => true,
-                'labelName' => 'Completed By ',
-                'rowIdentifier' => 'completion_fields',
-                'type' => 'Select',
-                'data' => [
-                    'select_options' => $completedUsers
-                ],
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ]
-            ],[
+            ], [
                 'name' => 'status',
                 'formGroup' => true,
                 'labelName' => 'Status *',
@@ -258,10 +236,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Quote' : 'Create Quote'],
+                'data' => ['button_name' => 'Update Project'],
                 'class' => 'btn-block'
             ], [
-                'name' => 'quote_id',
+                'name' => 'project_id',
                 'type' => 'Input\Hidden',
                 'value' => $entityId
             ], [
@@ -275,12 +253,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$prefixKey}.task.table"
-            )->setOrder('after', 'quote.edit.project.name.form.group');
+            )->setOrder('after', 'project.edit.project.name.form.group');
 
             $this->taskTableBlock->setInstanceCollection(
                 $this->getTaskHelper()->getTaskCollectionForEntity(
                     $entityId,
-                    TaskDefinition::TASK_TYPE_QUOTE,
+                    TaskDefinition::TASK_TYPE_PROJECT,
                     TaskDefinition::STATUS_OPEN
                 )
             )->setEditLinkParams([
@@ -321,7 +299,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->addAttribute(['href' => $this->getPageUrl(
                     \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
                     [
-                        'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_QUOTE,
+                        'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
                         'parent_id' => $entityId
                     ],
                     true
@@ -331,7 +309,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 $tileBlock->addChildBlock($addButton);
         }
 
-        return parent::_preRender(); // TODO: Change the autogenerated stub
+        return parent::_preRender();
     }
 
 
