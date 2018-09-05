@@ -34,6 +34,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $editMode = false;
 
+        $this->addClass('js-enquiry-form');
+
         if($entityId){
             /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
             $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
@@ -81,7 +83,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
-            ->setFormName('enquiry_edit')->setGroupTemplate('form/group-vertical.phtml');
+            ->setFormName('enquiry_edit')
+            ->setGroupTemplate('form/group-vertical.phtml');
 
         $elements = $builder->build([
             [
@@ -188,6 +191,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'formGroup' => true,
                 'rowIdentifier' => 'assigned_engineer',
+                'class' => 'js-engineer',
                 'data' => [
                     'select_options' => $engineers
                 ],
@@ -206,6 +210,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'type' => 'Select',
                 'show_first_option' => false,
+                'class' => 'js-status',
                 'data' => [
                     'select_options' => $statuses,
                     'show_first_option' => false
@@ -217,7 +222,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'date_completed',
                 'labelName' => 'Date Completed',
                 'formGroup' => true,
-                'class' => 'js-date-picker',
+                'class' => [
+                    'js-date-picker',
+                    'js-date-completed'
+                ],
                 'rowIdentifier' => 'creation_data',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -241,6 +249,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
+            ], [
+                'name' => 'enquiry_data',
+                'type' => 'Input\Hidden',
+                'value' => json_encode([
+                    'hasQuote' => ($quoteEntity->getId() ? 1 : 0),
+                    'completedStatus' => Enquiry::STATUS_COMPLETE
+                ]),
+                'class' => 'js-enquiry-data'
             ]
         ]);
 

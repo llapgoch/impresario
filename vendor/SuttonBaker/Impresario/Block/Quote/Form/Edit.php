@@ -317,6 +317,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
+            ], [
+                'name' => 'has_project',
+                'type' => 'Input\Hidden',
+                'value' => ''
             ]
         ]);
 

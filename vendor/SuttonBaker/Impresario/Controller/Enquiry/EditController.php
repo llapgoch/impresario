@@ -82,6 +82,9 @@ class EditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
+        wp_register_script('impresario_enquiry_edit', get_template_directory_uri() . '/assets/js/enquiry-edit.js', ['jquery']);
+        wp_enqueue_script('impresario_enquiry_edit');
+
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){

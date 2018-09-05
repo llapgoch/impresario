@@ -61,6 +61,13 @@ class EnquiryConfigurator
             );
         }
 
+        if($statusIsClosed){
+            $this->addRule(
+                $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
+                ->setMainError('Date Completed must be chosen if this enquiry\'s status is set to \'Complete\'')
+            );
+        }
+
         if($this->getValue('date_completed')){
             $statusRule = $this->createRule('Custom', 'status', 'Status');
             $statusRule->setMainError('Status must be \'Complete\' if \'Date Completed\' has been set')
