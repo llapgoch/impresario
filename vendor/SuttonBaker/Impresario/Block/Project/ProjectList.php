@@ -27,12 +27,11 @@ class ProjectList
     protected function _preDispatch()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Project\Collection $enquiryCollection */
-        $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
+        $instanceItems = $this->getProjectHelper()->getProjectCollection()
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
-                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
+                'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 
@@ -40,17 +39,17 @@ class ProjectList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
-                ['edit_column', 'delete_column']
+            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
+                [ 'delete_column']
             )->setStatusKey('status')
-                ->setRowStatusClasses(QuoteDefinition::getRowClasses())
+                ->setRowStatusClasses(ProjectDefinition::getRowClasses())
         );
 
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {
                 return $this->getPageUrl(
-                    \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                    ['quote_id' => $record->getId()]
+                    \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
+                    ['project_id' => $record->getId()]
                 );
             }
         );
@@ -77,7 +76,7 @@ class ProjectList
      */
     protected function getEditPageIdentifier()
     {
-        return PageDefinition::QUOTE_EDIT;
+        return PageDefinition::PROJECT_EDIT;
     }
 
 }
