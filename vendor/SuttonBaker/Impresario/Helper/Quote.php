@@ -26,8 +26,7 @@ class Quote extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     *
-     * Returns a collection of non-deleted tasks
+     * * Returns a collection of non-deleted tasks
      */
     public function getQuoteCollection()
     {
@@ -43,25 +42,27 @@ class Quote extends Base
             ['project_manager_user' => $userTable],
             "project_manager_user.ID={{quote}}.project_manager_id",
             ['project_manager_name' => 'user_login']
-        );
-
-        $collection->joinLeft(
+        )->joinLeft(
             ['estimator_user' => $userTable],
             "estimator_user.ID={{quote}}.estimator_id",
             ['estimator_name' => 'user_login']
-        );
-
-        $collection->joinLeft(
+        )->joinLeft(
             ['created_by_user' => $userTable],
             "created_by_user.ID={{quote}}.created_by_id",
             ['created_by_name' => 'user_login']
-        );
-
-        $collection->joinLeft(
+        )->joinLeft(
             "{{client}}",
             "{{client}}.client_id={{quote}}.client_id",
             ['client_name' => 'client_name']
         );
+
+        $collection->order(new \Zend_Db_Expr(sprintf(
+                "FIELD({{quote}}.status,'%s', '%s', '%s', '%s')",
+                QuoteDefinition::STATUS_OPEN,
+                QuoteDefinition::STATUS_WON,
+                QuoteDefinition::STATUS_CANCELLED,
+                QuoteDefinition::STATUS_CLOSED_OUT)
+        ))->order('{{quote}}.date_required');
 
         return $collection;
     }
