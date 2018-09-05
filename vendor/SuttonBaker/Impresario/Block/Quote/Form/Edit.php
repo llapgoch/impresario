@@ -163,8 +163,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Net Cost *',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
+                'class' => 'js-net-cost',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'net_sell',
@@ -173,8 +174,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Net Sell *',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
+                'class' => 'js-net-sell',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'profit',
+                'formGroup' => true,
+                'rowIdentifier' => 'cost_values',
+                'labelName' => 'Profit',
+                'type' => 'Input\Text',
+                'attributes' => ['disabled' => 'disabled'],
+                'class' => 'js-profit-calculate',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'date_return_by',
