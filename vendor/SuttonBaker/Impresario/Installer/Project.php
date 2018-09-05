@@ -22,13 +22,13 @@ class Project
 
         $pageManager->createPage(
             \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST, [
-                "post_title" => "Edit Project"
+                "post_title" => "Projects"
             ]
         );
 
         $pageManager->createPage(
             \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT, [
-                "post_title" => "Projects"
+                "post_title" => "Edit Project"
             ]
         );
 

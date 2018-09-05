@@ -218,6 +218,10 @@ class EditController
         if($taskType == TaskDefinition::TASK_TYPE_QUOTE){
             return $this->getQuoteHelper()->getQuote($parentId);
         }
+
+        if($taskType == TaskDefinition::TASK_TYPE_PROJECT){
+            return $this->getProjectHelper()->getProject($parentId);
+        }
     }
 
     /**

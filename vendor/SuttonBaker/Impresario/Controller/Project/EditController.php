@@ -14,7 +14,7 @@ class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-
+    const ENTITY_ID_PARAM = 'project_id';
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
@@ -47,7 +47,7 @@ class EditController
             );
         }
 
-        $this->modelInstance = $this->getQuoteHelper()->getQuote($instanceId);
+        $this->modelInstance = $this->getProjectHelper()->getProject($instanceId);
 
         if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
             $this->addMessage('The project could not be found');

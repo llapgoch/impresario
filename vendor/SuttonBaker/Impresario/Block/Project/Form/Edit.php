@@ -40,6 +40,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $editMode = true;
         }
 
+        // Clients
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
         // PMs
         $projectManagers = $this->createCollectionSelectConnector()
             ->configure(
@@ -108,13 +116,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Project Name *',
                 'type' => 'Input\Text'
             ], [
+                'name' => 'client_id',
+                'labelName' => 'Client *',
+                'formGroup' => true,
+                'type' => 'Select',
+                'rowIdentifier' => 'client_reference_row',
+                'data' => [
+                    'select_options' => $clients
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'client_reference',
                 'formGroup' => true,
                 'labelName' => 'Client Reference *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'client_requested_by',
@@ -123,7 +143,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'po_number',
@@ -180,6 +200,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
+                'name' => 'actual_cost',
+                'formGroup' => true,
+                'labelName' => 'Actual Cost *',
+                'rowIdentifier' => 'cost_values',
+                'type' => 'Input\Text',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ], [
                 'name' => 'net_cost',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
@@ -188,7 +217,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-cost',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'net_sell',
@@ -199,7 +228,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-sell',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'profit',
@@ -210,15 +239,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['disabled' => 'disabled'],
                 'class' => 'js-profit-calculate',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ]
-            ], [
-                'name' => 'actual_cost',
-                'formGroup' => true,
-                'labelName' => 'Actual Cost',
-                'type' => 'Input\Text',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'project_start_date',

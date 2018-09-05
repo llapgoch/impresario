@@ -143,9 +143,11 @@ class Project extends Base
 
         $project = $this->getProjectForQuote($quoteId);
 
-        if($project->getId()){
+        if($project){
             throw new \Exception("Project has already been created for quote {$quoteId}");
         }
+
+        $project = $this->getProject();
 
         foreach($this->quoteDataValues as $key){
             $project->setData($key, $quote->getData($key));

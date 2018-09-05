@@ -78,7 +78,7 @@ class Task
         return [
             self::TASK_TYPE_ENQUIRY => 'Enquiry',
             self::TASK_TYPE_QUOTE => 'Quote',
-            self::TASK_TYPE_Project => 'Project'
+            self::TASK_TYPE_PROJECT => 'Project'
         ];
     }
 

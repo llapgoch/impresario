@@ -160,6 +160,10 @@ class Task extends Base
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Quote){
             return TaskDefinition::TASK_TYPE_QUOTE;
         }
+
+        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
+            return TaskDefinition::TASK_TYPE_PROJECT;
+        }
     }
 
     /**

@@ -64,7 +64,6 @@ class ProjectConfigurator
             $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
         );
 
-
         $this->addRule(
             $this->createRule('Date', 'project_start_date', 'Project Start Date')
         );

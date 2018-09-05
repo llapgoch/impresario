@@ -252,7 +252,7 @@ class EditController
 
                 return $this->redirectToPage(
                     \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
-                    ['project_id' => $project->getId]
+                    ['project_id' => $project->getId()]
                 );
             }
         }
