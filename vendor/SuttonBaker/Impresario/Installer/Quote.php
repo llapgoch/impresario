@@ -54,6 +54,7 @@ class Quote
               `date_returned` datetime DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
               `completed_by_id` int(11) DEFAULT NULL,
+              `is_superseded` int(1) DEFAULT 0,
               `status` varchar(20) DEFAULT NULL,
               `comments` text,
               `created_at` datetime DEFAULT NULL,

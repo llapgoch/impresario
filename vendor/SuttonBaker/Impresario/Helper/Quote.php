@@ -86,20 +86,9 @@ class Quote extends Base
      */
     public function getDisplayQuotes()
     {
-        $aggregateCollection = $this->getQuoteCollection();
+        $collection = $this->getQuoteCollection()
+            ->where('is_superseded=0');
 
-        $aggregateCollection
-            ->getSelect()->columns(new \Zend_Db_Expr('MAX(quote_id) as newest_quote_id'))
-            ->group('enquiry_id');
-
-        $maxIds = $aggregateCollection->getAllValuesFor('newest_quote_id');
-        $collection = $this->getQuoteCollection();
-
-        if(!count($maxIds)){
-            return $collection;
-        }
-
-        $collection->getSelect()->where('quote_id IN (?)', $maxIds);
 
         return $collection;
     }
@@ -221,18 +210,29 @@ class Quote extends Base
             return $quote;
         }
 
-        $tasksCollection = $this->getTaskHelper()->getTaskCollectionForEntity(
-            $quote->getId(),
-            TaskDefinition::TASK_TYPE_QUOTE
-        );
+        $newQuote = clone $quote;
 
-        $quote->setParentId($quote->getId())->unsQuoteId()->save();
+        $newQuote->setParentId($quote->getId())
+            ->unsQuoteId()
+            ->save();
 
-        foreach($tasksCollection->load() as $taskItem){
-            $taskItem->setParentId($quote->getId())->save();
-        }
+        $quote->setIsSuperseded(1)->save();
 
         return $quote;
+    }
+
+    /**
+     * @param $parentId
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getSupersededQuotesForParent($parentId)
+    {
+        $collection = $this->getQuoteCollection()
+            ->where('parent_id=?', $parentId)
+            ->where('is_superseded', 1);
+
+        return $collection;
     }
 
     /**
