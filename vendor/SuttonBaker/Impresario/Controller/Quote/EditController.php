@@ -49,7 +49,7 @@ class EditController
      */
     protected function _preDispatch()
     {
-        wp_register_script('impresario_quote', get_template_directory_uri() . '/assets/js/quote.js', ['jquery']);
+        wp_register_script('impresario_quote', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
         wp_enqueue_script('impresario_quote');
 
         if(!($instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM))){
