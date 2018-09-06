@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Project\Form;
 
-use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
@@ -18,6 +18,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
+    /** @var \SuttonBaker\Impresario\Block\Invoice\TableContainer */
+    protected $invoiceTableBlock;
+    /** @var \SuttonBaker\Impresario\Block\Variation\TableContainer */
+    protected $variationTableBlock;
+    /** @var \SuttonBaker\Impresario\Model\Db\Project */
+    protected $modelInstance;
 
     /**
      * @return \DaveBaker\Form\Block\Form|void
@@ -36,7 +42,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $editMode = false;
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
-            $entityInstance = $this->getProjectHelper()->getProject($entityId);
+            $this->modelInstance = $this->getProjectHelper()->getProject($entityId);
             $editMode = true;
         }
 
@@ -306,26 +312,95 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         if($entityId) {
-            $this->taskTableBlock = $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TableContainer',
-                "{$prefixKey}.task.table"
-            )->setOrder('after', 'project.edit.project.name.form.group');
-
-            $this->taskTableBlock->setInstanceCollection(
-                $this->getTaskHelper()->getTaskCollectionForEntity(
-                    $entityId,
-                    TaskDefinition::TASK_TYPE_PROJECT,
-                    TaskDefinition::STATUS_OPEN
-                )
-            )->setEditLinkParams([
-                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
-            ]);
-
-
-            $this->addChildBlock($this->taskTableBlock);
+            $this->createTaskTableBlock();
+            $this->createInvoiceTableBlock();
+            $this->createVariationTableBlock();
         }
 
         $this->addChildBlock(array_values($elements));
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function createTaskTableBlock()
+    {
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $this->taskTableBlock = $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Task\TableContainer',
+            "{$prefixKey}.task.table"
+        )->setOrder('after', 'project.edit.project.name.form.group');
+
+        $this->taskTableBlock->setInstanceCollection(
+            $this->getTaskHelper()->getTaskCollectionForEntity(
+                $this->modelInstance->getId(),
+                TaskDefinition::TASK_TYPE_PROJECT,
+                TaskDefinition::STATUS_OPEN
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+
+        $this->addChildBlock($this->taskTableBlock);
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function createInvoiceTableBlock()
+    {
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $this->invoiceTableBlock = $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Invoice\TableContainer',
+            "{$prefixKey}.invoice.table"
+        )->setOrder('after', 'project.edit.project.name.form.group');
+
+        $this->invoiceTableBlock->setInstanceCollection(
+            $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
+                $this->modelInstance->getId(),
+                InvoiceDefinition::INVOICE_TYPE_PROJECT
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+
+        $this->addChildBlock($this->invoiceTableBlock);
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function createVariationTableBlock()
+    {
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $this->variationTableBlock = $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Variation\TableContainer',
+            "{$prefixKey}.variation.table"
+        )->setOrder('after', 'project.edit.project.name.form.group');
+
+        $this->variationTableBlock->setInstanceCollection(
+            $this->getVariationHelper()->getVariationCollectionForProject(
+                $this->modelInstance->getId()
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+        $this->addChildBlock($this->variationTableBlock);
     }
 
     /**
