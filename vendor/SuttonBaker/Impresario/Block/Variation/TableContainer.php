@@ -1,26 +1,28 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Invoice;
+namespace SuttonBaker\Impresario\Block\Variation;
 
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
-use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 /**
  * Class TableContainer
- * @package SuttonBaker\Impresario\Block\Task
+ * @package SuttonBaker\Impresario\Block\Variation
  */
 class TableContainer
     extends \SuttonBaker\Impresario\Block\Table\Container\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string  */
-    protected $blockPrefix = 'invoice_table';
+    protected $blockPrefix = 'variation';
     /** @var string  */
-    protected $idParam = 'invoice_id';
-    /** @var \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection */
+    protected $idParam = 'variation_id';
+
+    /** @var \SuttonBaker\Impresario\Model\Db\Variation\Collection $instanceCollection */
     protected $instanceCollection;
 
+
     /**
-     * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection
+     * @return \SuttonBaker\Impresario\Model\Db\Variation\Collection
      */
     public function getInstanceCollection()
     {
@@ -28,11 +30,11 @@ class TableContainer
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection
+     * @param \SuttonBaker\Impresario\Model\Db\Variation\Collection $instanceCollection
      * @return $this
      */
     public function setInstanceCollection(
-        \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection
+        \SuttonBaker\Impresario\Model\Db\Variation\Collection $instanceCollection
     ) {
         $this->instanceCollection = $instanceCollection;
         return $this;
@@ -50,11 +52,12 @@ class TableContainer
     {
 
         if(!$this->instanceCollection){
-            $this->instanceCollection = $this->getInvoiceHelper()->getInvoiceCollection();
+            $this->instanceCollection = $this->getVariationHelper()->getVariationCollection();
         }
 
         $this->instanceCollection->addOutputProcessors([
-                'invoice_date' => $this->getDateHelper()->getOutputProcessorShortDate()
+                'date_approved' => $this->getDateHelper()->getOutputProcessorShortDate(),
+                'created_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
             ]);
 
         $instanceItems = $this->instanceCollection->load();
@@ -62,7 +65,7 @@ class TableContainer
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
-                'invoice.tile.block'
+                "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('<strong>Invoices</strong>')
         );
 
@@ -73,16 +76,16 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                    "invoice.list.table",
+                    "{$this->getBlockPrefix()}.list.table",
                     'content'
-                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
+                )->setHeaders(VariationDefinition::TABLE_HEADERS)->setRecords($instanceItems)
             );
 
             $tableBlock->setLinkCallback(
                 function ($headerKey, $record) {
                     return $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
-                        ['invoice_id' => $record->getId()],
+                        \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT,
+                        [$this->getInstanceIdParam() => $record->getId()],
                         true
                     );
                 }
@@ -91,9 +94,9 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
-                    "invoice.list.no.records",
+                    "{$this->getBlockPrefix()}.list.no.records",
                     'content'
-                )->setTagText('No invoices have currently been created')
+                )->setTagText('No variations have currently been created')
             );
         }
     }

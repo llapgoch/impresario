@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Block\Task;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
- * Class TaskTable
+ * Class TableContainer
  * @package SuttonBaker\Impresario\Block\Task
  */
 class TableContainer
