@@ -1,32 +1,35 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller\Task;
+namespace SuttonBaker\Impresario\Controller\Invoice;
 
 use DaveBaker\Core\Definitions\Messages;
+use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+
 
 
 /**
  * Class EditController
- * @package SuttonBaker\Impresario\Controller\Invoice
+ * @package SuttonBaker\Impresario\Controller\Task
  */
 class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
+    const INVOICE_TYPE_PARAM = 'invoice_type';
     const PARENT_ID_PARAM = 'parent_id';
-    const ENTITY_ID_PARAM = 'task_id';
+    const ENTITY_ID_PARAM = 'invoice_id';
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
     protected $parentItem;
-    protected $taskType;
+    protected $invoiceType;
     protected $modelInstance;
 
     protected $nonUserValues = [
-        'task_id',
+        'invoice_id',
         'created_by_id',
         'last_edited_by_id',
-        'task_type',
+        'invoice_type',
         'parent_id',
         'created_at',
         'updated_at',
@@ -41,7 +44,7 @@ class EditController
     {
 
         // Set instance values before the blocks are created
-        $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
+        $taskType = $this->getRequest()->getParam(self::INVOICE_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
 

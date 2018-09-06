@@ -1,23 +1,22 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller\Task;
+namespace SuttonBaker\Impresario\Controller\Variation;
 
 use DaveBaker\Core\Definitions\Messages;
-use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
-use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
-use SuttonBaker\Impresario\Installer\Task;
+use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
+
 
 /**
  * Class EditController
- * @package SuttonBaker\Impresario\Controller\Task
+ * @package SuttonBaker\Impresario\Controller\Variation
  */
 class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-    const TASK_TYPE_PARAM = 'task_type';
+    const VARIATION_TYPE_PARAM = 'variation_type';
     const PARENT_ID_PARAM = 'parent_id';
-    const ENTITY_ID_PARAM = 'task_id';
+    const ENTITY_ID_PARAM = 'variation_id';
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;

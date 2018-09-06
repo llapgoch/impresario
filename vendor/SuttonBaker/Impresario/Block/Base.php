@@ -60,4 +60,22 @@ abstract class Base extends \DaveBaker\Core\Block\Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Invoice
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getInvoiceHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Variation
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getVariationHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
+    }
+
 }
