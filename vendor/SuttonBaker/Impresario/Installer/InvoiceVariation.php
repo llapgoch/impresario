@@ -40,6 +40,8 @@ class InvoiceVariation
               `value` decimal(10,4) DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_updated_by_id` int(11) DEFAULT NULL,
+              `invoice_type` varchar(20) DEFAULT NULL,
+              `parent_id` int(11) DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
