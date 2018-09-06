@@ -4,7 +4,7 @@ namespace SuttonBaker\Impresario\Controller\Invoice;
 
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
-
+use SuttonBaker\Impresario\Helper\Invoice;
 
 
 /**
@@ -44,14 +44,14 @@ class EditController
     {
 
         // Set instance values before the blocks are created
-        $taskType = $this->getRequest()->getParam(self::INVOICE_TYPE_PARAM);
+        $invoiceType = $this->getRequest()->getParam(self::INVOICE_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
 
-        $this->setModelInstance($this->getTaskHelper()->getTask());
+        $this->setModelInstance($this->getInvoiceHelper()->getInvoice());
 
         if(!$instanceId){
-            $this->modelInstance->setTaskType($this->taskType);
+            $this->modelInstance->setTaskType($this->invoiceType);
             $this->modelInstance->setParentId($parentId);
         }
 
@@ -60,26 +60,26 @@ class EditController
             $this->modelInstance->load($instanceId);
 
             if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
-                $this->addMessage('The task could not be found', Messages::ERROR);
+                $this->addMessage('The invoice could not be found', Messages::ERROR);
                 return $this->getResponse()->redirectReferer();
             }
 
         }else {
-            if (!$this->getTaskHelper()->isValidTaskType($taskType)) {
-                $this->addMessage('Invalid Task Type');
+            if (!$this->getInvoiceHelper()->isValidInvoiceType($invoiceType)) {
+                $this->addMessage('Invalid Invoice Type');
                 $this->getResponse()->redirectReferer();
             }
         }
 
         $this->setParentItem($this->getParentItem($this->modelInstance));
-        $this->setTaskType($this->getTaskHelper()->getTaskTypeForParent($this->parentItem));
+        $this->setInvoiceType($this->getInvoiceHelper()->getInvoiceTypeForParent($this->parentItem));
 
         if(!$this->parentItem || !$this->parentItem->getId()){
             $this->addMessage('The parent item of the task could not be found');
             return $this->getResponse()->redirectReferer();
         }
 
-        if(!$this->taskType){
+        if(!$this->invoiceType){
             $this->addMessage('Invalid parent type');
             return $this->getResponse()->redirectReferer();
         }
@@ -97,7 +97,7 @@ class EditController
      */
     public function execute()
     {
-        if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('task.form.edit'))){
+        if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('invoice.form.edit'))){
             return;
         }
 
@@ -112,16 +112,13 @@ class EditController
             $postParams = $this->getRequest()->getPostParams();
 
             // Convert dates to DB
-            if (isset($postParams['date_completed'])){
-                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
+            if (isset($postParams['invoice_date'])){
+                $postParams['invoice_date'] = $helper->localDateToDb($postParams['invoice_date']);
             }
 
-            if(isset($postParams['target_date'])){
-                $postParams['target_date'] = $helper->localDateToDb($postParams['target_date']);
-            }
 
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\TaskConfigurator');
+            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\InvoiceConfigurator');
 
             /** @var \DaveBaker\Form\Validation\Validator $validator */
             $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
@@ -135,7 +132,7 @@ class EditController
             $this->saveFormValues($postParams);
 
             if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::TASK_LIST);
+                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::PROJECT_LIST);
             }
         }
 
@@ -147,11 +144,7 @@ class EditController
             $data = $this->modelInstance->getData();
 
             if($this->modelInstance->getTargetDate()){
-                $data['target_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getTargetDate());
-            }
-
-            if($this->modelInstance->getDateCompleted()){
-                $data['date_completed'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateCompleted());
+                $data['invoice_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getInvoiceDate());
             }
 
             $applicator->configure(
@@ -186,42 +179,39 @@ class EditController
      * @param string $taskType
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function setTaskType($taskType)
+    protected function setInvoiceType($invoiceType)
     {
-        $this->taskType = $taskType;
-        $this->getApp()->getRegistry()->register('task_type', $taskType);
+        $this->invoiceType = $invoiceType;
+        $this->getApp()->getRegistry()->register('invoice_type', $invoiceType);
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Task $instance
-     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @param \SuttonBaker\Impresario\Model\Db\Invoice $instance
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project|\SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getParentItem(\SuttonBaker\Impresario\Model\Db\Task $instance)
+    protected function getParentItem(\SuttonBaker\Impresario\Model\Db\Invoice $instance)
     {
         $taskType = null;
         $parentId = null;
 
-
         if($instance->getId()){
-            $taskType = $instance->getTaskType();
+            $invoiceType = $instance->getInvoiceType();
             $parentId = $instance->getParentId();
         }else{
-            $taskType = $this->getRequest()->getParam(self::TASK_TYPE_PARAM);
+            $invoiceType = $this->getRequest()->getParam(self::INVOICE_TYPE_PARAM);
             $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         }
 
-        if($taskType == TaskDefinition::TASK_TYPE_ENQUIRY){
+        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_ENQUIRY){
             return $this->getEnquiryHelper()->getEnquiry($parentId);
         }
 
-        if($taskType == TaskDefinition::TASK_TYPE_QUOTE){
-            return $this->getQuoteHelper()->getQuote($parentId);
-        }
-
-        if($taskType == TaskDefinition::TASK_TYPE_PROJECT){
+        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_PROJECT){
             return $this->getProjectHelper()->getProject($parentId);
         }
+
+        return null;
     }
 
     /**
@@ -241,28 +231,17 @@ class EditController
         }
 
         // Add created by user
-        if(!$this->modelInstance->getTaskId()) {
+        if(!$this->modelInstance->getInvoiceId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-            $data['task_type'] = $this->taskType;
+            $data['invoice_type'] = $this->invoiceType;
             $data['parent_id'] = $this->parentItem->getId();
-        }
-
-        // Only set the completed date when the status changes from open to complete
-        if($data['status'] == TaskDefinition::STATUS_COMPLETE &&
-            $this->modelInstance->getStatus() !== TaskDefinition::STATUS_COMPLETE){
-
-            $data['date_completed'] = $this->getDateHelper()->utcTimestampToDb();
-        }
-
-        if($data['status'] == TaskDefinition::STATUS_OPEN){
-            $data['date_completed'] = null;
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->modelInstance->setData($data)->save();
         $this->addMessage(
-            "The task has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+            "The invoice has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
             Messages::SUCCESS
         );
 
@@ -286,7 +265,7 @@ class EditController
         /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
-            'task.edit.form.errors'
+            'invoice.edit.form.errors'
         )->setOrder('before', '')->addErrors($validator->getErrors());
 
         $this->editForm->addChildBlock($errorBlock);
