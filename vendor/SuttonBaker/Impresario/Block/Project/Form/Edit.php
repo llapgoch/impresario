@@ -420,24 +420,30 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $tableBlock->removeHeader(['delete_column', 'status', 'task_id']);
         }
 
-        if($tileBlock = $this->getBlockManager()->getBlock('task.tile.block')) {
-            $addButton = $tileBlock->createBlock(
-                '\DaveBaker\Core\Block\Html\Tag',
-                'create.task.button',
-                'header_elements'
-            )->setTagText('Create Task')
-                ->setTag('a')
-                ->addAttribute(['href' => $this->getPageUrl(
-                    \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-                    [
-                        'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
-                        'parent_id' => $entityId
-                    ],
-                    true
-                )])
-                ->addClass('btn btn-sm btn-primary');
+        if($taskTileBlock = $this->getBlockManager()->getBlock('task.tile.block')) {
+            $taskTileBlock->addChildBlock($this->createSmallButtonElement('Create Task', $this->getPageUrl(
+                \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
+                    'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
+                    'parent_id' => $entityId],
+                true
+            ), 'create.task.button', 'header_elements'));
+        }
 
-                $tileBlock->addChildBlock($addButton);
+        if($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block')) {
+            $variationTileBlock->addChildBlock($this->createSmallButtonElement('Create Variation', $this->getPageUrl(
+                \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
+                    'project_id' => $entityId],
+                true
+            ), 'create.variation.button', 'header_elements'));
+        }
+
+        if($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
+            $invoiceTileBlock->addChildBlock($this->createSmallButtonElement('Create Invoice', $this->getPageUrl(
+                \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
+                    'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PROJECT,
+                    'parent_id' => $entityId],
+                true
+            ), 'create.invoice.button', 'header_elements'));
         }
 
         return parent::_preRender();

@@ -7,6 +7,28 @@ namespace SuttonBaker\Impresario\Block\Form;
  */
 abstract class Base extends \DaveBaker\Form\Block\Form
 {
+
+    /**
+     * @param $label
+     * @param $url
+     * @param $blockName
+     * @param null $asName
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function createSmallButtonElement($label, $url, $blockName, $asName = null)
+    {
+        return $this->createBlock(
+            '\DaveBaker\Core\Block\Html\Tag',
+            $blockName,
+            $asName
+        )->setTagText($label)
+            ->setTag('a')
+            ->addAttribute(['href' => $url])
+            ->addClass('btn btn-sm btn-primary');
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception
