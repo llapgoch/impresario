@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Controller\Enquiry;
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class EnquiryEditController
@@ -20,6 +21,13 @@ class EditController
     protected $modelInstance;
     /** @var bool  */
     protected $editMode = false;
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_ENQUIRY,
+        Roles::CAP_VIEW_ENQUIRY,
+        Roles::CAP_ALL
+    ];
 
 
     /** @var array  */

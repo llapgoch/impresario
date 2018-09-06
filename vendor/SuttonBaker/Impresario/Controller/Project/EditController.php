@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Controller\Project;
 use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class EditController
@@ -19,6 +20,12 @@ class EditController
     protected $editForm;
     /** @var \SuttonBaker\Impresario\Model\Db\Project */
     protected $modelInstance;
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_PROJECT,
+        Roles::CAP_VIEW_PROJECT,
+        Roles::CAP_ALL
+    ];
 
     /** @var array  */
     protected $nonUserValues = [
@@ -40,6 +47,7 @@ class EditController
      */
     protected function _preDispatch()
     {
+
         if(!($instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM))){
             return $this->getResponse()->redirectReferer(
                 $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST)

@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Controller\Quote;
 use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class EditController
@@ -17,6 +18,13 @@ class EditController
     const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'quote_id';
     const ENQUIRY_ID_PARAM = 'enquiry_id';
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_QUOTE,
+        Roles::CAP_VIEW_QUOTE,
+        Roles::CAP_ALL
+    ];
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;

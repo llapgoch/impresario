@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Controller\Task;
 use DaveBaker\Core\Definitions\Messages;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class ListController
@@ -12,6 +13,12 @@ class ListController
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     const DELETE_ACTION = 'delete';
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_VIEW_TASK,
+        Roles::CAP_EDIT_TASK,
+        Roles::CAP_ALL
+    ];
 
     /**
      * @return \DaveBaker\Core\Controller\Base|void

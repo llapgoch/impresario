@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Client;
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Page;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class ClientEditController
@@ -15,6 +16,13 @@ class EditController
     /** @var \DaveBaker\Form\Block\Form $clientEditForm */
     protected $clientEditForm;
     protected $modelInstance;
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_CLIENT,
+        Roles::CAP_VIEW_CLIENT,
+        Roles::CAP_ALL
+    ];
 
     protected $nonUserValues = [
         'client_id',

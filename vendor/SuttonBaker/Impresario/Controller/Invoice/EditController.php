@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Controller\Invoice;
 
 use DaveBaker\Core\Definitions\Messages;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Helper\Invoice;
 
 
@@ -18,6 +19,13 @@ class EditController
     const INVOICE_TYPE_PARAM = 'invoice_type';
     const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'invoice_id';
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_INVOICE,
+        Roles::CAP_VIEW_INVOICE,
+        Roles::CAP_ALL
+    ];
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;

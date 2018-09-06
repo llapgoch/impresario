@@ -13,16 +13,21 @@ class Roles
     const ROLE_ESTIMATOR = 'estimator';
     const ROLE_ADMINISTRATOR = 'administrator'; // Use WP's administrator
 
+    const CAP_EDIT_CLIENT = 'edit_client';
+    const CAP_VIEW_CLIENT = 'view_client';
     const CAP_EDIT_ENQUIRY = 'edit_enquiry';
     const CAP_VIEW_ENQUIRY = 'view_enquiry';
     const CAP_EDIT_QUOTE = 'edit_quote';
     const CAP_VIEW_QUOTE = 'view_quote';
     const CAP_VIEW_PROJECT = 'view_project';
     const CAP_EDIT_PROJECT = 'edit_project';
+    const CAP_EDIT_TASK = 'edit_task';
+    const CAP_VIEW_TASK = 'edit_task';
     const CAP_VIEW_VARIATION = 'view_variation';
     const CAP_EDIT_VARIATION = 'edit_variation';
     const CAP_VIEW_INVOICE = 'view_invoice';
     const CAP_EDIT_INVOICE = 'edit_invoice';
+    const CAP_ALL = 'all';
 
     /**
      * @return array
@@ -67,7 +72,8 @@ class Roles
             self::CAP_EDIT_VARIATION,
             self::CAP_VIEW_VARIATION,
             self::CAP_EDIT_INVOICE,
-            self::CAP_VIEW_INVOICE
+            self::CAP_VIEW_INVOICE,
+            self::CAP_ALL
         ];
     }
 }

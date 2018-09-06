@@ -8,6 +8,7 @@ namespace SuttonBaker\Impresario\Controller;
 abstract class Base
     extends \DaveBaker\Core\Controller\Base
 {
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception

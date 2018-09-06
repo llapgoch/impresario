@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Task;
 
 use DaveBaker\Core\Definitions\Messages;
+use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use SuttonBaker\Impresario\Installer\Task;
@@ -18,6 +19,13 @@ class EditController
     const TASK_TYPE_PARAM = 'task_type';
     const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'task_id';
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_VIEW_TASK,
+        Roles::CAP_EDIT_TASK,
+        Roles::CAP_ALL
+    ];
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;

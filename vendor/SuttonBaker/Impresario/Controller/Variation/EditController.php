@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Variation;
 
 use DaveBaker\Core\Definitions\Messages;
+use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 
@@ -18,6 +19,13 @@ class EditController
     const VARIATION_TYPE_PARAM = 'variation_type';
     const PROJECT_ID_PARAM = 'project_id';
     const ENTITY_ID_PARAM = 'variation_id';
+
+    /** @var array  */
+    protected $capabilities = [
+        Roles::CAP_EDIT_VARIATION,
+        Roles::CAP_VIEW_VARIATION,
+        Roles::CAP_ALL
+    ];
 
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
