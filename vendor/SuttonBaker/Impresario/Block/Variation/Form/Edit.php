@@ -91,7 +91,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
                 'name' => 'gp',
                 'formGroup' => true,
                 'rowIdentifier' => 'profit_gp',
@@ -102,7 +102,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
                 'name' => 'description',
                 'labelName' => 'Description',
                 'type' => 'Textarea',
