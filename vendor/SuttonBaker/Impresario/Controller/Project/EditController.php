@@ -17,7 +17,7 @@ class EditController
     const ENTITY_ID_PARAM = 'project_id';
     /** @var \DaveBaker\Form\Block\Form $editForm */
     protected $editForm;
-    /** @var \SuttonBaker\Impresario\Model\Db\Quote */
+    /** @var \SuttonBaker\Impresario\Model\Db\Project */
     protected $modelInstance;
 
     /** @var array  */
@@ -198,14 +198,14 @@ class EditController
 
 
         // Add created by user
-        if(!$this->modelInstance->getQuoteId()) {
+        if(!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->addMessage(
-            "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+            "The project has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
             Messages::SUCCESS
         );
 

@@ -252,7 +252,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '-1W', 'maxDate' => "+5Y"]
+                        ['minDate' => '-2W', 'maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
@@ -265,7 +265,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'project_dates',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
-                'attributes' => ['autocomplete' => 'off'],
+                'attributes' => [
+                    'autocomplete' => 'off',
+                    'readonly' => 'readonly',
+                    'data-date-settings' => json_encode(
+                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                    )
+                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
