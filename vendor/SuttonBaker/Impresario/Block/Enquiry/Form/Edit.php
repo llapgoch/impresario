@@ -99,7 +99,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
-                'value' => $this->getApp()->getHelper('Date')->currentDateShortLocalOutput(),
+                'value' => $this->getDateHelper()->currentDateShortLocalOutput(),
                 'rowIdentifier' => 'date_received_row',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'

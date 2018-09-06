@@ -1,8 +1,8 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Invoice\Form;
+namespace SuttonBaker\Impresario\Block\Variation\Form;
 
-use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefintion;
+use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 
 /**
  * Class Edit
@@ -10,9 +10,9 @@ use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefintion;
  */
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
-    const ID_KEY = 'invoice_id';
-    const PREFIX_KEY = 'invoice';
-    const PREFIX_NAME = 'Invoice';
+    const ID_KEY = 'variation_id';
+    const PREFIX_KEY = 'variation';
+    const PREFIX_NAME = 'Variation';
 
     /**
      * @return \DaveBaker\Core\Block\Template|void
@@ -28,8 +28,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixName = self::PREFIX_NAME;
 
         $heading = "Create {$prefixName}";
+        $editMode = false;
+
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
-        $editMode = $entityInstance->getId() ? true : false;
+
+        if($entityInstance->getId()){
+            $editMode = true;
+        }
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -38,28 +43,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
-                'name' => 'invoice_number',
-                'labelName' => 'Invoice Number *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-            ], [
-                'name' => 'invoice_amount',
-                'labelName' => 'Invoice Amount *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_amount',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-            ],[
-                'name' => 'invoice_date',
-                'labelName' => 'Invoice Date *',
+                'name' => 'date_approved',
+                'labelName' => 'Date Approved *',
                 'class' => 'js-date-picker',
-                'rowIdentifier' => 'invoice_date',
+                'rowIdentifier' => 'date_approved',
                 'type' => 'Input\Text',
                 'formGroup' => true,
                 'formGroupSettings' => [
@@ -71,13 +58,28 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
                 ],
-            ],  [
+            ], [
+                'name' => 'value',
+                'labelName' => 'Variation Value',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'variation_value',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
+                'name' => 'description',
+                'labelName' => 'Description',
+                'type' => 'Textarea',
+                'rowIdentifier' => 'description',
+                'formGroup' => true
+            ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Invoice' : 'Create Invoice'],
+                'data' => ['button_name' => $editMode ? 'Update Variation' : 'Create Variation'],
                 'class' => 'btn-block'
             ], [
-                'name' => 'invoice_id',
+                'name' => 'variation_id',
                 'type' => 'Input\Hidden',
                 'value' => $entityInstance->getId()
             ], [
