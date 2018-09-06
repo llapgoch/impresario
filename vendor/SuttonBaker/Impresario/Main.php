@@ -54,7 +54,8 @@ class Main
             '\SuttonBaker\Impresario\Installer\Task',
             '\SuttonBaker\Impresario\Installer\Quote',
             '\SuttonBaker\Impresario\Installer\Project',
-            '\SuttonBaker\Impresario\Installer\InvoiceVariation'
+            '\SuttonBaker\Impresario\Installer\InvoiceVariation',
+            '\SuttonBaker\Impresario\Installer\General'
         ]);
     }
 
