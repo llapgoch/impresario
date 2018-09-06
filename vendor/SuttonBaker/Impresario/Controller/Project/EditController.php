@@ -32,7 +32,6 @@ class EditController
         'is_deleted'
     ];
 
-
     /**
      * @return bool|\SuttonBaker\Impresario\Controller\Base
      * @throws \DaveBaker\Core\Event\Exception

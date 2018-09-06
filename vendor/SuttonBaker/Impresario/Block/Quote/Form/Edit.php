@@ -32,12 +32,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-        $editMode = false;
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
-            $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
-            $editMode = true;
+        $this->addClass('js-quote-form');
+
+        if(!($entityId = $this->getRequest()->getParam(self::ID_KEY))){
+            return;
         }
+
+        $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
+        $projectEntity = $this->getProjectHelper()->getProjectForQuote($entityId);
 
         // PMs
         $projectManagers = $this->createCollectionSelectConnector()
@@ -272,7 +275,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Completion Date',
                 'rowIdentifier' => 'completion_fields',
                 'type' => 'Input\Text',
-                'class' => 'js-date-picker',
+                'class' => ['js-date-picker', 'js-date-completed'],
                 'attributes' => ['autocomplete' => 'off'],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -283,6 +286,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'labelName' => 'Completed By ',
                 'rowIdentifier' => 'completion_fields',
+                'class' => 'js-completed-by-id',
                 'type' => 'Select',
                 'data' => [
                     'select_options' => $completedUsers
@@ -295,6 +299,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'labelName' => 'Status *',
                 'type' => 'Select',
+                'class' => 'js-status',
                 'data' => [
                     'select_options' => $statuses,
                     'show_first_option' => false
@@ -307,7 +312,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Quote' : 'Create Quote'],
+                'data' => ['button_name' => 'Update Quote'],
                 'class' => 'btn-block'
             ], [
                 'name' => 'quote_id',
@@ -318,9 +323,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
             ], [
-                'name' => 'has_project',
+                'name' => 'quote_data',
                 'type' => 'Input\Hidden',
-                'value' => ''
+                'value' => json_encode([
+                    'hasProject' => ($projectEntity && $projectEntity->getId() ? 1 : 0),
+                    'completedStatus' => QuoteDefinition::STATUS_WON
+                ]),
+                'class' => 'js-quote-data'
             ]
         ]);
 
