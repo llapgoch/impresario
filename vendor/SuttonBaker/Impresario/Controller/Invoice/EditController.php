@@ -85,7 +85,7 @@ class EditController
         $this->setInvoiceType($this->getInvoiceHelper()->getInvoiceTypeForParent($this->parentItem));
 
         if(!$this->parentItem || !$this->parentItem->getId()){
-            $this->addMessage('The parent item of the task could not be found');
+            $this->addMessage('The parent item of the invoice could not be found');
             return $this->getResponse()->redirectReferer();
         }
 
