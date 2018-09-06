@@ -1,0 +1,66 @@
+<?php
+
+namespace SuttonBaker\Impresario\Installer;
+/**
+ * Class InvoiceVariation
+ * @package SuttonBaker\Impresario\Installer
+ */
+class InvoiceVariation
+    extends \DaveBaker\Core\Installer\Base
+    implements \DaveBaker\Core\Installer\InstallerInterface
+{
+    protected $installerCode = 'impresario_invoice_variation';
+
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Core\Page\Exception
+     */
+    public function install()
+    {
+        $pageManager = $this->app->getPageManager();
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
+                "post_title" => "Edit Invoice"
+            ]
+        );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
+                "post_title" => "Edit Project"
+            ]
+        );
+
+        $this->deltaTable('invoice',
+            "CREATE TABLE `{{tableName}}` (
+              `invoice_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `invoice_date` datetime DEFAULT NULL,
+              `invoice_number` varchar(255) DEFAULT NULL,
+              `value` decimal(10,4) DEFAULT NULL,
+              `created_at` datetime DEFAULT NULL,
+              `updated_at` datetime DEFAULT NULL,
+              `is_deleted` int(1) DEFAULT '0',
+              PRIMARY KEY (`invoice_id`),
+              KEY `invoice_number` (`invoice_number`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+        );
+
+        $this->deltaTable('variation',
+            "CREATE TABLE `{{tableName}}` (
+              `invoice_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `description` varchar(255) DEFAULT NULL,
+              `value` decimal(10,4) DEFAULT NULL,
+              `net_cost` decimal(10,4) DEFAULT NULL,
+              `profit` decimal(10,4) DEFAULT NULL,
+              `gp` decimal(10,4) DEFAULT NULL,
+              `created_at` datetime DEFAULT NULL,
+              `updated_at` datetime DEFAULT NULL,
+              `is_deleted` int(1) DEFAULT '0',
+              PRIMARY KEY (`invoice_id`),
+              KEY `invoice_number` (`invoice_number`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+        );
+    }
+
+}

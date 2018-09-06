@@ -23,4 +23,7 @@ class Page
 
     const PROJECT_LIST = 'project_list';
     const PROJECT_EDIT = 'project_edit';
+
+    const VARIATION_EDIT = 'variation_edit';
+    const INVOICE_EDIT = 'invoice_edit';
 }
