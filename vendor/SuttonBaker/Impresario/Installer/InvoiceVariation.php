@@ -48,7 +48,8 @@ class InvoiceVariation
 
         $this->deltaTable('variation',
             "CREATE TABLE `{{tableName}}` (
-              `invoice_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `variation_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `date_approved` datetime DEFAULT NULL,
               `description` varchar(255) DEFAULT NULL,
               `value` decimal(10,4) DEFAULT NULL,
               `net_cost` decimal(10,4) DEFAULT NULL,
@@ -57,8 +58,7 @@ class InvoiceVariation
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
-              PRIMARY KEY (`invoice_id`),
-              KEY `invoice_number` (`invoice_number`)
+              PRIMARY KEY (`variation_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
         );
     }

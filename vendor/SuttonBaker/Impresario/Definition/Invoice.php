@@ -7,7 +7,7 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Invoice
 {
-    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Invoic';
+    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Invoice';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Invoice\Collection';
 
     const INVOICE_TYPE_ENQUIRY = 'enquiry';
@@ -17,7 +17,7 @@ class Invoice
         'invoice_id' => 'ID',
         'invoice_date' => 'Date',
         'invoice_number' => 'Number',
-        'value' => 'Value'
+        'value' => 'Invoice Amount'
     ];
 
     /**
