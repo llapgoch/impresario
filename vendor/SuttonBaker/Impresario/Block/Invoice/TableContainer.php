@@ -18,6 +18,8 @@ class TableContainer
     protected $idParam = 'invoice_id';
     /** @var \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection */
     protected $instanceCollection;
+    /** @var string  */
+    protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection

@@ -19,6 +19,8 @@ class TableContainer
 
     /** @var \SuttonBaker\Impresario\Model\Db\Variation\Collection $instanceCollection */
     protected $instanceCollection;
+    /** @var string  */
+    protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
 
 
     /**
@@ -66,7 +68,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
-            )->setHeading('<strong>Invoices</strong>')
+            )->setHeading('<strong>Variations</strong>')
         );
 
 
