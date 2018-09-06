@@ -12,17 +12,15 @@ class Variation extends Base
     /** @var string  */
     protected $blockPrefix = 'variation';
     /** @var string  */
-
-    protected $icon = 'dot-circle-o';
+    protected $icon = 'fa-dot-circle-o';
+    protected $headingName = 'Variations';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
      */
     public function variationEditHandle()
     {

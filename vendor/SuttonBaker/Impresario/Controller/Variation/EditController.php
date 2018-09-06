@@ -110,7 +110,7 @@ class EditController
             $postParams = $this->getRequest()->getPostParams();
 
             // Convert dates to DB
-            if (isset($postParams['date_completed'])){
+            if (isset($postParams['date_approved'])){
                 $postParams['date_approved'] = $helper->localDateToDb($postParams['date_approved']);
             }
 

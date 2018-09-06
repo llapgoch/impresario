@@ -8,12 +8,12 @@ namespace SuttonBaker\Impresario\Layout;
 class Invoice extends Base
 {
     const ID_KEY = 'invoice_id';
-
     /** @var string  */
     protected $blockPrefix = 'invoice';
     /** @var string  */
-
     protected $icon = 'fa-gbp';
+    /** @var string  */
+    protected $headingName = 'Invoices';
 
     /**
      * @throws \DaveBaker\Core\App\Exception

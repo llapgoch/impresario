@@ -55,6 +55,8 @@ class EditController
             $this->modelInstance->setParentId($parentId);
         }
 
+
+
         if($instanceId){
             // We're loading, fellas!
             $this->modelInstance->load($instanceId);
@@ -101,11 +103,34 @@ class EditController
             return;
         }
 
+
         /** @var \DaveBaker\Core\Helper\Date $helper */
         $helper = $this->getApp()->getHelper('Date');
 
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+
+        /** @var \DaveBaker\Form\BlockApplicator $applicator */
+        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
+
+
+        // Apply the values to the form element
+        if($this->modelInstance->getId()) {
+            $data = $this->modelInstance->getData();
+
+            if($this->modelInstance->getInvoiceDate()){
+                $data['invoice_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getInvoiceDate());
+            }
+
+            if($this->modelInstance->getValue()){
+                $data['value'] = (float) $this->modelInstance->getValue();
+            }
+
+            $applicator->configure(
+                $this->editForm,
+                $data
+            );
+        }
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -136,22 +161,7 @@ class EditController
             }
         }
 
-        /** @var \DaveBaker\Form\BlockApplicator $applicator */
-        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
 
-        // Apply the values to the form element
-        if($this->modelInstance->getId()) {
-            $data = $this->modelInstance->getData();
-
-            if($this->modelInstance->getTargetDate()){
-                $data['invoice_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getInvoiceDate());
-            }
-
-            $applicator->configure(
-                $this->editForm,
-                $data
-            );
-        }
     }
 
 

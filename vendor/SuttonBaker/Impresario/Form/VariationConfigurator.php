@@ -32,9 +32,23 @@ class VariationConfigurator
             $this->createRule('Numeric', 'net_cost', 'Net Cost')
         );
 
-        $this->addRule(
-            $this->createRule('Numeric', 'net_sell', 'Net Sell')
-        );
+        $netCost = $this->getValue('net_cost');
+        $netSell = $this->getValue('value');
+
+        $sellRule = $this->createRule('Custom', 'value', 'Invoice Value');
+        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
+            ->setInputError('This must be higher than Net Cost');
+
+        $this->addRule($sellRule->setValidationMethod(
+            function($value, $ruleInstance) use($netCost) {
+
+                if((float) $value < (float) $netCost){
+                    return $ruleInstance->createError();
+                }
+
+                return true;
+            }
+        ));
     }
 
 }
