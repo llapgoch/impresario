@@ -16,11 +16,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const PREFIX_NAME = 'Enquiry';
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Form\Base|void
+     * @return \DaveBaker\Core\Block\Template|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception

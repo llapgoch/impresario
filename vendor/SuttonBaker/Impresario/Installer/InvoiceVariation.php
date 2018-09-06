@@ -28,7 +28,7 @@ class InvoiceVariation
 
         $pageManager->createPage(
             \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
-                "post_title" => "Edit Project"
+                "post_title" => "Edit Variation"
             ]
         );
 

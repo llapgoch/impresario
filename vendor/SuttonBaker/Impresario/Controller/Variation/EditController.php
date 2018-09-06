@@ -72,7 +72,7 @@ class EditController
 
             if(!$this->project->getId() || $this->project->getIsDeleted()){
                 $this->addMessage('The project could not be found');
-                return $this->getResponse()->redirectReferer();
+                $this->getResponse()->redirectReferer();
             }
         }
 
@@ -101,6 +101,9 @@ class EditController
 
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+
+        wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
+        wp_enqueue_script('impresario_calculator');
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -181,6 +184,17 @@ class EditController
 
         return $this;
     }
+
+    /**
+     * @param $modelInstance
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function setModelInstance($modelInstance)
+    {
+        $this->modelInstance = $modelInstance;
+        $this->getApp()->getRegistry()->register('model_instance', $modelInstance);
+    }
+
 
     /**
      * @param \DaveBaker\Form\Validation\Validator $validator

@@ -38,24 +38,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
-                'name' => 'invoice_number',
-                'labelName' => 'Invoice Number *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-            ], [
-                'name' => 'invoice_amount',
-                'labelName' => 'Invoice Amount *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_amount',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-            ],[
                 'name' => 'invoice_date',
                 'labelName' => 'Invoice Date *',
                 'class' => 'js-date-picker',
@@ -71,7 +53,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
                 ],
-            ],  [
+            ], [
+                'name' => 'invoice_number',
+                'labelName' => 'Invoice Number *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
+                'name' => 'value',
+                'labelName' => 'Invoice Value *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => ['button_name' => $editMode ? 'Update Invoice' : 'Create Invoice'],

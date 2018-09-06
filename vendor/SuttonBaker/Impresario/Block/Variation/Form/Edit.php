@@ -59,19 +59,53 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
                 ],
             ], [
-                'name' => 'value',
-                'labelName' => 'Variation Value',
+                'name' => 'net_cost',
+                'labelName' => 'Net Cost *',
                 'type' => 'Input\Text',
-                'rowIdentifier' => 'variation_value',
+                'rowIdentifier' => 'variation_values',
+                'attributes' => ['placeholder' => "£"],
+                'class' => 'js-net-cost',
                 'formGroup' => true,
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ],
             ], [
+                'name' => 'value',
+                'labelName' => 'Variation Value *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'variation_values',
+                'attributes' => ['placeholder' => "£"],
+                'class' => 'js-net-sell',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+            ], [
+                'name' => 'profit',
+                'formGroup' => true,
+                'rowIdentifier' => 'profit_gp',
+                'labelName' => 'Profit',
+                'type' => 'Input\Text',
+                'attributes' => ['disabled' => 'disabled'],
+                'class' => 'js-profit-calculate',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],[
+                'name' => 'gp',
+                'formGroup' => true,
+                'rowIdentifier' => 'profit_gp',
+                'labelName' => 'GP',
+                'type' => 'Input\Text',
+                'attributes' => ['disabled' => 'disabled'],
+                'class' => 'js-gp-calculate',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],[
                 'name' => 'description',
                 'labelName' => 'Description',
                 'type' => 'Textarea',
-                'rowIdentifier' => 'description',
                 'formGroup' => true
             ], [
                 'name' => 'submit',
