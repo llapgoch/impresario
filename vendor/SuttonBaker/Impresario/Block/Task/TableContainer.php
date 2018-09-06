@@ -12,9 +12,10 @@ class TableContainer
     extends \SuttonBaker\Impresario\Block\Table\Container\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
-    const BLOCK_PREFIX = 'task_table';
-    const ID_PARAM = 'task_id';
-    const COMPLETED_KEY = 'completed';
+    /** @var string  */
+    protected $blockPrefix = 'task_table';
+    /** @var string  */
+    protected $idParam = 'task_id';
     /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
     protected $instanceCollection;
     /** @var string  */
@@ -52,27 +53,6 @@ class TableContainer
     }
 
     /**
-     * @return string
-     */
-    public function getTileDefinitionClass()
-    {
-        return $this->tileDefinitionClass;
-    }
-
-    /**
-     * @param $tileDefinitionClass
-     * @return $this
-     */
-    public function setTileDefinitionClass($tileDefinitionClass)
-    {
-        $this->tileDefinitionClass = $tileDefinitionClass;
-        return $this;
-    }
-
-
-
-
-    /**
      * @return \SuttonBaker\Impresario\Block\Table\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
@@ -82,7 +62,6 @@ class TableContainer
      */
     protected function _preDispatch()
     {
-
         if(!$this->instanceCollection){
             $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
         }
@@ -99,15 +78,18 @@ class TableContainer
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
 
+        $instanceItems = $this->instanceCollection->load();
+
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 'task.tile.block'
-            )->setHeading('Task <strong>List</strong>')->setTileBodyClass('nopadding')
+            )->setHeading('Task <strong>List</strong>')
         );
 
+        if(count($instanceItems)) {
+            $tileBlock->setTileBodyClass('nopadding');
 
-        if(count($this->instanceCollection->load())) {
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
@@ -138,46 +120,5 @@ class TableContainer
                 )->setTagText('No tasks have currently been created')
             );
         }
-
-
-    }
-
-    /**
-     * @return \SuttonBaker\Impresario\Block\Base|void
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function _preRender()
-    {
-        parent::_preRender();
-
-
-    }
-
-    /**
-     * @return string
-     */
-    protected function getBlockPrefix()
-    {
-        return self::BLOCK_PREFIX;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getInstanceIdParam()
-    {
-        return self::ID_PARAM;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getEditPageIdentifier()
-    {
-        return PageDefinition::TASK_EDIT;
     }
 }

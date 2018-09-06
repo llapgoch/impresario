@@ -8,10 +8,12 @@ namespace SuttonBaker\Impresario\Block\Table\Container;
 abstract class Base
     extends \SuttonBaker\Impresario\Block\Base
 {
-    protected abstract function getInstanceIdParam();
-    protected abstract function getEditPageIdentifier();
-    protected abstract function getBlockPrefix();
-
+    /** @var string  */
+    protected $blockPrefix = '';
+    /** @var string  */
+    protected $idParam = '';
+    /** @var string  */
+    protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\Black';
 
     /* @var \SuttonBaker\Impresario\Helper\Listing\Utility */
     protected $listingUtility;
@@ -27,6 +29,26 @@ abstract class Base
         $this->editLinkParams = $editLinkParams;
         return $this;
     }
+
+
+    /**
+     * @return string
+     */
+    public function getTileDefinitionClass()
+    {
+        return $this->tileDefinitionClass;
+    }
+
+    /**
+     * @param $tileDefinitionClass
+     * @return $this
+     */
+    public function setTileDefinitionClass($tileDefinitionClass)
+    {
+        $this->tileDefinitionClass = $tileDefinitionClass;
+        return $this;
+    }
+
 
     /**
      * @return array
@@ -97,4 +119,22 @@ abstract class Base
 
         return $this->listingUtility;
     }
+
+
+    /**
+     * @return string
+     */
+    protected function getBlockPrefix()
+    {
+        return $this->blockPrefix;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInstanceIdParam()
+    {
+        return $this->idParam;
+    }
+
 }
