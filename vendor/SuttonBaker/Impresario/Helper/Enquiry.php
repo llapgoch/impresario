@@ -3,7 +3,8 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
-use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use \SuttonBaker\Impresario\Definition\Roles;
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Helper
@@ -73,6 +74,23 @@ class Enquiry extends Base
         }
 
         return $enquiry;
+    }
+
+    /**
+     * @return bool
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function currentUserCanEdit()
+    {
+        return $this->getUserHelper()->hasCapability($this->getEditCapabilities());
+    }
+
+    /**
+     * @return array
+     */
+    public function getEditCapabilities()
+    {
+        return [Roles::CAP_ALL, Roles::CAP_EDIT_ENQUIRY];
     }
 
     /**

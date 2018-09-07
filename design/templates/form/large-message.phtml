@@ -1,0 +1,5 @@
+<?php /** @var \SuttonBaker\Impresario\Block\Form\LargeMessage $block */?>
+<div class="alert alert-<?php echo $block->escAttr($block->getMessageType());?>">
+    <h6><?php echo $block->getHeading();?></h6>
+    <?php echo $block->getMessage();?>
+</div>

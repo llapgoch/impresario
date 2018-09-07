@@ -2,8 +2,9 @@
 
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
-use \SuttonBaker\Impresario\Definition\Enquiry;
+use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use \SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class Edit
@@ -32,15 +33,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-        $entityId = $this->getRequest()->getParam(self::ID_KEY);
+
         $editMode = false;
         $quoteEntity = null;
 
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+
         $this->addClass('js-enquiry-form');
 
-        if($entityId){
-            /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $entityInstance */
-            $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Enquiry')->load($entityId);
+        if($entityInstance->getId()){
             $editMode = true;
             $quoteEntity = $entityInstance->getQuoteEntity();
         }
@@ -79,7 +80,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )->getElementData();
 
         // Statuses
-        $statuses = $this->createArraySelectConnector()->configure(Enquiry::getStatuses())->getElementData();
+        $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
+
+        $ignoreLockValue = false;
+
+        if($this->getEnquiryHelper()->currentUserCanEdit()){
+            $ignoreLockValue = true;
+        }
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -213,7 +220,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-status',
                 'data' => [
                     'select_options' => $statuses,
-                    'show_first_option' => false
+                    'show_first_option' => false,
+                    'ignore_lock' => $ignoreLockValue
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -226,6 +234,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'js-date-picker',
                     'js-date-completed'
                 ],
+                'data' => ['ignore_lock' => $ignoreLockValue],
                 'rowIdentifier' => 'creation_data',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -239,28 +248,32 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry'],
+                'data' => [
+                    'button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry',
+                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
+                ],
                 'class' => 'btn-block'
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
-                'value' => $entityId
+                'value' => $entityInstance->getId()
             ], [
                 'name' => 'action',
                 'type' => 'Input\Hidden',
-                'value' => 'edit'
+                'value' => 'edit',
+                'data' => ['ignore_lock' => $ignoreLockValue]
             ], [
                 'name' => 'enquiry_data',
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
                     'hasQuote' => ($quoteEntity && $quoteEntity->getId() ? 1 : 0),
-                    'completedStatus' => Enquiry::STATUS_COMPLETE
+                    'completedStatus' => EnquiryDefinition::STATUS_COMPLETE
                 ]),
                 'class' => 'js-enquiry-data'
             ]
         ]);
 
-        if($entityId) {
+        if($entityInstance->getId()) {
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$prefixKey}.task.table"
@@ -268,7 +281,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
             $this->taskTableBlock->setInstanceCollection(
                 $this->getTaskHelper()->getTaskCollectionForEntity(
-                    $entityId,
+                    $entityInstance->getId(),
                     TaskDefinition::TASK_TYPE_ENQUIRY,
                     TaskDefinition::STATUS_OPEN
                 )
@@ -281,7 +294,21 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
 
+        if(($entityInstance->getStatus() == EnquiryDefinition::STATUS_COMPLETE)){
+            $this->addChildBlock(
+                $this->createBlock(
+                    '\SuttonBaker\Impresario\Block\Form\LargeMessage',
+                    "{$prefixKey}.warning.message"
+                )->setMessage("This {$prefixName} is currently locked")
+            );
+        }
+
         $this->addChildBlock(array_values($elements));
+
+        if(($entityInstance->getStatus() == EnquiryDefinition::STATUS_COMPLETE) ||
+            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+            $this->lock();
+        }
     }
 
     /**
@@ -292,13 +319,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preRender()
     {
-
-        $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
 
 
-        if($entityId) {
+        if($entityInstance->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock(
                 'task.list.table')) {
                 $tableBlock->removeHeader(['delete_column', 'status', 'task_id']);
@@ -314,7 +340,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
                     [
                         'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                        'parent_id' => $entityId
+                        'parent_id' => $entityInstance->getId()
                     ],
                     true
                 )])
@@ -324,17 +350,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->addChildBlock($addButton);
         }
 
+
+
         return parent::_preRender(); // TODO: Change the autogenerated stub
     }
 
-    /**
-     * @return \SuttonBaker\Impresario\Helper\Client
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function getClientHelper()
-    {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
-    }
 
     /**
      * @return \DaveBaker\Form\SelectConnector\Collection
