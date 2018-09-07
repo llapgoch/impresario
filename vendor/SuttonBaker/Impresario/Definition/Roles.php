@@ -22,7 +22,7 @@ class Roles
     const CAP_VIEW_PROJECT = 'view_project';
     const CAP_EDIT_PROJECT = 'edit_project';
     const CAP_EDIT_TASK = 'edit_task';
-    const CAP_VIEW_TASK = 'edit_task';
+    const CAP_VIEW_TASK = 'view_task';
     const CAP_VIEW_VARIATION = 'view_variation';
     const CAP_EDIT_VARIATION = 'edit_variation';
     const CAP_VIEW_INVOICE = 'view_invoice';
@@ -63,6 +63,8 @@ class Roles
     public static function getCapabilities()
     {
         return [
+            self::CAP_EDIT_CLIENT,
+            self::CAP_VIEW_CLIENT,
             self::CAP_EDIT_ENQUIRY,
             self::CAP_VIEW_ENQUIRY,
             self::CAP_EDIT_QUOTE,
@@ -73,6 +75,8 @@ class Roles
             self::CAP_VIEW_VARIATION,
             self::CAP_EDIT_INVOICE,
             self::CAP_VIEW_INVOICE,
+            self::CAP_EDIT_TASK,
+            self::CAP_VIEW_TASK,
             self::CAP_ALL
         ];
     }

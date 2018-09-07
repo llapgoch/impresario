@@ -152,8 +152,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Client' : 'Create a New Client'],
-                'class' => 'btn-block'
+                'data' => [
+                    'button_name' => $editMode ? 'Update Client' : 'Create a New Client',
+                    'capabilities' => $this->getClientHelper()->getEditCapabilities()
+                ],
+                'class' => 'btn-block',
+
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',
@@ -166,6 +170,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->addChildBlock(array_values($elements));
+
+        if($this->getClientHelper()->currentUserCanEdit() == false){
+            $this->lock();
+        }
 
     }
 }

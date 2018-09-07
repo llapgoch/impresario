@@ -34,8 +34,13 @@ class QuoteList
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
+            ]);
+
+        if($this->getQuoteHelper()->currentUserCanEdit()){
+            $instanceItems->addOutputProcessors([
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
+        }
 
         $this->addChildBlock(
             $tableBlock = $this->createBlock(

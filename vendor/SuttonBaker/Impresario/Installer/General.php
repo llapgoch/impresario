@@ -25,13 +25,13 @@ class General
         $userHelper->addRole(
             Roles::ROLE_ADMINISTRATOR,
             Roles::getRoleName(Roles::ROLE_ADMINISTRATOR),
-            Roles::CAP_ALL,
+            Roles::getCapabilities(),
             false
         );
         $userHelper->addRole(
             Roles::ROLE_PROJECT_MANAGER,
             Roles::getRoleName(Roles::ROLE_PROJECT_MANAGER),
-            Roles::CAP_ALL
+            Roles::getCapabilities()
         );
 
         $userHelper->addRole(

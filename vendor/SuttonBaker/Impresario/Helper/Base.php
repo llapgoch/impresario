@@ -8,6 +8,7 @@ namespace SuttonBaker\Impresario\Helper;
 abstract class Base extends \DaveBaker\Core\Helper\Base
 {
     protected $editCapabilities = [];
+    protected $viewCapabilities = [];
     /**
      * @param string $key
      * @param array $items
@@ -38,7 +39,6 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Enquiry');
     }
 
-
     /**
      * @return bool
      * @throws \DaveBaker\Core\Object\Exception
@@ -48,6 +48,22 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         return $this->getUserHelper()->hasCapability($this->editCapabilities);
     }
 
+    /**
+     * @return bool
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function currentUserCanView()
+    {
+        return $this->getUserHelper()->hasCapability($this->viewCapabilities);
+    }
+
+    /**
+     * @return array
+     */
+    public function getViewCapabilities()
+    {
+        return $this->viewCapabilities;
+    }
     /**
      * @return array
      */

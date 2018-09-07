@@ -28,10 +28,13 @@ class ClientList
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
-        $instanceItems = $this->getClientHelper()->getClientCollection()
-            ->addOutputProcessors([
+        $instanceItems = $this->getClientHelper()->getClientCollection();
+
+        if($this->getClientHelper()->currentUserCanEdit()) {
+            $instanceItems->addOutputProcessors([
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
+        }
 
         $this->addChildBlock(
             $tableBlock = $this->createBlock(

@@ -141,8 +141,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Task' : 'Create Task'],
-                'class' => 'btn-block'
+                'data' => [
+                    'button_name' => $editMode ? 'Update Task' : 'Create Task',
+                    'capabilities' => $this->getTaskHelper()->getEditCapabilities()
+                ],
+                'class' => 'btn-block',
+
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',
@@ -154,7 +158,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
+
+
         $this->addChildBlock(array_values($elements));
+
+        if($this->getTaskHelper()->currentUserCanEdit() == false){
+            $this->lock();
+        }
     }
 
 }

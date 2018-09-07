@@ -74,9 +74,14 @@ class TableContainer
                 'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
                 'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),
-                'priority' => $this->getTaskHelper()->getPriorityOutputProcessor(),
+                'priority' => $this->getTaskHelper()->getPriorityOutputProcessor()
+            ]);
+
+        if($this->getTaskHelper()->currentUserCanEdit()){
+            $this->instanceCollection->addOutputProcessors([
                 'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
             ]);
+        }
 
         $instanceItems = $this->instanceCollection->load();
 

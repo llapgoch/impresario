@@ -47,11 +47,16 @@ class EnquiryList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getEnquiryHelper()->getEnquiryCollection()
             ->addOutputProcessors([
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml']),
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
             ]);
+
+        if($this->getEnquiryHelper()->currentUserCanEdit()){
+            $instanceItems->addOutputProcessors([
+                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
+            ]);
+        }
 
         $this->addChildBlock(
             $tableBlock = $this->createBlock(

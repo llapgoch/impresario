@@ -37,12 +37,22 @@ class Quote extends Base
 
         $this->addHeading()->addMessages();
 
+        $heading = '<strong>View </strong>Quote';
+
+        if($this->getQuoteHelper()->currentUserCanEdit()){
+            if($entityId) {
+                $heading = '<strong>Update</strong> Quote';
+            }else{
+                $heading = '<strong>Create a </strong>Quote';
+            }
+        }
+
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($entityId ? '<strong>Update</strong> Quote' : '<strong>Create a </strong>Quote')
+                ->setHeading($heading)
                 ->setShortcode('body_content')
         );
 
@@ -69,7 +79,7 @@ class Quote extends Base
                         ['enquiry_id' => $entityInstance->getEnquiryId()],
                         true
                     )]
-                )
+                )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
             );
         }
     }

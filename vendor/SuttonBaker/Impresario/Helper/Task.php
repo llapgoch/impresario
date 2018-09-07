@@ -13,6 +13,7 @@ class Task extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_TASK];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_TASK, Roles::CAP_EDIT_TASK];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection

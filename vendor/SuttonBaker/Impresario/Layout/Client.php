@@ -40,7 +40,9 @@ class Client extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($entityId ? "Update Client" : "Create a New Client")
+                ->setHeading(
+                    $this->getClientHelper()->currentUserCanEdit()
+                        ? '<strong>Update</strong> Client' : "<strong>View</strong> Client")
                 ->setShortcode('body_content')
         );
 
@@ -88,7 +90,7 @@ class Client extends Base
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                         \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT
                     )]
-                )
+                )->setCapabilities($this->getClientHelper()->getEditCapabilities())
         );
 
         $mainTile->addChildBlock(

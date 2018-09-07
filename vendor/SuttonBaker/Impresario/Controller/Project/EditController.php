@@ -131,11 +131,11 @@ class EditController
                 $data['date_required'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateRequired());
             }
 
-            if($this->modelInstance->getDateReturned()){
+            if($this->modelInstance->getProjectStartDate()){
                 $data['project_start_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getProjectStartDate());
             }
 
-            if($this->modelInstance->getTargetDate()){
+            if($this->modelInstance->getProjectEndDate()){
                 $data['project_end_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getProjectEndDate());
             }
 

@@ -44,7 +44,9 @@ class Invoice extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading('<strong>Update</strong> Invoice')
+                ->setHeading(
+                    $this->getInvoiceHelper()->currentUserCanEdit()
+                        ? '<strong>Update</strong> Invoice' : "<strong>View</strong> Invoice")
                 ->setShortcode('body_content')
         );
 

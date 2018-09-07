@@ -38,8 +38,14 @@ class Task extends Base
         $parentItem = $this->getApp()->getRegistry()->get('parent_item');
         $taskType = $this->getApp()->getRegistry()->get('task_type');
 
+        $actionVerb = 'View';
+
+        if($this->getTaskHelper()->currentUserCanEdit()){
+            $actionVerb = $entityId ? 'Update' : 'Create';
+        }
+
         if($parentItem && $parentItem->getId()){
-            $heading = ($entityInstance->getId() ? "Update" : "Create") .
+            $heading = $actionVerb .
                 " Task For " . TaskDefinition::getTaskTypeLabel($taskType) .
                 " '{$parentItem->getSiteName()}'";
         }

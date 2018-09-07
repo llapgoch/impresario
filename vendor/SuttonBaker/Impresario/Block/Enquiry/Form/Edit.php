@@ -273,11 +273,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
+
         if($entityInstance->getId()) {
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$prefixKey}.task.table"
-            )->setOrder('after', 'enquiry.edit.notes.form.group');
+            )->setOrder('after', 'enquiry.edit.notes.form.group')
+                ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
             $this->taskTableBlock->setInstanceCollection(
                 $this->getTaskHelper()->getTaskCollectionForEntity(
@@ -344,7 +346,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     ],
                     true
                 )])
-                ->addClass('btn btn-sm btn-primary');
+                ->addClass('btn btn-sm btn-primary')
+                ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
             $this->getBlockManager()->getBlock('task.tile.block')
                 ->addChildBlock($addButton);

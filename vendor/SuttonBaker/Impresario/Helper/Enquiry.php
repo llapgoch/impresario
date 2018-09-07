@@ -13,6 +13,7 @@ class Enquiry extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_ENQUIRY];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_ENQUIRY, Roles::CAP_EDIT_ENQUIRY];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry\Collection

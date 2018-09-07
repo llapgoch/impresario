@@ -14,6 +14,7 @@ class Project extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT, Roles::CAP_VIEW_PROJECT];
     /**
      * @var array
      *

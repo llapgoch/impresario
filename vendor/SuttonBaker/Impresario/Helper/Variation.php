@@ -13,6 +13,7 @@ class Variation extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_VARIATION];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_VARIATION, Roles::CAP_VIEW_VARIATION];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Variation\Collection

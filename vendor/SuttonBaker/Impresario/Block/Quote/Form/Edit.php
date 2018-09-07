@@ -293,6 +293,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'class' => ['js-date-picker', 'js-date-completed'],
                 'attributes' => ['autocomplete' => 'off'],
+                'data' => [
+                    'ignore_lock' => $ignoreLockValue
+                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
@@ -305,7 +308,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-completed-by-id',
                 'type' => 'Select',
                 'data' => [
-                    'select_options' => $completedUsers
+                    'select_options' => $completedUsers,
+                    'ignore_lock' => $ignoreLockValue
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -318,7 +322,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-status',
                 'data' => [
                     'select_options' => $statuses,
-                    'show_first_option' => false
+                    'show_first_option' => false,
+                    'ignore_lock' => $ignoreLockValue
                 ],
             ], [
                 'name' => 'comments',
@@ -328,8 +333,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => 'Update Quote'],
+                'data' => [
+                    'button_name' => 'Update Quote',
+                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
+                ],
                 'class' => 'btn-block'
+
             ], [
                 'name' => 'quote_id',
                 'type' => 'Input\Hidden',
@@ -353,7 +362,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$prefixKey}.task.table"
-            )->setOrder('after', 'quote.edit.project.name.form.group');
+            )->setOrder('after', 'quote.edit.project.name.form.group')
+                ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
             $this->taskTableBlock->setInstanceCollection(
                 $this->getTaskHelper()->getTaskCollectionForEntity(
@@ -369,7 +379,21 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
+        if(($entityInstance->getStatus() !== QuoteDefinition::STATUS_OPEN)){
+            $this->addChildBlock(
+                $this->createBlock(
+                    '\SuttonBaker\Impresario\Block\Form\LargeMessage',
+                    "{$prefixKey}.warning.message"
+                )->setMessage("This {$prefixName} is currently locked")
+            );
+        }
+
         $this->addChildBlock(array_values($elements));
+
+        if(($entityInstance->getStatus() !== QuoteDefinition::STATUS_OPEN) ||
+            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+            $this->lock();
+        }
     }
 
     /**
@@ -404,7 +428,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     ],
                     true
                 )])
-                ->addClass('btn btn-sm btn-primary');
+                ->addClass('btn btn-sm btn-primary')
+                ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
                 $tileBlock->addChildBlock($addButton);
         }

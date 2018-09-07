@@ -12,6 +12,7 @@ class Client extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_CLIENT];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_CLIENT, Roles::CAP_EDIT_CLIENT];
 
     /**
      * @return mixed

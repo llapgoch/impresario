@@ -13,6 +13,7 @@ class Invoice extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_INVOICE];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_INVOICE, Roles::CAP_VIEW_INVOICE];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection

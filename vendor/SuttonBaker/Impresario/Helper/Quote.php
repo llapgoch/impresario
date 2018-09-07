@@ -13,6 +13,7 @@ class Quote extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_QUOTE];
+    protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_QUOTE, Roles::CAP_VIEW_QUOTE];
     /**
      * @var array
      *

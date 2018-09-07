@@ -76,6 +76,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ProjectDefinition::getStatuses()
         )->getElementData();
 
+        $ignoreLockValue = false;
+
+        if($this->getQuoteHelper()->currentUserCanEdit()){
+            $ignoreLockValue = true;
+        }
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -288,7 +293,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'data' => [
                     'select_options' => $statuses,
-                    'show_first_option' => false
+                    'show_first_option' => false,
+                    'ignore_lock' => $ignoreLockValue
                 ],
             ], [
                 'name' => 'comments',
@@ -298,7 +304,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => 'Update Project'],
+                'data' => [
+                    'button_name' => 'Update Project',
+                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
+                ],
                 'class' => 'btn-block'
             ], [
                 'name' => 'project_id',
@@ -317,7 +326,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createVariationTableBlock();
         }
 
+
+        if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN)){
+            $this->addChildBlock(
+                $this->createBlock(
+                    '\SuttonBaker\Impresario\Block\Form\LargeMessage',
+                    "{$prefixKey}.warning.message"
+                )->setMessage("This {$prefixName} is currently locked")
+            );
+        }
+
         $this->addChildBlock(array_values($elements));
+
+        if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN) ||
+            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+            $this->lock();
+        }
     }
 
     /**
@@ -327,6 +351,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createTaskTableBlock()
     {
+        if(!$this->getTaskHelper()->currentUserCanView()){
+            return;
+        }
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -356,6 +384,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createInvoiceTableBlock()
     {
+        if(!$this->getInvoiceHelper()->currentUserCanView()){
+            return;
+        }
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -384,6 +415,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createVariationTableBlock()
     {
+        if(!$this->getVariationHelper()->currentUserCanView()){
+            return;
+        }
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -421,29 +455,38 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         if($taskTileBlock = $this->getBlockManager()->getBlock('task.tile.block')) {
-            $taskTileBlock->addChildBlock($this->createSmallButtonElement('Create Task', $this->getPageUrl(
+            $taskTileBlock->addChildBlock(
+                $this->createSmallButtonElement('Create Task', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
                     'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
                     'parent_id' => $entityId],
                 true
-            ), 'create.task.button', 'header_elements'));
+                    ), 'create.task.button', 'header_elements'
+                )->setCapabilities($this->getTaskHelper()->getEditCapabilities())
+            );
         }
 
         if($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block')) {
-            $variationTileBlock->addChildBlock($this->createSmallButtonElement('Create Variation', $this->getPageUrl(
+            $variationTileBlock->addChildBlock(
+                $this->createSmallButtonElement('Create Variation', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
                     'project_id' => $entityId],
                 true
-            ), 'create.variation.button', 'header_elements'));
+                    ), 'create.variation.button', 'header_elements'
+                )->setCapabilities($this->getVariationHelper()->getEditCapabilities())
+            );
         }
 
         if($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
-            $invoiceTileBlock->addChildBlock($this->createSmallButtonElement('Create Invoice', $this->getPageUrl(
+            $invoiceTileBlock->addChildBlock(
+                $this->createSmallButtonElement('Create Invoice', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
                     'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PROJECT,
                     'parent_id' => $entityId],
                 true
-            ), 'create.invoice.button', 'header_elements'));
+                    ), 'create.invoice.button', 'header_elements'
+                )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+            );
         }
 
         return parent::_preRender();

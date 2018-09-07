@@ -45,7 +45,9 @@ class Enquiry extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($entityId ? '<strong>Update</strong> Enquiry' : '<strong>Create an </strong>Enquiry')
+                ->setHeading(
+                    $this->getEnquiryHelper()->currentUserCanEdit()
+                        ? '<strong>Update</strong> Enquiry' : "<strong>View</strong> Enquiry")
                 ->setShortcode('body_content')
         );
 
@@ -73,7 +75,7 @@ class Enquiry extends Base
                             ['quote_id' => $quoteEntity->getId()],
                             true
                         )]
-                    )
+                    )->setCapabilities($this->getQuoteHelper()->getEditCapabilities())
             );
         }
 
