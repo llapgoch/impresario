@@ -62,9 +62,22 @@ class Task extends Base
         return $collection;
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
     public function getOpenTasks()
     {
         return $this->getTaskCollection()->where('status=?', TaskDefinition::STATUS_OPEN);
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getOpenTasksForCurrentUser()
+    {
+        return $this->getOpenTasks()->where('user_id=?', $this->getUserHelper()->getCurrentUserId());
     }
 
     /**
