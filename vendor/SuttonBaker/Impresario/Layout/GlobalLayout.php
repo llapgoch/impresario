@@ -35,6 +35,7 @@ class GlobalLayout extends Base
      */
     protected function getPercentage($amount, $total)
     {
+        $amount = $total - $amount;
         return round(($amount / $total) * 100);
     }
 

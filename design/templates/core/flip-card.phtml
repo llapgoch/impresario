@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <?php if($block->getProgressPercentage()):?>
+            <?php if($block->getProgressPercentage() !== null):?>
             <div class="progress-list">
                 <div class="details">
                     <div class="title"><?php echo $this->getProgressHeading();?></div>
