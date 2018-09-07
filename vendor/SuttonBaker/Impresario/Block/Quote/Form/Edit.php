@@ -335,7 +335,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
                     'button_name' => 'Update Quote',
-                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
+                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block'
 
@@ -391,7 +391,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock(array_values($elements));
 
         if(($entityInstance->getStatus() !== QuoteDefinition::STATUS_OPEN) ||
-            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+            $this->getQuoteHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
     }

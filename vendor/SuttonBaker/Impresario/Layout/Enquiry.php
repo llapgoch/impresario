@@ -114,7 +114,7 @@ class Enquiry extends Base
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                         \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT
                     )]
-                )
+                )->setCapabilities($this->getEnquiryHelper()->getEditCapabilities())
         );
 
         $mainTile->addChildBlock(
