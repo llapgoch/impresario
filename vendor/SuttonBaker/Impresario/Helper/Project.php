@@ -4,12 +4,16 @@ namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Helper
  */
 class Project extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT];
     /**
      * @var array
      *

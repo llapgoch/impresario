@@ -1,12 +1,17 @@
 <?php
 
 namespace SuttonBaker\Impresario\Helper;
+
+use SuttonBaker\Impresario\Definition\Roles;
+
 /**
  * Class Client
  * @package SuttonBaker\Impresario\Helper
  */
 class Client extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_CLIENT];
 
     /**
      * @return mixed

@@ -79,6 +79,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             QuoteDefinition::getStatuses()
         )->getElementData();
 
+        $ignoreLockValue = false;
+
+        if($this->getQuoteHelper()->currentUserCanEdit()){
+            $ignoreLockValue = true;
+        }
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')

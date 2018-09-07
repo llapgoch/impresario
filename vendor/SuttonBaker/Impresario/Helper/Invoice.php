@@ -3,12 +3,16 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
+
 /**
  * Class Invoice
  * @package SuttonBaker\Impresario\Helper
  */
 class Invoice extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_INVOICE];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection

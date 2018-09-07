@@ -2,13 +2,17 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+
 /**
  * Class Task
  * @package SuttonBaker\Impresario\Helper
  */
 class Task extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_TASK];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection

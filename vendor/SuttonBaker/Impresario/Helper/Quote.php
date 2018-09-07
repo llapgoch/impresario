@@ -4,12 +4,15 @@ namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use SuttonBaker\Impresario\Definition\Roles;
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Helper
  */
 class Quote extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_QUOTE];
     /**
      * @var array
      *

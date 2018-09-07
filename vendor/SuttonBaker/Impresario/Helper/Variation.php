@@ -2,13 +2,17 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
+
 /**
  * Class Variation
  * @package SuttonBaker\Impresario\Helper
  */
 class Variation extends Base
 {
+    /** @var array  */
+    protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_VARIATION];
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Variation\Collection
