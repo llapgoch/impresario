@@ -110,7 +110,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Variation' : 'Create Variation'],
+                'data' => [
+                    'button_name' => $editMode ? 'Update Variation' : 'Create Variation',
+                    'capabilities' => $this->getVariationHelper()->getEditCapabilities()
+                ],
                 'class' => 'btn-block'
             ], [
                 'name' => 'variation_id',
@@ -124,6 +127,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->addChildBlock(array_values($elements));
+
+        if($this->getVariationHelper()->currentUserCanEdit() == false) {
+            $this->lock();
+        }
     }
 
 }

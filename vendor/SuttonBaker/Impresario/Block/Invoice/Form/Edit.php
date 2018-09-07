@@ -74,7 +74,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
-                'data' => ['button_name' => $editMode ? 'Update Invoice' : 'Create Invoice'],
+                'data' => [
+                    'button_name' => $editMode ? 'Update Invoice' : 'Create Invoice',
+                    'capabilities' => $this->getVariationHelper()->getEditCapabilities()
+                ],
                 'class' => 'btn-block'
             ], [
                 'name' => 'invoice_id',
@@ -88,6 +91,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->addChildBlock(array_values($elements));
+
+        if($this->getInvoiceHelper()->currentUserCanEdit() == false) {
+            $this->lock();
+        }
     }
 
 }
