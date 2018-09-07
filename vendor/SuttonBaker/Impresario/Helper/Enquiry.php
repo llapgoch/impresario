@@ -55,6 +55,15 @@ class Enquiry extends Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getOpenEnquiries()
+    {
+        return $this->getEnquiryCollection()->where('status<>?', EnquiryDefinition::STATUS_COMPLETE);
+    }
+
+    /**
      * @param $status
      * @return string
      */

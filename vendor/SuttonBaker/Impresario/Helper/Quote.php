@@ -75,6 +75,18 @@ class Quote extends Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function getOpenQuotes()
+    {
+        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::STATUS_OPEN);
+    }
+
+    /**
      * @param $status
      * @return string
      */
@@ -94,11 +106,7 @@ class Quote extends Base
      */
     public function getDisplayQuotes()
     {
-        $collection = $this->getQuoteCollection()
-            ->where('is_superseded=0');
-
-
-        return $collection;
+        return $this->getQuoteCollection()->where('is_superseded=0');
     }
 
     /**

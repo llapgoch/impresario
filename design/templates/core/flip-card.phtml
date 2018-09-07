@@ -1,0 +1,40 @@
+<div class="card-container  col-md-6 ">
+    <div class="card card-<?php echo $block->getColour();?> hover">
+        <div class="front">
+
+            <div class="media">
+                      <span class="mr-2">
+                        <i class="fa <?php echo $block->getIcon();?> media-object"></i>
+                      </span>
+
+                <div class="media-body">
+                    <small><?php echo $block->getHeading();?></small>
+                    <h2 class="media-heading animate-number" data-value="<?php echo $block->getNumber();?>" data-animation-duration="1500"><?php echo $block->getNumber();?></h2>
+                </div>
+            </div>
+
+            <?php if($block->getProgressPercent()):?>
+            <div class="progress-list">
+                <div class="details">
+                    <div class="title"><?php echo $this->getProgressHeading();?></div>
+                </div>
+                <div class="status pull-right bg-transparent-black-1">
+                    <span class="animate-number" data-value="<?php echo $block->getProgressPercent();?>" data-animation-duration="1500"><?php echo $block->getProgressPercent();?></span>%
+                </div>
+                <div class="clearfix"></div>
+                <div class="progress progress-little progress-transparent-black">
+                    <div class="progress-bar animate-progress-bar" data-percentage="<?php echo $block->getProgressPercent();?>%" style="width: <?php echo $block->getProgressPercent();?>%;"></div>
+                </div>
+            </div>
+            <?php endif;?>
+        </div>
+        <?php if($block->getBackLink()):?>
+        <div class="back">
+            <a href="<?php echo $block->getBackLink();?>">
+                <i class="fa <?php echo $block->getIcon();?> fa-4x"></i>
+                <span><?php echo $block->getBackText();?></span>
+            </a>
+        </div>
+        <?php endif;?>
+    </div>
+</div>

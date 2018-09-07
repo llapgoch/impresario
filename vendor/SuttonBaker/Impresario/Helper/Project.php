@@ -82,6 +82,16 @@ class Project extends Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getOpenProjects()
+    {
+        return $this->getProjectCollection()->where('status=?', ProjectDefinition::STATUS_OPEN);
+    }
+
+
+    /**
      * @param $status
      * @return string
      */

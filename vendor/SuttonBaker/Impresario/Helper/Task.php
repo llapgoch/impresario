@@ -62,6 +62,11 @@ class Task extends Base
         return $collection;
     }
 
+    public function getOpenTasks()
+    {
+        return $this->getTaskCollection()->where('status=?', TaskDefinition::STATUS_OPEN);
+    }
+
     /**
      * @param string $entity
      * @param string $status
