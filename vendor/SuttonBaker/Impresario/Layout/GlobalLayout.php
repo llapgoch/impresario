@@ -9,6 +9,9 @@ use SuttonBaker\Impresario\Definition\Page as PageDefinition;
  */
 class GlobalLayout extends Base
 {
+    protected $headingName = 'Dashboard';
+    protected $icon = 'fa-tachometer';
+    protected $headingShortcode = 'page_heading';
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
@@ -26,6 +29,16 @@ class GlobalLayout extends Base
     }
 
     /**
+     * @param $amount
+     * @param $total
+     * @return float
+     */
+    protected function getPercentage($amount, $total)
+    {
+        return round(($amount / $total) * 100);
+    }
+
+    /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
@@ -35,6 +48,8 @@ class GlobalLayout extends Base
      */
     public function indexHandle()
     {
+
+        $this->addHeading()->addMessages();
 //        $this->getBlockManager()->removeBlock('main.sidebar.nav');
 
         $openEnquiries = count($this->getEnquiryHelper()->getOpenEnquiries()->load());
@@ -61,8 +76,11 @@ class GlobalLayout extends Base
                 ->setHeading('Open Enquiries')
                 ->setNumber($openEnquiries)
                 ->setColour('slategray')
+                ->setProgressPercentage($this->getPercentage($openEnquiries, $totalEnquiries))
+                ->setProgressHeading("{$openEnquiries} open out of {$totalEnquiries} total enquiries")
                 ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::CLIENT_LIST))
                 ->setBackText('View Enquiries')
+                ->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
         );
 
         $this->addBlock(
@@ -75,8 +93,11 @@ class GlobalLayout extends Base
                 ->setHeading('Open Quotes')
                 ->setNumber($openQuotes)
                 ->setColour('greensea')
+                ->setProgressPercentage($this->getPercentage($openQuotes, $totalQuotes))
+                ->setProgressHeading("{$openQuotes} open out of {$totalQuotes} total quotes")
                 ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::CLIENT_LIST))
                 ->setBackText('View Quotes')
+                ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
         );
 
         $this->addBlock(
@@ -89,8 +110,11 @@ class GlobalLayout extends Base
                 ->setHeading('Open Projects')
                 ->setNumber($openProjects)
                 ->setColour('amethyst')
+                ->setProgressPercentage($this->getPercentage($openProjects, $totalProjects))
+                ->setProgressHeading("{$openProjects} open out of {$totalProjects} total projects")
                 ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::CLIENT_LIST))
                 ->setBackText('View Projects')
+                ->setCapabilities($this->getProjectHelper()->getViewCapabilities())
         );
 
         $this->addBlock(
@@ -102,9 +126,12 @@ class GlobalLayout extends Base
                 ->setIcon('fa fa-th-list')
                 ->setHeading('Open Tasks')
                 ->setNumber($openTasks)
+                ->setProgressPercentage($this->getPercentage($openTasks, $totalTasks))
+                ->setProgressHeading("{$openTasks} open out of {$totalTasks} total quotes")
                 ->setColour('cyan')
                 ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::CLIENT_LIST))
                 ->setBackText('View Tasks')
+                ->setCapabilities($this->getTaskHelper()->getViewCapabilities())
         );
     }
 }

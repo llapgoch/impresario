@@ -11,6 +11,7 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
     protected $blockPrefix = '';
     protected $headingName = '';
     protected $icon = '';
+    protected $headingShortcode = 'body_content';
 
     /**
      * @return string
@@ -49,7 +50,7 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
                 '\DaveBaker\Core\Block\Html\Heading',
                 "{$this->getBlockPrefix()}.form.edit.heading")
                 ->setTemplate('core/main-header.phtml')
-                ->setShortcode('body_content')
+                ->setShortcode($this->headingShortcode)
                 ->setHeading($this->headingName)
                 ->setIcon($this->icon)
         );

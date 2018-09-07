@@ -13,17 +13,17 @@
                 </div>
             </div>
 
-            <?php if($block->getProgressPercent()):?>
+            <?php if($block->getProgressPercentage()):?>
             <div class="progress-list">
                 <div class="details">
                     <div class="title"><?php echo $this->getProgressHeading();?></div>
                 </div>
                 <div class="status pull-right bg-transparent-black-1">
-                    <span class="animate-number" data-value="<?php echo $block->getProgressPercent();?>" data-animation-duration="1500"><?php echo $block->getProgressPercent();?></span>%
+                    <span class="animate-number" data-value="<?php echo $block->getProgressPercentage();?>" data-animation-duration="1500"><?php echo $block->getProgressPercentage();?></span>%
                 </div>
                 <div class="clearfix"></div>
                 <div class="progress progress-little progress-transparent-black">
-                    <div class="progress-bar animate-progress-bar" data-percentage="<?php echo $block->getProgressPercent();?>%" style="width: <?php echo $block->getProgressPercent();?>%;"></div>
+                    <div class="progress-bar animate-progress-bar" data-percentage="<?php echo $block->getProgressPercentage();?>%" style="width: <?php echo $block->getProgressPercentage();?>%;"></div>
                 </div>
             </div>
             <?php endif;?>
