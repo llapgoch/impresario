@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+use SuttonBaker\Impresario\Block\Table\StatusLink;
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 use DaveBaker\Core\Definitions\Table as TableDefinition;
 
@@ -30,6 +31,7 @@ class Client
             'client.list'
         )->preDispatch();
 
+        /** @var StatusLink $tableBlock */
         $tableBlock = $this->getApp()->getBlockManager()->getBlock('client.list.table');
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
