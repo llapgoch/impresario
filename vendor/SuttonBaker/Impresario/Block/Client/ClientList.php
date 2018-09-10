@@ -40,9 +40,10 @@ class ClientList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'client.list.table'
-            )->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(
+            )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(
                 ['edit_column', 'delete_column']
             )->addClass('table-striped')
+            ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
         );
 
         $tableBlock->setLinkCallback(

@@ -16,4 +16,11 @@ class Client
         'accounts_contact' => 'Accounts Contact',
         'delete_column' => ""
     ];
+
+    const SORTABLE_COLUMNS = [
+        'client_id',
+        'client_name',
+        'sales_contact',
+        'accounts_contact'
+    ];
 }

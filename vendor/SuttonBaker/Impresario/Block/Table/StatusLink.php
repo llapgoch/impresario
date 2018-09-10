@@ -6,7 +6,7 @@ namespace SuttonBaker\Impresario\Block\Table;
  * @package SuttonBaker\Impresario\Block\Table
  */
 class StatusLink
-    extends \DaveBaker\Core\Block\Html\Table
+    extends Base
 {
     /** @var mixed */
     protected $linkCallback;

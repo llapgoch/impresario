@@ -1,5 +1,6 @@
 <?php
-/** @var \DaveBaker\Core\Block\Html\Table $block */
+/** @var SuttonBaker\Impresario\Block\Table\Base $block */
+var_dump(count($this->getRecords()));
 ?>
 <?php if($this->getRecords()): ?>
     <table <?php echo $block->getAttrs(); ?>>
@@ -7,8 +8,8 @@
         <?php if($this->getHeaders()): ?>
             <thead>
             <tr>
-                <?php foreach($block->getHeaders() as $header): ?>
-                    <th><?php echo $block->escapeHtml($header); ?></th>
+                <?php foreach($block->getHeaders() as $k => $header): ?>
+                    <th class="<?php echo $block->getThClass($k);?>"><?php echo $block->escapeHtml($header); ?></th>
                 <?php endforeach;?>
             </tr>
             </thead>
@@ -17,7 +18,7 @@
             <?php foreach($block->getRecords() as $record): ?>
                 <tr class="<?php echo $block->getRowClass($record);?>">
                     <?php foreach($block->getHeaderKeys() as $k => $header): ?>
-                        <td>
+                        <td class="<?php echo $block->getTdClass($k);?>">
                             <?php if($link = $block->getlink($k, $record)):?>
                                 <a href="<?php echo $link;?>">
                             <?php endif;?>
