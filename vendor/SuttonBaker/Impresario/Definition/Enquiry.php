@@ -23,8 +23,7 @@ class Enquiry
         'date_received' => 'Received',
         'target_date' => 'Target',
         'assigned_to_name' => 'Assignee',
-        'engineer_name' => 'Engineer',
-        'delete_column' => ''
+        'engineer_name' => 'Engineer'
     ];
 
     /**

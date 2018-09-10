@@ -33,24 +33,17 @@ class ClientList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getClientHelper()->getClientCollection();
 
-        if($this->getClientHelper()->currentUserCanEdit()) {
-            $instanceItems->addOutputProcessors([
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
-            ]);
-        }
-
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'client.list.table'
-            )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(
-                ['edit_column', 'delete_column']
-            )->addClass('table-striped js-table-updater')
-            ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
-            ->addAttribute([
-                Table::ELEMENT_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
-            ])
+            )->setHeaders($tableHeaders)->setRecords($instanceItems)
+                ->addClass('table-striped js-table-updater')
+                ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
+                ->addAttribute([
+                    Table::ELEMENT_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                    $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
+                ])
         );
 
         $tableBlock->setLinkCallback(

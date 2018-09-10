@@ -451,7 +451,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixName = self::PREFIX_NAME;
 
         if($tableBlock = $this->getBlockManager()->getBlock('task.list.table')){
-            $tableBlock->removeHeader(['delete_column', 'status', 'task_id']);
+            $tableBlock->removeHeader(['status', 'task_id']);
         }
 
         if($taskTileBlock = $this->getBlockManager()->getBlock('task.tile.block')) {

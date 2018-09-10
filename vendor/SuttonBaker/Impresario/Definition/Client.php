@@ -17,8 +17,7 @@ class Client
         'sales_contact_phone' => 'Sales Number',
         'sales_contact' => 'Sales Contact',
         'accounts_contact_phone' => 'Accounts Number',
-        'accounts_contact' => 'Accounts Contact',
-        'delete_column' => ""
+        'accounts_contact' => 'Accounts Contact'
     ];
 
     const SORTABLE_COLUMNS = [

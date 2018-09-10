@@ -29,8 +29,7 @@ class Task
         'assigned_to_name' => 'Assignee',
         'task_type' => 'Type',
         'target_date' => 'Target',
-        'priority' => 'Priority',
-        'delete_column' => ''
+        'priority' => 'Priority'
     ];
 
     /**

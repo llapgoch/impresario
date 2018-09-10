@@ -335,7 +335,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         if($entityInstance->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock(
                 'task.list.table')) {
-                $tableBlock->removeHeader(['delete_column', 'status', 'task_id']);
+                $tableBlock->removeHeader(['status', 'task_id']);
             }
 
             $addButton = $this->createBlock(

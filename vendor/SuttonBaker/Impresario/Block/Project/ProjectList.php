@@ -31,17 +31,15 @@ class ProjectList
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
+                'status' => $this->getProjectHelper()->getStatusOutputProcessor()
             ]);
 
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems)->addEscapeExcludes(
-                [ 'delete_column']
-            )->setStatusKey('status')
+            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems)
+                ->setStatusKey('status')
                 ->setRowStatusClasses(ProjectDefinition::getRowClasses())
         );
 

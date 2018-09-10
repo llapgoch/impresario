@@ -24,8 +24,7 @@ class Quote
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
-        'estimator_name' => 'Estimator',
-        'delete_column' => ''
+        'estimator_name' => 'Estimator'
     ];
 
 

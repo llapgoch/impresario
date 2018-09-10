@@ -26,8 +26,7 @@ class EnquiryList
                 'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
-                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
+                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml'])
             ]);
     }
 
@@ -52,17 +51,11 @@ class EnquiryList
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
             ]);
 
-        if($this->getEnquiryHelper()->currentUserCanEdit()){
-            $instanceItems->addOutputProcessors([
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
-            ]);
-        }
-
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'enquiry.list.table')
-                ->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['delete_column'])
+                ->setHeaders($tableHeaders)->setRecords($instanceItems)
                 ->setStatusKey('status')
                 ->setRowStatusClasses(EnquiryDefinition::getRowClasses())
         );

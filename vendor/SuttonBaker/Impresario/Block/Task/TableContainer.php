@@ -78,12 +78,6 @@ class TableContainer
                 'priority' => $this->getTaskHelper()->getPriorityOutputProcessor()
             ]);
 
-        if($this->getTaskHelper()->currentUserCanEdit()){
-            $this->instanceCollection->addOutputProcessors([
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
-            ]);
-        }
-
         $instanceItems = $this->instanceCollection->load();
 
         $this->addChildBlock(
@@ -104,8 +98,6 @@ class TableContainer
                 )->setStatusKey('priority')
                     ->setRowStatusClasses(TaskDefinition::getRowClasses())
                     ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
-                    ->addEscapeExcludes(['delete_column']
-                    )
             );
 
             $tableBlock->setLinkCallback(

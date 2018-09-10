@@ -23,8 +23,7 @@ class Project
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
-        'foreman_name' => 'Foreman',
-        'delete_column' => ''
+        'foreman_name' => 'Foreman'
     ];
 
 

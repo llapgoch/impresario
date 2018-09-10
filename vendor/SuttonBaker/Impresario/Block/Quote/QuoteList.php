@@ -36,19 +36,12 @@ class QuoteList
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
             ]);
 
-        if($this->getQuoteHelper()->currentUserCanEdit()){
-            $instanceItems->addOutputProcessors([
-                'delete_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getDeleteBlockHtml'])
-            ]);
-        }
-
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems)->addEscapeExcludes(
-                ['edit_column', 'delete_column']
-            )->setStatusKey('status')
+            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems)
+                ->setStatusKey('status')
                 ->setRowStatusClasses(QuoteDefinition::getRowClasses())
         );
 
