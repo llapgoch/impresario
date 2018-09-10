@@ -19,6 +19,20 @@ class Main
     }
 
     /**
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function registerApiActions()
+    {
+        $api = $this->getApp()->getApiManager();
+
+        $api->addRoute(
+            'client',
+            '\SuttonBaker\Impresario\Api\Client'
+        );
+
+    }
+
+    /**
      * @throws \DaveBaker\Core\Controller\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -26,8 +40,8 @@ class Main
     public function registerControllers()
     {
         $this->getApp()->getContollerManager()->register([
-            'default' => '\SuttonBaker\Impresario\Controller\DefaultController',
             \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT => '\SuttonBaker\Impresario\Controller\Client\EditController',
+            \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
             \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT => '\SuttonBaker\Impresario\Controller\Enquiry\EditController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST => '\SuttonBaker\Impresario\Controller\Enquiry\ListController',
@@ -38,8 +52,7 @@ class Main
             \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT => '\SuttonBaker\Impresario\Controller\Project\EditController',
             \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\ListController',
             \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT => '\SuttonBaker\Impresario\Controller\Invoice\EditController',
-            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT => '\SuttonBaker\Impresario\Controller\Variation\EditController',
-            'index' =>  '\SuttonBaker\Impresario\Controller\IndexController'
+            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT => '\SuttonBaker\Impresario\Controller\Variation\EditController'
         ]);
     }
 

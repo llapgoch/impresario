@@ -10,7 +10,7 @@ class DefaultController
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
     // Add this to the default handle so all pages require a user to be logged in
-    protected $requiresLogin = true;
+    protected $requiresLogin = false;
 
     public function execute()
     {

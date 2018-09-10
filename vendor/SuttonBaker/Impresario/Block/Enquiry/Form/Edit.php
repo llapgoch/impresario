@@ -40,6 +40,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
 
         $this->addClass('js-enquiry-form');
+        $this->addAttribute(
+            ['data-update-url' => $this->getApp()->getApiManager()->getUrl(
+                'client/update',
+                ['clientid' => $entityInstance->getId() ? $entityInstance->getId() : 0]
+            )]
+        );
 
         if($entityInstance->getId()){
             $editMode = true;

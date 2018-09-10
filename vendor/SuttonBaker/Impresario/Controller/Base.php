@@ -8,6 +8,8 @@ namespace SuttonBaker\Impresario\Controller;
 abstract class Base
     extends \DaveBaker\Core\Controller\Base
 {
+    protected $requiresLogin = true;
+
 
     /**
      * @return \SuttonBaker\Impresario\Helper\Task
