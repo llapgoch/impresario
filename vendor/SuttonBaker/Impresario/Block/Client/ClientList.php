@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Client;
 
+use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 /**
@@ -25,6 +26,8 @@ class ClientList
     protected function _preDispatch()
     {
 
+        wp_enqueue_script('dbwpcore_table_updater');
+
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
@@ -42,8 +45,12 @@ class ClientList
                 'client.list.table'
             )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(
                 ['edit_column', 'delete_column']
-            )->addClass('table-striped')
+            )->addClass('table-striped js-table-updater')
             ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
+            ->addAttribute([
+                Table::ELEMENT_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
+            ])
         );
 
         $tableBlock->setLinkCallback(

@@ -18,7 +18,7 @@ class Client
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function updateAction($params, $request)
+    public function updatetableAction($params, $request)
     {
         $tag = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Core\Block\Html\Tag',

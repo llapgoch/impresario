@@ -1,12 +1,16 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
+use DaveBaker\Core\Definitions\Table;
+
 /**
  * Class Client
  * @package SuttonBaker\Impresario\Definition
  */
 class Client
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'client/updatetable';
+
     const TABLE_HEADERS = [
         'client_id' => 'ID',
         'client_name' => 'Name',
@@ -18,9 +22,9 @@ class Client
     ];
 
     const SORTABLE_COLUMNS = [
-        'client_id',
-        'client_name',
-        'sales_contact',
-        'accounts_contact'
+        'client_id' => [],
+        'client_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'sales_contact' => [],
+        'accounts_contact' => []
     ];
 }
