@@ -53,12 +53,13 @@ class TableContainer
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Table\Base|void
+     * @return \SuttonBaker\Impresario\Block\Table\Container\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -102,7 +103,7 @@ class TableContainer
                     'content'
                 )->setStatusKey('priority')
                     ->setRowStatusClasses(TaskDefinition::getRowClasses())
-                    ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
+                    ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
                     ->addEscapeExcludes(['delete_column']
                     )
             );

@@ -62,7 +62,7 @@ class EnquiryList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'enquiry.list.table')
-                ->setHeaders($tableHeaders)->setRecords($instanceItems->load())->addEscapeExcludes(['delete_column'])
+                ->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(['delete_column'])
                 ->setStatusKey('status')
                 ->setRowStatusClasses(EnquiryDefinition::getRowClasses())
         );

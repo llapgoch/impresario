@@ -46,7 +46,7 @@ class QuoteList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
+            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems)->addEscapeExcludes(
                 ['edit_column', 'delete_column']
             )->setStatusKey('status')
                 ->setRowStatusClasses(QuoteDefinition::getRowClasses())

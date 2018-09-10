@@ -80,7 +80,7 @@ class TableContainer
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "{$this->getBlockPrefix()}.list.table",
                     'content'
-                )->setHeaders(VariationDefinition::TABLE_HEADERS)->setRecords($instanceItems)
+                )->setHeaders(VariationDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
             );
 
             $tableBlock->setLinkCallback(

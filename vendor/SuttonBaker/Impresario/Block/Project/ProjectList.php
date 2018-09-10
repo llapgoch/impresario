@@ -16,13 +16,13 @@ class ProjectList
     const ID_PARAM = 'project_id';
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Base|void
+     * @return \SuttonBaker\Impresario\Block\ListBase|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -39,7 +39,7 @@ class ProjectList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems->load())->addEscapeExcludes(
+            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems)->addEscapeExcludes(
                 [ 'delete_column']
             )->setStatusKey('status')
                 ->setRowStatusClasses(ProjectDefinition::getRowClasses())

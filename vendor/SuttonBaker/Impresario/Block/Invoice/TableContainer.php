@@ -77,7 +77,7 @@ class TableContainer
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "invoice.list.table",
                     'content'
-                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection->load())
+                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
             );
 
             $tableBlock->setLinkCallback(
