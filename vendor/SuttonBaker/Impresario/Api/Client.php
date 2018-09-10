@@ -18,30 +18,19 @@ class Client
      * @param \WP_REST_Request $request
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function updatetableAction($params, \WP_REST_Request $request)
     {
-        /** @var \SuttonBaker\Impresario\Helper\Client $clientHelper */
-        $clientHelper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
-        /** @var \SuttonBaker\Impresario\Model\Db\Client\Collection $instanceItems */
-        $instanceItems = $clientHelper->getClientCollection();
-        $tableHeaders = ClientDefinition::TABLE_HEADERS;
+        $tableList = $this->getApp()->getBlockManager()->createBlock(
+            '\SuttonBaker\Impresario\Block\Client\ClientList',
+            'client.list'
+        )->preDispatch();
 
-
-        /** @var \SuttonBaker\Impresario\Block\Table\StatusLink $tableBlock */
-        $tableBlock = $this->getApp()->getBlockManager()->createBlock(
-            '\SuttonBaker\Impresario\Block\Table\StatusLink',
-            'client.list.table'
-        )->setHeaders($tableHeaders)->setRecords($instanceItems)->addEscapeExcludes(
-            ['delete_column']
-        )->addClass('table-striped js-table-updater')
-            ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
-            ->addAttribute([
-                TableDefinition::ELEMENT_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                    $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
-            ]);
-
+        $tableBlock = $this->getApp()->getBlockManager()->getBlock('client.list.table');
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
