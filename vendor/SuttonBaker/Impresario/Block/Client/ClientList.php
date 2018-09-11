@@ -2,7 +2,9 @@
 
 namespace SuttonBaker\Impresario\Block\Client;
 
+use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Client;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 /**
@@ -33,6 +35,18 @@ class ClientList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getClientHelper()->getClientCollection();
 
+
+        $this->addChildBlock(
+        /** @var Paginator $paginator */
+            $paginator = $this->createBlock(
+                '\DaveBaker\Core\Block\Components\Paginator',
+                'client.list.paginator'
+            )->setOrder('after', 'client.list.table')
+                ->setRecordsPerPage(ClientDefinition::RECORDS_PER_PAGE)
+                ->setTotalRecords(count($instanceItems->getItems()))
+                ->setIsReplacerBlock(true)
+        );
+
         $this->addChildBlock(
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
@@ -40,10 +54,10 @@ class ClientList
             )->setHeaders($tableHeaders)->setRecords($instanceItems)
                 ->addClass('table-striped js-table-updater')
                 ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
-                ->addAttribute([
-                    Table::ELEMENT_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                ->addJsDataItems([
+                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                     $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
-                ])
+                ])->setPaginator($paginator)
         );
 
         $tableBlock->setLinkCallback(
@@ -54,6 +68,7 @@ class ClientList
                 );
             }
         );
+
     }
 
     /**

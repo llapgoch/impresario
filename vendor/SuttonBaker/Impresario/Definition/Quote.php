@@ -15,6 +15,8 @@ class Quote
     const STATUS_CLOSED_OUT = 'closed_out';
     const STATUS_CANCELLED = 'cancelled';
 
+    const RECORDS_PER_PAGE = 20;
+
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
         'client_name' => 'Client',

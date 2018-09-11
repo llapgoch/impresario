@@ -14,6 +14,8 @@ class Project
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
 
+    const RECORDS_PER_PAGE = 20;
+
     const TABLE_HEADERS = [
         'project_id' => 'ID',
         'client_name' => 'Client',

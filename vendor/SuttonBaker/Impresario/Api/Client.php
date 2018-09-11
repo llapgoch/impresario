@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+use DaveBaker\Core\Block\Components\Paginator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 use DaveBaker\Core\Definitions\Table as TableDefinition;
@@ -13,7 +14,6 @@ use DaveBaker\Core\Definitions\Table as TableDefinition;
 class Client
     extends \DaveBaker\Core\Api\Base
 {
-
     /**
      * @param $params
      * @param \WP_REST_Request $request
@@ -26,20 +26,28 @@ class Client
      */
     public function updatetableAction($params, \WP_REST_Request $request)
     {
+        $blockManager = $this->getApp()->getBlockManager();
+
         $tableList = $this->getApp()->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\Block\Client\ClientList',
             'client.list'
         )->preDispatch();
 
         /** @var StatusLink $tableBlock */
-        $tableBlock = $this->getApp()->getBlockManager()->getBlock('client.list.table');
+        $tableBlock = $blockManager->getBlock('client.list.table');
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
         }
 
+        /** @var Paginator $paginatorBlock */
+        $paginatorBlock = $blockManager->getBlock('client.list.paginator');
 
-        $this->addReplacerBlock($tableBlock);
+        if(isset($params['pageNumber'])){
+            $paginatorBlock->setPage($params['pageNumber']);
+        }
+
+        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 
 }

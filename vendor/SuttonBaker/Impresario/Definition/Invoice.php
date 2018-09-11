@@ -13,6 +13,8 @@ class Invoice
     const INVOICE_TYPE_ENQUIRY = 'enquiry';
     const INVOICE_TYPE_PROJECT = 'project';
 
+    const RECORDS_PER_PAGE = 20;
+
     const TABLE_HEADERS = [
         'invoice_id' => 'ID',
         'invoice_date' => 'Date',

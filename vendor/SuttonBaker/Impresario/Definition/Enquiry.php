@@ -15,6 +15,8 @@ class Enquiry
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Enquiry';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection';
 
+    const RECORDS_PER_PAGE = 20;
+
     const TABLE_HEADERS = [
         'enquiry_id' => 'ID',
         'client_reference' => 'Client Ref',

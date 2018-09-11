@@ -10,6 +10,7 @@ use DaveBaker\Core\Definitions\Table;
 class Client
 {
     const API_ENDPOINT_UPDATE_TABLE = 'client/updatetable';
+    const RECORDS_PER_PAGE = 20;
 
     const TABLE_HEADERS = [
         'client_id' => 'ID',

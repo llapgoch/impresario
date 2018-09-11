@@ -22,6 +22,8 @@ class Task
     const TASK_TYPE_QUOTE = 'quote';
     const TASK_TYPE_PROJECT = 'project';
 
+    const RECORDS_PER_PAGE = 20;
+
     const TABLE_HEADERS = [
         'task_id' => 'ID',
         'created_by_name' => 'Creator',
