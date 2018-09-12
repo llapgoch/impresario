@@ -7,6 +7,7 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Project
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'project/updatetable';
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Project';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Project\Collection';
 

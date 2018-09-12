@@ -1,12 +1,15 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
+use DaveBaker\Core\Definitions\Table;
+
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Definition
  */
 class Enquiry
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'enquiry/updatetable';
     const STATUS_OPEN = 'open';
     const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
     const STATUS_REPORT_COMPLETE  = 'report_complete';
@@ -26,6 +29,17 @@ class Enquiry
         'target_date' => 'Target',
         'assigned_to_name' => 'Assignee',
         'engineer_name' => 'Engineer'
+    ];
+
+    const SORTABLE_COLUMNS = [
+        'enquiry_id' => [],
+        'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
+        'status' => [],
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'date_received' => [],
+        'target_date' => [],
+        'assignee_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
     /**

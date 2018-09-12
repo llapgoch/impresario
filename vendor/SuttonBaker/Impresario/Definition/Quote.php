@@ -7,6 +7,7 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Quote
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Quote';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Quote\Collection';
 

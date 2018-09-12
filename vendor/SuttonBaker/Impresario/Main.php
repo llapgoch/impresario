@@ -20,12 +20,6 @@ class Main
     public function init()
     {
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
-
-        $event = $this->getApp()->getApiManager()->getRouteEvent(ClientDefinition::API_ENDPOINT_UPDATE_TABLE);
-
-        $this->addEvent($event, function(){
-           $this->getApp()->getHandleManager()->addHandle(Page::CLIENT_LIST);
-        });
     }
 
     /**
@@ -38,6 +32,11 @@ class Main
         $api->addRoute(
             'client',
             '\SuttonBaker\Impresario\Api\Client'
+        );
+
+        $api->addRoute(
+            'enquiry',
+            '\SuttonBaker\Impresario\Api\Enquiry'
         );
 
     }

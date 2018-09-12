@@ -7,6 +7,7 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Task
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'task/updatetable';
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Task';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Task\Collection';
 

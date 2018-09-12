@@ -1,6 +1,14 @@
 <?php
 
 namespace SuttonBaker\Impresario\Event;
+use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Client;
+use SuttonBaker\Impresario\Definition\Enquiry;
+use SuttonBaker\Impresario\Definition\Page;
+use SuttonBaker\Impresario\Definition\Quote;
+use SuttonBaker\Impresario\Definition\Task;
+use SuttonBaker\Impresario\Definition\Project;
+
 /**
  * Class GlobalEvents
  * @package SuttonBaker\Impresario\Event
@@ -24,6 +32,31 @@ class GlobalEvents extends \DaveBaker\Core\Base
 
         $this->addEvent('edit_post_link', function(){
             return '';
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Client::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::CLIENT_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Enquiry::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::ENQUIRY_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Quote::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::QUOTE_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Project::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Project::QUOTE_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Task::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::TASK_LIST);
         });
 
     }

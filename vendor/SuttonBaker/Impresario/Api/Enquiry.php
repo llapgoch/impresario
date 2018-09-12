@@ -3,19 +3,17 @@
 namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Block\Components\Paginator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
-use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
-use DaveBaker\Core\Definitions\Table as TableDefinition;
 
 /**
- * Class Client
+ * Class Enquiry
  * @package SuttonBaker\Impresario\Api
  *
  */
-class Client
+class Enquiry
     extends \DaveBaker\Core\Api\Base
 {
     /** @var string  */
-    protected $blockPrefix = 'client';
+    protected $blockPrefix = 'enquiry';
 
     /**
      * @param $params
