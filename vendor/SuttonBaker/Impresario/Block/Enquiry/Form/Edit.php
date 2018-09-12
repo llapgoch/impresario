@@ -62,32 +62,29 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
 
         // PMs
-        $assignedToUsers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        $assignedToUsers = [];
+
+        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+            $assignedToUsers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $projectManagers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
         // Engineers
-        $engineers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
-
-        // Completed Users
-        $completedUsers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        if($engineers = $this->getRoleHelper()->getEngineers()) {
+            $engineers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $engineers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
-
         $ignoreLockValue = false;
 
         if($this->getEnquiryHelper()->currentUserCanEdit()){

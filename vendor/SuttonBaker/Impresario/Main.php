@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario;
 
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 use SuttonBaker\Impresario\Definition\Page;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class Main

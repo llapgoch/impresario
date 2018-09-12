@@ -28,7 +28,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $modelInstance;
 
     /**
-     * @return \DaveBaker\Form\Block\Form|void
+     * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
@@ -36,6 +36,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -57,20 +58,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )->getElementData();
 
         // PMs
-        $projectManagers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+            $projectManagers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $projectManagers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
-        // Engineers
-        $foremen = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        // PMs
+        if($foremen = $this->getRoleHelper()->getForemen()) {
+            $foremen = $this->createCollectionSelectConnector()
+                ->configure(
+                    $foremen,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
 
         // Statuses

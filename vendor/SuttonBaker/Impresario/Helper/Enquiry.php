@@ -18,8 +18,7 @@ class Enquiry extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     *
-     * Returns a collection of non-deleted enquiries
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getEnquiryCollection()
     {

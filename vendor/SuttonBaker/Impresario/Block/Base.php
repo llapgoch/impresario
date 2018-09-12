@@ -78,4 +78,13 @@ abstract class Base extends \DaveBaker\Core\Block\Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Role
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getRoleHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Role');
+    }
+
 }

@@ -47,20 +47,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $projectEntity = $this->getProjectHelper()->getProjectForQuote($entityId);
 
         // PMs
-        $projectManagers = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+            $projectManagers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $projectManagers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
-        // Engineers
-        $estimators = $this->createCollectionSelectConnector()
-            ->configure(
-                $this->getApp()->getHelper('User')->getUserCollection(),
-                'ID',
-                'user_login'
-            )->getElementData();
+        // PMs
+        if($estimators = $this->getRoleHelper()->getEstimators()) {
+            $estimators = $this->createCollectionSelectConnector()
+                ->configure(
+                    $estimators,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+        }
 
         // Completed Users
         $completedUsers = $this->createCollectionSelectConnector()
