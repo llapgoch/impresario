@@ -67,7 +67,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 )->getElementData();
         }
 
-        // PMs
+        // Foremen
         if($foremen = $this->getRoleHelper()->getForemen()) {
             $foremen = $this->createCollectionSelectConnector()
                 ->configure(
