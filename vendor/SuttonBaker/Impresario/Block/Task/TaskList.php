@@ -23,6 +23,8 @@ class TaskList
      */
     protected function _preDispatch()
     {
+        wp_enqueue_script('dbwpcore_table_updater');
+
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',

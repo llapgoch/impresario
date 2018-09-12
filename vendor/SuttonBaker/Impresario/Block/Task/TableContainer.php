@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Task;
 
+use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 /**
@@ -80,11 +81,23 @@ class TableContainer
 
         $instanceItems = $this->instanceCollection->load();
 
+
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
-                'task.tile.block'
+                "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('Task <strong>List</strong>')
+        );
+
+        $tileBlock->addChildBlock(
+        /** @var Paginator $paginator */
+            $paginator = $this->createBlock(
+                '\DaveBaker\Core\Block\Components\Paginator',
+                "{$this->getBlockPrefix()}.list.paginator",
+                'footer'
+            )->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE)
+                ->setTotalRecords(count($instanceItems))
+                ->setIsReplacerBlock(true)
         );
 
         if(count($instanceItems)) {
@@ -93,11 +106,17 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                    "task.list.table",
+                    "{$this->getBlockPrefix()}.list.table",
                     'content'
                 )->setStatusKey('priority')
                     ->setRowStatusClasses(TaskDefinition::getRowClasses())
                     ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
+                    ->setSortableColumns(TaskDefinition::SORTABLE_COLUMNS)
+                    ->addJsDataItems([
+                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                            $this->getUrlHelper()->getApiUrl(TaskDefinition::API_ENDPOINT_UPDATE_TABLE)
+                    ])
+                    ->setPaginator($paginator)
             );
 
             $tableBlock->setLinkCallback(
@@ -113,7 +132,7 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
-                    "task.list.no.records",
+                    "{$this->getBlockPrefix()}.list.no.records",
                     'content'
                 )->setTagText('No tasks have currently been created')
             );

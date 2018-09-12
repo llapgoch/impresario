@@ -39,6 +39,15 @@ class Main
             '\SuttonBaker\Impresario\Api\Enquiry'
         );
 
+        $api->addRoute(
+            'quote',
+            '\SuttonBaker\Impresario\Api\Quote'
+        );
+
+        $api->addRoute(
+            'task',
+            '\SuttonBaker\Impresario\Api\Task'
+        );
     }
 
     /**

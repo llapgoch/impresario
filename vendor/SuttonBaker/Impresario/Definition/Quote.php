@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
+
+use DaveBaker\Core\Definitions\Table;
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Definition
@@ -30,6 +32,17 @@ class Quote
         'estimator_name' => 'Estimator'
     ];
 
+    const SORTABLE_COLUMNS = [
+        'quote_id' => [],
+        'client_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'client_ref' => [Table::HEADER_SORTABLE_ALPHA],
+        'status' => [],
+        'date_received' => [],
+        'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'project_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'estimator_name' => [Table::HEADER_SORTABLE_ALPHA]
+    ];
 
     /**
      * @return array

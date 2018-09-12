@@ -30,6 +30,8 @@ class EnquiryList
      */
     protected function _preDispatch()
     {
+        wp_enqueue_script('dbwpcore_table_updater');
+
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $enquiryCollection */
         $this->instanceCollection = $this->getEnquiryHelper()->getEnquiryCollection()
             ->addOutputProcessors([
@@ -49,7 +51,6 @@ class EnquiryList
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
             ]);
 
-        // Do this check, as we won't have the maintile when reloading the table with ajax
         $mainTile = $this->getBlockManager()->getBlock('enquiry.tile.main');
         $mainTile->addChildBlock(
         /** @var Paginator $paginator */
@@ -88,21 +89,6 @@ class EnquiryList
         );
     }
 
-    /**
-     * @return \SuttonBaker\Impresario\Block\ListBase|void
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    protected function _preRender()
-    {
-        wp_enqueue_script('dbwpcore_table_updater');
-
-
-    }
 
     /**
      * @return string
