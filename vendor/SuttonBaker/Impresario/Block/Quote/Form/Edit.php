@@ -427,13 +427,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                                 'parent_id' => $this->modelInstance->getId()
                             ]
 
-                        ),
+                        )
                 ]);
 
-            $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
-                ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
-                ->removeClass('pagination-xl')->addClass('pagination-xs');
         }
+
+        $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
+            ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
+            ->removeClass('pagination-xl')->addClass('pagination-xs');
 
         if($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) {
             $addButton = $tileBlock->createBlock(
