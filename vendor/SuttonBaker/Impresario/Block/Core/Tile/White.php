@@ -12,11 +12,12 @@ class White
 {
 
     /**
-     * @return \DaveBaker\Core\Block\Html\Base
+     * @return \DaveBaker\Core\Block\Template|void
+     * @throws \DaveBaker\Core\Object\Exception
      */
-    public function init()
+    protected function _construct()
     {
-        parent::init();
-        $this->addTagIdentifier('tile-white');
+        $this->addTagIdentifier(['tile', 'tile-white']);
+        parent::_construct();
     }
 }

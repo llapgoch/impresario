@@ -16,10 +16,10 @@ class LargeMessage extends \DaveBaker\Core\Block\Template
      */
     public function init()
     {
+        parent::init();
         $this->setTemplate('form/large-message.phtml');
         $this->setMessageType('warning');
         $this->setHeading('Notice');
-        return parent::init();
     }
 
     /**

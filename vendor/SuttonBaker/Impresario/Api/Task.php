@@ -64,15 +64,12 @@ class Task
                     ->where('parent_id=?', $params['parent_id']);
             }
 
-
-
-
         }
 
-
-
         /** @var Paginator $paginatorBlock */
-        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
+        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator")
+            ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
+            ->removeClass('pagination-xl')->addClass('pagination-xs');
 
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);

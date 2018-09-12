@@ -26,6 +26,7 @@ class Task
     const TASK_TYPE_PROJECT = 'project';
 
     const RECORDS_PER_PAGE = 20;
+    const RECORDS_PER_PAGE_INLINE = 5;
 
     const TABLE_HEADERS = [
         'task_id' => 'ID',

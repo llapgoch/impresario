@@ -11,11 +11,23 @@ class StatusLink
     /** @var mixed */
     protected $linkCallback;
 
-    protected function init()
+    /**
+     * @return \DaveBaker\Core\Block\Template|void
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _construct()
+    {
+        $this->addTagIdentifier('table-status-rows');
+        parent::_construct();
+    }
+
+    /**
+     * @return Base|void
+     */
+    public function init()
     {
         parent::init();
         $this->setTemplate('html/table/link-status.phtml');
-        $this->addTagIdentifier('table-status-rows');
     }
 
     /**

@@ -10,12 +10,21 @@ class Tile
 {
 
     /**
-     * @return \DaveBaker\Core\Block\Html\Base
+     * @return \DaveBaker\Core\Block\Template
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _construct()
+    {
+        $this->addTagIdentifier('tile');
+        parent::_construct();
+    }
+
+    /**
+     * @return \DaveBaker\Core\Block\Html\Base|void
      */
     public function init()
     {
+        parent::init();
         $this->setTemplate('core/tile.phtml');
-        $this->addTagIdentifier('tile');
-        return parent::init();
     }
 }

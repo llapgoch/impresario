@@ -10,12 +10,13 @@ class FlipCard
 {
 
     /**
-     * @return \DaveBaker\Core\Block\Html\Base
+     * @return \DaveBaker\Core\Block\Template|void
+     * @throws \DaveBaker\Core\Object\Exception
      */
     public function init()
     {
+        parent::init();
         $this->setTemplate('core/flip-cart.phtml');
         $this->setColour('redbrown');
-        return parent::init();
     }
 }

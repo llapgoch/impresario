@@ -11,11 +11,12 @@ class Black
 {
 
     /**
-     * @return \DaveBaker\Core\Block\Html\Base
+     * @return \DaveBaker\Core\Block\Html\Base|void
+     * @throws \DaveBaker\Core\Object\Exception
      */
-    public function init()
+    protected function _construct()
     {
-        parent::init();
-        $this->addTagIdentifier('tile-black');
+        $this->addTagIdentifier(['tile', 'tile-black']);
+        parent::_construct();
     }
 }

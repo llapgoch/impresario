@@ -10,12 +10,4 @@ abstract class Base
 {
 
 
-    /**
-     * @return \DaveBaker\Core\Block\Html\Table
-     */
-    protected function _construct()
-    {
-        parent::_construct();
-    }
-
 }
