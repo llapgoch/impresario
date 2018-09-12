@@ -148,8 +148,16 @@ class EditController
         if($this->modelInstance->getId()) {
             $data = $this->modelInstance->getData();
 
-            if($this->modelInstance->getTargetDate()){
+            if($this->modelInstance->getDateApproved()){
                 $data['date_approved'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateApproved());
+            }
+
+            if($this->modelInstance->getNetCost()){
+                $data['net_cost'] = (float)$this->modelInstance->getNetCost();
+            }
+
+            if($this->modelInstance->getValue()){
+                $data['value'] = (float)$this->modelInstance->getValue();
             }
 
             $applicator->configure(

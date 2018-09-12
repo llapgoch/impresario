@@ -41,12 +41,13 @@ class TableContainer
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Table\Base|void
+     * @return \SuttonBaker\Impresario\Block\Table\Container\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -56,8 +57,9 @@ class TableContainer
         }
 
         $this->instanceCollection->addOutputProcessors([
-                'invoice_date' => $this->getDateHelper()->getOutputProcessorShortDate()
-            ]);
+            'invoice_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'value' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+        ]);
 
         $instanceItems = $this->instanceCollection->load();
 
@@ -77,7 +79,9 @@ class TableContainer
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "invoice.list.table",
                     'content'
-                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
+                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)
+                    ->setRecords($this->instanceCollection)
+                    ->addClass('table-striped')
             );
 
             $tableBlock->setLinkCallback(
