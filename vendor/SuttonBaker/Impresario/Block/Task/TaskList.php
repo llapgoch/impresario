@@ -23,7 +23,6 @@ class TaskList
      */
     protected function _preDispatch()
     {
-        wp_enqueue_script('dbwpcore_table_updater');
 
         $this->addChildBlock(
             $this->createBlock(
@@ -31,14 +30,6 @@ class TaskList
                 "{$this->getBlockPrefix()}.list.table.container"
             )->setTileDefinitionClass('\SuttonBaker\Impresario\Block\Core\Tile\Black')
         );
-    }
-
-    /**
-     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
-     */
-    public function getInstanceCollection()
-    {
-        return $this->instanceCollection;
     }
 
     /**

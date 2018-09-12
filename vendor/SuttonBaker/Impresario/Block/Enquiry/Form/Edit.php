@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
+use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Roles;
@@ -17,17 +18,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const PREFIX_NAME = 'Enquiry';
 
     /**
-     * @return \DaveBaker\Core\Block\Template|void
+     * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
-     * @throws \Zend_Db_Select_Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -287,12 +287,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )->setOrder('after', 'enquiry.edit.notes.form.group')
                 ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
+
             $this->taskTableBlock->setInstanceCollection(
-                $this->getTaskHelper()->getTaskCollectionForEntity(
+                $collection = $this->getTaskHelper()->getTaskCollectionForEntity(
                     $entityInstance->getId(),
                     TaskDefinition::TASK_TYPE_ENQUIRY,
                     TaskDefinition::STATUS_OPEN
                 )
+
             )->setEditLinkParams([
                 \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
             ]);
@@ -328,15 +330,27 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preRender()
     {
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
 
 
         if($entityInstance->getId()) {
-            if($tableBlock = $this->getBlockManager()->getBlock(
-                'task.list.table')) {
-                $tableBlock->removeHeader(['status', 'task_id']);
+            if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
+                $tableBlock->removeHeader(['status', 'task_id'])
+                    ->addJsDataItems([
+                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                            $this->getUrlHelper()->getApiUrl(
+                                TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                                [
+                                    'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
+                                    'parent_id' => $entityInstance->getId()
+                                ]
+
+                            ),
+                    ]);
+
             }
 
             $addButton = $this->createBlock(
@@ -356,7 +370,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->addClass('btn btn-sm btn-primary')
                 ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
-            $this->getBlockManager()->getBlock('task.tile.block')
+            $this->getBlockManager()->getBlock('task.table.tile.block')
                 ->addChildBlock($addButton);
         }
 

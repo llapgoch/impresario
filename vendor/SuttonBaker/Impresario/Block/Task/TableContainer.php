@@ -14,7 +14,7 @@ class TableContainer
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string  */
-    protected $blockPrefix = 'task_table';
+    protected $blockPrefix = 'task.table';
     /** @var string  */
     protected $idParam = 'task_id';
     /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
@@ -64,6 +64,8 @@ class TableContainer
      */
     protected function _preDispatch()
     {
+        wp_enqueue_script('dbwpcore_table_updater');
+
         if(!$this->instanceCollection){
             $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
         }
@@ -103,6 +105,7 @@ class TableContainer
         if(count($instanceItems)) {
             $tileBlock->setTileBodyClass('nopadding');
 
+            /** \SuttonBaker\Impresario\Block\Table\StatusLink $tableBlock */
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
@@ -110,7 +113,8 @@ class TableContainer
                     'content'
                 )->setStatusKey('priority')
                     ->setRowStatusClasses(TaskDefinition::getRowClasses())
-                    ->setHeaders(TaskDefinition::TABLE_HEADERS)->setRecords($this->instanceCollection)
+                    ->setHeaders(TaskDefinition::TABLE_HEADERS)
+                    ->setRecords($this->instanceCollection)
                     ->setSortableColumns(TaskDefinition::SORTABLE_COLUMNS)
                     ->addJsDataItems([
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>

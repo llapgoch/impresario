@@ -38,7 +38,7 @@ class Enquiry
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'date_received' => [],
         'target_date' => [],
-        'assignee_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
         'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 

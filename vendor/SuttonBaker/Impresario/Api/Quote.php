@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Block\Components\Paginator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
+use SuttonBaker\Impresario\Definition\Roles;
 
 /**
  * Class Quote
@@ -14,6 +15,8 @@ class Quote
 {
     /** @var string  */
     protected $blockPrefix = 'quote';
+    /** @var array  */
+    protected $capabilities = [Roles::CAP_VIEW_QUOTE];
 
     /**
      * @param $params

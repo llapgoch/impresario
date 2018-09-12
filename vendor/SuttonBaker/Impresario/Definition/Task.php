@@ -41,7 +41,7 @@ class Task
         'task_id' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
-        'assignee_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
         'task_type' => [Table::HEADER_SORTABLE_ALPHA],
         'target_date' => [],
         'priority' => [Table::HEADER_SORTABLE_ALPHA]

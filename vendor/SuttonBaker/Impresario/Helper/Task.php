@@ -74,6 +74,7 @@ class Task extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getOpenTasksForCurrentUser()
     {
@@ -81,16 +82,18 @@ class Task extends Base
     }
 
     /**
-     * @param string $entity
+     * @param $entityId
+     * @param $entity
      * @param string $status
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
-    public function getTaskCollectionForEntity($entityId, $entity, $status = '')
+    public function getTaskCollectionForEntity($entityId, $entityType, $status = '')
     {
         $collection = $this->getTaskCollection();
 
-        $collection->getSelect()->where('task_type=?', $entity);
+        $collection->getSelect()->where('task_type=?', $entityType);
         $collection->getSelect()->where('parent_id=?', $entityId);
 
         if($status) {
