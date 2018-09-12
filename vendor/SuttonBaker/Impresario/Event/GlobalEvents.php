@@ -51,7 +51,7 @@ class GlobalEvents extends \DaveBaker\Core\Base
 
         $event = $this->getApp()->getApiManager()->getRouteEvent(Project::API_ENDPOINT_UPDATE_TABLE);
         $this->addEvent($event, function(){
-            $this->getApp()->getHandleManager()->addHandle(Project::QUOTE_LIST);
+            $this->getApp()->getHandleManager()->addHandle(Page::PROJECT_LIST);
         });
 
         $event = $this->getApp()->getApiManager()->getRouteEvent(Task::API_ENDPOINT_UPDATE_TABLE);

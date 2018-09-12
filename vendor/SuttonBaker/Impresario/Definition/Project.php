@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
+use DaveBaker\Core\Definitions\Table;
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Definition
@@ -29,6 +31,17 @@ class Project
         'foreman_name' => 'Foreman'
     ];
 
+    const SORTABLE_COLUMNS = [
+        'project_id' => [],
+        'client_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
+        'status' => [],
+        'date_received' => [],
+        'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'project_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
+    ];
 
     /**
      * @return array

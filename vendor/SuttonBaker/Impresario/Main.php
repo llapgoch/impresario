@@ -49,6 +49,11 @@ class Main
             'task',
             '\SuttonBaker\Impresario\Api\Task'
         );
+
+        $api->addRoute(
+            'project',
+            '\SuttonBaker\Impresario\Api\Project'
+        );
     }
 
     /**

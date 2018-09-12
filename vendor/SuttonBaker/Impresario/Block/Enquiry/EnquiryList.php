@@ -58,8 +58,7 @@ class EnquiryList
                 '\DaveBaker\Core\Block\Components\Paginator',
                 'enquiry.list.paginator',
                 'footer'
-            )->setOrder('after', 'enquiry.list.table')
-                ->setRecordsPerPage(EnquiryDefinition::RECORDS_PER_PAGE)
+            )->setRecordsPerPage(EnquiryDefinition::RECORDS_PER_PAGE)
                 ->setTotalRecords(count($instanceItems->getItems()))
                 ->setIsReplacerBlock(true)
         );

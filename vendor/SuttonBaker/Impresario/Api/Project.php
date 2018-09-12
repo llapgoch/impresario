@@ -14,7 +14,7 @@ class Project
     extends \DaveBaker\Core\Api\Base
 {
     /** @var string  */
-    protected $blockPrefix = 'quote';
+    protected $blockPrefix = 'project';
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_PROJECT];
 
