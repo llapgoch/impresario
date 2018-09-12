@@ -35,17 +35,20 @@ class ClientList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceItems = $this->getClientHelper()->getClientCollection();
 
-
-        $this->addChildBlock(
-        /** @var Paginator $paginator */
-            $paginator = $this->createBlock(
-                '\DaveBaker\Core\Block\Components\Paginator',
-                'client.list.paginator'
-            )->setOrder('after', 'client.list.table')
-                ->setRecordsPerPage(ClientDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceItems->getItems()))
-                ->setIsReplacerBlock(true)
-        );
+        // Do this check, as we won't have the maintile when reloading the table with ajax
+        if($mainTile = $this->getBlockManager()->getBlock('client.tile.main')) {
+            $mainTile->addChildBlock(
+            /** @var Paginator $paginator */
+                $paginator = $this->createBlock(
+                    '\DaveBaker\Core\Block\Components\Paginator',
+                    'client.list.paginator',
+                    'footer'
+                )->setOrder('after', 'client.list.table')
+                    ->setRecordsPerPage(ClientDefinition::RECORDS_PER_PAGE)
+                    ->setTotalRecords(count($instanceItems->getItems()))
+                    ->setIsReplacerBlock(true)
+            );
+        }
 
         $this->addChildBlock(
             $tableBlock = $this->createBlock(

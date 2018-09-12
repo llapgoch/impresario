@@ -1,6 +1,10 @@
 <?php
 
 namespace SuttonBaker\Impresario;
+
+use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
+use SuttonBaker\Impresario\Definition\Page;
+
 /**
  * Class Main
  * @package SuttonBaker\Impresario
@@ -16,6 +20,12 @@ class Main
     public function init()
     {
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(ClientDefinition::API_ENDPOINT_UPDATE_TABLE);
+
+        $this->addEvent($event, function(){
+           $this->getApp()->getHandleManager()->addHandle(Page::CLIENT_LIST);
+        });
     }
 
     /**

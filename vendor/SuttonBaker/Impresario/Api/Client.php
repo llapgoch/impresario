@@ -28,10 +28,6 @@ class Client
     {
         $blockManager = $this->getApp()->getBlockManager();
 
-        $tableList = $this->getApp()->getBlockManager()->createBlock(
-            '\SuttonBaker\Impresario\Block\Client\ClientList',
-            'client.list'
-        )->preDispatch();
 
         /** @var StatusLink $tableBlock */
         $tableBlock = $blockManager->getBlock('client.list.table');

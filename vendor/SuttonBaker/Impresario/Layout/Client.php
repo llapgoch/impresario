@@ -52,8 +52,8 @@ class Client extends Base
                 "{$this->getBlockPrefix()}.form.edit",
                 'content'
             )->setElementName("{$this->getBlockPrefix()}_edit_form")
-
         );
+
     }
 
     /**

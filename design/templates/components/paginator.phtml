@@ -1,0 +1,21 @@
+<?php /** @var \DaveBaker\Core\Block\Components\Paginator $block */ ?>
+
+<div class="col-sm-4 text-right sm-center" <?php echo $block->getReplacerAttributeString();?>>
+    <ul <?php echo $block->getAttrs(true, false);?>>
+        <li class="page-item <?php echo $block->getPreviousButtonClass();?>">
+            <a href="<?php echo $block->getPreviousButtonHref();?>" class="page-link js-paginator-previous-button">
+                <?php echo __("Previous");?>
+            </a>
+        </li>
+        <?php for($i = 1; $i <= $this->getTotalPages(); $i++):?>
+            <li class="page-item <?php echo $block->getLiItemClass($i);?>">
+                <a href="<?php echo $block->getItemHref($i);?>" data-page-id="<?php echo $i;?>" class="page-link js-paginator-page-button"><?php echo $i;?></a>
+            </li>
+        <?php endfor; ?>
+        <li class="page-item <?php echo $block->getNextButtonClass();?>">
+            <a href="<?php echo $block->getNextButtonHref();?>" class="page-link js-paginator-next-button">
+                <?php echo __("Next");?>
+            </a>
+        </li>
+    </ul>
+</div>
