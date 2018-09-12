@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Quote\Form;
 
+use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
@@ -17,9 +18,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
+    /** @var \SuttonBaker\Impresario\Model\Db\Quote */
+    protected $modelInstance;
 
     /**
-     * @return \DaveBaker\Form\Block\Form|void
+     * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
@@ -27,6 +30,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function _preDispatch()
     {
@@ -39,7 +43,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             return;
         }
 
-        $entityInstance = $this->getQuoteHelper()->getQuote($entityId);
+        $this->modelInstance = $this->getQuoteHelper()->getQuote($entityId);
         $projectEntity = $this->getProjectHelper()->getProjectForQuote($entityId);
 
         // PMs
@@ -368,8 +372,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->taskTableBlock->setInstanceCollection(
                 $this->getTaskHelper()->getTaskCollectionForEntity(
                     $entityId,
-                    TaskDefinition::TASK_TYPE_QUOTE,
-                    TaskDefinition::STATUS_OPEN
+                    TaskDefinition::TASK_TYPE_QUOTE
                 )
             )->setEditLinkParams([
                 \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
@@ -379,7 +382,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        if(($entityInstance->getStatus() !== QuoteDefinition::STATUS_OPEN)){
+        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN)){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
@@ -390,7 +393,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
-        if(($entityInstance->getStatus() !== QuoteDefinition::STATUS_OPEN) ||
+        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN) ||
             $this->getQuoteHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
@@ -409,11 +412,26 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
-        if($tableBlock = $this->getBlockManager()->getBlock('task.list.table')){
-            $tableBlock->removeHeader(['status', 'task_id']);
+        if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')){
+            $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
+                ->addJsDataItems([
+                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                        $this->getUrlHelper()->getApiUrl(
+                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                            [
+                                'type' => TaskDefinition::TASK_TYPE_QUOTE,
+                                'parent_id' => $this->modelInstance->getId()
+                            ]
+
+                        ),
+                ]);
+
+            $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
+                ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
+                ->removeClass('pagination-xl')->addClass('pagination-xs');
         }
 
-        if($tileBlock = $this->getBlockManager()->getBlock('task.tile.block')) {
+        if($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) {
             $addButton = $tileBlock->createBlock(
                 '\DaveBaker\Core\Block\Html\Tag',
                 'create.task.button',

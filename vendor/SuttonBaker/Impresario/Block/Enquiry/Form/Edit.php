@@ -291,8 +291,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->taskTableBlock->setInstanceCollection(
                 $collection = $this->getTaskHelper()->getTaskCollectionForEntity(
                     $entityInstance->getId(),
-                    TaskDefinition::TASK_TYPE_ENQUIRY,
-                    TaskDefinition::STATUS_OPEN
+                    TaskDefinition::TASK_TYPE_ENQUIRY
                 )
 
             )->setEditLinkParams([

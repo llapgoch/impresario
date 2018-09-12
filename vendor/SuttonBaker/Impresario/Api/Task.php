@@ -43,6 +43,9 @@ class Task
         $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
         /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
 
+        /** @var Paginator $paginatorBlock */
+        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
+
         if($instanceCollection = $taskTable->getCollection()) {
             // For inline task blocks
             if (isset($params['type']) && isset($params['parent_id'])) {
@@ -62,14 +65,11 @@ class Task
 
                 $instanceCollection->where('task_type=?', $params['type'])
                     ->where('parent_id=?', $params['parent_id']);
+
+                $paginatorBlock->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
+                    ->removeClass('pagination-xl')->addClass('pagination-xs');
             }
-
         }
-
-        /** @var Paginator $paginatorBlock */
-        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator")
-            ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
-            ->removeClass('pagination-xl')->addClass('pagination-xs');
 
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);
