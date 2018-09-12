@@ -63,7 +63,7 @@ class Project
         return [
             self::STATUS_OPEN => 'danger',
             self::STATUS_COMPLETE => 'success',
-            self::STATUS_CANCELLED => 'warning'
+            self::STATUS_CANCELLED => ''
         ];
     }
 

@@ -299,8 +299,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
+        $enquiryIsClosed = in_array($entityInstance->getStatus(),
+            [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]);
 
-        if(($entityInstance->getStatus() == EnquiryDefinition::STATUS_COMPLETE)){
+        if($enquiryIsClosed){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
@@ -312,8 +314,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock(array_values($elements));
 
 
-        if(($entityInstance->getStatus() == EnquiryDefinition::STATUS_COMPLETE) ||
-            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+        if($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
     }
