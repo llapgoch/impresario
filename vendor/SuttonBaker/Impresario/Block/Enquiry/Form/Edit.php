@@ -2,10 +2,12 @@
 
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
+use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Definition\Upload;
 
 /**
  * Class Edit
@@ -317,9 +319,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(
             $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+            "{$prefixKey}.file.upload.container"
+            )
+        );
+
+        $this->addChildBlock(
+            $this->createBlock(
                 '\DaveBaker\Core\Block\Components\FileUploader',
                 "{$prefixKey}.file.uploader"
             )->setOrder('before', 'enquiry.edit.submit.element')
+                ->addJsDataItems(
+                 ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                     Api::ENDPOINT_FILE_UPLOAD,
+                     ['type' => Upload::TYPE_ENQUIRY, 'parent_id' => $entityInstance->getId()]
+                 )]
+             )
         );
 
 

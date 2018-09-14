@@ -33,7 +33,7 @@ class Quote extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     * * Returns a collection of non-deleted tasks
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getQuoteCollection()
     {
