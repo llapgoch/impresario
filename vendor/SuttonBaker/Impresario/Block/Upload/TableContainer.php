@@ -126,9 +126,10 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
-                    "{$this->getBlockPrefix()}.list.no.records",
+                    "{$this->getBlockPrefix()}.list.table",
                     'content'
                 )->setTagText('No attachments have currently been added')
+                    ->setIsReplacerBlock(true)
             );
         }
     }
