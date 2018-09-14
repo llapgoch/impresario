@@ -19,6 +19,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const PREFIX_KEY = 'enquiry';
     const PREFIX_NAME = 'Enquiry';
 
+    /** @var \DaveBaker\Core\Model\Db\Core\Upload\Collection */
+    protected $attachmentCollection;
+
     /**
      * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -49,9 +52,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )]
         );
 
+        $attachmentIds = [];
+
         if($entityInstance->getId()){
             $editMode = true;
             $quoteEntity = $entityInstance->getQuoteEntity();
+
+            $this->attachmentCollection = $this->getUploadHelper()->getUploadCollection(
+                Upload::TYPE_ENQUIRY,
+                $entityInstance->getId()
+            );
         }
 
         // Clients
@@ -268,6 +278,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'value' => 'edit',
                 'data' => ['ignore_lock' => $ignoreLockValue]
             ], [
+                'name' => 'attachment_ids',
+                'type' => 'Input\Hidden',
+                'value' => implode(",", $attachmentIds),
+                'data' => ['ignore_lock' => $ignoreLockValue]
+            ],[
                 'name' => 'enquiry_data',
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
@@ -321,7 +336,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
             '\SuttonBaker\Impresario\Block\Upload\TableContainer',
             "{$prefixKey}.file.upload.container"
-            )
+            )->setOrder('after', "{$prefixKey}.file.uploader")
+            ->setUploadType(Upload::TYPE_ENQUIRY)
+            ->setParentId($entityInstance->getId())
         );
 
         $this->addChildBlock(
@@ -332,7 +349,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->addJsDataItems(
                  ['endpoint' => $this->getUrlHelper()->getApiUrl(
                      Api::ENDPOINT_FILE_UPLOAD,
-                     ['type' => Upload::TYPE_ENQUIRY, 'parent_id' => $entityInstance->getId()]
+                     ['upload_type' => Upload::TYPE_ENQUIRY, 'parent_id' => $entityInstance->getId()]
                  )]
              )
         );
@@ -351,26 +368,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preRender()
     {
-
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
 
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
 
         if($entityInstance->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
                 $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
-                    ->addJsDataItems([
-                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                            $this->getUrlHelper()->getApiUrl(
-                                TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                                [
-                                    'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
-                                    'parent_id' => $entityInstance->getId()
-                                ]
-
-                            ),
-                    ]);
+                ->addJsDataItems([
+                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                    $this->getUrlHelper()->getApiUrl(
+                        TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                        [
+                            'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
+                            'parent_id' => $entityInstance->getId()
+                        ]
+                    )
+                ]);
             }
 
             $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
@@ -396,6 +411,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
             $this->getBlockManager()->getBlock('task.table.tile.block')
                 ->addChildBlock($addButton);
+
+            if($attachmentTable = $this->getBlockManager()->getBlock("upload.list.table")){
+
+                $attachmentTable->setRecords($this->attachmentCollection);
+            }
         }
 
 

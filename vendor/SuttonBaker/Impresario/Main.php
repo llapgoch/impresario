@@ -21,6 +21,7 @@ class Main
     public function init()
     {
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
+        $this->createAppObject('\SuttonBaker\Impresario\Event\Upload');
     }
 
     /**

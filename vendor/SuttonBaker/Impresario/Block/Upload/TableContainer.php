@@ -17,6 +17,46 @@ class TableContainer
     protected $instanceCollection;
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
+    /** @var string */
+    protected $uploadType;
+    /** @var int */
+    protected $parentId;
+
+    /**
+     * @return string
+     */
+    public function getUploadType()
+    {
+        return $this->uploadType;
+    }
+
+    /**
+     * @param string $uploadType
+     * @return $this
+     */
+    public function setUploadType($uploadType)
+    {
+        $this->uploadType = $uploadType;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * @param int $parentId
+     * @return $this
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+        return $this;
+    }
 
     /**
      * @return \DaveBaker\Core\Model\Db\Core\Upload\Collection
@@ -48,12 +88,14 @@ class TableContainer
      */
     protected function _preDispatch()
     {
+        $instanceItems = [];
+        if(!$this->instanceCollection && $this->getUploadType() && $this->getParentId()){
+            $this->instanceCollection = $this->getUploadHelper()->getUploadCollection(
+                $this->getUploadType() , $this->getParentId()
+            );
 
-        if(!$this->instanceCollection){
-            $this->instanceCollection = $this->getUploadHelper()->getUploadCollection();
+            $instanceItems = $this->instanceCollection->load();
         }
-
-        $instanceItems = $this->instanceCollection->load();
 
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
@@ -61,7 +103,6 @@ class TableContainer
                 "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('File <strong>Attachments</strong>')
         );
-
 
         if(count($instanceItems)) {
             $tileBlock->setTileBodyClass('nopadding');
