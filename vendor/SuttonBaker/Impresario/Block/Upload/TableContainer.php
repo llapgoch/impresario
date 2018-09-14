@@ -76,15 +76,11 @@ class TableContainer
                     ->addClass('table-striped')
             );
 
-//            $tableBlock->setLinkCallback(
-//                function ($headerKey, $record) {
-//                    return $this->getPageUrl(
-//                        \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT,
-//                        [$this->getInstanceIdParam() => $record->getId()],
-//                        true
-//                    );
-//                }
-//            );
+            $tableBlock->setLinkCallback(
+                function ($headerKey, $record) {
+                    return $record->getUrl();
+                }
+            );
         }else{
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
