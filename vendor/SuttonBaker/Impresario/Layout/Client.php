@@ -42,7 +42,7 @@ class Client extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
                     $this->getClientHelper()->currentUserCanEdit()
-                        ? '<strong>Update</strong> Client' : "<strong>View</strong> Client")
+                        ? 'Update<strong>Client</strong>' : "View<strong>Client</strong>")
                 ->setShortcode('body_content')
         );
 
@@ -74,7 +74,7 @@ class Client extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Client <strong>List</strong>")
+                ->setHeading("<strong>Client</strong> List")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );

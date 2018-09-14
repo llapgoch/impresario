@@ -46,7 +46,7 @@ class Invoice extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
                     $this->getInvoiceHelper()->currentUserCanEdit()
-                        ? '<strong>Update</strong> Invoice' : "<strong>View</strong> Invoice")
+                        ? 'Update <strong>Invoice</strong>' : "View <strong>Invoice</strong>")
                 ->setShortcode('body_content')
         );
 

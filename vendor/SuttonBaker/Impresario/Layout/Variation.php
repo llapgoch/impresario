@@ -42,7 +42,7 @@ class Variation extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading('<strong>Update</strong> Variation')
+                ->setHeading('Update <strong>Variation</strong>')
                 ->setShortcode('body_content')
         );
 

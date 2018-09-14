@@ -313,6 +313,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
+        // Create the file uploader
+
+        $this->addChildBlock(
+            $this->createBlock(
+                '\DaveBaker\Core\Block\Components\FileUploader',
+                "{$prefixKey}.file.uploader"
+            )->setOrder('before', 'enquiry.edit.submit.element')
+        );
+
 
         if($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false){
             $this->lock();

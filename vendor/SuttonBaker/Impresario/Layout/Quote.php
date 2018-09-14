@@ -37,13 +37,13 @@ class Quote extends Base
 
         $this->addHeading()->addMessages();
 
-        $heading = '<strong>View </strong>Quote';
+        $heading = 'View <strong>Quote</strong>';
 
         if($this->getQuoteHelper()->currentUserCanEdit()){
             if($entityId) {
-                $heading = '<strong>Update</strong> Quote';
+                $heading = 'Update <strong>Quote</strong>';
             }else{
-                $heading = '<strong>Create a </strong>Quote';
+                $heading = 'Create a <strong>Quote</strong>';
             }
         }
 

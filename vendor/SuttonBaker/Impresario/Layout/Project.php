@@ -46,7 +46,7 @@ class Project extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
                     $this->getProjectHelper()->currentUserCanEdit()
-                        ? '<strong>Update</strong> Project' : "<strong>View</strong> Project")
+                        ? 'Update <strong>Project</strong>' : "View <strong>Project</strong>")
                 ->setShortcode('body_content')
         );
 

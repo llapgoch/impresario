@@ -88,7 +88,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
-            )->setHeading('Task <strong>List</strong>')
+            )->setHeading('<strong>Task</strong> List')
         );
 
         $tileBlock->addChildBlock(

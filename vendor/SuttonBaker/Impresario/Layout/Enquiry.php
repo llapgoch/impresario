@@ -47,7 +47,7 @@ class Enquiry extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
                     $this->getEnquiryHelper()->currentUserCanEdit()
-                        ? '<strong>Update</strong> Enquiry' : "<strong>View</strong> Enquiry")
+                        ? 'Update <strong>Enquiry</strong>' : "View <strong>Enquiry</strong>")
                 ->setShortcode('body_content')
         );
 
@@ -98,7 +98,7 @@ class Enquiry extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Enquiry <strong>List</strong>")
+                ->setHeading("<strong>Enquiry</strong> List")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );
