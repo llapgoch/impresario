@@ -28,10 +28,24 @@ class Upload
             function($context){
                 /** @var File $apiFile */
                 $apiFile = $context->getObject();
+                $params = $context->getParams();
 
-                $apiFile->addReplacerBlock()
+                /** @var \SuttonBaker\Impresario\Block\Upload\TableContainer $uploadContainer */
+                $uploadContainer = $this->getApp()->getBlockManager()->createBlock(
+                    '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+                    'upload.replacer'
+                )->setUploadType($params['upload_type'])
+                    ->setParentId($params['parent_id'])
+                    ->preDispatch();
+
+                $apiFile->addReplacerBlock(
+                    $this->getApp()->getBlockManager()->getBlock(
+                        'upload.list.table'
+                    )
+                );
+
+                return $context;
             }
-
         );
     }
 }
