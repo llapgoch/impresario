@@ -341,9 +341,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setParentId($entityInstance->getId())
         );
 
-
-
-
         if($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
@@ -397,26 +394,28 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->removeClass('pagination-xl')->addClass('pagination-xs');
 
 
+            if($this->isLocked() == false) {
+                $addButton = $this->createBlock(
+                    '\DaveBaker\Core\Block\Html\Tag',
+                    'create.task.button',
+                    'header_elements'
+                )->setTagText('Create Task')
+                    ->setTag('a')
+                    ->addAttribute(['href' => $this->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                        [
+                            'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
+                            'parent_id' => $entityInstance->getId()
+                        ],
+                        true
+                    )])
+                    ->addClass('btn btn-sm btn-primary')
+                    ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
-            $addButton = $this->createBlock(
-                '\DaveBaker\Core\Block\Html\Tag',
-                'create.task.button',
-                'header_elements'
-            )->setTagText('Create Task')
-                ->setTag('a')
-                ->addAttribute(['href' => $this->getPageUrl(
-                    \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
-                    [
-                        'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                        'parent_id' => $entityInstance->getId()
-                    ],
-                    true
-                )])
-                ->addClass('btn btn-sm btn-primary')
-                ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
-            $this->getBlockManager()->getBlock('task.table.tile.block')
-                ->addChildBlock($addButton);
+                $this->getBlockManager()->getBlock('task.table.tile.block')
+                    ->addChildBlock($addButton);
+            }
 
             if($attachmentTable = $this->getBlockManager()->getBlock("upload.list.table")){
                 $attachmentTable->setRecords($this->attachmentCollection);
