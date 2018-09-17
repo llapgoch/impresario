@@ -70,7 +70,7 @@ class Project extends Base
                 ->addAttribute(
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                         \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                        ['enquiry_id' => $entityInstance->getQuoteId()],
+                        ['quote_id' => $entityInstance->getQuoteId()],
                         true
                     )]
                 )->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
