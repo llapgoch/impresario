@@ -435,18 +435,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        $uploadTable->addChildBlock(
-            $uploadTable->createBlock(
-                '\DaveBaker\Core\Block\Components\FileUploader',
-                "{$prefixKey}.file.uploader",
-                'header_elements'
-            )->addJsDataItems(
-                ['endpoint' => $this->getUrlHelper()->getApiUrl(
-                    Api::ENDPOINT_FILE_UPLOAD,
-                    $uploadParams
-                )]
-            )
-        );
+        if(!$this->isLocked()) {
+            $uploadTable->addChildBlock(
+                $uploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$prefixKey}.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                        Api::ENDPOINT_FILE_UPLOAD,
+                        $uploadParams
+                    )]
+                )
+            );
+        }
 
         if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')){
             $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
@@ -468,7 +470,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
             ->removeClass('pagination-xl')->addClass('pagination-xs');
 
-        if($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) {
+        if(($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) && !$this->isLocked()) {
             $addButton = $tileBlock->createBlock(
                 '\DaveBaker\Core\Block\Html\Tag',
                 'create.task.button',

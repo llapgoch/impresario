@@ -477,18 +477,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        $uploadTable->addChildBlock(
-            $uploadTable->createBlock(
-                '\DaveBaker\Core\Block\Components\FileUploader',
-                "{$prefixKey}.file.uploader",
-                'header_elements'
-            )->addJsDataItems(
-                ['endpoint' => $this->getUrlHelper()->getApiUrl(
-                    Api::ENDPOINT_FILE_UPLOAD,
-                    $uploadParams
-                )]
-            )
-        );
+        if(!$this->isLocked()) {
+            $uploadTable->addChildBlock(
+                $uploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$prefixKey}.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                        Api::ENDPOINT_FILE_UPLOAD,
+                        $uploadParams
+                    )]
+                )
+            );
+        }
 
         if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
             $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
@@ -509,7 +511,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
             ->removeClass('pagination-xl')->addClass('pagination-xs');
 
-        if($taskTileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) {
+        if($taskTileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')  && !$this->isLocked()) {
             $taskTileBlock->addChildBlock(
                 $this->createSmallButtonElement('Create Task', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
@@ -521,7 +523,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             );
         }
 
-        if($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block')) {
+        if($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block') && !$this->isLocked()) {
             $variationTileBlock->addChildBlock(
                 $this->createSmallButtonElement('Create Variation', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
@@ -532,7 +534,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             );
         }
 
-        if($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
+        if($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block') && !$this->isLocked()) {
             $invoiceTileBlock->addChildBlock(
                 $this->createSmallButtonElement('Create Invoice', $this->getPageUrl(
                 \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
