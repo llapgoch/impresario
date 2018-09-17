@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Task;
 
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Core\Definitions\Upload;
 use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
@@ -248,12 +249,17 @@ class EditController
             }
         }
 
+        $newSave = false;
+
         // Add created by user
         if(!$this->modelInstance->getTaskId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $data['task_type'] = $this->taskType;
             $data['parent_id'] = $this->parentItem->getId();
+            $newSave = true;
         }
+
+
 
         // Only set the completed date when the status changes from open to complete
         if($data['status'] == TaskDefinition::STATUS_COMPLETE &&
@@ -269,6 +275,15 @@ class EditController
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->modelInstance->setData($data)->save();
+        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_TASK,
+                $this->modelInstance->getId()
+            );
+        }
+
         $this->addMessage(
             "The task has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
             Messages::SUCCESS
