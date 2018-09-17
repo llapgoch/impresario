@@ -2,8 +2,11 @@
 
 namespace SuttonBaker\Impresario\Block\Variation\Form;
 
+use DaveBaker\Core\Definitions\Api;
+use SuttonBaker\Impresario\Definition\Upload;
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
+use SuttonBaker\Impresario\Model\Db\Variation;
 
 /**
  * Class Edit
@@ -14,6 +17,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const ID_KEY = 'variation_id';
     const PREFIX_KEY = 'variation';
     const PREFIX_NAME = 'Variation';
+
+    /** @var Variation */
+    protected $modelInstance;
 
     /**
      * @return \DaveBaker\Core\Block\Template|void
@@ -31,9 +37,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $heading = "Create {$prefixName}";
         $editMode = false;
 
-        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
 
-        if($entityInstance->getId()){
+        if($this->modelInstance->getId()){
             $editMode = true;
         }
 
@@ -119,7 +125,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'variation_id',
                 'type' => 'Input\Hidden',
-                'value' => $entityInstance->getId()
+                'value' => $this->modelInstance->getId()
             ], [
                 'name' => 'action',
                 'type' => 'Input\Hidden',
@@ -132,6 +138,50 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         if($this->getVariationHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
+
+        // Create the file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+                "{$prefixKey}.file.upload.container"
+            )->setOrder('before', "{$prefixKey}.edit.submit.element")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+        );
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Block\Form\Base
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function _preRender()
+    {
+        $entityId = $this->getRequest()->getParam(self::ID_KEY);
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        if(!$this->isLocked()) {
+            $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+            $uploadParams = [
+                'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+                'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            ];
+
+
+            $uploadTable->addChildBlock(
+                $uploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$prefixKey}.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                        Api::ENDPOINT_FILE_UPLOAD,
+                        $uploadParams
+                    )]
+                )
+            );
+        }
+        return parent::_preRender();
     }
 
 }

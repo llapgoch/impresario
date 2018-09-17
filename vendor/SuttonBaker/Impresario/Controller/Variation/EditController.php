@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Variation;
 
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Core\Definitions\Upload;
 use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
@@ -183,15 +184,27 @@ class EditController
             }
         }
 
+        $newSave = false;
+
         // Add created by user
-        if(!$this->modelInstance->getVariationId()) {
+        if(!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $data['project_id'] = $this->project->getId();
+            $newSave = true;
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->modelInstance->setData($data)->save();
+
+        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_VARIATION,
+                $this->modelInstance->getId()
+            );
+        }
 
         $this->addMessage(
             "The variation has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
