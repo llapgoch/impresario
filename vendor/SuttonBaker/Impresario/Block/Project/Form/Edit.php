@@ -2,11 +2,14 @@
 
 namespace SuttonBaker\Impresario\Block\Project\Form;
 
+use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Api\Project;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
+use SuttonBaker\Impresario\Definition\Upload;
 
 /**
  * Class Edit
@@ -345,6 +348,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
+        // Create the file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+                "{$prefixKey}.file.upload.container"
+            )->setOrder('before', "{$prefixKey}.edit.submit.element")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+        );
+
         if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN) ||
             $this->getEnquiryHelper()->currentUserCanEdit() == false){
             $this->lock();
@@ -457,6 +470,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
+        $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+
+        $uploadParams = [
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+        ];
+
+        $uploadTable->addChildBlock(
+            $uploadTable->createBlock(
+                '\DaveBaker\Core\Block\Components\FileUploader',
+                "{$prefixKey}.file.uploader",
+                'header_elements'
+            )->addJsDataItems(
+                ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                    Api::ENDPOINT_FILE_UPLOAD,
+                    $uploadParams
+                )]
+            )
+        );
 
         if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
             $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
