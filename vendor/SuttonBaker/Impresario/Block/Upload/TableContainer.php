@@ -11,16 +11,17 @@ class TableContainer
     extends \SuttonBaker\Impresario\Block\Table\Container\Base
     implements \DaveBaker\Core\Block\BlockInterface
 {
-    /** @var string  */
+    /** @var string */
     protected $blockPrefix = 'upload';
     /** @var \DaveBaker\Core\Model\Db\Core\Upload\Collection $instanceCollection */
     protected $instanceCollection;
-    /** @var string  */
+    /** @var string */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
     /** @var string */
     protected $uploadType;
     /** @var int */
-    protected $parentId;
+    protected $identifier;
+
 
     /**
      * @return string
@@ -43,18 +44,18 @@ class TableContainer
     /**
      * @return int
      */
-    public function getParentId()
+    public function getIdentifier()
     {
-        return $this->parentId;
+        return $this->identifier;
     }
 
     /**
-     * @param int $parentId
+     * @param int $identifier
      * @return $this
      */
-    public function setParentId($parentId)
+    public function setIdentifier($identifier)
     {
-        $this->parentId = $parentId;
+        $this->identifier = $identifier;
         return $this;
     }
 
@@ -89,9 +90,9 @@ class TableContainer
     protected function _preDispatch()
     {
         $instanceItems = [];
-        if(!$this->instanceCollection && $this->getUploadType() && $this->getParentId()){
+        if(!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()){
             $this->instanceCollection = $this->getUploadHelper()->getUploadCollection(
-                $this->getUploadType() , $this->getParentId()
+                $this->getUploadType(), $this->getIdentifier()
             );
 
             $instanceItems = $this->instanceCollection->load();

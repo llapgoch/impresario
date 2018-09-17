@@ -35,7 +35,7 @@ class Upload
                     '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                     'upload.replacer'
                 )->setUploadType($params['upload_type'])
-                    ->setParentId($params['parent_id'])
+                    ->setIdentifier(isset($params['identifier']) ? $params['identifier'] : null)
                     ->preDispatch();
 
                 $apiFile->addReplacerBlock(
