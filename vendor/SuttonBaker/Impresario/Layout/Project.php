@@ -69,7 +69,7 @@ class Project extends Base
                 )->setTagText('View Quote')
                 ->addAttribute(
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
+                        \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
                         ['enquiry_id' => $entityInstance->getQuoteId()],
                         true
                     )]
