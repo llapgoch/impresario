@@ -13,8 +13,11 @@ class Upload
     const TYPE_PROJECT = 'project';
 
     const TABLE_HEADERS = [
-        'icon' => '',
-        'filename' => 'File Name',
+        'filename' => 'Attachment Name',
         'created_by_name' => 'Uploaded By'
+    ];
+
+    const ICONS = [
+        'jpg' => 'fa-file-image-o'
     ];
 }

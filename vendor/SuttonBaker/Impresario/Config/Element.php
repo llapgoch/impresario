@@ -31,7 +31,8 @@ class Element extends \DaveBaker\Core\Config\Element
                 'form-error-message' => 'alert alert-danger',
                 'table' => 'table',
                 'table-status-rows' => 'table-status-rows',
-                'paginator' => 'pagination pagination-xl nomargin pagination-custom justify-content-center'
+                'paginator' => 'pagination pagination-xl nomargin pagination-custom justify-content-center',
+                'file-uploader-component-label' => 'btn btn-sm btn-primary'
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]

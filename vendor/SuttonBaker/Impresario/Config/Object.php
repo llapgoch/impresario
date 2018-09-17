@@ -21,6 +21,9 @@ class Object extends \DaveBaker\Core\Config\Object
             ],
             '\DaveBaker\Core\Config\Element' => [
                 'definition' => '\SuttonBaker\Impresario\Config\Element'
+            ],
+            '\DaveBaker\Core\Config\General' => [
+                'definition' => '\SuttonBaker\Impresario\Config\General'
             ]
         ]);
     }

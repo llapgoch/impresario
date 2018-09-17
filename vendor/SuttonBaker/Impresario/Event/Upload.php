@@ -43,8 +43,6 @@ class Upload
                         'upload.list.table'
                     )
                 );
-
-                return $context;
             }
         );
     }
