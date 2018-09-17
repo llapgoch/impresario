@@ -1,5 +1,5 @@
 <?php
-/** @var SuttonBaker\Impresario\Block\Table\Base $block */
+/** @var SuttonBaker\Impresario\Block\Table\StatusLink $block */
 ?>
 <?php if($this->getRecords()): ?>
     <table <?php echo $block->getAttrs(); ?>>
@@ -18,8 +18,8 @@
                 <tr class="<?php echo $block->getRowClass($record);?>">
                     <?php foreach($block->getHeaderKeys() as $k => $header): ?>
                         <td <?php echo $block->getTdAttrs($k);?>>
-                            <?php if($link = $block->getlink($k, $record)):?>
-                                <a href="<?php echo $link;?>">
+                            <?php if($link = $block->getLink($k, $record)):?>
+                                <a href="<?php echo $link;?>" <?php echo $block->getAnchorAttrs($k);?>>
                             <?php endif;?>
 
                             <?php echo $this->escapeHtml($record->getOutputData($header), $header); ?>

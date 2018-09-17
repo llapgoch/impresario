@@ -10,6 +10,8 @@ class StatusLink
 {
     /** @var mixed */
     protected $linkCallback;
+    /** @var bool */
+    protected $newWindowLink = false;
 
     /**
      * @return \DaveBaker\Core\Block\Template|void
@@ -19,6 +21,16 @@ class StatusLink
     {
         $this->addTagIdentifier('table-status-rows');
         parent::_construct();
+    }
+
+    /**
+     * @param $val
+     * @return $this
+     */
+    public function setNewWindowLink($val)
+    {
+        $this->newWindowLink = (bool) $val;
+        return $this;
     }
 
     /**
@@ -85,6 +97,18 @@ class StatusLink
     {
         $this->setData('status_key', $key);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAnchorAttrs()
+    {
+        if($this->newWindowLink){
+            return "target='_blank'";
+        }
+
+        return '';
     }
 
     /**

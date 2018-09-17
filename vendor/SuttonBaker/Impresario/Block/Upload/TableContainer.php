@@ -116,6 +116,7 @@ class TableContainer
                 )->setHeaders(UploadDefinition::TABLE_HEADERS)
                     ->setRecords($this->instanceCollection)
                     ->addClass('table-striped')
+                    ->setNewWindowLink(true)
             );
 
             $tableBlock->setLinkCallback(
