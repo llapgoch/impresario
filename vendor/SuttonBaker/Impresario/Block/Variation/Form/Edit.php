@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Variation\Form;
 
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
+use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 
 /**
  * Class Edit

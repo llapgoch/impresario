@@ -259,8 +259,6 @@ class EditController
             $newSave = true;
         }
 
-
-
         // Only set the completed date when the status changes from open to complete
         if($data['status'] == TaskDefinition::STATUS_COMPLETE &&
             $this->modelInstance->getStatus() !== TaskDefinition::STATUS_COMPLETE){

@@ -12,6 +12,8 @@ class Upload
     const TYPE_QUOTE = 'quote';
     const TYPE_PROJECT = 'project';
     const TYPE_TASK = 'task';
+    const TYPE_VARIATION = 'variation';
+    const TYPE_INVOICE = 'invoice';
 
     const TABLE_HEADERS = [
         'filename' => 'Attachment Name',

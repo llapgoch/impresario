@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Invoice;
 
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Core\Definitions\Upload;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Helper\Invoice;
@@ -248,16 +249,29 @@ class EditController
             }
         }
 
+        $newSave = false;
+
         // Add created by user
-        if(!$this->modelInstance->getInvoiceId()) {
+        if(!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $data['invoice_type'] = $this->invoiceType;
             $data['parent_id'] = $this->parentItem->getId();
+            $newSave = true;
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $this->modelInstance->setData($data)->save();
+
+        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_INVOICE,
+                $this->modelInstance->getId()
+            );
+        }
+
         $this->addMessage(
             "The invoice has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
             Messages::SUCCESS

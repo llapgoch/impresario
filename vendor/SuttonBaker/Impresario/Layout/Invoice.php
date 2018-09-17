@@ -18,11 +18,9 @@ class Invoice extends Base
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
      */
     public function invoiceEditHandle()
     {
@@ -45,8 +43,7 @@ class Invoice extends Base
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
-                    $this->getInvoiceHelper()->currentUserCanEdit()
-                        ? 'Update <strong>Invoice</strong>' : "View <strong>Invoice</strong>")
+                    $entityInstance->getId() ? 'Update <strong>Invoice</strong>' : "Create <strong>Invoice</strong>")
                 ->setShortcode('body_content')
         );
 
