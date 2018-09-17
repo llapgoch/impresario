@@ -38,8 +38,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-
-        $editMode = false;
         $quoteEntity = null;
 
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
@@ -252,7 +250,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $editMode ? 'Update Enquiry' : 'Create Enquiry',
+                    'button_name' => $entityInstance->getId() ? 'Update Enquiry' : 'Create Enquiry',
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block'
@@ -403,7 +401,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             }
 
             if($attachmentTable = $this->getBlockManager()->getBlock("upload.list.table")){
-                $attachmentTable->setRecords($this->attachmentCollection);
+//                $attachmentTable->setRecords($this->attachmentCollection);
             }
         }
 
