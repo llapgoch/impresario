@@ -59,22 +59,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
-                'name' => 'date_approved',
-                'labelName' => 'Date Approved *',
-                'class' => 'js-date-picker',
-                'rowIdentifier' => 'date_approved',
-                'type' => 'Input\Text',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ],
-                'value' => $this->getDateHelper()->currentDateShortLocalOutput(),
-                'attributes' => [
-                    'readonly' => 'readonly',
-                    'autocomplete' => 'off',
-                    'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
-                ],
-            ], [
                 'name' => 'net_cost',
                 'labelName' => 'Net Cost *',
                 'type' => 'Input\Text',
@@ -87,7 +71,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'value',
-                'labelName' => 'Variation Value *',
+                'labelName' => 'Variation Sell *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'variation_values',
                 'attributes' => ['placeholder' => "£"],
@@ -125,18 +109,32 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true
             ], [
                 'name' => 'status',
-                'rowIdentifier' => 'status',
+                'rowIdentifier' => 'status_date_approved',
                 'labelName' => 'Status *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'formGroupSettings' => [
-                    'class' => 'col-md-12'
+                    'class' => 'col-md-6'
                 ],
                 'data' => [
                     'select_options' => $statuses,
                     'show_first_option' => false,
                     'ignore_lock' => $this->getVariationHelper()->currentUserCanEdit()
                 ]
+            ], [
+                'name' => 'date_approved',
+                'labelName' => 'Date Approved',
+                'class' => 'js-date-picker',
+                'rowIdentifier' => 'status_date_approved',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'attributes' => [
+                    'autocomplete' => 'off',
+                    'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
+                ],
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
