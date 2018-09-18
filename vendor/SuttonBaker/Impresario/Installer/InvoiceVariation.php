@@ -54,6 +54,7 @@ class InvoiceVariation
             "CREATE TABLE `{{tableName}}` (
               `variation_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `project_id` int(11) DEFAULT NULL,
+              `po_number` varchar(255) DEFAULT NULL,
               `date_approved` datetime DEFAULT NULL,
               `description` varchar(255) DEFAULT NULL,
               `value` decimal(10,4) DEFAULT NULL,

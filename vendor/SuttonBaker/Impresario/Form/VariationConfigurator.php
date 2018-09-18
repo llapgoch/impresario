@@ -67,6 +67,12 @@ class VariationConfigurator
                     ->setInputError('This must be set if status is \'Approved\'')
                     ->setMainError('\'{{niceName}}\' must be set if status is \'Approved\'')
             );
+
+            $this->addRule(
+                $this->createRule('Required', 'po_number', 'PO Number')
+                    ->setInputError('This must be set if status is \'Approved\'')
+                    ->setMainError('\'{{niceName}}\' must be set if status is \'Approved\'')
+            );
         }
 
 

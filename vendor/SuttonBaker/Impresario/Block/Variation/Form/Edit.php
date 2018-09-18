@@ -109,12 +109,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true
             ], [
                 'name' => 'status',
-                'rowIdentifier' => 'status_date_approved',
+                'rowIdentifier' => 'status_po_date_approved',
                 'labelName' => 'Status *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
                 'data' => [
                     'select_options' => $statuses,
@@ -122,14 +122,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'ignore_lock' => $this->getVariationHelper()->currentUserCanEdit()
                 ]
             ], [
+                'name' => 'po_number',
+                'labelName' => 'PO Number',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'status_po_date_approved',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'date_approved',
                 'labelName' => 'Date Approved',
                 'class' => 'js-date-picker',
-                'rowIdentifier' => 'status_date_approved',
+                'rowIdentifier' => 'status_po_date_approved',
                 'type' => 'Input\Text',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
                 'attributes' => [
                     'autocomplete' => 'off',
