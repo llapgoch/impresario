@@ -7,8 +7,30 @@ namespace SuttonBaker\Impresario\Helper;
  */
 abstract class Base extends \DaveBaker\Core\Helper\Base
 {
+    /** @var array  */
     protected $editCapabilities = [];
+    /** @var array  */
     protected $viewCapabilities = [];
+
+    /**
+     * @param $instance
+     * @param $capabilities
+     * @return string
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getActionVerb(
+        \DaveBaker\Core\Model\Db\BaseInterface $instance)
+    {
+        if(!$this->getUserHelper()->hasCapability($this->getEditCapabilities())){
+            return 'View';
+        }
+
+        if(!$instance->getId()){
+            return 'Create';
+        }
+
+        return 'Update';
+    }
     /**
      * @param string $key
      * @param array $items

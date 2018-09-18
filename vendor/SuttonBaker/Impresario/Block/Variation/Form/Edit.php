@@ -139,7 +139,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $editMode ? 'Update Variation' : 'Create Variation',
+                    'button_name' => $this->getVariationHelper()->getActionVerb($this->modelInstance) . ' Variation',
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block'
