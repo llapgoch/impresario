@@ -10,6 +10,8 @@ use DaveBaker\Core\Definitions\Table;
 class Project
 {
     const API_ENDPOINT_UPDATE_TABLE = 'project/updatetable';
+    const API_ENDPOINT_DELETE = 'project/delete';
+
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Project';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Project\Collection';
 

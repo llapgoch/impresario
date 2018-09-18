@@ -10,6 +10,8 @@ use DaveBaker\Core\Definitions\Table;
 class Enquiry
 {
     const API_ENDPOINT_UPDATE_TABLE = 'enquiry/updatetable';
+    const API_ENDPOINT_DELETE = 'enquiry/delete';
+
     const STATUS_OPEN = 'open';
     const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
     const STATUS_REPORT_COMPLETE  = 'report_complete';

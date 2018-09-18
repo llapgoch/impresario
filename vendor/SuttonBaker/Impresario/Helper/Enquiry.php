@@ -94,10 +94,15 @@ class Enquiry extends Base
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function deleteEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
     ) {
+        if(!$enquiry->getId()){
+            return;
+        }
+
         $tasks = $this->getTaskHelper()->getTaskCollectionForEntity(
             $enquiry->getId(),
             TaskDefinition::TASK_TYPE_ENQUIRY

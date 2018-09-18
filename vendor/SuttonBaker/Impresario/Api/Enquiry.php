@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -44,6 +45,44 @@ class Enquiry
         }
 
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return bool|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function deleteAction($params, \WP_REST_Request $request)
+    {
+        /** @var \SuttonBaker\Impresario\Helper\Enquiry $helper */
+        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Enquiry');
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['id'])){
+            throw new Exception('The item could not be found');
+        }
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\ $enquiry */
+        $item = $this->createAppObject(
+            \SuttonBaker\Impresario\Definition\Enquiry::DEFINITION_MODEL
+        )->load($params['id']);
+
+        if(!$enquiry->getId()){
+            throw new Exception('The item could not be found');
+        }
+
+        $helper->deleteEnquiry($enquiry);
+        $this->addMessage('The enquiry has been removed', Messages::SUCCESS);
+
+        return true;
     }
 
 }

@@ -10,6 +10,8 @@ use DaveBaker\Core\Definitions\Table;
 class Client
 {
     const API_ENDPOINT_UPDATE_TABLE = 'client/updatetable';
+    const API_ENDPOINT_DELETE = 'client/delete';
+
     const RECORDS_PER_PAGE = 20;
 
     const TABLE_HEADERS = [
