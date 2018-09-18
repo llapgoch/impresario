@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Api\Enquiry;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
@@ -249,11 +250,33 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'rowIdentifier' => 'button_bar',
                 'data' => [
                     'button_name' => $entityInstance->getId() ? 'Update Enquiry' : 'Create Enquiry',
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
                 ],
-                'class' => 'btn-block'
+                'class' => 'btn-block',
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'data' => [
+                    'button_name' => 'Remove Enquiry',
+                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Enquiry',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_DELETE)
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
@@ -315,7 +338,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
             '\SuttonBaker\Impresario\Block\Upload\TableContainer',
             "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "enquiry.edit.submit.element")
+            )->setOrder('before', "enquiry.edit.button.bar")
             ->setUploadType($entityInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
             ->setIdentifier($entityInstance->getId() ? $entityInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
@@ -398,10 +421,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
                 $this->getBlockManager()->getBlock('task.table.tile.block')
                     ->addChildBlock($addButton);
-            }
-
-            if($attachmentTable = $this->getBlockManager()->getBlock("upload.list.table")){
-//                $attachmentTable->setRecords($this->attachmentCollection);
             }
         }
 
