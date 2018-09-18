@@ -21,31 +21,6 @@ class ListController
         Roles::CAP_ALL
     ];
 
-    /**
-     * @return \DaveBaker\Core\Controller\Base|void
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function _preDispatch()
-    {
-        $action = $this->getRequest()->getPostParam('action');
 
-        // Perform client deletes
-        if(($clientId = $this->getRequest()->getPostParam('client_id')) && $action == self::DELETE_ACTION){
-            /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
-            $client = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Client')->load($clientId);
-
-            if(!$client->getId()){
-                return;
-            }
-
-            $client->setIsDeleted(1)->save();
-            $this->addMessage('The client has been removed', Messages::SUCCESS);
-            $this->getResponse()->redirectReferer();
-        }
-    }
-
-    public function execute()
-    {
-        // TODO: Implement execute() method.
-    }
+    public function execute(){}
 }

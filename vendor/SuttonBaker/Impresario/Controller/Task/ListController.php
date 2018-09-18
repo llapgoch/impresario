@@ -26,29 +26,13 @@ class ListController
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
         $this->addEvents();
-
-        $action = $this->getRequest()->getPostParam('action');
-
-        // Perform task deletes
-        if(($instanceId = $this->getRequest()->getPostParam('task_id')) && $action == self::DELETE_ACTION){
-            /** @var \SuttonBaker\Impresario\Model\Db\Task $instanceObject */
-            $instanceObject = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Task')->load($instanceId);
-
-            if(!$instanceObject->getId()){
-                return;
-            }
-
-            $instanceObject->setIsDeleted(1)->save();
-            $this->addMessage('The task has been removed', Messages::SUCCESS);
-            $this->getResponse()->redirectReferer();
-        }
     }
-
-    public function execute(){}
 
     /**
      * @throws \DaveBaker\Core\Object\Exception
+     * @return $this
      */
     protected function addEvents()
     {
@@ -57,5 +41,8 @@ class ListController
             $context->getObject()->setShowSuperseded(false);
         });
 
+        return $this;
     }
+
+    public function execute(){}
 }

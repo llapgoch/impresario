@@ -21,33 +21,5 @@ class ListController
         Roles::CAP_ALL
     ];
 
-    /**
-     * @return \SuttonBaker\Impresario\Controller\Base|void
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function _preDispatch()
-    {
-        $action = $this->getRequest()->getPostParam('action');
-
-        // Perform deletes
-        if(($instanceId = $this->getRequest()->getPostParam('quote_id')) && $action == self::DELETE_ACTION){
-            /** @var \SuttonBaker\Impresario\Model\Db\Quote $instanceObject */
-            $instanceObject = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Quote')->load($instanceId);
-
-            if(!$instanceObject->getId()){
-                return;
-            }
-
-            $this->getQuoteHelper()->deleteQuote($instanceObject);
-            $this->addMessage('The quote has been removed', Messages::SUCCESS);
-            $this->getResponse()->redirectReferer();
-        }
-    }
-
-    public function execute()
-    {
-
-    }
+    public function execute(){}
 }
