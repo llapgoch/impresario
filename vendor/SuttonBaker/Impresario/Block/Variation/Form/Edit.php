@@ -47,6 +47,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
+        // Statuses
+        $statuses = $this->createArraySelectConnector()->configure(
+            VariationDefinition::getStatuses()
+        )->getElementData();
+
 
         $elements = $builder->build([
             [
@@ -114,6 +119,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Description *',
                 'type' => 'Textarea',
                 'formGroup' => true
+            ], [
+                'name' => 'status',
+                'rowIdentifier' => 'status',
+                'labelName' => 'Status *',
+                'formGroup' => true,
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-12'
+                ],
+                'data' => [
+                    'select_options' => $statuses,
+                    'show_first_option' => false
+
+                ]
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',

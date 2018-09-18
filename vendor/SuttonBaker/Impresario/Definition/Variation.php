@@ -12,10 +12,24 @@ class Variation
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Variation\Collection';
     const RECORDS_PER_PAGE = 20;
 
+    const STATUS_OPEN = 'open';
+    const STATUS_APPROVED = 'approved';
+
     const TABLE_HEADERS = [
         'variation_id' => 'ID',
         'date_approved' => 'Date Approved',
         'value' => 'Variation Amount'
     ];
+
+    /**
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_OPEN => 'Open',
+            self::STATUS_APPROVED => 'Approved'
+        ];
+    }
 
 }

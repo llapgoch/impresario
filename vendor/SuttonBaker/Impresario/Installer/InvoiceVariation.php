@@ -60,13 +60,15 @@ class InvoiceVariation
               `net_cost` decimal(10,4) DEFAULT NULL,
               `profit` decimal(10,4) DEFAULT NULL,
               `gp` decimal(10,4) DEFAULT NULL,
+              `status` varchar(20) DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`variation_id`),
-              KEY `project_id` (`project_id`)
+              KEY `project_id` (`project_id`),
+              KEY `status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
         );
     }
