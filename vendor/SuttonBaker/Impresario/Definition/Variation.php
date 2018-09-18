@@ -14,6 +14,7 @@ class Variation
 
     const STATUS_OPEN = 'open';
     const STATUS_APPROVED = 'approved';
+    const STATUS_CANCELLED = 'cancelled';
 
     const TABLE_HEADERS = [
         'variation_id' => 'ID',
@@ -28,7 +29,8 @@ class Variation
     {
         return [
             self::STATUS_OPEN => 'Open',
-            self::STATUS_APPROVED => 'Approved'
+            self::STATUS_APPROVED => 'Approved',
+            self::STATUS_CANCELLED => 'Cancelled'
         ];
     }
 

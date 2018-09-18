@@ -22,12 +22,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $modelInstance;
 
     /**
-     * @return \DaveBaker\Core\Block\Template|void
+     * @return \SuttonBaker\Impresario\Block\Form\Base|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
+     * @throws \DaveBaker\Form\SelectConnector\Exception
      */
     protected function _preDispatch()
     {
@@ -47,10 +48,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
+        $statuses =  VariationDefinition::getStatuses();
+        if($this->statusIsLocked()){
+            unset($statuses[VariationDefinition::STATUS_OPEN]);
+        }
+
         // Statuses
-        $statuses = $this->createArraySelectConnector()->configure(
-            VariationDefinition::getStatuses()
-        )->getElementData();
+        $statuses = $this->createArraySelectConnector()->configure($statuses)->getElementData();
 
 
         $elements = $builder->build([
@@ -130,8 +134,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'data' => [
                     'select_options' => $statuses,
-                    'show_first_option' => false
-
+                    'show_first_option' => false,
+                    'ignore_lock' => $this->getVariationHelper()->currentUserCanEdit()
                 ]
             ], [
                 'name' => 'submit',
@@ -154,7 +158,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
-        if($this->getVariationHelper()->currentUserCanEdit() == false) {
+        if($this->getVariationHelper()->currentUserCanEdit() == false || $this->statusIsLocked()) {
             $this->lock();
         }
 
@@ -167,6 +171,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
+    }
+
+    /**
+     * @return bool
+     */
+    protected function statusIsLocked()
+    {
+        if(!$this->modelInstance->getId()){
+            return false;
+        }
+
+        return $this->modelInstance->getStatus() !== VariationDefinition::STATUS_OPEN;
     }
 
     /**
