@@ -1,6 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block\Client\Form;
+use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
+use SuttonBaker\Impresario\Definition\Page;
+
 /**
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Client\Form
@@ -10,17 +13,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     const ID_KEY = 'client_id';
     const PREFIX_KEY = 'client';
     const PREFIX_NAME = 'Client';
+
     /**
      * @return \DaveBaker\Form\Block\Form|void
-     * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Form\SelectConnector\Exception
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
+
         $heading = 'Create a New Client';
         $editMode = false;
         $prefixKey = self::PREFIX_KEY;
@@ -47,6 +51,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+
+        $disabledAttrs = $entityInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $returnUrl = $this->getRequest()->getReturnUrl() ?
+            $this->getRequest()->getReturnUrl() :
+            $this->getUrlHelper()->getPageUrl(Page::CLIENT_LIST);
 
         $elements = $builder->build([
             [
@@ -151,13 +160,40 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'submit',
+                'rowIdentifier' => 'button_bar',
+                'formGroup' => true,
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
                     'button_name' => $editMode ? 'Update Client' : 'Create a New Client',
                     'capabilities' => $this->getClientHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
 
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Client',
+                    'capabilities' => $this->getClientHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Client',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            ClientDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $entityInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',

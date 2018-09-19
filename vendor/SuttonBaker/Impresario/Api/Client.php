@@ -1,7 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
+use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use \SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 use DaveBaker\Core\Definitions\Table as TableDefinition;
@@ -43,6 +45,41 @@ class Client
         }
 
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return bool|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function deleteAction($params, \WP_REST_Request $request)
+    {
+        /** @var \SuttonBaker\Impresario\Helper\Client $helper */
+        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['id'])){
+            throw new Exception('The item could not be found');
+        }
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $item */
+        $item = $this->createAppObject(
+            \SuttonBaker\Impresario\Definition\Client::DEFINITION_MODEL
+        )->load($params['id']);
+
+        if(!$item->getId()){
+            throw new Exception('The client could not be found');
+        }
+
+        $helper->deleteClient($item);
+        $this->addMessage('The client has been removed', Messages::SUCCESS);
+
+        return true;
     }
 
 }

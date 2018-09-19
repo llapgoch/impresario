@@ -79,6 +79,7 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     public function getOpenQuotes()
@@ -218,6 +219,7 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function duplicateQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
@@ -245,12 +247,14 @@ class Quote extends Base
 
         return $newQuote;
     }
+
     /**
-    * @param \SuttonBaker\Impresario\Model\Db\Quote $enquiry
-    * @throws \DaveBaker\Core\Db\Exception
-    * @throws \DaveBaker\Core\Event\Exception
-    * @throws \DaveBaker\Core\Object\Exception
-    */
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
     public function deleteQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
@@ -270,6 +274,7 @@ class Quote extends Base
      * @param $parentId
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getSupersededQuotesForParent($parentId)
     {

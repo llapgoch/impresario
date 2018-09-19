@@ -9,6 +9,7 @@ use DaveBaker\Core\Definitions\Table;
  */
 class Client
 {
+    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Client';
     const API_ENDPOINT_UPDATE_TABLE = 'client/updatetable';
     const API_ENDPOINT_DELETE = 'client/delete';
 

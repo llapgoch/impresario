@@ -371,7 +371,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'attributes' => $disabledAttrs,
                 'data' => [
-                    'button_name' => 'Remove Enquiry',
+                    'button_name' => 'Remove Quote',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
                     'js_data_items' => [
                         'type' => 'Quote',
@@ -386,7 +386,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
-            ],[
+            ], [
                 'name' => 'quote_id',
                 'type' => 'Input\Hidden',
                 'value' => $entityId

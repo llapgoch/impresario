@@ -30,4 +30,19 @@ class Client extends Base
 
         return $collection;
     }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Client $client
+     * @return $this
+     */
+    public function deleteClient(
+        \SuttonBaker\Impresario\Model\Db\Client $client
+    ) {
+        if(!$client->getId()){
+            return $this;
+        }
+
+        $client->setIsDeleted(1)->save();
+        return $this;
+    }
 }
