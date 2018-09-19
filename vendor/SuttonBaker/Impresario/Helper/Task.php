@@ -65,6 +65,7 @@ class Task extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getOpenTasks()
     {
@@ -190,6 +191,21 @@ class Task extends Base
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
             return TaskDefinition::TASK_TYPE_PROJECT;
         }
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Task $task
+     * @return $this
+     */
+    public function deleteTask(
+        \SuttonBaker\Impresario\Model\Db\Task $task
+    ) {
+        if(!$task->getId()){
+            return $this;
+        }
+
+        $task->setIsDeleted(1)->save();
+        return $this;
     }
 
     /**

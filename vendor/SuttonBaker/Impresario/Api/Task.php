@@ -1,7 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
+use DaveBaker\Core\Definitions\Messages;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -76,6 +78,43 @@ class Task
         }
 
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return bool|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function deleteAction($params, \WP_REST_Request $request)
+    {
+        /** @var \SuttonBaker\Impresario\Helper\Task $helper */
+        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['id'])){
+            throw new Exception('The item could not be found');
+        }
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Task $item */
+        $item = $this->createAppObject(
+            TaskDefinition::DEFINITION_MODEL
+        )->load($params['id']);
+
+        if(!$item->getId()){
+            throw new Exception('The project could not be found');
+        }
+
+        $helper->deleteTask($item);
+        $this->addMessage('The task has been removed', Messages::SUCCESS);
+
+        return true;
     }
 
 }

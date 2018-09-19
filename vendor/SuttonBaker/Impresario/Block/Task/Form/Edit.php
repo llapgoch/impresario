@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Task\Form;
 
 use DaveBaker\Core\Definitions\Api;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
@@ -32,6 +33,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -76,6 +78,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+
+        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $returnUrl = $this->getRequest()->getReturnUrl() ?
+            $this->getRequest()->getReturnUrl() :
+            $this->getUrlHelper()->getPageUrl(Page::TASK_LIST);
 
         $elements = $builder->build([
             [
@@ -147,12 +154,39 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
+                'rowIdentifier' => 'button_bar',
+                'formGroup' => true,
                 'data' => [
                     'button_name' => $editMode ? 'Update Task' : 'Create Task',
                     'capabilities' => $this->getTaskHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
 
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Task',
+                    'capabilities' => $this->getTaskHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Task',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            TaskDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'task_id',
                 'type' => 'Input\Hidden',

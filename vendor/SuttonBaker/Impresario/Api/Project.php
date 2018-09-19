@@ -53,6 +53,8 @@ class Project
      * @param \WP_REST_Request $request
      * @return bool|\WP_Error
      * @throws Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function deleteAction($params, \WP_REST_Request $request)
