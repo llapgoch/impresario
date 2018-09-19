@@ -39,7 +39,7 @@ class StatusLink
     public function init()
     {
         parent::init();
-        $this->setTemplate('html/table/link-status.phtml');
+        $this->setTemplate('html/table/status-link.phtml');
     }
 
     /**

@@ -422,8 +422,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->taskTableBlock->setInstanceCollection(
             $this->getTaskHelper()->getTaskCollectionForEntity(
                 $this->modelInstance->getId(),
-                TaskDefinition::TASK_TYPE_PROJECT,
-                TaskDefinition::STATUS_OPEN
+                TaskDefinition::TASK_TYPE_PROJECT
             )
         )->setEditLinkParams([
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
@@ -528,7 +527,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
-            $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
+            $tableBlock->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                         $this->getUrlHelper()->getApiUrl(

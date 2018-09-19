@@ -111,7 +111,8 @@ class TableContainer
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "{$this->getBlockPrefix()}.list.table",
                     'content'
-                )->setStatusKey('priority')
+                )->setTemplate('html/table/task.phtml')
+                    ->setStatusKey('priority')
                     ->setRowStatusClasses(TaskDefinition::getRowClasses())
                     ->setHeaders(TaskDefinition::TABLE_HEADERS)
                     ->setRecords($this->instanceCollection)

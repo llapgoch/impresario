@@ -52,7 +52,7 @@ class Task
             // For inline task blocks
             if (isset($params['type']) && isset($params['parent_id'])) {
 
-                $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
+                $tableBlock->removeHeader(['task_id', 'task_type'])
                     ->addJsDataItems([
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                             $this->getUrlHelper()->getApiUrl(

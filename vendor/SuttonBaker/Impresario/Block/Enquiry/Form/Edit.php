@@ -397,7 +397,7 @@ class Edit
 
         if($entityInstance->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
-                $tableBlock->removeHeader(['status', 'task_id', 'task_type'])
+                $tableBlock->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                     $this->getUrlHelper()->getApiUrl(
