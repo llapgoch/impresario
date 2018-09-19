@@ -96,7 +96,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit()){
+        if($this->getQuoteHelper()->currentUserCanEdit() && !$this->modelInstance->getIsDeleted()){
             $ignoreLockValue = true;
         }
 
@@ -104,7 +104,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
-        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $deleteAttrs = $this->modelInstance->getId() == null || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST);
@@ -355,6 +357,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
+                'attributes' => $updateAttrs,
                 'data' => [
                     'button_name' => $this->getQuoteHelper()->getActionVerb($this->modelInstance) . " Quote",
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities()
@@ -369,7 +372,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
-                'attributes' => $disabledAttrs,
+                'attributes' => $deleteAttrs,
                 'data' => [
                     'button_name' => 'Remove Quote',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
@@ -425,12 +428,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN)){
+        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN || $this->modelInstance->getIsDeleted())){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
                     "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} is currently locked")
+                )->setMessage("This {$prefixName} " . ($this->modelInstance->getIsDeleted() ? "has been removed" : "is locked"))
+                    ->setMessageType($this->modelInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
 

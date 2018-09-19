@@ -32,7 +32,6 @@ class Quote extends Base
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             /** @var \SuttonBaker\Impresario\Model\Db\Quote $entityInstance */
             $entityInstance->load($entityId);
-            $editMode = true;
         }
 
         $this->addHeading()->addMessages();

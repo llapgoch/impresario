@@ -33,7 +33,7 @@ class Enquiry
     public function getTabBarForEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
     ) {
-        $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($enquiry);
+        $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($enquiry, !((bool)$enquiry->getIsDeleted()));
         $project = $this->getProjectHelper()->getProjectForQuote($quote);
 
         return $this->getTabBar(

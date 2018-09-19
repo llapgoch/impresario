@@ -154,7 +154,7 @@ class Quote extends Base
      */
     public function getDisplayQuotes($deletedFlag = true)
     {
-        return $this->getQuoteCollection()->where('is_superseded=0', $deletedFlag);
+        return $this->getQuoteCollection($deletedFlag)->where('is_superseded=0');
     }
 
     /**
@@ -185,14 +185,14 @@ class Quote extends Base
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
-    public function getNewestQuoteForEnquiry($enquiryId)
+    public function getNewestQuoteForEnquiry($enquiryId, $deletedFlag = true)
     {
         if(is_object($enquiryId)){
             $enquiryId = $enquiryId->getId();
         }
 
         if($enquiryId) {
-            $collection = $this->getDisplayQuotes()
+            $collection = $this->getDisplayQuotes($deletedFlag)
                 ->where('enquiry_id=?', $enquiryId);
 
             if ($item = $collection->firstItem()) {

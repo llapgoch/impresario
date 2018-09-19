@@ -36,6 +36,7 @@ class Edit
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
      * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
      */
     protected function _preDispatch()
     {
@@ -43,9 +44,9 @@ class Edit
 
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
-        $quoteEntity = null;
 
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($entityInstance);
 
         $this->addClass('js-enquiry-form');
         $this->addAttribute(
@@ -307,7 +308,7 @@ class Edit
                 'name' => 'enquiry_data',
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
-                    'hasQuote' => ($quoteEntity && $quoteEntity->getId() ? 1 : 0),
+                    'hasQuote' => ($quoteEntity->getId() ? 1 : 0),
                     'completedStatus' => EnquiryDefinition::STATUS_COMPLETE
                 ]),
                 'class' => 'js-enquiry-data'
