@@ -51,6 +51,8 @@ class Quote
               `date_return_by` datetime DEFAULT NULL,
               `net_cost` decimal(10,4) DEFAULT NULL,
               `net_sell` decimal(10,4) DEFAULT NULL,
+              `profit` decimal(10,4) DEFAULT 0,
+              `gp` decimal(10,4) DEFAULT 0,
               `date_returned` datetime DEFAULT NULL,
               `date_completed` datetime DEFAULT NULL,
               `completed_by_id` int(11) DEFAULT NULL,   

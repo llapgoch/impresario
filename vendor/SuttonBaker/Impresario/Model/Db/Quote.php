@@ -23,10 +23,28 @@ class Quote extends Base
      */
     public function getProfit()
     {
-        if($this->hasNetCost() && $this->hasNetSell()){
-            return max(0, $this->getNetSell() - $this->getNetCost());
+        if(is_numeric($this->getNetSell()) && is_numeric($this->getNetCost())){
+            return $this->getNetSell() - $this->getNetCost();
         }
 
         return 0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getGp()
+    {
+        if(is_numeric($this->getNetSell()) && is_numeric($this->getNetCost())){
+            return ($this->getProfit() / $this->getNetSell()) * 100;
+        }
+
+        return 0;
+    }
+
+    public function beforeSave()
+    {
+        $this->setData('gp', $this->getGp());
+        $this->setData('profit', $this->getProfit());
     }
 }
