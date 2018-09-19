@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Form;
 
+use SuttonBaker\Impresario\Api\Quote;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 /**
  * Class QuoteConfigurator
@@ -45,26 +46,66 @@ class QuoteConfigurator
         );
 
         $this->addRule(
-            $this->createRule('User', 'estimator_id', 'Estimator')
-        );
-
-        $this->addRule(
             $this->createRule('Date', 'date_return_by', 'Return By Date')
         );
 
-        $shouldHaveCosts = in_array($this->getValue('status'),
+        $netCost = $this->getValue('net_cost');
+        $netSell = $this->getValue('net_sell');
+
+        $sellRule = $this->createRule('Custom', 'net_sell', 'Net Sell');
+        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
+            ->setInputError('This must be higher than the net cost');
+
+        $this->addRule($sellRule->setValidationMethod(
+            function($value, $ruleInstance) use($netCost) {
+
+                if((float) $value < (float) $netCost){
+                    return $ruleInstance->createError();
+                }
+
+                return true;
+            }
+        ));
+
+        $quoteIsCompleted = in_array($this->getValue('tender_status'),
             [QuoteDefinition::TENDER_STATUS_WON, QuoteDefinition::TENDER_STATUS_CLOSED_OUT]);
 
-        if($shouldHaveCosts) {
+        if($quoteIsCompleted){
+            $this->addRule(
+                $this->createRule('Custom', 'status', 'Status')
+                    ->setMainError('\'{{niceName}}\' must be \'Quoted\' if Tender Status is \'Won\' or \'Lost\'')
+                    ->setInputError('This must be \'Quoted\'')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if($value !== QuoteDefinition::STATUS_QUOTED){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
+
+            $this->addRule(
+                $this->createRule('User', 'estimator_id', 'Estimator')
+                    ->setMainError('\'{{niceName}}\' must be set if a quote\'s status is \'Quoted\'')
+                    ->setInputError('Please select an estimator')
+            );
+        }
+
+        if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
             $this->addRule(
                 $this->createRule('Numeric', 'net_cost', 'Net Cost')
+                ->setMainError('\'{{niceName}}\' must be set if the quote\'s status is \'Quoted\'')
+                ->setInputError('This requires a numeric value')
             );
 
 
             $this->addRule(
                 $this->createRule('Numeric', 'net_sell', 'Net Sell')
+                    ->setMainError('\'{{niceName}}\' must be set if the quote\'s status is \'Quoted\'')
+                    ->setInputError('This requires a numeric value')
             );
         }
+
 
         if($this->getValue('date_returned')) {
             $this->addRule(
@@ -87,55 +128,19 @@ class QuoteConfigurator
         // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');
         $completedById = $this->getValue('completed_by_id');
-        $statusIsClosed = $this->getValue('status') !== QuoteDefinition::TENDER_STATUS_OPEN;
 
-        if($statusIsClosed || $this->getValue('date_completed')){
+
+        if($quoteIsCompleted || $this->getValue('date_completed')){
             $this->addRule(
                 $this->createRule('User', 'completed_by_id', 'Completed By')
             );
         }
 
-        if($statusIsClosed || $this->getValue('completed_by_id')){
+        if($quoteIsCompleted || $this->getValue('completed_by_id')){
             $this->addRule(
                 $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
             );
         }
-
-        if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
-            $statusRule = $this->createRule('Custom', 'status', 'Status');
-            $statusRule->setMainError('Status must not be \'Open\' if \'Completed By\' or \'Date Completed\' have been set')
-                ->setInputError('This must be set to \'Complete\'');
-
-            $this->addRule($statusRule->setValidationMethod(
-                function($value, $ruleInstance) use($statusIsClosed) {
-
-                    if($statusIsClosed == false){
-                        return $ruleInstance->createError();
-                    }
-
-                    return true;
-                }
-            ));
-        }
-
-        $netCost = $this->getValue('net_cost');
-        $netSell = $this->getValue('net_sell');
-
-        $sellRule = $this->createRule('Custom', 'net_sell', 'Net Sell');
-        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
-            ->setInputError('This must be higher than Net Cost');
-
-        $this->addRule($sellRule->setValidationMethod(
-            function($value, $ruleInstance) use($netCost) {
-
-                if((float) $value < (float) $netCost){
-                    return $ruleInstance->createError();
-                }
-
-                return true;
-            }
-        ));
-
     }
 
 }

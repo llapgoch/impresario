@@ -173,17 +173,14 @@ class Project extends Base
         return $this->getProject();
     }
 
-
-
     /**
      * @param $quoteId
-     * @return \DaveBaker\Core\Model\Db\Base|null|\SuttonBaker\Impresario\Model\Db\Project|null
+     * @return \DaveBaker\Core\Model\Db\Base|null|\SuttonBaker\Impresario\Model\Db\Project|void
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
-     * @throws \Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function createProjectFromQuote($quoteId)
     {

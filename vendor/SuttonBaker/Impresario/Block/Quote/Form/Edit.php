@@ -94,6 +94,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             QuoteDefinition::getStatuses()
         )->getElementData();
 
+        $tenderStatuses = $this->createArraySelectConnector()->configure(
+            QuoteDefinition::getTenderStatuses()
+        )->getElementData();
+
         $ignoreLockValue = false;
 
         if($this->getQuoteHelper()->currentUserCanEdit() && !$this->modelInstance->getIsDeleted()){
@@ -230,7 +234,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'estimator_id',
                 'rowIdentifier' => 'project_manager_estimator',
                 'formGroup' => true,
-                'labelName' => 'Estimator *',
+                'labelName' => 'Estimator',
                 'data' => [
                     'select_options' => $estimators
                 ],
@@ -339,17 +343,35 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
                 'name' => 'status',
                 'formGroup' => true,
+                'rowIdentifier' => 'status_tender_status',
                 'labelName' => 'Status *',
                 'type' => 'Select',
                 'class' => 'js-status',
                 'data' => [
                     'select_options' => $statuses,
+                    'show_first_option' => false
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'tender_status',
+                'formGroup' => true,
+                'rowIdentifier' => 'status_tender_status',
+                'labelName' => 'Tender Status *',
+                'type' => 'Select',
+                'class' => 'js-tender-status',
+                'data' => [
+                    'select_options' => $tenderStatuses,
                     'show_first_option' => false,
                     'ignore_lock' => $ignoreLockValue
                 ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
             ], [
                 'name' => 'comments',
                 'formGroup' => true,
@@ -405,7 +427,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
                     'hasProject' => ($projectEntity->getId() ? 1 : 0),
-                    'completedStatus' => QuoteDefinition::TENDER_STATUS_WON,
+                    'completedTenderStatus' => QuoteDefinition::TENDER_STATUS_WON,
                     'netCost' => $this->modelInstance->getNetCost(),
                     'netSell' => $this->modelInstance->getNetSell(),
                     'hasId' => $this->modelInstance->getId() ? 1 : 0
@@ -434,7 +456,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        if(($this->modelInstance->getStatus() !== QuoteDefinition::TENDER_STATUS_OPEN || $this->modelInstance->getIsDeleted())){
+        if(($this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN || $this->modelInstance->getIsDeleted())){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
@@ -458,7 +480,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         );
 
 
-        if(($this->modelInstance->getStatus() !== QuoteDefinition::TENDER_STATUS_OPEN) ||
+        if(($this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN) ||
             $this->getQuoteHelper()->currentUserCanEdit() == false){
             $this->lock();
         }

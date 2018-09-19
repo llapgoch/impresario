@@ -253,7 +253,7 @@ class EditController
         // Create a project
 
 
-        if($data['status'] == QuoteDefinition::TENDER_STATUS_WON) {
+        if($data['tender_status'] == QuoteDefinition::TENDER_STATUS_WON) {
             $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
 
             if (!$project->getId()) {

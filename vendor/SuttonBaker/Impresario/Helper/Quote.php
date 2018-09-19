@@ -114,7 +114,7 @@ class Quote extends Base
         );
 
         $collection->order(new \Zend_Db_Expr(sprintf(
-                "FIELD({{quote}}.status,'%s', '%s', '%s', '%s')",
+                "FIELD({{quote}}.tender_status,'%s', '%s', '%s', '%s')",
                 QuoteDefinition::TENDER_STATUS_OPEN,
                 QuoteDefinition::TENDER_STATUS_WON,
                 QuoteDefinition::TENDER_STATUS_CANCELLED,
@@ -134,7 +134,7 @@ class Quote extends Base
      */
     public function getOpenQuotes()
     {
-        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::TENDER_STATUS_OPEN);
+        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::STATUS_OPEN);
     }
 
     /**
