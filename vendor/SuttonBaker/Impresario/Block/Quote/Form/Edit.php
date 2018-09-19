@@ -104,7 +104,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
-        $deleteAttrs = $this->modelInstance->getId() == null || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $deleteAttrs = $projectEntity->getId()
+            || $this->modelInstance->getId() == null
+            || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+
         $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?

@@ -100,7 +100,10 @@ class Edit
             ->setFormName('enquiry_edit')
             ->setGroupTemplate('form/group-vertical.phtml');
 
-        $deleteAttrs = $entityInstance->getId() == null || $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $deleteAttrs = $quoteEntity->getId()
+            || $entityInstance->getId() == null
+            || $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+
         $updateAttrs = $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?

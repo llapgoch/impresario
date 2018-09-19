@@ -46,6 +46,8 @@ class Project extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading($this->getProjectHelper()->getActionVerb($entityInstance) . " <strong>Project</strong>")
                 ->setShortcode('body_content')
+                ->addChildBlock($this->getProjectHelper()->getTabBarForProject($entityInstance)
+            )
         );
 
         $mainTile->addChildBlock(
@@ -56,24 +58,6 @@ class Project extends Base
             )->setElementName('project_edit_form')
 
         );
-
-
-        if($entityInstance->getQuoteId()) {
-            $mainTile->addChildBlock(
-                $quoteLink = $mainTile->createBlock(
-                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                    'view.quote.link',
-                    'header_elements'
-                )->setTagText('View Quote')
-                ->addAttribute(
-                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                        ['quote_id' => $entityInstance->getQuoteId()],
-                        true
-                    )]
-                )->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
-            );
-        }
     }
 
     /**
