@@ -6,6 +6,7 @@ use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Api\Enquiry;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
@@ -14,7 +15,8 @@ use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Client\Form
  */
-class Edit extends \SuttonBaker\Impresario\Block\Form\Base
+class Edit
+    extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'enquiry_id';
     const PREFIX_KEY = 'enquiry';
@@ -24,12 +26,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $attachmentCollection;
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Form\Base|void
+     * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
@@ -37,6 +40,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $quoteEntity = null;
@@ -94,6 +99,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName('enquiry_edit')
             ->setGroupTemplate('form/group-vertical.phtml');
+
+        $disabledAttrs = $entityInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $returnUrl = $this->getRequest()->getReturnUrl() ?
+            $this->getRequest()->getReturnUrl() :
+            $this->getUrlHelper()->getPageUrl(Page::ENQUIRY_LIST);
 
         $elements = $builder->build([
             [
@@ -265,12 +275,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
+                'attributes' => $disabledAttrs,
                 'data' => [
                     'button_name' => 'Remove Enquiry',
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities(),
                     'js_data_items' => [
                         'type' => 'Enquiry',
-                        'endpoint' => $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_DELETE)
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            EnquiryDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $entityInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
                     ]
                 ],
                 'class' => 'btn-block btn-danger js-delete-confirm',

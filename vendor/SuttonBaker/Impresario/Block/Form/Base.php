@@ -9,6 +9,21 @@ abstract class Base extends \DaveBaker\Form\Block\Form
 {
 
     /**
+     * @return \DaveBaker\Form\Block\Form|void
+     */
+    protected function _preDispatch()
+    {
+        parent::_preDispatch();
+
+        wp_register_script(
+            'impresariodeleter',
+            get_template_directory_uri() . '/assets/js/deleter.widget.js',
+            ['jquery', 'jquery-ui-widget']
+        );
+        wp_enqueue_script('impresariodeleter');
+    }
+
+    /**
      * @param $label
      * @param $url
      * @param $blockName

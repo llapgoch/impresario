@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
+use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
 
@@ -75,11 +76,11 @@ class Enquiry
             \SuttonBaker\Impresario\Definition\Enquiry::DEFINITION_MODEL
         )->load($params['id']);
 
-        if(!$enquiry->getId()){
+        if(!$item->getId()){
             throw new Exception('The item could not be found');
         }
 
-        $helper->deleteEnquiry($enquiry);
+        $helper->deleteEnquiry($item);
         $this->addMessage('The enquiry has been removed', Messages::SUCCESS);
 
         return true;
