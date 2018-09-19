@@ -90,7 +90,7 @@ class Edit
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
         $ignoreLockValue = false;
 
-        if($this->getEnquiryHelper()->currentUserCanEdit()){
+        if($this->getEnquiryHelper()->currentUserCanEdit() && !$entityInstance->getIsDeleted()){
             $ignoreLockValue = true;
         }
 
@@ -99,7 +99,9 @@ class Edit
             ->setFormName('enquiry_edit')
             ->setGroupTemplate('form/group-vertical.phtml');
 
-        $disabledAttrs = $entityInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $deleteAttrs = $entityInstance->getId() == null || $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::ENQUIRY_LIST);
@@ -261,6 +263,7 @@ class Edit
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',
+                'attributes' => $updateAttrs,
                 'data' => [
                     'button_name' => $this->getEnquiryHelper()->getActionVerb($entityInstance) . " Enquiry",
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
@@ -274,7 +277,7 @@ class Edit
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
-                'attributes' => $disabledAttrs,
+                'attributes' => $deleteAttrs,
                 'data' => [
                     'button_name' => 'Remove Enquiry',
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities(),
@@ -343,10 +346,6 @@ class Edit
                 )->setMessage("This {$prefixName} " . ($entityInstance->getIsDeleted() ? "has been removed" : "is locked"))
                 ->setMessageType($entityInstance->getIsDeleted() ? 'danger' : 'warning')
             );
-        }
-
-        if($entityInstance->getIsDeleted()){
-
         }
 
         $this->addChildBlock(array_values($elements));
