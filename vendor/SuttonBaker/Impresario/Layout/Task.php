@@ -13,7 +13,7 @@ class Task extends Base
     /** @var string  */
     protected $blockPrefix = 'task';
     protected $headingName = 'Tasks';
-    protected $icon = 'fa-th-list';
+    protected $icon = TaskDefinition::ICON;
 
     /**
      * @throws \DaveBaker\Core\App\Exception

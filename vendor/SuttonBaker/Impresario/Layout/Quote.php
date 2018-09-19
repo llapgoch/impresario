@@ -13,7 +13,7 @@ class Quote extends Base
     protected $blockPrefix = 'quote';
     /** @var string  */
     protected $headingName = 'Quotes';
-    protected $icon = 'fa-calculator';
+    protected $icon = \SuttonBaker\Impresario\Definition\Quote::ICON;
 
     /**
      * @throws \DaveBaker\Core\App\Exception

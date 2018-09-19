@@ -12,7 +12,7 @@ class Variation extends Base
     /** @var string  */
     protected $blockPrefix = 'variation';
     /** @var string  */
-    protected $icon = 'fa-dot-circle-o';
+    protected $icon = \SuttonBaker\Impresario\Definition\Variation::ICON;
     protected $headingName = 'Variations';
 
     /**

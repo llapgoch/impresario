@@ -13,7 +13,7 @@ class Project extends Base
     protected $blockPrefix = 'project';
     /** @var string  */
     protected $headingName = 'Projects';
-    protected $icon = 'fa-ravelry';
+    protected $icon = \SuttonBaker\Impresario\Definition\Project::ICON;
 
     /**
      * @throws \DaveBaker\Core\App\Exception

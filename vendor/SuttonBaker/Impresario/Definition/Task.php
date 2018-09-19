@@ -11,6 +11,7 @@ class Task
 {
     const API_ENDPOINT_UPDATE_TABLE = 'task/updatetable';
     const API_ENDPOINT_DELETE = 'task/delete';
+    const ICON = 'fa fa-th-list';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Task';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Task\Collection';

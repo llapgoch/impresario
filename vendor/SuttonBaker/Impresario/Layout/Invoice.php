@@ -11,7 +11,7 @@ class Invoice extends Base
     /** @var string  */
     protected $blockPrefix = 'invoice';
     /** @var string  */
-    protected $icon = 'fa-gbp';
+    protected $icon = \SuttonBaker\Impresario\Definition\Invoice::ICON;
     /** @var string  */
     protected $headingName = 'Invoices';
 

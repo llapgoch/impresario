@@ -11,6 +11,7 @@ class Quote
 {
     const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const API_ENDPOINT_DELETE = 'quote/delete';
+    const ICON = 'fa fa-calculator';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Quote';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Quote\Collection';

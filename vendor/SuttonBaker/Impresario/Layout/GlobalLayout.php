@@ -73,7 +73,7 @@ class GlobalLayout extends Base
                 'enquiries.flip.card'
             )->setShortcode('body_content')
                 ->setTemplate('core/flip-card.phtml')
-                ->setIcon('fa-thumb-tack')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Enquiry::ICON)
                 ->setHeading('Open Enquiries')
                 ->setNumber($openEnquiries)
                 ->setColour('slategray')
@@ -90,7 +90,7 @@ class GlobalLayout extends Base
                 'quotes.flip.card'
             )->setShortcode('body_content')
                 ->setTemplate('core/flip-card.phtml')
-                ->setIcon('fa-calculator')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Quote::ICON)
                 ->setHeading('Open Quotes')
                 ->setNumber($openQuotes)
                 ->setColour('greensea')
@@ -107,7 +107,7 @@ class GlobalLayout extends Base
                 'projects.flip.card'
             )->setShortcode('body_content')
                 ->setTemplate('core/flip-card.phtml')
-                ->setIcon('fa-ravelry')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Project::ICON)
                 ->setHeading('Open Projects')
                 ->setNumber($openProjects)
                 ->setColour('amethyst')
@@ -124,7 +124,7 @@ class GlobalLayout extends Base
                 'tasks.flip.card'
             )->setShortcode('body_content')
                 ->setTemplate('core/flip-card.phtml')
-                ->setIcon('fa fa-th-list')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Task::ICON)
                 ->setHeading('Open Tasks')
                 ->setNumber($openTasks)
                 ->setProgressPercentage($this->getPercentage($openTasks, $totalTasks))

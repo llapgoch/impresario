@@ -1,8 +1,13 @@
 <?php
 namespace SuttonBaker\Impresario\Block\Structure;
 
+use SuttonBaker\Impresario\Definition\Client;
+use SuttonBaker\Impresario\Definition\Enquiry;
 use \SuttonBaker\Impresario\Definition\Page as PageDefintion;
+use SuttonBaker\Impresario\Definition\Project;
+use SuttonBaker\Impresario\Definition\Quote;
 use SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Definition\Task;
 
 /**
  * Class Nav
@@ -24,7 +29,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = [
                 'name' => 'Clients',
                 'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST),
-                'icon' => 'fa-address-book'
+                'icon' => Client::ICON
             ];
         }
 
@@ -40,7 +45,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = [
                 'name' => 'Enquiries',
                 'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST),
-                'icon' => 'fa-thumb-tack'
+                'icon' => Enquiry::ICON
             ];
         }
 
@@ -56,7 +61,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = [
                 'name' => 'Quotes',
                 'link' => $this->getPageUrl(PageDefintion::QUOTE_LIST),
-                'icon' => 'fa-calculator'
+                'icon' => Quote::ICON
             ];
         }
 
@@ -64,7 +69,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = [
                 'name' => 'Tasks',
                 'link' => $this->getPageUrl(PageDefintion::TASK_LIST),
-                'icon' => 'fa-th-list'
+                'icon' => Task::ICON
             ];
         }
 
@@ -72,7 +77,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = [
                 'name' => 'Projects',
                 'link' => $this->getPageUrl(PageDefintion::PROJECT_LIST),
-                'icon' => 'fa-ravelry'
+                'icon' => Project::ICON
             ];
         }
 

@@ -12,7 +12,7 @@ class Client extends Base
     /** @var string  */
     protected $blockPrefix = 'client';
     protected $headingName = 'Clients';
-    protected $icon = 'fa-address-book';
+    protected $icon = \SuttonBaker\Impresario\Definition\Client::ICON;
 
     /**
      * @throws \DaveBaker\Core\App\Exception

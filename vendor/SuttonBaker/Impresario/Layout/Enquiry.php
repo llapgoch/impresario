@@ -12,7 +12,7 @@ class Enquiry extends Base
     /** @var string  */
     protected $blockPrefix = 'enquiry';
     protected $headingName = 'Enquiries';
-    protected $icon = 'fa-thumb-tack';
+    protected $icon = \SuttonBaker\Impresario\Definition\Enquiry::ICON;
 
     /**
      * @throws \DaveBaker\Core\App\Exception

@@ -11,6 +11,7 @@ class Enquiry
 {
     const API_ENDPOINT_UPDATE_TABLE = 'enquiry/updatetable';
     const API_ENDPOINT_DELETE = 'enquiry/delete';
+    const ICON = 'fa fa-thumb-tack';
 
     const STATUS_OPEN = 'open';
     const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
