@@ -4,6 +4,9 @@
             <li class="filters">
             <?php foreach($block->getTabs() as $tab): ?>
                 <a href="<?php echo isset($tab['href']) ? $tab['href'] : '';?>" class="<?php echo $block->getAnchorClass($tab);?>" data-toggle="tab">
+                    <?php if(isset($tab['icon'])):?>
+                        <i class="<?php echo $tab['icon'];?>"></i>
+                    <?php endif; ?>
                     <?php echo $block->escapeHtml($tab['name']); ?>
                 </a>
             <?php endforeach; ?>

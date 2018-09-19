@@ -40,7 +40,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
             if($type == $for){
                 $tabs[$type]['disabled'] = true;
                 $tabs[$type]['active'] = true;
-                $tabs[$type]['href'] = 'javascript;';
+                $tabs[$type]['href'] = 'javascript:;';
 
                 continue;
             }
@@ -62,7 +62,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
 
             if(!$url){
                 $tabs[$type]['disabled'] = true;
-                $tabs[$type]['href'] = 'javascript;';
+                $tabs[$type]['href'] = 'javascript:;';
             }else{
                 $tabs[$type]['href'] = $url;
             }

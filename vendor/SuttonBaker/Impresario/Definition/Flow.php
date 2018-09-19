@@ -9,9 +9,21 @@ namespace SuttonBaker\Impresario\Definition;
 class Flow
 {
     const TABS = [
-        'enquiry' => ['name' => 'Enquiry', 'href' => '#'],
-        'quote' => ['name' => 'Quote', 'href' => '#'],
-        'project' => ['name' => 'Project', 'href' => '#']
+        'enquiry' => [
+            'name' => 'Enquiry',
+            'href' => '#',
+            'icon' => Enquiry::ICON
+        ],
+        'quote' => [
+            'name' => 'Quote',
+            'href' => '#',
+            'icon' => Quote::ICON
+        ],
+        'project' => [
+            'name' => 'Project',
+            'href' => '#',
+            'icon' => Project::ICON
+        ]
     ];
 
     /**
