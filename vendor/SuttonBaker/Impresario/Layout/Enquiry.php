@@ -21,6 +21,7 @@ class Enquiry extends Base
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     public function enquiryEditHandle()

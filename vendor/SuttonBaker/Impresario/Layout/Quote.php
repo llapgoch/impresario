@@ -22,7 +22,7 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function quoteEditHandle()
     {
@@ -44,6 +44,8 @@ class Quote extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading($this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote")
                 ->setShortcode('body_content')
+                ->addChildBlock($this->getQuoteHelper()->getTabBarForQuote($entityInstance)
+            )
         );
 
         $mainTile->addChildBlock(
@@ -55,23 +57,6 @@ class Quote extends Base
 
         );
 
-
-        if($entityInstance->getEnquiryId()) {
-            $mainTile->addChildBlock(
-                $quoteLink = $mainTile->createBlock(
-                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                    'view.enquiry.link',
-                    'header_elements'
-                )->setTagText('View Enquiry')
-                ->addAttribute(
-                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
-                        ['enquiry_id' => $entityInstance->getEnquiryId()],
-                        true
-                    )]
-                )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
-            );
-        }
     }
 
     /**
