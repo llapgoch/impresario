@@ -37,6 +37,7 @@ class QuoteList
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
+                'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
             ]);
 
@@ -57,7 +58,7 @@ class QuoteList
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
             )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems)
-                ->setStatusKey('status')
+                ->setStatusKey('tender_status')
                 ->setSortableColumns(QuoteDefinition::SORTABLE_COLUMNS)
                 ->setRowStatusClasses(QuoteDefinition::getRowClasses())
                 ->addJsDataItems([

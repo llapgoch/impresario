@@ -374,4 +374,12 @@ class Quote extends Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status');
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getTenderStatusOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Quote\TenderStatus');
+    }
 }

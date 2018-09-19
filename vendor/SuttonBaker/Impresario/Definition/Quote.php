@@ -31,6 +31,7 @@ class Quote
         'client_name' => 'Client',
         'client_reference' => 'Client Ref',
         'status' => 'Status',
+        'tender_status' => 'Tender Status',
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
@@ -43,6 +44,7 @@ class Quote
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
         'client_ref' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
+        'tender_status' => [],
         'date_received' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
@@ -82,9 +84,9 @@ class Quote
     {
         return [
             self::TENDER_STATUS_OPEN => 'danger',
-            self::TENDER_STATUS_WON => 'warning',
-            self::TENDER_STATUS_CLOSED_OUT => 'warning',
-            self::TENDER_STATUS_CANCELLED => 'success'
+            self::TENDER_STATUS_WON => 'success',
+            self::TENDER_STATUS_CLOSED_OUT => 'bg-secondary',
+            self::TENDER_STATUS_CANCELLED => 'bg-dark'
         ];
     }
 
