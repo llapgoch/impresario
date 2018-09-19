@@ -16,6 +16,7 @@ class Enquiry
     const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
     const STATUS_REPORT_COMPLETE  = 'report_complete';
     const STATUS_COMPLETE = 'complete';
+    const STATUS_INVOICED = 'invoiced';
     const STATUS_CANCELLED = 'cancelled';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Enquiry';
@@ -54,6 +55,7 @@ class Enquiry
             self::STATUS_OPEN => 'Open',
             self::STATUS_ENGINEER_ASSIGNED => 'Engineer Assigned',
             self::STATUS_REPORT_COMPLETE => 'Report Complete',
+            self::STATUS_INVOICED => 'Invoiced',
             self::STATUS_COMPLETE => 'Complete',
             self::STATUS_CANCELLED => 'Cancelled'
         ];
@@ -68,6 +70,7 @@ class Enquiry
             self::STATUS_OPEN => 'danger',
             self::STATUS_ENGINEER_ASSIGNED => 'warning',
             self::STATUS_REPORT_COMPLETE => 'warning',
+            self::STATUS_INVOICED => 'bg-blue',
             self::STATUS_COMPLETE => 'success'
         ];
     }

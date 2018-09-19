@@ -43,10 +43,11 @@ class Enquiry extends Base
         );
 
         $collection->order(new \Zend_Db_Expr(sprintf(
-                "FIELD({{enquiry}}.status,'%s', '%s', '%s', '%s', '%s')",
+                "FIELD({{enquiry}}.status,'%s', '%s', '%s', '%s', '%s', '%s')",
                 EnquiryDefinition::STATUS_OPEN,
                 EnquiryDefinition::STATUS_ENGINEER_ASSIGNED,
                 EnquiryDefinition::STATUS_REPORT_COMPLETE,
+                EnquiryDefinition::STATUS_INVOICED,
                 EnquiryDefinition::STATUS_COMPLETE,
                 EnquiryDefinition::STATUS_CANCELLED)
         ))->order('{{enquiry}}.target_date');
