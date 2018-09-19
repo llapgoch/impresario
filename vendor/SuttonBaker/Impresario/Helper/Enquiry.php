@@ -3,17 +3,40 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Flow;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Roles;
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Helper
  */
-class Enquiry extends Base
+class Enquiry
+    extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_ENQUIRY];
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_ENQUIRY, Roles::CAP_EDIT_ENQUIRY];
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+     * @return bool|false|string
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getUrlForEnquiry(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ) {
+        if($enquiry->getId()){
+            return $this->getUrlHelper()->getPageUrl(
+                Page::ENQUIRY_EDIT,
+                ['enquiry_id' => $enquiry->getId()]
+            );
+        }
+
+        return false;
+    }
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry\Collection

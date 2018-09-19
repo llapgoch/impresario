@@ -1,0 +1,13 @@
+<div class="tabbable transparent tile mb-0 noshadow">
+    <div class="tile-widget color rounded-top-corners">
+        <ul class="tile-navbar bg-transparent-black-3 clearfix">
+            <li class="filters">
+            <?php foreach($block->getTabs() as $tab): ?>
+                <a href="<?php echo isset($tab['href']) ? $tab['href'] : '';?>" class="<?php echo $block->getAnchorClass($tab);?>" data-toggle="tab">
+                    <?php echo $block->escapeHtml($tab['name']); ?>
+                </a>
+            <?php endforeach; ?>
+            </li>
+        </ul>
+    </div>
+</div>

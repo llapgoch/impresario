@@ -1,5 +1,6 @@
 <?php /** @var \DaveBaker\Core\Block\Template $block */ ?>
 <section <?php echo $block->getAttrs();?>>
+    <?php echo $block->getChildHtml('tabs'); ?>
     <?php if($block->getHeading()):?>
         <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2";?>
         <div class="tile-header">

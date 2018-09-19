@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -39,9 +40,29 @@ class Project extends Base
     ];
 
     /**
+     * @param \SuttonBaker\Impresario\Model\Db\Project $project
+     * @return bool|false|string
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getUrlForProject(
+        \SuttonBaker\Impresario\Model\Db\Project $project
+    ) {
+        if($project->getId()){
+            return $this->getUrlHelper()->getPageUrl(
+                Page::PROJECT_EDIT,
+                ['project_id' => $project->getId()]
+            );
+        }
+
+        return false;
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     * * Returns a collection of non-deleted tasks
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getProjectCollection()
     {

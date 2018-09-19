@@ -10,8 +10,7 @@ class Tile
 {
 
     /**
-     * @return \DaveBaker\Core\Block\Template
-     * @throws \DaveBaker\Core\Object\Exception
+     * @return \DaveBaker\Core\Block\Html\Base|void
      */
     protected function _construct()
     {

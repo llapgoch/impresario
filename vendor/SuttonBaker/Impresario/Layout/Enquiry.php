@@ -49,6 +49,18 @@ class Enquiry extends Base
                     $this->getEnquiryHelper()->currentUserCanEdit()
                         ? 'Update <strong>Enquiry</strong>' : "View <strong>Enquiry</strong>")
                 ->setShortcode('body_content')
+                ->addChildBlock(
+                    $this->createBlock(
+                        '\SuttonBaker\Impresario\Block\Core\Tile\Tabs',
+                        "{$this->getBlockPrefix()}.tile.header",
+                        'tabs'
+                    )->setTabs([
+                        ['name' => 'Enquiry', 'href' => '#', 'active' => true],
+                        ['name' => 'Quote', 'href' => '#'],
+                        ['name' => 'Project', 'href' => '#']
+                    ]
+                )
+            )
         );
 
         $mainTile->addChildBlock(

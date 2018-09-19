@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -31,11 +32,31 @@ class Quote extends Base
     ];
 
     /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @return bool|false|string
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getUrlForQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        if($quote->getId()){
+            return $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $quote->getId()]
+            );
+        }
+
+        return false;
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getQuoteCollection()
+    public function getQuoteCollection($deletedFlag = true)
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
         $collection = $this->createAppObject(
@@ -43,7 +64,10 @@ class Quote extends Base
         );
 
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
-        $collection->where('{{quote}}.is_deleted=?', '0');
+
+        if($deletedFlag) {
+            $collection->where('{{quote}}.is_deleted=?', '0');
+        }
 
         $collection->joinLeft(
             ['project_manager_user' => $userTable],
@@ -97,24 +121,24 @@ class Quote extends Base
     }
 
     /**
+     * @param bool $deletedFlag
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
+     * @throws \Zend_Db_Adapter_Exception
      *
      * Gets a list of the most recent quotes for display
      */
-    public function getDisplayQuotes()
+    public function getDisplayQuotes($deletedFlag = true)
     {
-        return $this->getQuoteCollection()->where('is_superseded=0');
+        return $this->getQuoteCollection()->where('is_superseded=0', $deletedFlag);
     }
 
     /**
-     * @param string $entity
-     * @param string $status
+     * @param $enquiryId
+     * @param $status
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getQuoteCollectionForEnquiry($enquiryId, $status)
     {
@@ -130,21 +154,20 @@ class Quote extends Base
 
     /**
      * @param $enquiryId
-     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     public function getNewestQuoteForEnquiry($enquiryId)
     {
-        $collection = $this->getDisplayQuotes()
+        $collection = $this->getDisplayQuotes(false)
             ->where('enquiry_id=?', $enquiryId);
 
-        $items = $collection->load();
-
-        if(count($items)){
-            return $items[0];
+        if($item = $collection->load()->firstItem()){
+            return $item;
         }
 
         return $this->getQuote();

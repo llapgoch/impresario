@@ -12,6 +12,37 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     /** @var array  */
     protected $viewCapabilities = [];
 
+    public function getTabBar(
+        $for,
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry = null,
+        \SuttonBaker\Impresario\Model\Db\Quote $quote = null,
+        \SuttonBaker\Impresario\Model\Db\Project $project = null
+    ) {
+        $tabs = Flow::getTabs();
+
+        foreach($tabs as $type => $tab){
+            $item = null;
+
+            switch($type){
+                case 'enquiry':
+                    $item = $enquiry;
+                    $url = $this->getEnquiryHelper()->getU
+                    break;
+                case 'quote':
+                    $item = $quote;
+                    break;
+                case 'project':
+                    $item = $project;
+                    break;
+            }
+
+            if(!$item || !$item->getId()){
+                $tabs['type']['disabled'] = true;
+                $tabs['type']['href'] = 'javascript;';
+            }
+        }
+
+    }
     /**
      * @param $instance
      * @param $capabilities
