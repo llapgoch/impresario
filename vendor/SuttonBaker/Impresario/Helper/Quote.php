@@ -191,11 +191,13 @@ class Quote extends Base
             $enquiryId = $enquiryId->getId();
         }
 
-        $collection = $this->getDisplayQuotes()
-            ->where('enquiry_id=?', $enquiryId);
+        if($enquiryId) {
+            $collection = $this->getDisplayQuotes()
+                ->where('enquiry_id=?', $enquiryId);
 
-        if($item = $collection->firstItem()){
-            return $item;
+            if ($item = $collection->firstItem()) {
+                return $item;
+            }
         }
 
         return $this->getQuote();

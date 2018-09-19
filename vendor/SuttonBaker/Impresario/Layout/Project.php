@@ -44,9 +44,7 @@ class Project extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading(
-                    $this->getProjectHelper()->currentUserCanEdit()
-                        ? 'Update <strong>Project</strong>' : "View <strong>Project</strong>")
+                ->setHeading($this->getProjectHelper()->getActionVerb($entityInstance) . " <strong>Project</strong>")
                 ->setShortcode('body_content')
         );
 

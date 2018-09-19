@@ -87,6 +87,7 @@ class EditController
             "The client '{$data["client_name"]}' has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
             Messages::SUCCESS
         );
+
         $this->modelInstance->setData($data)->save();
 
         return $this;

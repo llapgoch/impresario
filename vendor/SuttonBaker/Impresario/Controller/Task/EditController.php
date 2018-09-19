@@ -283,7 +283,7 @@ class EditController
         }
 
         $this->addMessage(
-            "The task has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+            "The task has been " . ($newSave ? 'created' : 'updated'),
             Messages::SUCCESS
         );
 

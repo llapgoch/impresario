@@ -198,11 +198,12 @@ class EditController
 
     /**
      * @param $data
-     * @return \DaveBaker\Core\App\Response|null
+     * @return \DaveBaker\Core\App\Response|void
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     protected function saveFormValues($data)
@@ -220,10 +221,12 @@ class EditController
             }
         }
 
+        $newSave = false;
 
         // Add created by user
-        if(!$this->modelInstance->getQuoteId()) {
+        if(!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+            $newSave = true;
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
@@ -272,7 +275,7 @@ class EditController
 
         if(!$messageSet) {
             $this->addMessage(
-                "The quote has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+                "The quote has been " . ($newSave ? 'created' : 'updated'),
                 Messages::SUCCESS
             );
         }

@@ -325,7 +325,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => 'Update Project',
+                    'button_name' => $this->getProjectHelper()->getActionVerb($this->modelInstance) . " Project",
                     'capabilities' => $this->getProjectHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

@@ -262,7 +262,7 @@ class Edit
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',
                 'data' => [
-                    'button_name' => $entityInstance->getId() ? 'Update Enquiry' : 'Create Enquiry',
+                    'button_name' => $this->getEnquiryHelper()->getActionVerb($entityInstance) . " Enquiry",
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',
@@ -335,13 +335,18 @@ class Edit
         $enquiryIsClosed = in_array($entityInstance->getStatus(),
             [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]);
 
-        if($enquiryIsClosed){
+        if($enquiryIsClosed || $entityInstance->getIsDeleted()){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
                     "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} is currently locked")
+                )->setMessage("This {$prefixName} " . ($entityInstance->getIsDeleted() ? "has been removed" : "is locked"))
+                ->setMessageType($entityInstance->getIsDeleted() ? 'danger' : 'warning')
             );
+        }
+
+        if($entityInstance->getIsDeleted()){
+
         }
 
         $this->addChildBlock(array_values($elements));
@@ -381,18 +386,20 @@ class Edit
             'identifier' => $entityInstance->getId() ? $entityInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        $uploadTable->addChildBlock(
-            $uploadTable->createBlock(
-                '\DaveBaker\Core\Block\Components\FileUploader',
-                "{$prefixKey}.file.uploader",
-                'header_elements'
-            )->addJsDataItems(
-                ['endpoint' => $this->getUrlHelper()->getApiUrl(
-                    Api::ENDPOINT_FILE_UPLOAD,
-                    $uploadParams
-                )]
-            )
-        );
+        if(!$this->isLocked()) {
+            $uploadTable->addChildBlock(
+                $uploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$prefixKey}.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                        Api::ENDPOINT_FILE_UPLOAD,
+                        $uploadParams
+                    )]
+                )
+            );
+        }
 
         if($entityInstance->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {

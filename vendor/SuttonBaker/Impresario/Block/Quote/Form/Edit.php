@@ -356,7 +356,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => 'Update Quote',
+                    'button_name' => $this->getQuoteHelper()->getActionVerb($this->modelInstance) . " Quote",
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

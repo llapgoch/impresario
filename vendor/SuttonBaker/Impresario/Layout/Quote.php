@@ -37,22 +37,12 @@ class Quote extends Base
 
         $this->addHeading()->addMessages();
 
-        $heading = 'View <strong>Quote</strong>';
-
-        if($this->getQuoteHelper()->currentUserCanEdit()){
-            if($entityId) {
-                $heading = 'Update <strong>Quote</strong>';
-            }else{
-                $heading = 'Create a <strong>Quote</strong>';
-            }
-        }
-
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($heading)
+                ->setHeading($this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote")
                 ->setShortcode('body_content')
         );
 

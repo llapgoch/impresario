@@ -55,25 +55,6 @@ class Enquiry extends Base
 
         );
 
-
-        if($quoteEntity && $quoteEntity->getId()) {
-            $mainTile->addChildBlock(
-                $quoteLink = $mainTile->createBlock(
-                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                    'view.quote.link',
-                    'header_elements'
-                )
-                    ->setTagText('View Quote')
-                    ->addAttribute(
-                        ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-                            \SuttonBaker\Impresario\Definition\Page::QUOTE_EDIT,
-                            ['quote_id' => $quoteEntity->getId()],
-                            true
-                        )]
-                    )->setCapabilities($this->getQuoteHelper()->getEditCapabilities())
-            );
-        }
-
     }
 
     /**

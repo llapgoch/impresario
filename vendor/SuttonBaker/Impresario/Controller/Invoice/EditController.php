@@ -273,7 +273,7 @@ class EditController
         }
 
         $this->addMessage(
-            "The invoice has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+            "The invoice has been " . ($newSave ? 'created' : 'updated'),
             Messages::SUCCESS
         );
 

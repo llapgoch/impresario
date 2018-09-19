@@ -164,7 +164,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $editMode ? 'Update Client' : 'Create a New Client',
+                    'button_name' => $this->getClientHelper()->getActionVerb($entityInstance) . " Client",
                     'capabilities' => $this->getClientHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

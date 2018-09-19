@@ -158,7 +158,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'formGroup' => true,
                 'data' => [
-                    'button_name' => $editMode ? 'Update Task' : 'Create Task',
+                    'button_name' => $this->getTaskHelper()->getActionVerb($this->modelInstance) . " Task",
                     'capabilities' => $this->getTaskHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

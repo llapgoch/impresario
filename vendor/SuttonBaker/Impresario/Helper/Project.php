@@ -155,11 +155,17 @@ class Project extends Base
      */
     public function getProjectForQuote($quoteId)
     {
-        $collection = $this->getProjectCollection();
-        $collection->getSelect()->where('quote_id=?', $quoteId);
+        if(is_object($quoteId)){
+            $quoteId = $quoteId->getId();
+        }
 
-        if($item = $collection->firstItem()){
-            return $item;
+        if($quoteId) {
+            $collection = $this->getProjectCollection();
+            $collection->getSelect()->where('quote_id=?', $quoteId);
+
+            if ($item = $collection->firstItem()) {
+                return $item;
+            }
         }
 
         return $this->getProject();

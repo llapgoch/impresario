@@ -213,7 +213,7 @@ class EditController
         }
 
         $this->addMessage(
-            "The enquiry has been " . ($this->editMode ? 'updated' : 'created'),
+            "The enquiry has been " . ($newSave ? 'created' : 'updated'),
             Messages::SUCCESS
         );
 

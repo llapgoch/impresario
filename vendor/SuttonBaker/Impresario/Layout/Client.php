@@ -40,9 +40,7 @@ class Client extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading(
-                    $this->getClientHelper()->currentUserCanEdit()
-                        ? 'Update<strong>Client</strong>' : "View<strong>Client</strong>")
+                ->setHeading($this->getClientHelper()->getActionVerb($entityInstance) . " <strong>Client</strong>")
                 ->setShortcode('body_content')
         );
 

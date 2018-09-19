@@ -42,8 +42,7 @@ class Invoice extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading(
-                    $entityInstance->getId() ? 'Update <strong>Invoice</strong>' : "Create <strong>Invoice</strong>")
+                ->setHeading($this->getInvoiceHelper()->getActionVerb($entityInstance) . " <strong>Invoice</strong>")
                 ->setShortcode('body_content')
         );
 

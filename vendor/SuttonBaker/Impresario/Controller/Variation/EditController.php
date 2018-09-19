@@ -207,7 +207,7 @@ class EditController
         }
 
         $this->addMessage(
-            "The variation has been " . ($this->modelInstance->getId() ? 'updated' : 'created'),
+            "The variation has been " . ($newSave ? 'created' : 'updated'),
             Messages::SUCCESS
         );
 
