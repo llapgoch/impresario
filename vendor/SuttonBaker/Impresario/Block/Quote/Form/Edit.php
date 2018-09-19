@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Block\Quote\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
@@ -25,11 +26,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $modelInstance;
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Form\Base|void
+     * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
@@ -37,6 +39,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -99,6 +103,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+
+        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $returnUrl = $this->getRequest()->getReturnUrl() ?
+            $this->getRequest()->getReturnUrl() :
+            $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST);
 
         $elements = $builder->build([
             [
@@ -343,14 +352,41 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Textarea',
             ], [
                 'name' => 'submit',
+                'formGroup' => true,
+                'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
                     'button_name' => 'Update Quote',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities()
                 ],
-                'class' => 'btn-block'
+                'class' => 'btn-block',
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
 
             ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Enquiry',
+                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Quote',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            QuoteDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ],[
                 'name' => 'quote_id',
                 'type' => 'Input\Hidden',
                 'value' => $entityId
@@ -406,7 +442,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "quote.edit.submit.element")
+            )->setOrder('before', "quote.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_QUOTE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );

@@ -71,7 +71,7 @@ class Enquiry
             throw new Exception('The item could not be found');
         }
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\ $enquiry */
+        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry $item */
         $item = $this->createAppObject(
             \SuttonBaker\Impresario\Definition\Enquiry::DEFINITION_MODEL
         )->load($params['id']);
