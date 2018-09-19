@@ -10,6 +10,10 @@ use SuttonBaker\Impresario\Definition\Roles;
  */
 class Role extends Base
 {
+    public function getCustomerServiceUsers()
+    {
+        return $this->getUserHelper()->getUsersForRole(Roles::ROLE_CUSTOMER_SERVICES);
+    }
     /**
      * @return mixed
      * @throws \DaveBaker\Core\Object\Exception

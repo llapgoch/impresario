@@ -68,10 +68,10 @@ class Edit
         // PMs
         $assignedToUsers = [];
 
-        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+        if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
             $assignedToUsers = $this->createCollectionSelectConnector()
                 ->configure(
-                    $projectManagers,
+                    $csUsers,
                     'ID',
                     'display_name'
                 )->getElementData();

@@ -11,6 +11,7 @@ class Roles
     const ROLE_ENGINEER = 'engineer';
     const ROLE_FOREMAN = 'foreman';
     const ROLE_ESTIMATOR = 'estimator';
+    const ROLE_CUSTOMER_SERVICES = 'customer_services';
     const ROLE_ADMINISTRATOR = 'administrator'; // Use WP's administrator
 
     const CAP_EDIT_CLIENT = 'edit_client';
@@ -35,11 +36,12 @@ class Roles
     public static function getRoles()
     {
         return [
-            self::ROLE_PROJECT_MANAGER => 'Project Manager',
+            self::ROLE_ADMINISTRATOR => 'Administrator',
+            self::ROLE_CUSTOMER_SERVICES => 'Customer Services',
             self::ROLE_ENGINEER => 'Engineer',
-            self::ROLE_FOREMAN => 'Foreman',
             self::ROLE_ESTIMATOR => 'Estimator',
-            self::ROLE_ADMINISTRATOR => 'Administrator'
+            self::ROLE_FOREMAN => 'Foreman',
+            self::ROLE_PROJECT_MANAGER => 'Project Manager',
         ];
     }
 

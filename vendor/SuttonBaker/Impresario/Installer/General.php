@@ -64,5 +64,20 @@ class General
             ]
         );
 
+        $userHelper->addRole(Roles::ROLE_CUSTOMER_SERVICES,
+            Roles::getRoleName(Roles::ROLE_CUSTOMER_SERVICES), [
+                Roles::CAP_VIEW_CLIENT,
+                Roles::CAP_EDIT_CLIENT,
+                Roles::CAP_EDIT_ENQUIRY,
+                Roles::CAP_VIEW_ENQUIRY,
+                Roles::CAP_EDIT_TASK,
+                Roles::CAP_VIEW_TASK,
+                Roles::CAP_VIEW_PROJECT,
+                Roles::CAP_VIEW_QUOTE,
+                Roles::CAP_VIEW_INVOICE,
+                Roles::CAP_VIEW_VARIATION
+            ]
+        );
+
     }
 }
