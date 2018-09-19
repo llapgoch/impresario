@@ -6,6 +6,7 @@ use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Api\Project;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
@@ -31,11 +32,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $modelInstance;
 
     /**
-     * @return \SuttonBaker\Impresario\Block\Form\Base|void
+     * @return \DaveBaker\Form\Block\Form|void
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\SelectConnector\Exception
@@ -43,6 +45,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $editMode = false;
@@ -95,6 +98,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+
+        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $returnUrl = $this->getRequest()->getReturnUrl() ?
+            $this->getRequest()->getReturnUrl() :
+            $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
 
         $elements = $builder->build([
             [
@@ -313,12 +321,39 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Textarea',
             ], [
                 'name' => 'submit',
+                'formGroup' => true,
+                'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
                     'button_name' => 'Update Project',
-                    'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
+                    'capabilities' => $this->getProjectHelper()->getEditCapabilities()
                 ],
-                'class' => 'btn-block'
+                'class' => 'btn-block',
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Project',
+                    'capabilities' => $this->getProjectHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Project',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            ProjectDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'project_id',
                 'type' => 'Input\Hidden',
@@ -359,7 +394,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         );
 
         if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN) ||
-            $this->getEnquiryHelper()->currentUserCanEdit() == false){
+            $this->getProjectHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
     }
