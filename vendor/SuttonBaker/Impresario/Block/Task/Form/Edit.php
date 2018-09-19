@@ -206,7 +206,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "{$prefixKey}.edit.submit.element")
+            )->setOrder('before', "task.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_TASK : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
