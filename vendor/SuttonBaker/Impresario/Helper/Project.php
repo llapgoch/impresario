@@ -209,7 +209,7 @@ class Project extends Base
 
         $project->setLastEditedById($currentUserId)
             ->setCreatedById($currentUserId)
-            ->setStatus(QuoteDefinition::STATUS_OPEN);
+            ->setStatus(ProjectDefinition::STATUS_OPEN);
 
         return $project->save();
     }

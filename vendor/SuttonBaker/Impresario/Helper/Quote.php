@@ -115,10 +115,10 @@ class Quote extends Base
 
         $collection->order(new \Zend_Db_Expr(sprintf(
                 "FIELD({{quote}}.status,'%s', '%s', '%s', '%s')",
-                QuoteDefinition::STATUS_OPEN,
-                QuoteDefinition::STATUS_WON,
-                QuoteDefinition::STATUS_CANCELLED,
-                QuoteDefinition::STATUS_CLOSED_OUT)
+                QuoteDefinition::TENDER_STATUS_OPEN,
+                QuoteDefinition::TENDER_STATUS_WON,
+                QuoteDefinition::TENDER_STATUS_CANCELLED,
+                QuoteDefinition::TENDER_STATUS_CLOSED_OUT)
         ))->order('{{quote}}.date_required');
 
         return $collection;
@@ -134,7 +134,7 @@ class Quote extends Base
      */
     public function getOpenQuotes()
     {
-        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::STATUS_OPEN);
+        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::TENDER_STATUS_OPEN);
     }
 
     /**
@@ -144,6 +144,15 @@ class Quote extends Base
     public function getStatusDisplayName($status)
     {
         return $this->getDisplayName($status, QuoteDefinition::getStatuses());
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getTenderStatusDisplayName($status)
+    {
+        return $this->getDisplayName($status, QuoteDefinition::getTenderStatuses());
     }
 
     /**
@@ -253,7 +262,8 @@ class Quote extends Base
         $quote->setLastEditedById($currentUserId)
             ->setCreatedById($currentUserId)
             ->setCreatedBy($currentUserId)
-            ->setStatus(QuoteDefinition::STATUS_OPEN);
+            ->setStatus(QuoteDefinition::STATUS_OPEN)
+            ->setTenderStatus(QuoteDefinition::TENDER_STATUS_OPEN);
 
         return $quote->save();
     }

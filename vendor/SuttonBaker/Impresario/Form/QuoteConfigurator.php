@@ -52,13 +52,19 @@ class QuoteConfigurator
             $this->createRule('Date', 'date_return_by', 'Return By Date')
         );
 
-        $this->addRule(
-            $this->createRule('Numeric', 'net_cost', 'Net Cost')
-        );
+        $shouldHaveCosts = in_array($this->getValue('status'),
+            [QuoteDefinition::TENDER_STATUS_WON, QuoteDefinition::TENDER_STATUS_CLOSED_OUT]);
 
-        $this->addRule(
-            $this->createRule('Numeric', 'net_sell', 'Net Sell')
-        );
+        if($shouldHaveCosts) {
+            $this->addRule(
+                $this->createRule('Numeric', 'net_cost', 'Net Cost')
+            );
+
+
+            $this->addRule(
+                $this->createRule('Numeric', 'net_sell', 'Net Sell')
+            );
+        }
 
         if($this->getValue('date_returned')) {
             $this->addRule(
@@ -81,7 +87,7 @@ class QuoteConfigurator
         // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');
         $completedById = $this->getValue('completed_by_id');
-        $statusIsClosed = $this->getValue('status') !== QuoteDefinition::STATUS_OPEN;
+        $statusIsClosed = $this->getValue('status') !== QuoteDefinition::TENDER_STATUS_OPEN;
 
         if($statusIsClosed || $this->getValue('date_completed')){
             $this->addRule(

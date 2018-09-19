@@ -16,10 +16,13 @@ class Quote
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Quote';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Quote\Collection';
 
+    const TENDER_STATUS_OPEN = 'open';
+    const TENDER_STATUS_WON = 'won';
+    const TENDER_STATUS_CLOSED_OUT = 'closed_out';
+    const TENDER_STATUS_CANCELLED = 'cancelled';
+
     const STATUS_OPEN = 'open';
-    const STATUS_WON = 'won';
-    const STATUS_CLOSED_OUT = 'closed_out';
-    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_QUOTED = 'quoted';
 
     const RECORDS_PER_PAGE = 20;
 
@@ -50,15 +53,27 @@ class Quote
     /**
      * @return array
      */
+    public static function getTenderStatuses()
+    {
+        return [
+            self::TENDER_STATUS_OPEN => 'Open',
+            self::TENDER_STATUS_WON => "Won",
+            self::TENDER_STATUS_CLOSED_OUT => 'Lost',
+            self::TENDER_STATUS_CANCELLED => "Cancelled"
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public static function getStatuses()
     {
         return [
             self::STATUS_OPEN => 'Open',
-            self::STATUS_WON => "Won",
-            self::STATUS_CLOSED_OUT => 'Lost',
-            self::STATUS_CANCELLED => "Cancelled"
+            self::STATUS_QUOTED => "Quoted"
         ];
     }
+
 
     /**
      * @return array
@@ -66,10 +81,10 @@ class Quote
     public static function getRowClasses()
     {
         return [
-            self::STATUS_OPEN => 'danger',
-            self::STATUS_CLOSED_OUT => 'warning',
-            self::STATUS_CANCELLED => 'warning',
-            self::STATUS_WON => 'success'
+            self::TENDER_STATUS_OPEN => 'danger',
+            self::TENDER_STATUS_WON => 'warning',
+            self::TENDER_STATUS_CLOSED_OUT => 'warning',
+            self::TENDER_STATUS_CANCELLED => 'success'
         ];
     }
 

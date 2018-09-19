@@ -242,7 +242,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_cost',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Cost *',
+                'labelName' => 'Net Cost',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-cost',
@@ -253,7 +253,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_sell',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Sell *',
+                'labelName' => 'Net Sell',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-sell',
@@ -405,7 +405,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
                     'hasProject' => ($projectEntity->getId() ? 1 : 0),
-                    'completedStatus' => QuoteDefinition::STATUS_WON,
+                    'completedStatus' => QuoteDefinition::TENDER_STATUS_WON,
                     'netCost' => $this->modelInstance->getNetCost(),
                     'netSell' => $this->modelInstance->getNetSell(),
                     'hasId' => $this->modelInstance->getId() ? 1 : 0
@@ -434,7 +434,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN || $this->modelInstance->getIsDeleted())){
+        if(($this->modelInstance->getStatus() !== QuoteDefinition::TENDER_STATUS_OPEN || $this->modelInstance->getIsDeleted())){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
@@ -458,7 +458,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         );
 
 
-        if(($this->modelInstance->getStatus() !== QuoteDefinition::STATUS_OPEN) ||
+        if(($this->modelInstance->getStatus() !== QuoteDefinition::TENDER_STATUS_OPEN) ||
             $this->getQuoteHelper()->currentUserCanEdit() == false){
             $this->lock();
         }

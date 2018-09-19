@@ -59,12 +59,15 @@ class Quote
               `nm_mw_number` varchar(255) DEFAULT NULL,
               `is_superseded` int(1) DEFAULT 0,
               `status` varchar(20) DEFAULT NULL,
+              `tender_status` varchar(20) DEFAULT NULL,
               `comments` text,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`quote_id`),
-              KEY `status` (`status`)
+              KEY `status` (`status`),
+              KEY `tender_status` (`tender_status`),
+              KEY `status_tender_status` (`status`, `tender_status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
         );
     }
