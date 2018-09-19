@@ -65,7 +65,7 @@ class EditController
 
         $this->modelInstance = $this->getQuoteHelper()->getQuote($instanceId);
 
-        if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+        if(!$this->modelInstance->getId()){
             $this->addMessage('The quote could not be found');
 
             $this->redirectToPage(Page::QUOTE_LIST);
@@ -251,7 +251,9 @@ class EditController
 
 
         if($data['status'] == QuoteDefinition::STATUS_WON) {
-            if (!$this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId())) {
+            $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
+
+            if (!$project->getId()) {
 
                 $project = $this->getProjectHelper()->createProjectFromQuote($this->modelInstance->getId());
                 $messageSet = true;

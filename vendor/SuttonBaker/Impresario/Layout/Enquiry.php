@@ -30,12 +30,7 @@ class Enquiry extends Base
             return;
         }
 
-        $quoteEntity = null;
-
-        if($entityId = $entityInstance->getId()){
-            $editMode = true;
-            $quoteEntity = $entityInstance->getQuoteEntity();
-        }
+        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($entityInstance);
 
         $this->addHeading();
         $this->addMessages();
@@ -45,21 +40,9 @@ class Enquiry extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading(
-                    $this->getEnquiryHelper()->currentUserCanEdit()
-                        ? 'Update <strong>Enquiry</strong>' : "View <strong>Enquiry</strong>")
+                ->setHeading($this->getEnquiryHelper()->getActionVerb($entityInstance) . " <strong>Enquiry</strong>")
                 ->setShortcode('body_content')
-                ->addChildBlock(
-                    $this->createBlock(
-                        '\SuttonBaker\Impresario\Block\Core\Tile\Tabs',
-                        "{$this->getBlockPrefix()}.tile.header",
-                        'tabs'
-                    )->setTabs([
-                        ['name' => 'Enquiry', 'href' => '#', 'active' => true],
-                        ['name' => 'Quote', 'href' => '#'],
-                        ['name' => 'Project', 'href' => '#']
-                    ]
-                )
+                ->addChildBlock($this->getEnquiryHelper()->getTabBarForEnquiry($entityInstance)
             )
         );
 

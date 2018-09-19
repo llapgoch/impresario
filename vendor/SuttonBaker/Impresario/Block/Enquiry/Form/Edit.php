@@ -4,7 +4,6 @@ namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
-use SuttonBaker\Impresario\Api\Enquiry;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;

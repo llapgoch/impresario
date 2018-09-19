@@ -18,6 +18,31 @@ class Enquiry
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_ENQUIRY];
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_ENQUIRY, Roles::CAP_EDIT_ENQUIRY];
 
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function getTabBarForEnquiry(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ) {
+        $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($enquiry);
+        $project = $this->getProjectHelper()->getProjectForQuote($quote);
+
+        return $this->getTabBar(
+            'enquiry',
+            $enquiry,
+            $quote,
+            $project
+        );
+    }
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
      * @return bool|false|string
@@ -28,7 +53,7 @@ class Enquiry
     public function getUrlForEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
     ) {
-        if($enquiry->getId()){
+        if($enquiry && $enquiry->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::ENQUIRY_EDIT,
                 ['enquiry_id' => $enquiry->getId()]
@@ -43,14 +68,17 @@ class Enquiry
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getEnquiryCollection()
+    public function getEnquiryCollection($deletedFlag = true)
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $collection */
         $collection = $this->createAppObject(
             '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection'
         );
 
-        $collection->getSelect()->where('is_deleted=?', '0');
+        if($deletedFlag) {
+            $collection->getSelect()->where('is_deleted=?', '0');
+        }
+
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
 
         $collection->joinLeft(
@@ -111,6 +139,20 @@ class Enquiry
         }
 
         return $enquiry;
+    }
+
+    /**
+     * @param $quote
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getEnquiryForQuote($quote)
+    {
+        if(!is_object($quote)){
+            $quote = $this->getQuoteHelper()->getQuote($quote);
+        }
+
+       return $this->getEnquiry($quote->getEnquiryId());
     }
 
     /**

@@ -56,7 +56,7 @@ class EditController
 
         $this->modelInstance = $this->getProjectHelper()->getProject($instanceId);
 
-        if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+        if(!$this->modelInstance->getId()){
             $this->addMessage('The project could not be found');
 
             return $this->getResponse()->redirectReferer(

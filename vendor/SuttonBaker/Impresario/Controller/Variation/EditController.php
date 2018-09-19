@@ -79,7 +79,7 @@ class EditController
         }else {
             $this->project->load($projectId);
 
-            if(!$this->project->getId() || $this->project->getIsDeleted()){
+            if(!$this->project->getId()){
                 $this->addMessage('The project could not be found');
                 $this->getResponse()->redirectReferer();
             }

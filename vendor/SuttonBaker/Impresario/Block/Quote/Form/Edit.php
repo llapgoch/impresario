@@ -398,7 +398,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'quote_data',
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
-                    'hasProject' => ($projectEntity && $projectEntity->getId() ? 1 : 0),
+                    'hasProject' => ($projectEntity->getId() ? 1 : 0),
                     'completedStatus' => QuoteDefinition::STATUS_WON
                 ]),
                 'class' => 'js-quote-data'

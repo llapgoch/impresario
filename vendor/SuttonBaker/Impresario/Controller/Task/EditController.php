@@ -68,7 +68,7 @@ class EditController
             // We're loading, fellas!
             $this->modelInstance->load($instanceId);
 
-            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+            if(!$this->modelInstance->getId()){
                 $this->addMessage('The task could not be found', Messages::ERROR);
                 return $this->getResponse()->redirectReferer();
             }

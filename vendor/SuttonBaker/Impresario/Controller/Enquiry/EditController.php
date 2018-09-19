@@ -60,7 +60,7 @@ class EditController
         }
 
         if($instanceId = (int) $this->getRequest()->getParam('enquiry_id')){
-            if(!$this->modelInstance->getId() || $this->modelInstance->getIsDeleted()){
+            if(!$this->modelInstance->getId()){
                 $this->addMessage('The enquiry does not exist', Messages::ERROR);
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST);
             }

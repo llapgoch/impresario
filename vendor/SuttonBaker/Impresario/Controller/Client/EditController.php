@@ -54,11 +54,6 @@ class EditController
             /** @var \SuttonBaker\Impresario\Model\Db\Client $client */
             $this->modelInstance->load($clientId);
 
-            if($this->modelInstance->getIsDeleted()){
-                $this->addMessage('The client does not exist');
-                $this->redirectToPage(Page::CLIENT_LIST);
-            }
-
             if(!$this->modelInstance->getId()){
                 $this->addMessage('The client does not exist');
                 $this->redirectToPage(Page::CLIENT_LIST);

@@ -33,6 +33,30 @@ class Quote extends Base
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getTabBarForQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        $enquiry = $this->getEnquiryHelper()->getEnquiryForQuote($quote);
+        $project = $this->getProjectHelper()->getProjectForQuote($quote);
+
+        return $this->getTabBar(
+            'quote',
+            $enquiry,
+            $quote,
+            $project
+        );
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
      * @return bool|false|string
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
@@ -41,7 +65,7 @@ class Quote extends Base
     public function getUrlForQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
-        if($quote->getId()){
+        if($quote && $quote->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
                 ['quote_id' => $quote->getId()]
@@ -163,15 +187,34 @@ class Quote extends Base
      */
     public function getNewestQuoteForEnquiry($enquiryId)
     {
-        $collection = $this->getDisplayQuotes(false)
+        if(is_object($enquiryId)){
+            $enquiryId = $enquiryId->getId();
+        }
+
+        $collection = $this->getDisplayQuotes()
             ->where('enquiry_id=?', $enquiryId);
 
-        if($item = $collection->load()->firstItem()){
+        if($item = $collection->firstItem()){
             return $item;
         }
 
         return $this->getQuote();
     }
+
+    /**
+     * @param $project
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getQuoteForProject($project)
+    {
+        if(!is_object($project)){
+            $project = $this->getProjectHelper()->getProject($project);
+        }
+
+        return $this->getQuote($project->getQuoteId());
+    }
+
 
     /**
      * @param $enquiryId

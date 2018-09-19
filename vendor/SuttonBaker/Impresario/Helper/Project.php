@@ -41,6 +41,28 @@ class Project extends Base
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Project $project
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getTabBarForProject(
+        \SuttonBaker\Impresario\Model\Db\Project $project
+    ) {
+        $quote = $this->getQuoteHelper()->getQuoteForProject($project);
+        $enquiry = $this->getEnquiryHelper()->getEnquiryForQuote($quote);
+
+        return $this->getTabBar(
+            'project',
+            $enquiry,
+            $quote,
+            $project
+        );
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Project $project
      * @return bool|false|string
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
@@ -49,7 +71,7 @@ class Project extends Base
     public function getUrlForProject(
         \SuttonBaker\Impresario\Model\Db\Project $project
     ) {
-        if($project->getId()){
+        if($project && $project->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::PROJECT_EDIT,
                 ['project_id' => $project->getId()]
@@ -105,6 +127,7 @@ class Project extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getOpenProjects()
     {
@@ -128,6 +151,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getProjectForQuote($quoteId)
     {
@@ -138,23 +162,7 @@ class Project extends Base
             return $item;
         }
 
-        return null;
-    }
-
-    /**
-     * @param string $projectId
-     * @return \SuttonBaker\Impresario\Model\Db\Quote
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function getQuoteForProject($projectId)
-    {
-       $project = $this->getProject($projectId);
-
-        if(!$project->getQuoteId()){
-            return null;
-        }
-
-        return $this->getQuoteHelper()->getQuote($project->getQuoteId());
+        return $this->getProject();
     }
 
 
@@ -179,7 +187,7 @@ class Project extends Base
 
         $project = $this->getProjectForQuote($quoteId);
 
-        if($project){
+        if($project->getId()){
             throw new \Exception("Project has already been created for quote {$quoteId}");
         }
 

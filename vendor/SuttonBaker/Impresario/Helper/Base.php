@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Helper;
+use SuttonBaker\Impresario\Definition\Flow;
+
 /**
  * Class Base
  * @package SuttonBaker\Impresario\Helper
@@ -12,6 +14,17 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     /** @var array  */
     protected $viewCapabilities = [];
 
+    /**
+     * @param string $for
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry|null $enquiry
+     * @param \SuttonBaker\Impresario\Model\Db\Quote|null $quote
+     * @param \SuttonBaker\Impresario\Model\Db\Project|null $project
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
     public function getTabBar(
         $for,
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry = null,
@@ -22,26 +35,46 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
 
         foreach($tabs as $type => $tab){
             $item = null;
+            $url = false;
+
+            if($type == $for){
+                $tabs[$type]['disabled'] = true;
+                $tabs[$type]['active'] = true;
+                $tabs[$type]['href'] = 'javascript;';
+
+                continue;
+            }
 
             switch($type){
                 case 'enquiry':
                     $item = $enquiry;
-                    $url = $this->getEnquiryHelper()->getU
+                    $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry);
                     break;
                 case 'quote':
                     $item = $quote;
+                    $url = $this->getQuoteHelper()->getUrlForQuote($quote);
                     break;
                 case 'project':
                     $item = $project;
+                    $url = $this->getProjectHelper()->getUrlForProject($project);
                     break;
             }
 
-            if(!$item || !$item->getId()){
-                $tabs['type']['disabled'] = true;
-                $tabs['type']['href'] = 'javascript;';
+            if(!$url){
+                $tabs[$type]['disabled'] = true;
+                $tabs[$type]['href'] = 'javascript;';
+            }else{
+                $tabs[$type]['href'] = $url;
             }
         }
 
+        $tabBlock = $this->getApp()->getBlockManager()->createBlock(
+            '\SuttonBaker\Impresario\Block\Core\Tile\Tabs',
+            "$type.tile.tabs",
+            'tabs'
+        )->setTabs($tabs);
+
+        return $tabBlock;
     }
     /**
      * @param $instance
@@ -141,6 +174,15 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     protected function getQuoteHelper()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
     }
 
     /**
