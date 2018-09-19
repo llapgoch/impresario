@@ -405,7 +405,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Hidden',
                 'value' => json_encode([
                     'hasProject' => ($projectEntity->getId() ? 1 : 0),
-                    'completedStatus' => QuoteDefinition::STATUS_WON
+                    'completedStatus' => QuoteDefinition::STATUS_WON,
+                    'netCost' => $this->modelInstance->getNetCost(),
+                    'netSell' => $this->modelInstance->getNetSell(),
+                    'hasId' => $this->modelInstance->getId() ? 1 : 0
                 ]),
                 'class' => 'js-quote-data'
             ]

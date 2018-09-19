@@ -102,7 +102,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
-            )->setHeading('File <strong>Attachments</strong>')
+            )->setHeading('<strong>File</strong> Attachments')
         );
 
         if(count($instanceItems)) {
