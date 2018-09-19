@@ -69,12 +69,14 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getUrlForProject(
-        \SuttonBaker\Impresario\Model\Db\Project $project
+        \SuttonBaker\Impresario\Model\Db\Project $project,
+        $returnUrl = null
     ) {
         if($project && $project->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::PROJECT_EDIT,
-                ['project_id' => $project->getId()]
+                ['project_id' => $project->getId()],
+                $returnUrl
             );
         }
 

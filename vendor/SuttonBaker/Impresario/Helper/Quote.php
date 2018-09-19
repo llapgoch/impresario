@@ -63,12 +63,14 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getUrlForQuote(
-        \SuttonBaker\Impresario\Model\Db\Quote $quote
+        \SuttonBaker\Impresario\Model\Db\Quote $quote,
+        $returnUrl = null
     ) {
         if($quote && $quote->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
-                ['quote_id' => $quote->getId()]
+                ['quote_id' => $quote->getId()],
+                $returnUrl
             );
         }
 

@@ -48,15 +48,15 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
             switch($type){
                 case 'enquiry':
                     $item = $enquiry;
-                    $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry);
+                    $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry, true);
                     break;
                 case 'quote':
                     $item = $quote;
-                    $url = $this->getQuoteHelper()->getUrlForQuote($quote);
+                    $url = $this->getQuoteHelper()->getUrlForQuote($quote, true);
                     break;
                 case 'project':
                     $item = $project;
-                    $url = $this->getProjectHelper()->getUrlForProject($project);
+                    $url = $this->getProjectHelper()->getUrlForProject($project, true);
                     break;
             }
 

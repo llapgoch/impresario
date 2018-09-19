@@ -51,12 +51,14 @@ class Enquiry
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getUrlForEnquiry(
-        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry,
+        $returnUrl = null
     ) {
         if($enquiry && $enquiry->getId()){
             return $this->getUrlHelper()->getPageUrl(
                 Page::ENQUIRY_EDIT,
-                ['enquiry_id' => $enquiry->getId()]
+                ['enquiry_id' => $enquiry->getId()],
+                $returnUrl
             );
         }
 
