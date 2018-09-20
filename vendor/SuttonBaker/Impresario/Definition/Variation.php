@@ -39,4 +39,16 @@ class Variation
         ];
     }
 
+    /**
+     * @return array
+     */
+    public static function getRowClasses()
+    {
+        return [
+            self::STATUS_OPEN => 'danger',
+            self::STATUS_APPROVED => 'success',
+            self::STATUS_CANCELLED=> 'bg-dark'
+        ];
+    }
+
 }

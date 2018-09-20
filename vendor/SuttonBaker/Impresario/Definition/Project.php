@@ -66,7 +66,7 @@ class Project
         return [
             self::STATUS_OPEN => 'danger',
             self::STATUS_COMPLETE => 'success',
-            self::STATUS_CANCELLED => ''
+            self::STATUS_CANCELLED => 'bg-dark'
         ];
     }
 

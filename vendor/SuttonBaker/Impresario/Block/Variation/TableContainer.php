@@ -85,8 +85,9 @@ class TableContainer
                     "{$this->getBlockPrefix()}.list.table",
                     'content'
                 )->setHeaders(VariationDefinition::TABLE_HEADERS)
+                    ->setStatusKey('status')
+                    ->setRowStatusClasses(VariationDefinition::getRowClasses())
                     ->setRecords($this->instanceCollection)
-                    ->addClass('table-striped')
             );
 
             $tableBlock->setLinkCallback(
