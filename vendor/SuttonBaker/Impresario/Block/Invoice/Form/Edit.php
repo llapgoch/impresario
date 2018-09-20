@@ -55,7 +55,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'value' => $this->getDateHelper()->currentDateShortLocalOutput(),
                 'attributes' => [
-                    'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
                 ],

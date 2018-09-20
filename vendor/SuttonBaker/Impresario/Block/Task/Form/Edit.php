@@ -115,7 +115,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'value' => $this->getApp()->getHelper('Date')->utcDbDateToShortLocalOutput($parentItem->getTargetDate()),
                 'attributes' => [
-                    'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(['minDate' => '', 'maxDate' => "+5Y"])
                 ],

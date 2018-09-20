@@ -126,7 +126,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
+                'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'date_received_row',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -142,6 +142,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Project Name *',
                 'type' => 'Input\Text'
             ], [
+                'name' => 'client_requested_by',
+                'formGroup' => true,
+                'labelName' => 'Client Requested By *',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'client_reference_row',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'client_id',
                 'formGroup' => true,
                 'rowIdentifier' => 'client_reference_row',
@@ -152,6 +161,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
+                ],
+                'attributes' => [
+                    'disabled' => 'disabled'
                 ]
             ], [
                 'name' => 'client_reference',
@@ -162,14 +174,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ],
-            ], [
-                'name' => 'client_requested_by',
-                'formGroup' => true,
-                'labelName' => 'Client Requested By *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'client_reference_row',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                'attributes' => [
+                    'disabled' => 'disabled'
                 ]
             ], [
                 'name' => 'po_number',
@@ -212,7 +218,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ],
                 'attributes' => [
-                    'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]
@@ -294,7 +299,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => [
-                    'readonly' => 'readonly',
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '0', 'maxDate' => "+5Y"]

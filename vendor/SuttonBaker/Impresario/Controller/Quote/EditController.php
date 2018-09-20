@@ -38,6 +38,8 @@ class EditController
     /** @var array  */
     protected $nonUserValues = [
         'quote_id',
+        'client_id',
+        'client_reference',
         'created_by_id',
         'last_edited_by_id',
         'enquiry_id',
@@ -73,7 +75,6 @@ class EditController
     }
 
     /**
-     * @return \DaveBaker\Core\App\Response|object
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Db\Exception
@@ -83,6 +84,7 @@ class EditController
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     public function execute()

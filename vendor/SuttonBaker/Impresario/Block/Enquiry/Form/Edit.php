@@ -123,7 +123,7 @@ class Edit
                 'formGroup' => true,
                 'class' => 'js-date-picker',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly', 'autocomplete' => 'off'],
+                'attributes' => ['autocomplete' => 'off'],
                 'value' => $this->getDateHelper()->currentDateShortLocalOutput(),
                 'rowIdentifier' => 'date_received_row',
                 'formGroupSettings' => [
