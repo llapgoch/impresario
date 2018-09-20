@@ -32,13 +32,13 @@ class ProjectConfigurator
 //            $this->createRule('Required', 'site_name', 'Site Name')
 //        );
 
-        $this->addRule(
-            $this->createRule('Required', 'client_requested_by', 'Client Requested By')
-        );
-
-        $this->addRule(
-            $this->createRule('Required', 'client_reference', 'Client Reference')
-        );
+//        $this->addRule(
+//            $this->createRule('Required', 'client_requested_by', 'Client Requested By')
+//        );
+//
+//        $this->addRule(
+//            $this->createRule('Required', 'client_reference', 'Client Reference')
+//        );
 
         $this->addRule(
             $this->createRule('Date', 'date_required', 'Required By Date')

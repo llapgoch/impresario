@@ -31,6 +31,9 @@ class EditController
     protected $nonUserValues = [
         'project_id',
         'client_id',
+        'client_requested_by',
+        'client_reference',
+        'project_name',
         'created_by_id',
         'last_edited_by_id',
         'client_id',
