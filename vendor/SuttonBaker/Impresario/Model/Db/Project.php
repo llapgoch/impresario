@@ -108,7 +108,7 @@ class Project extends Base
      */
     public function calculateGp()
     {
-        return (float) ($this->getProfit() / $this->getTotalNetSell()) * 100;
+        return (float) ($this->calculateProfit() / $this->calculateTotalNetSell()) * 100;
     }
 
     protected function beforeSave()
