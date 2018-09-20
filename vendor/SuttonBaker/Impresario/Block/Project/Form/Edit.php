@@ -235,7 +235,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'actual_cost',
                 'formGroup' => true,
-                'labelName' => 'Actual Cost *',
+                'labelName' => 'Actual Cost',
                 'rowIdentifier' => 'cost_values',
                 'type' => 'Input\Text',
                 'formGroupSettings' => [
@@ -245,9 +245,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_cost',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Cost *',
+                'labelName' => 'Net Cost',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => "£"],
+                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-net-cost',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'
@@ -256,9 +256,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_sell',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Sell *',
+                'labelName' => 'Net Sell',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => "£"],
+                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-net-sell',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'

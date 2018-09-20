@@ -36,6 +36,8 @@ class EditController
         'project_name',
         'created_by_id',
         'last_edited_by_id',
+        'net_cost',
+        'net_sell',
         'client_id',
         'quote_id',
         'created_at',
@@ -145,11 +147,11 @@ class EditController
 
 
             if($this->modelInstance->getNetSell()){
-                $data['net_sell'] = (float) $this->modelInstance->getNetSell();
+                $data['net_sell'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getNetSell());
             }
 
             if($this->modelInstance->getNetSell()){
-                $data['net_cost'] = (float) $this->modelInstance->getNetCost();
+                $data['net_cost'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getNetCost());
             }
 
             $applicator->configure(

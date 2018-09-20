@@ -52,17 +52,17 @@ class ProjectConfigurator
             $this->createRule('User', 'assigned_foreman_id', 'Foreman')
         );
 
-        $this->addRule(
-            $this->createRule('Numeric', 'net_cost', 'Net Cost')
-        );
+//        $this->addRule(
+//            $this->createRule('Numeric', 'net_cost', 'Net Cost')
+//        );
+//
+//        $this->addRule(
+//            $this->createRule('Numeric', 'net_sell', 'Net Sell')
+//        );
 
-        $this->addRule(
-            $this->createRule('Numeric', 'net_sell', 'Net Sell')
-        );
-
-        $this->addRule(
-            $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
-        );
+//        $this->addRule(
+//            $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
+//        );
 
         $this->addRule(
             $this->createRule('Date', 'project_start_date', 'Project Start Date')
