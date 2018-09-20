@@ -15,7 +15,7 @@ class RevisionsTableContainer
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string  */
-    protected $blockPrefix = 'quote.revision.table';
+    protected $blockPrefix = 'quote.revision';
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
@@ -61,6 +61,12 @@ class RevisionsTableContainer
 
         $instanceCollection = $this->getParentQuote()->getPastRevisions();
 
+        $instanceCollection->addOutputProcessors([
+            'net_cost' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+            'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+            'created_at' => $this->getDateHelper()->getOutputProcessorShortDate()
+        ]);
+
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
@@ -77,6 +83,7 @@ class RevisionsTableContainer
             )->setRecordsPerPage(Quote::RECORDS_PER_PAGE_INLINE)
                 ->setTotalRecords(count($instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
+                ->addClass('pagination-xs')
         );
 
         if(count($instanceCollection->getItems())) {
@@ -88,12 +95,16 @@ class RevisionsTableContainer
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "{$this->getBlockPrefix()}.list.table",
                     'content'
-                )->setHeaders(Quote::TABLE_HEADERS)
+                )->setHeaders(Quote::TABLE_HEADERS_INLINE)
                     ->setRecords($instanceCollection)
                     ->setSortableColumns(Quote::SORTABLE_COLUMNS)
+                    ->addClass('table-striped')
                     ->addJsDataItems([
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                            $this->getUrlHelper()->getApiUrl(Quote::API_ENDPOINT_UPDATE_REVISIONS_TABLE)
+                            $this->getUrlHelper()->getApiUrl(
+                                Quote::API_ENDPOINT_UPDATE_REVISIONS_TABLE,
+                                ['quote_id' => $this->getParentQuote()->getId()]
+                            )
                     ])
                     ->setPaginator($paginator)
             );

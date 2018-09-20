@@ -48,9 +48,43 @@ class Quote
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 
-    public function updatepastrevisionTable($params, \WP_REST_Request $request)
-    {
 
+    public function updaterevisiontableAction($params, \WP_REST_Request $request)
+    {
+        $helper = $this->getQuoteHelper();
+        $blockManager = $this->getApp()->getBlockManager();
+
+        if(!isset($params['quote_id'])){
+            throw new Exception('Quote ID must be provided');
+        }
+
+        $quote = $helper->getQuote($params['quote_id']);
+
+        if(!$quote->getId()){
+            throw new Exception('The quote could not be found');
+        }
+
+        $blockManager->createBlock(
+            \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
+            "{$this->blockPrefix}.past.revisions.table"
+        )->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
+            ->setParentQuote($quote)
+            ->preDispatch();
+
+        $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.revision.list.table");
+
+        if(isset($params['order']['dir']) && isset($params['order']['column'])){
+            $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
+        }
+
+        /** @var Paginator $paginatorBlock */
+        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.revision.list.paginator");
+
+        if(isset($params['pageNumber'])){
+            $paginatorBlock->setPage($params['pageNumber']);
+        }
+
+        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 
     /**
@@ -66,7 +100,7 @@ class Quote
     public function deleteAction($params, \WP_REST_Request $request)
     {
         /** @var \SuttonBaker\Impresario\Helper\Quote $helper */
-        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
+        $helper = $this->getQuoteHelper();
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
@@ -89,6 +123,15 @@ class Quote
         $this->addMessage('The quote has been removed', Messages::SUCCESS);
 
         return true;
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Quote
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getQuoteHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Quote::class);
     }
 
 }

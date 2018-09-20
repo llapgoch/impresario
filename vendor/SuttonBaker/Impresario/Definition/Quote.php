@@ -11,7 +11,7 @@ class Quote
 {
     const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const API_ENDPOINT_DELETE = 'quote/delete';
-    const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisionstable';
+    const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisiontable';
 
     const ICON = 'fa fa-calculator';
 
@@ -40,6 +40,14 @@ class Quote
         'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
         'estimator_name' => 'Estimator'
+    ];
+
+    const TABLE_HEADERS_INLINE = [
+        'quote_id' => 'ID',
+        'created_at' => 'Date Created',
+        'created_by_name' => 'Creator',
+        'net_cost' => 'Net Cost',
+        'net_sell' => 'Net Sell'
     ];
 
     const SORTABLE_COLUMNS = [
