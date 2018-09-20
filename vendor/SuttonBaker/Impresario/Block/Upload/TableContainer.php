@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Upload;
 use SuttonBaker\Impresario\Definition\Upload as UploadDefinition;
+use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Icon;
 
 /**
  * Class TableContainer
@@ -98,6 +99,10 @@ class TableContainer
             $instanceItems = $this->instanceCollection->load();
         }
 
+        $this->instanceCollection->addOutputProcessors([
+            'icon' => $this->createAppObject(Icon::class)
+        ]);
+
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
@@ -117,6 +122,8 @@ class TableContainer
                     ->setRecords($this->instanceCollection)
                     ->addClass('table-striped')
                     ->setNewWindowLink(true)
+                    ->addEscapeExcludes(['icon'])
+                    ->setThAttributes('icon', ['style' => 'width:20px'])
             );
 
             $tableBlock->setLinkCallback(
