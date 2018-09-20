@@ -33,6 +33,14 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     ) {
         $tabs = Flow::getTabs();
 
+        if(!$quote->getIsSuperseded()){
+            unset($tabs['quote_superseded']);
+        }else{
+            $for = 'quote_superseded';
+            $supersededQuote = $quote;
+            $quote = $quote->getParentQuote();
+        }
+
         foreach($tabs as $type => $tab){
             $item = null;
             $url = false;
@@ -48,15 +56,18 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
             switch($type){
                 case 'enquiry':
                     $item = $enquiry;
-                    $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry, true);
+                    $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry);
+                    break;
+                case 'quote_superseded':
+                    $item = $supersededQuote;
                     break;
                 case 'quote':
                     $item = $quote;
-                    $url = $this->getQuoteHelper()->getUrlForQuote($quote, true);
+                    $url = $this->getQuoteHelper()->getUrlForQuote($quote);
                     break;
                 case 'project':
                     $item = $project;
-                    $url = $this->getProjectHelper()->getUrlForProject($project, true);
+                    $url = $this->getProjectHelper()->getUrlForProject($project);
                     break;
             }
 
@@ -67,6 +78,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
                 $tabs[$type]['href'] = $url;
             }
         }
+
 
         $tabBlock = $this->getApp()->getBlockManager()->createBlock(
             '\SuttonBaker\Impresario\Block\Core\Tile\Tabs',

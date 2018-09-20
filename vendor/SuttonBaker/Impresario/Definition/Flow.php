@@ -14,6 +14,11 @@ class Flow
             'href' => '#',
             'icon' => Enquiry::ICON
         ],
+        'quote_superseded' => [
+            'name' => 'Quote (Superseded)',
+            'href' => '#',
+            'icon' => Quote::ICON
+        ],
         'quote' => [
             'name' => 'Quote',
             'href' => '#',

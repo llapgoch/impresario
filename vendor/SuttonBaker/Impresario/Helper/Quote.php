@@ -44,6 +44,7 @@ class Quote extends Base
     public function getTabBarForQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
+
         $enquiry = $this->getEnquiryHelper()->getEnquiryForQuote($quote);
         $project = $this->getProjectHelper()->getProjectForQuote($quote);
 

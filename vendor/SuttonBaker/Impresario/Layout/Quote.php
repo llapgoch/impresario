@@ -43,8 +43,7 @@ class Quote extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading($this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote")
                 ->setShortcode('body_content')
-                ->addChildBlock($this->getQuoteHelper()->getTabBarForQuote($entityInstance)
-            )
+                ->addChildBlock($this->getQuoteHelper()->getTabBarForQuote($entityInstance))
         );
 
         $mainTile->addChildBlock(

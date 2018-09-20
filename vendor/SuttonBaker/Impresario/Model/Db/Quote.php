@@ -45,6 +45,15 @@ class Quote extends Base
     }
 
     /**
+     * @return Quote
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getParentQuote()
+    {
+        return $this->getQuoteHelper()->getQuote($this->getParentId());
+    }
+
+    /**
      * @return float
      */
     public function getProfit()
