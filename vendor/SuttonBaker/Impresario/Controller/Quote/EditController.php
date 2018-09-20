@@ -40,6 +40,7 @@ class EditController
         'quote_id',
         'client_id',
         'client_reference',
+        'site_name',
         'created_by_id',
         'last_edited_by_id',
         'enquiry_id',

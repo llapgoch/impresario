@@ -106,6 +106,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
+                'name' => 'site_name',
+                'labelName' => 'Site Name *',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly']
+            ], [
+                'name' => 'project_name',
+                'formGroup' => true,
+                'labelName' => 'Project Name *',
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly']
+            ], [
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
                 'type' => 'Text',
@@ -133,16 +145,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         ['minDate' => '0', 'maxDate' => "+5Y"]
                     )
                 ]
-            ], [
-                'name' => 'site_name',
-                'labelName' => 'Site Name *',
-                'formGroup' => true,
-                'type' => 'Input\Text'
-            ], [
-                'name' => 'project_name',
-                'formGroup' => true,
-                'labelName' => 'Project Name *',
-                'type' => 'Input\Text'
             ], [
                 'name' => 'client_id',
                 'labelName' => 'Client *',
@@ -445,7 +447,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->invoiceTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Invoice\TableContainer',
             "{$prefixKey}.invoice.table"
-        )->setOrder('after', 'project.edit.project.name.form.group');
+        )->setOrder('before', 'project.variation.table');
 
         $this->invoiceTableBlock->setInstanceCollection(
             $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
@@ -476,7 +478,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->variationTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Variation\TableContainer',
             "{$prefixKey}.variation.table"
-        )->setOrder('after', 'project.edit.project.name.form.group');
+        )->setOrder('before', 'project.edit.cost.values');
 
         $this->variationTableBlock->setInstanceCollection(
             $this->getVariationHelper()->getVariationCollectionForProject(

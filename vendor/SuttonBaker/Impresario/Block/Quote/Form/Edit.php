@@ -120,6 +120,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $elements = $builder->build([
             [
+                'name' => 'site_name',
+                'labelName' => 'Site Name *',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly']
+            ], [
+                'name' => 'project_name',
+                'formGroup' => true,
+                'labelName' => 'Project Name *',
+                'type' => 'Input\Text'
+            ], [
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
                 'type' => 'Text',
@@ -131,16 +142,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ], [
-                'name' => 'site_name',
-                'labelName' => 'Site Name *',
-                'formGroup' => true,
-                'type' => 'Input\Text'
-            ], [
-                'name' => 'project_name',
-                'formGroup' => true,
-                'labelName' => 'Project Name *',
-                'type' => 'Input\Text'
             ], [
                 'name' => 'client_requested_by',
                 'formGroup' => true,
@@ -163,7 +164,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ],
                 'attributes' => [
-                    'disabled' => 'disabled'
+                    'readonly' => 'readonly'
                 ]
             ], [
                 'name' => 'client_reference',
@@ -175,7 +176,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ],
                 'attributes' => [
-                    'disabled' => 'disabled'
+                    'readonly' => 'readonly'
                 ]
             ], [
                 'name' => 'po_number',

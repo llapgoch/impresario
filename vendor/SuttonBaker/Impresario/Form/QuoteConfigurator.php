@@ -26,9 +26,10 @@ class QuoteConfigurator
             $this->createRule('Required', 'project_name', 'Project Name')
         );
 
-        $this->addRule(
-            $this->createRule('Required', 'site_name', 'Site Name')
-        );
+//        $this->addRule(
+//            $this->createRule('Required', 'site_name', 'Site Name')
+//        );
+
         $this->addRule(
             $this->createRule('Required', 'client_requested_by', 'Client Requested By')
         );

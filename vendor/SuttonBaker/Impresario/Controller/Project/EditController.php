@@ -30,6 +30,7 @@ class EditController
     /** @var array  */
     protected $nonUserValues = [
         'project_id',
+        'client_id',
         'created_by_id',
         'last_edited_by_id',
         'client_id',

@@ -20,17 +20,17 @@ class ProjectConfigurator
             $this->createRule('DateCompare\Past', 'date_received', 'Date Received')
         );
 
-        $this->addRule(
-            $this->createRule('Required', 'client_id', 'Client')
-        );
+//        $this->addRule(
+//            $this->createRule('Required', 'client_id', 'Client')
+//        );
 
-        $this->addRule(
-            $this->createRule('Required', 'project_name', 'Project Name')
-        );
+//        $this->addRule(
+//            $this->createRule('Required', 'project_name', 'Project Name')
+//        );
 
-        $this->addRule(
-            $this->createRule('Required', 'site_name', 'Site Name')
-        );
+//        $this->addRule(
+//            $this->createRule('Required', 'site_name', 'Site Name')
+//        );
 
         $this->addRule(
             $this->createRule('Required', 'client_requested_by', 'Client Requested By')
