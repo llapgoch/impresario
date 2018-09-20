@@ -56,7 +56,7 @@ class Quote extends Base
     /**
      * @return float
      */
-    public function getProfit()
+    public function calculateProfit()
     {
         if(is_numeric($this->getNetSell()) && is_numeric($this->getNetCost())){
             return $this->getNetSell() - $this->getNetCost();
@@ -68,7 +68,7 @@ class Quote extends Base
     /**
      * @return float
      */
-    public function getGp()
+    public function calculateGp()
     {
         if(is_numeric($this->getNetSell()) && is_numeric($this->getNetCost())){
             return ($this->getProfit() / $this->getNetSell()) * 100;
@@ -79,7 +79,7 @@ class Quote extends Base
 
     protected function beforeSave()
     {
-        $this->setData('gp', $this->getGp());
-        $this->setData('profit', $this->getProfit());
+        $this->setData('gp', $this->calculateGp());
+        $this->setData('profit', $this->calculateProfit());
     }
 }

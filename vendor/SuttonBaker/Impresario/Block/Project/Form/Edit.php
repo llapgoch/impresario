@@ -224,7 +224,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'assigned_foreman_id',
                 'rowIdentifier' => 'project_manager_foreman',
                 'formGroup' => true,
-                'labelName' => 'Foreman *',
+                'labelName' => 'Foreman',
                 'data' => [
                     'select_options' => $foremen
                 ],

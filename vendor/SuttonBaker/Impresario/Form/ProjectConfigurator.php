@@ -48,9 +48,11 @@ class ProjectConfigurator
             $this->createRule('User', 'project_manager_id', 'Project Manager')
         );
 
-        $this->addRule(
-            $this->createRule('User', 'assigned_foreman_id', 'Foreman')
-        );
+        if($this->getValue('assigned_foreman_id')) {
+            $this->addRule(
+                $this->createRule('User', 'assigned_foreman_id', 'Foreman')
+            );
+        }
 
 //        $this->addRule(
 //            $this->createRule('Numeric', 'net_cost', 'Net Cost')

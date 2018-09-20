@@ -21,8 +21,10 @@ class Project extends Base
     }
 
     /**
+     * @param bool $reload
      * @return null|Variation\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getVariations($reload = false)
     {
@@ -44,9 +46,9 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getProfit()
+    public function calculateProfit()
     {
-        return $this->getTotalNetSell() - $this->getTotalNetCost();
+        return $this->calculateTotalNetSell() - $this->calculateTotalNetCost();
     }
 
     /**
@@ -56,7 +58,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getTotalNetCost()
+    public function calculateTotalNetCost()
     {
         $netCost = (float) $this->getNetCost();
 
@@ -79,7 +81,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getTotalNetSell()
+    public function calculateTotalNetSell()
     {
         $netSell = (float) $this->getNetSell();
 
@@ -104,16 +106,16 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getGp()
+    public function calculateGp()
     {
         return (float) ($this->getProfit() / $this->getTotalNetSell()) * 100;
     }
 
     protected function beforeSave()
     {
-        $this->setData('gp', $this->getGp());
-        $this->setData('profit', $this->getProfit());
-        $this->setData('total_net_cost', $this->getTotalNetCost());
-        $this->setData('total_net_sell', $this->getTotalNetSell());
+        $this->setData('gp', $this->calculateGp());
+        $this->setData('profit', $this->calculateProfit());
+        $this->setData('total_net_cost', $this->calculateTotalNetCost());
+        $this->setData('total_net_sell', $this->calculateTotalNetSell());
     }
 }
