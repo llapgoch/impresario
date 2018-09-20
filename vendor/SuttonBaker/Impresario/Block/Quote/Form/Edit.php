@@ -18,10 +18,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'quote_id';
     const PREFIX_KEY = 'quote';
-    const PREFIX_NAME = 'Quote';
+    const PREFIX_NAME = 'quote';
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
+    /** @var \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer */
+    protected $pastRevisionsTableBlock;
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
     protected $modelInstance;
 
@@ -100,7 +102,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit() && !$this->modelInstance->getIsDeleted()){
+        if($this->getQuoteHelper()->currentUserCanEdit()
+            && !$this->modelInstance->getIsDeleted()
+            && !$this->modelInstance->getIsSuperseded()
+        ){
             $ignoreLockValue = true;
         }
 
@@ -110,9 +115,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $deleteAttrs = $projectEntity->getId()
             || $this->modelInstance->getId() == null
-            || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+            || $this->modelInstance->getIsDeleted()
+            || $this->modelInstance->getIsSuperseded() ? ['disabled' => 'disabled'] : [];
 
-        $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $this->modelInstance->getIsDeleted()
+            || $this->modelInstance->getIsSuperseded() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
@@ -441,32 +448,27 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
-        if($entityId) {
-            $this->taskTableBlock = $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Task\TableContainer',
-                "{$prefixKey}.task.table"
-            )->setOrder('after', 'quote.edit.project.name.form.group')
-                ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
+        $this->createTaskTable();
+        $this->createPastRevisionsTable();
 
-            $this->taskTableBlock->setInstanceCollection(
-                $this->getTaskHelper()->getTaskCollectionForEntity(
-                    $entityId,
-                    TaskDefinition::TASK_TYPE_QUOTE
-                )
-            )->setEditLinkParams([
-                \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
-            ]);
+        $isLocked = $this->modelInstance->getIsSuperseded() ||
+            $this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN ||
+            $this->modelInstance->getIsDeleted();
 
+        if($isLocked){
+            if($this->modelInstance->getIsSuperseded()){
+                $message = 'has been superseded';
+            } elseif ($this->modelInstance->getIsDeleted()){
+                $message = 'has been removed';
+            } else {
+                $message = 'is locked';
+            }
 
-            $this->addChildBlock($this->taskTableBlock);
-        }
-
-        if(($this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN || $this->modelInstance->getIsDeleted())){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
                     "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} " . ($this->modelInstance->getIsDeleted() ? "has been removed" : "is locked"))
+                )->setMessage("This {$prefixName} " . $message)
                     ->setMessageType($this->modelInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
@@ -485,10 +487,78 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         );
 
 
-        if(($this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN) ||
-            $this->getQuoteHelper()->currentUserCanEdit() == false){
+        if($isLocked || $this->getQuoteHelper()->currentUserCanEdit() == false){
             $this->lock();
         }
+    }
+
+    /**
+     * @return $this|void
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function createTaskTable()
+    {
+        if(!$this->modelInstance->getId()){
+            return;
+        }
+
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $this->taskTableBlock = $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Task\TableContainer',
+            "{$prefixKey}.task.table"
+        )->setOrder('after', 'quote.edit.project.name.form.group')
+            ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
+
+        $this->taskTableBlock->setInstanceCollection(
+            $this->getTaskHelper()->getTaskCollectionForEntity(
+                $this->modelInstance->getId(),
+                TaskDefinition::TASK_TYPE_QUOTE
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+
+        $this->addChildBlock($this->taskTableBlock);
+        return $this;
+    }
+
+
+    /**
+     * @return $this
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function createPastRevisionsTable()
+    {
+        if(!$this->modelInstance->getId()
+            || !$this->modelInstance->getPastRevisions()
+            || !count($this->modelInstance->getPastRevisions()->getItems())){
+
+            return $this;
+        }
+
+        $prefixKey = self::PREFIX_KEY;
+        $prefixName = self::PREFIX_NAME;
+
+        $this->pastRevisionsTableBlock = $this->createBlock(
+            \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
+            "{$prefixKey}.past.revisions.table"
+        )->setOrder('after', 'quote.edit.project.name.form.group')
+            ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
+            ->setParentQuote($this->modelInstance);
+
+        $this->addChildBlock($this->pastRevisionsTableBlock);
+        return $this;
     }
 
     /**

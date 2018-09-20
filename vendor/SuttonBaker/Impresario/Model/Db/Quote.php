@@ -7,6 +7,7 @@ namespace SuttonBaker\Impresario\Model\Db;
  */
 class Quote extends Base
 {
+    protected $pastRevisionsCollection;
     /**
      * @return $this
      */
@@ -16,6 +17,31 @@ class Quote extends Base
         $this->idColumn = 'quote_id';
 
         return $this;
+    }
+
+    /**
+     * @return null|Quote\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getPastRevisions()
+    {
+        if(!$this->getId()){
+            return null;
+        }
+
+        if(!$this->pastRevisionsCollection) {
+            $revisions = $this->getQuoteHelper()->getQuoteCollection();
+            $revisions->getSelect()->reset(\Zend_Db_Select::ORDER);
+
+            $revisions->order('created_at DESC')
+                ->where('parent_id=?', $this->getId())
+                ->where('is_superseded=?', 1);
+
+            $this->pastRevisionsCollection = $revisions;
+        }
+
+        return $this->pastRevisionsCollection;
     }
 
     /**

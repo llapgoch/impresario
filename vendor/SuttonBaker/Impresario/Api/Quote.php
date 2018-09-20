@@ -48,6 +48,11 @@ class Quote
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 
+    public function updatepastrevisionTable($params, \WP_REST_Request $request)
+    {
+
+    }
+
     /**
      * @param $params
      * @param \WP_REST_Request $request

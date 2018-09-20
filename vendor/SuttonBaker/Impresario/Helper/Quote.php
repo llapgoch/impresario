@@ -56,6 +56,20 @@ class Quote extends Base
     }
 
     /**
+     * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
+     * @return string
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getActionVerb(\DaveBaker\Core\Model\Db\BaseInterface $instance)
+    {
+        if($instance->getIsSuperseded()){
+            return 'View';
+        }
+
+        return parent::getActionVerb($instance);
+    }
+
+    /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
      * @return bool|false|string
      * @throws \DaveBaker\Core\Event\Exception
@@ -310,11 +324,15 @@ class Quote extends Base
 
         $newQuote = clone $quote;
 
-        $newQuote->setParentId($quote->getId())
-            ->unsQuoteId()
-            ->save();
+        $newQuote->unsQuoteId()->save();
 
-        $quote->setIsSuperseded(1)->save();
+        if($quote->getPastRevisions()) {
+            foreach ($quote->getPastRevisions()->getItems() as $pastRevision) {
+                $pastRevision->setParentId($newQuote->getId())->setIsSuperseded(1)->save();
+            }
+        }
+
+        $quote->setParentId($newQuote->getId())->setIsSuperseded(1)->save();
 
         $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
             $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE

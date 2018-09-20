@@ -11,6 +11,8 @@ class Quote
 {
     const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const API_ENDPOINT_DELETE = 'quote/delete';
+    const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisionstable';
+
     const ICON = 'fa fa-calculator';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Quote';
@@ -25,6 +27,7 @@ class Quote
     const STATUS_QUOTED = 'quoted';
 
     const RECORDS_PER_PAGE = 20;
+    const RECORDS_PER_PAGE_INLINE = 5;
 
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
