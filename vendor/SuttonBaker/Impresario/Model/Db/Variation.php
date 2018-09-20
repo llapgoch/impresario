@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Model\Db;
+
+use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 /**
  * Class Variation
  * @package SuttonBaker\Impresario\Model\Db
@@ -16,6 +18,14 @@ class Variation extends Base
         $this->idColumn = 'variation_id';
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApproved()
+    {
+        return $this->getStatus() == VariationDefinition::STATUS_APPROVED;
     }
 
     /**
@@ -40,5 +50,31 @@ class Variation extends Base
         }
 
         return 0;
+    }
+
+    /**
+     * @return null|Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getProject()
+    {
+        if(!$this->getId()){
+            return null;
+        }
+
+        return $this->getProjectHelper()->getProject($this->getProjectId());
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function beforeSave()
+    {
+        // Update the project's values
+        if($project = $this->getProject()){
+            $project->save();
+        }
     }
 }

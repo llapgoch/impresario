@@ -60,9 +60,12 @@ class Project extends Base
     {
         $netCost = (float) $this->getNetCost();
 
-        if($variations = $this->getVariations()->load()){
-            foreach($variations as $variation){
-                $netCost += (float) $variation->getNetCost();
+        if($variations = $this->getVariations()->load()) {
+            /** @var Variation $variation */
+            foreach ($variations as $variation) {
+                if ($variation->isApproved()){
+                    $netCost += (float)$variation->getNetCost();
+                }
             }
         }
 
@@ -83,7 +86,9 @@ class Project extends Base
         if($this->getVariations()) {
             if ($variations = $this->getVariations()->load()) {
                 foreach ($variations as $variation) {
-                    $netSell += (float)$variation->getValue();
+                    if ($variation->isApproved()) {
+                        $netSell += (float)$variation->getValue();
+                    }
                 }
             }
         }
@@ -94,7 +99,10 @@ class Project extends Base
 
     /**
      * @return float|int
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getGp()
     {

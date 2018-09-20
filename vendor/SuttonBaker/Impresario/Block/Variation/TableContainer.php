@@ -61,7 +61,9 @@ class TableContainer
         $this->instanceCollection->addOutputProcessors([
                 'date_approved' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'created_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
-                'value' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+                'value' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+                'net_cost' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+                'status' => $this->getVariationHelper()->getStatusOutputProcessor()
             ]);
 
         $instanceItems = $this->instanceCollection->load();

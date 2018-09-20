@@ -18,8 +18,7 @@ class Variation extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Variation\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     *
-     * Returns a collection of non-deleted variations
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getVariationCollection()
     {
@@ -47,6 +46,7 @@ class Variation extends Base
      * @param $projectId
      * @return \SuttonBaker\Impresario\Model\Db\Variation\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getVariationCollectionForProject($projectId)
     {
@@ -69,5 +69,24 @@ class Variation extends Base
 
         return $variation;
     }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusDisplayName($status)
+    {
+        return $this->getDisplayName($status, VariationDefinition::getStatuses());
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Variation\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getStatusOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Variation\Status');
+    }
+
 
 }

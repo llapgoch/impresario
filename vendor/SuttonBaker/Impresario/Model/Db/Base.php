@@ -46,6 +46,15 @@ abstract class Base extends \DaveBaker\Core\Model\Db\Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\Variation
      * @throws \DaveBaker\Core\Object\Exception
      */

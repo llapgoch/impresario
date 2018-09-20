@@ -18,8 +18,7 @@ class Task extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     *
-     * Returns a collection of non-deleted tasks
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getTaskCollection()
     {
@@ -84,7 +83,7 @@ class Task extends Base
 
     /**
      * @param $entityId
-     * @param $entity
+     * @param $entityType
      * @param string $status
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      * @throws \DaveBaker\Core\Object\Exception

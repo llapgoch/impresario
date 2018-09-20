@@ -21,8 +21,10 @@ class Variation
 
     const TABLE_HEADERS = [
         'variation_id' => 'ID',
+        'status' => 'Status',
         'date_approved' => 'Date Approved',
-        'value' => 'Variation Amount'
+        'net_cost' => 'Net Cost',
+        'value' => 'Variation Sell',
     ];
 
     /**
