@@ -70,7 +70,7 @@ class Variation extends Base
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function beforeSave()
+    protected function afterSave()
     {
         // Update the project's values
         if($project = $this->getProject()){

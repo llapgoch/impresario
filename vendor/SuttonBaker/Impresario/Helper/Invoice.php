@@ -18,8 +18,7 @@ class Invoice extends Base
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection
      * @throws \DaveBaker\Core\Object\Exception
-     *
-     * Returns a collection of non-deleted invoices
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getInvoiceCollection()
     {
@@ -48,6 +47,7 @@ class Invoice extends Base
      * @param $entityType
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getInvoiceCollectionForEntity($entityId, $entityType)
     {
@@ -90,6 +90,25 @@ class Invoice extends Base
         }
 
         return $invoice;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+     * @return null|\SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getParentForInvoice(
+        \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+    ) {
+        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_ENQUIRY){
+            return $this->getEnquiryHelper()->getEnquiry($invoice->getParentId());
+        }
+
+        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PROJECT){
+            return $this->getProjectHelper()->getProject($invoice->getParentId());
+        }
+
+        return null;
     }
 
     /**

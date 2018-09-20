@@ -73,7 +73,7 @@ class Quote extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Quote <strong>Register</strong>")
+                ->setHeading("<strong>Quote</strong> Register")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );

@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Model\Db;
+
+use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Model\Db
@@ -9,6 +11,8 @@ class Project extends Base
 {
     /** @var Variation\Collection */
     protected $variations;
+    /** @var Invoice\Collection */
+    protected $invoices;
     /**
      * @return $this
      */
@@ -37,6 +41,26 @@ class Project extends Base
         }
 
         return $this->variations;
+    }
+
+    /**
+     * @param $reload
+     * @return null|Invoice\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getInvoices($reload = false)
+    {
+        if(!$this->getId()){
+            return null;
+        }
+
+        if(!$this->invoices || $reload) {
+            $this->invoices = $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
+                $this->getId(), InvoiceDefinition::INVOICE_TYPE_PROJECT);
+        }
+
+        return $this->invoices;
     }
 
     /**
@@ -98,6 +122,26 @@ class Project extends Base
         return $netSell;
     }
 
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    function calculateAmountInvoiced()
+    {
+        $totalInvoiced = 0;
+
+        if($invoices = $this->getInvoices()){
+            /** @var Invoice $invoice */
+            foreach($invoices->load() as $invoice){
+                $totalInvoiced += (float) $invoice->getValue();
+            }
+        }
+
+        return $totalInvoiced;
+    }
+
 
     /**
      * @return float|int
@@ -117,5 +161,6 @@ class Project extends Base
         $this->setData('profit', $this->calculateProfit());
         $this->setData('total_net_cost', $this->calculateTotalNetCost());
         $this->setData('total_net_sell', $this->calculateTotalNetSell());
+        $this->setData('amount_invoiced', $this->calculateAmountInvoiced());
     }
 }

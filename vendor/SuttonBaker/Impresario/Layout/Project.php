@@ -76,7 +76,7 @@ class Project extends Base
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading("Project <strong>List</strong>")
+                ->setHeading("<strong>Project</strong> List")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding')
         );

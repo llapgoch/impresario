@@ -18,4 +18,25 @@ class Invoice extends Base
         return $this;
     }
 
+    /**
+     * @return null|Enquiry|Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getParent()
+    {
+        return $this->getInvoiceHelper()->getParentForInvoice($this);
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function afterSave()
+    {
+        if($parent = $this->getParent()){
+            $parent->save();
+        }
+    }
+
 }
