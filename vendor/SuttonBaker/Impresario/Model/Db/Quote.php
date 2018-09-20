@@ -77,7 +77,7 @@ class Quote extends Base
         return 0;
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
         $this->setData('gp', $this->getGp());
         $this->setData('profit', $this->getProfit());

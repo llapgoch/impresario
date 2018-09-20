@@ -90,12 +90,8 @@ class EditController
             return;
         }
 
-        wp_register_script('impresario_project', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
-        wp_enqueue_script('impresario_project');
-
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-
 
         // Form submission
         if($this->getRequest()->getPostParam('action')){
@@ -145,13 +141,11 @@ class EditController
                 $data['project_end_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getProjectEndDate());
             }
 
+            $data['total_net_sell'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetSell());
+            $data['total_net_cost'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetCost());
 
-            if($this->modelInstance->getNetSell()){
-                $data['net_sell'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getNetSell());
-            }
-
-            if($this->modelInstance->getNetSell()){
-                $data['net_cost'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getNetCost());
+            if($this->modelInstance->getProfit()){
+                $data['profit'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getProfit());
             }
 
             $applicator->configure(

@@ -44,4 +44,13 @@ abstract class Base extends \DaveBaker\Core\Model\Db\Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Variation
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getVariationHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
+    }
 }

@@ -242,7 +242,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-3'
                 ]
             ], [
-                'name' => 'net_cost',
+                'name' => 'total_net_cost',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
                 'labelName' => 'Net Cost',
@@ -253,7 +253,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-3'
                 ]
             ], [
-                'name' => 'net_sell',
+                'name' => 'total_net_sell',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
                 'labelName' => 'Net Sell',

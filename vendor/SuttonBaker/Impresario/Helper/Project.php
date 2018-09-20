@@ -36,6 +36,8 @@ class Project extends Base
         'nm_mw_number',
         'net_cost',
         'net_sell',
+        'profit',
+        'gp',
         'comments'
     ];
 
