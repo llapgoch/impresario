@@ -29,6 +29,7 @@ class Project
         'status' => 'Status',
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
+        'invoice_amount_remaining' => "Amount Remaining",
         'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
         'foreman_name' => 'Foreman'

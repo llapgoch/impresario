@@ -2,9 +2,12 @@
 
 namespace SuttonBaker\Impresario\Block\Project;
 
+use DaveBaker\Core\Block\Exception;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \DaveBaker\Core\Definitions\Table as TableDefinition;
+use SuttonBaker\Impresario\Model\Db\Project\Collection;
+
 /**
  * Class ProjectList
  * @package SuttonBaker\Impresario\Block\Project
@@ -15,6 +18,34 @@ class ProjectList
 {
     const BLOCK_PREFIX = 'project';
     const ID_PARAM = 'project_id';
+
+    /** @var Collection */
+    protected $instanceCollection;
+    /** @var array  */
+    protected $tableHeaders = [];
+    /** @var array  */
+    protected $sortableColumns = [];
+    /** @var array|bool  */
+    protected $rowClasses = [];
+
+    /**
+     * @return Collection
+     */
+    public function getInstanceCollection()
+    {
+        return $this->instanceCollection;
+    }
+
+    /**
+     * @param Collection $instanceCollection
+     * @return $this
+     */
+    public function setInstanceCollection($instanceCollection)
+    {
+        $this->instanceCollection = $instanceCollection;
+        return $this;
+    }
+
 
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
@@ -29,9 +60,12 @@ class ProjectList
     {
         wp_enqueue_script('dbwpcore_table_updater');
 
+        if(!($instanceCollection = $this->getInstanceCollection())){
+            throw new Exception('Instance collection not set');
+        }
+
         /** @var \SuttonBaker\Impresario\Model\Db\Project\Collection $enquiryCollection */
-        $instanceItems = $this->getProjectHelper()->getProjectCollection()
-            ->addOutputProcessors([
+            $instanceCollection->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getProjectHelper()->getStatusOutputProcessor()
@@ -46,7 +80,7 @@ class ProjectList
                 "{$this->getBlockPrefix()}.list.paginator",
                 'footer'
             )->setRecordsPerPage(ProjectDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceItems->getItems()))
+                ->setTotalRecords(count($instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
         );
 
@@ -54,16 +88,21 @@ class ProjectList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(ProjectDefinition::TABLE_HEADERS)->setRecords($instanceItems)
+            )->setHeaders($this->getTableHeaders())
+                ->setRecords($instanceCollection)
                 ->setStatusKey('status')
-                ->setRowStatusClasses(ProjectDefinition::getRowClasses())
-                ->setSortableColumns(ProjectDefinition::SORTABLE_COLUMNS)
+                ->setRowStatusClasses($this->getRowClasses())
+                ->setSortableColumns($this->getSortableColumns())
                 ->addJsDataItems([
                     TableDefinition::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                         $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_UPDATE_TABLE)
                 ])
                 ->setPaginator($paginator)
         );
+
+        if($this->rowClasses === false){
+            $tableBlock->addClass('table-striped');
+        }
 
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {
@@ -73,6 +112,75 @@ class ProjectList
                 );
             }
         );
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRowClasses()
+    {
+        if($this->rowClasses === false){
+            return [];
+        }
+
+        if($this->rowClasses){
+            return $this->rowClasses;
+        }
+
+        return ProjectDefinition::getRowClasses();
+    }
+
+    /**
+     * @param array $tableHeaders
+     * @return $this
+     */
+    public function setTableHeaders($tableHeaders)
+    {
+        $this->tableHeaders = $tableHeaders;
+        return $this;
+    }
+
+    /**
+     * @param array $sortableColumns
+     * @return $this
+     */
+    public function setSortableColumns($sortableColumns)
+    {
+        $this->sortableColumns = $sortableColumns;
+        return $this;
+    }
+
+    /**
+     * @param array|bool $rowClasses
+     * @return $this
+     */
+    public function setRowClasses($rowClasses)
+    {
+        $this->rowClasses = $rowClasses;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSortableColumns()
+    {
+        if($this->sortableColumns){
+            return $this->sortableColumns;
+        }
+
+        return ProjectDefinition::SORTABLE_COLUMNS;
+    }
+    /**
+     * @return array
+     */
+    protected function getTableHeaders()
+    {
+        if($this->tableHeaders){
+           return $this->tableHeaders;
+        }
+
+        return ProjectDefinition::TABLE_HEADERS;
     }
 
     /**

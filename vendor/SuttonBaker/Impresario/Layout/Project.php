@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+
+use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Layout
@@ -64,8 +66,8 @@ class Project extends Base
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function projectListHandle()
     {
@@ -81,13 +83,19 @@ class Project extends Base
                 ->setTileBodyClass('nopadding')
         );
 
+        $instanceCollection = $this->getProjectHelper()->getProjectCollection()
+            ->where('status<>?', ProjectDefinition::STATUS_COMPLETE)
+            ->addOutputProcessors([
+                'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+            ]);
+
 
         $mainTile->addChildBlock(
             $mainTile->createBlock(
                 '\SuttonBaker\Impresario\Block\Project\ProjectList',
                 "{$this->getBlockPrefix()}.list",
                 'content'
-            )
+            )->setInstanceCollection($instanceCollection)
         );
     }
 }
