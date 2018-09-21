@@ -283,7 +283,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'profit_gp',
                 'labelName' => 'Profit',
                 'type' => 'Input\Text',
-                'attributes' => ['disabled' => 'disabled'],
+                'attributes' => ['readonly' => 'readonly'],
                 'class' => 'js-profit-calculate',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
@@ -294,7 +294,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'profit_gp',
                 'labelName' => 'GP',
                 'type' => 'Input\Text',
-                'attributes' => ['disabled' => 'disabled'],
+                'attributes' => ['readonly' => 'readonly'],
                 'class' => 'js-gp-calculate',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'

@@ -270,7 +270,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'cost_values_secondary',
                 'labelName' => 'Profit',
                 'type' => 'Input\Text',
-                'attributes' => ['disabled' => 'disabled'],
+                'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
@@ -280,7 +280,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'cost_values_secondary',
                 'labelName' => 'Amount Invoiced',
                 'type' => 'Input\Text',
-                'attributes' => ['disabled' => 'disabled'],
+                'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
@@ -290,7 +290,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'cost_values_secondary',
                 'labelName' => 'Invoice Amount Remaining',
                 'type' => 'Input\Text',
-                'attributes' => ['disabled' => 'disabled'],
+                'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
