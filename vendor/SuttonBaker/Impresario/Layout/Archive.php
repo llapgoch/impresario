@@ -45,8 +45,10 @@ class Archive extends Base
                 "project.list",
                 'content'
             )->setInstanceCollection($instanceCollection)
-            ->setRowClasses(false)
-            ->setTableHeaders(ArchiveDefinition::TABLE_HEADERS)
+                ->setRowClasses(false)
+                ->setTableHeaders(ArchiveDefinition::TABLE_HEADERS)
+                ->setSortableColumns(ArchiveDefinition::SORTABLE_COLUMNS)
+                ->setEndpointUrl(ArchiveDefinition::API_ENDPOINT_UPDATE_TABLE)
         );
     }
 }
