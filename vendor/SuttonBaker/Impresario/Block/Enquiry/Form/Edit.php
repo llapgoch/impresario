@@ -269,7 +269,7 @@ class Edit
                 'rowIdentifier' => 'button_bar',
                 'attributes' => $updateAttrs,
                 'data' => [
-                    'button_name' => $this->getEnquiryHelper()->getActionVerb($entityInstance) . " Enquiry",
+                    'button_name' => $this->getEnquiryHelper()->getActionVerb($entityInstance, false) . " Enquiry",
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

@@ -164,7 +164,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $this->getClientHelper()->getActionVerb($entityInstance) . " Client",
+                    'button_name' => $this->getClientHelper()->getActionVerb($entityInstance, false) . " Client",
                     'capabilities' => $this->getClientHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',

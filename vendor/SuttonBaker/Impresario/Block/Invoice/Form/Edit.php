@@ -102,7 +102,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance) . " Invoice",
+                    'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance, false) . " Invoice",
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block'
