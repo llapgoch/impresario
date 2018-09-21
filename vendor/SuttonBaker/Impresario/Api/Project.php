@@ -75,6 +75,10 @@ class Project
             \SuttonBaker\Impresario\Definition\Project::DEFINITION_MODEL
         )->load($params['id']);
 
+        if($item->isComplete()){
+            throw new Exception('The project cannot be deleted because it has been completed');
+        }
+
         if(!$item->getId()){
             throw new Exception('The project could not be found');
         }

@@ -95,9 +95,9 @@ class Project extends Base
     {
         $netCost = (float) $this->getNetCost();
 
-        if($variations = $this->getVariations()->load()) {
+        if($this->getVariations()){
             /** @var Variation $variation */
-            foreach ($variations as $variation) {
+            foreach ($this->getVariations()->load() as $variation) {
                 if ($variation->isApproved()){
                     $netCost += (float)$variation->getNetCost();
                 }
@@ -119,11 +119,9 @@ class Project extends Base
         $netSell = (float) $this->getNetSell();
 
         if($this->getVariations()) {
-            if ($variations = $this->getVariations()->load()) {
-                foreach ($variations as $variation) {
-                    if ($variation->isApproved()) {
-                        $netSell += (float)$variation->getValue();
-                    }
+            foreach ($this->getVariations()->load() as $variation) {
+                if ($variation->isApproved()) {
+                    $netSell += (float)$variation->getValue();
                 }
             }
         }

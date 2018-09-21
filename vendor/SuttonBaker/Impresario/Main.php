@@ -56,7 +56,10 @@ class Main
             '\SuttonBaker\Impresario\Api\Project'
         );
 
-
+        $api->addRoute(
+            'archive',
+            '\SuttonBaker\Impresario\Api\Archive'
+        );
     }
 
     /**

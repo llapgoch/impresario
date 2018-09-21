@@ -78,6 +78,10 @@ class EnquiryList
                 ->setPaginator($paginator)
         );
 
+        if(!count($this->instanceCollection->getItems())){
+            $this->addChildBlock($this->getNoItemsBlock());
+        }
+
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {
                 return $this->getPageUrl(

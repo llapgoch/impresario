@@ -86,7 +86,7 @@ class Enquiry extends Base
                 'create.enquiry.link',
                 'header_elements'
             )
-                ->setTagText('Create an Enquiry')
+                ->setTagText('Create a New Enquiry')
                 ->addAttribute(
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                         \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT

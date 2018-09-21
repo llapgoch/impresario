@@ -154,12 +154,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'rowIdentifier' => 'client_reference_row',
                 'data' => [
-                    'select_options' => $clients
+                    'select_options' => $clients,
+                    'locked' => true
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
-                ],
-                'attributes' => ['readonly' => 'readonly']
+                ]
             ], [
                 'name' => 'client_reference',
                 'formGroup' => true,

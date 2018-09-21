@@ -36,7 +36,8 @@ class Element extends \DaveBaker\Core\Config\Element
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]
-            ]
+            ],
+            'hiddenClass' => 'd-none'
         ]);
 
     }

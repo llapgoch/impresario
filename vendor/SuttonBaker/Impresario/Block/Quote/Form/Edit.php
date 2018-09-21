@@ -164,7 +164,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'client_reference_row',
                 'labelName' => 'Client',
                 'data' => [
-                    'select_options' => $clients
+                    'select_options' => $clients,
+                    'locked' => true
                 ],
                 'type' => 'Select',
                 'formGroupSettings' => [
@@ -176,7 +177,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'client_reference',
                 'formGroup' => true,
-                'labelName' => 'Client Reference *',
+                'labelName' => 'Client Reference',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'client_reference_row',
                 'formGroupSettings' => [

@@ -22,6 +22,12 @@ class LargeMessage extends \DaveBaker\Core\Block\Template
         $this->setHeading('Notice');
     }
 
+    protected function _preDispatch()
+    {
+        parent::_preDispatch();
+        $this->addClass('alert alert-' . $this->getMessageType());
+    }
+
     /**
      * @return array|mixed|null
      */

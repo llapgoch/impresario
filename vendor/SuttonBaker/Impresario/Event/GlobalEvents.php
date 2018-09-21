@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Event;
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Archive;
 use SuttonBaker\Impresario\Definition\Client;
 use SuttonBaker\Impresario\Definition\Enquiry;
 use SuttonBaker\Impresario\Definition\Page;
@@ -57,6 +58,11 @@ class GlobalEvents extends \DaveBaker\Core\Base
         $event = $this->getApp()->getApiManager()->getRouteEvent(Task::API_ENDPOINT_UPDATE_TABLE);
         $this->addEvent($event, function(){
             $this->getApp()->getHandleManager()->addHandle(Page::TASK_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Archive::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::ARCHIVE_LIST);
         });
 
     }

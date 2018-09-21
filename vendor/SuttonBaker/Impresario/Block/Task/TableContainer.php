@@ -23,6 +23,26 @@ class TableContainer
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
     /** @var bool  */
     protected $showSuperseded = false;
+    /** @var bool  */
+    protected $showNoItemsMessage = true;
+
+    /**
+     * @return bool
+     */
+    public function getShowNoItemsMessage()
+    {
+        return $this->showNoItemsMessage;
+    }
+
+    /**
+     * @param bool $showNoItemsMessage
+     * @return $this
+     */
+    public function setShowNoItemsMessage($showNoItemsMessage)
+    {
+        $this->showNoItemsMessage = $showNoItemsMessage;
+        return $this;
+    }
 
     /**
      * @param bool $showSuperseded
@@ -133,7 +153,7 @@ class TableContainer
                     );
                 }
             );
-        }else{
+        } elseif ($this->getShowNoItemsMessage()) {
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',

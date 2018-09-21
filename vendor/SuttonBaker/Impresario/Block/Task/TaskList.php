@@ -15,6 +15,8 @@ class TaskList
     const BLOCK_PREFIX = 'task';
     const ID_PARAM = 'task_id';
 
+    /** @var TableContainer */
+    protected $tableContainer;
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
      * @throws \DaveBaker\Core\App\Exception
@@ -25,11 +27,31 @@ class TaskList
     {
 
         $this->addChildBlock(
-            $this->createBlock(
+            $this->tableContainer = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->getBlockPrefix()}.list.table.container"
             )->setTileDefinitionClass('\SuttonBaker\Impresario\Block\Core\Tile\Black')
+                ->setShowNoItemsMessage(false)
         );
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Block\ListBase|void
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function _preRender()
+    {
+
+        if(!count($this->tableContainer->getInstanceCollection()->getItems())){
+            $this->tableContainer->getChildBlock('task.table.tile.block')
+                ->setTileBodyClass('nopadding')
+                ->addChildBlock($this->getNoItemsBlock(null, 'content'));
+        }
     }
 
     /**

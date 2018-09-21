@@ -33,7 +33,7 @@ class ClientList
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
-        $instanceItems = $this->getClientHelper()->getClientCollection();
+        $instanceCollection = $this->getClientHelper()->getClientCollection();
 
         // Do this check, as we won't have the maintile when reloading the table with ajax
         if($mainTile = $this->getBlockManager()->getBlock('client.tile.main')) {
@@ -45,7 +45,7 @@ class ClientList
                     'footer'
                 )->setOrder('after', 'client.list.table')
                     ->setRecordsPerPage(ClientDefinition::RECORDS_PER_PAGE)
-                    ->setTotalRecords(count($instanceItems->getItems()))
+                    ->setTotalRecords(count($instanceCollection->getItems()))
                     ->setIsReplacerBlock(true)
             );
         }
@@ -54,7 +54,7 @@ class ClientList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'client.list.table'
-            )->setHeaders($tableHeaders)->setRecords($instanceItems)
+            )->setHeaders($tableHeaders)->setRecords($instanceCollection)
                 ->addClass('table-striped js-table-updater')
                 ->addSortableColumns(ClientDefinition::SORTABLE_COLUMNS)
                 ->addJsDataItems([
@@ -62,6 +62,10 @@ class ClientList
                     $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_UPDATE_TABLE)
                 ])->setPaginator($paginator)
         );
+
+        if(!count($instanceCollection->getItems())){
+            $this->addChildBlock($this->getNoItemsBlock());
+        }
 
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {

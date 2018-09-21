@@ -54,6 +54,23 @@ abstract class ListBase extends Base
     }
 
     /**
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getNoItemsBlock($name = null, $asName = null)
+    {
+        return $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Form\LargeMessage',
+            $name,
+            $asName
+            )->setMessage("There are currently no items to display")
+            ->setHeading('There isn\'t Anything Here')
+                ->setMessageType('info')
+                ->addClass('m-3');
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\Listing\Utility
      * @throws \DaveBaker\Core\Object\Exception
      */

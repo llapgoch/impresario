@@ -22,9 +22,11 @@ class ProjectList
     /** @var Collection */
     protected $instanceCollection;
     /** @var array  */
-    protected $tableHeaders = [];
+    protected $tableHeaders = ProjectDefinition::SORTABLE_COLUMNS;
     /** @var array  */
-    protected $sortableColumns = [];
+    protected $sortableColumns = ProjectDefinition::SORTABLE_COLUMNS;
+    /** @var string */
+    protected $endpointUrl = ProjectDefinition::API_ENDPOINT_UPDATE_TABLE;
     /** @var array|bool  */
     protected $rowClasses = [];
 
@@ -45,7 +47,6 @@ class ProjectList
         $this->instanceCollection = $instanceCollection;
         return $this;
     }
-
 
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
@@ -95,10 +96,14 @@ class ProjectList
                 ->setSortableColumns($this->getSortableColumns())
                 ->addJsDataItems([
                     TableDefinition::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_UPDATE_TABLE)
+                        $this->getUrlHelper()->getApiUrl($this->getEndpointUrl())
                 ])
                 ->setPaginator($paginator)
         );
+
+        if(!count($instanceCollection->getItems())){
+           $this->addChildBlock($this->getNoItemsBlock());
+        }
 
         if($this->rowClasses === false){
             $tableBlock->addClass('table-striped');
@@ -112,6 +117,34 @@ class ProjectList
                 );
             }
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function getTableHeaders()
+    {
+        return $this->tableHeaders;
+    }
+
+    /**
+     * @param array $tableHeaders
+     * @return $this
+     */
+    public function setTableHeaders($tableHeaders)
+    {
+        $this->tableHeaders = $tableHeaders;
+        return $this;
+    }
+
+    /**
+     * @param array|bool $rowClasses
+     * @return $this
+     */
+    public function setRowClasses($rowClasses)
+    {
+        $this->rowClasses = $rowClasses;
+        return $this;
     }
 
     /**
@@ -131,13 +164,11 @@ class ProjectList
     }
 
     /**
-     * @param array $tableHeaders
-     * @return $this
+     * @return array
      */
-    public function setTableHeaders($tableHeaders)
+    public function getSortableColumns()
     {
-        $this->tableHeaders = $tableHeaders;
-        return $this;
+        return $this->sortableColumns;
     }
 
     /**
@@ -151,36 +182,21 @@ class ProjectList
     }
 
     /**
-     * @param array|bool $rowClasses
+     * @return string
+     */
+    public function getEndpointUrl()
+    {
+        return $this->endpointUrl;
+    }
+
+    /**
+     * @param string $endpointUrl
      * @return $this
      */
-    public function setRowClasses($rowClasses)
+    public function setEndpointUrl($endpointUrl)
     {
-        $this->rowClasses = $rowClasses;
+        $this->endpointUrl = $endpointUrl;
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getSortableColumns()
-    {
-        if($this->sortableColumns){
-            return $this->sortableColumns;
-        }
-
-        return ProjectDefinition::SORTABLE_COLUMNS;
-    }
-    /**
-     * @return array
-     */
-    protected function getTableHeaders()
-    {
-        if($this->tableHeaders){
-           return $this->tableHeaders;
-        }
-
-        return ProjectDefinition::TABLE_HEADERS;
     }
 
     /**

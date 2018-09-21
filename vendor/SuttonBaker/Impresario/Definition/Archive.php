@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Definition;
 class Archive
 {
     const ICON = 'fa fa-archive';
+    const API_ENDPOINT_UPDATE_TABLE = 'archive/updatetable';
 
     const TABLE_HEADERS = [
         'project_id' => 'ID',

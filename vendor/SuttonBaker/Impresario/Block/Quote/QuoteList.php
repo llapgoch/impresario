@@ -31,8 +31,8 @@ class QuoteList
     {
         wp_enqueue_script('dbwpcore_table_updater');
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
-        $instanceItems = $this->getQuoteHelper()->getDisplayQuotes()
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $instanceCollection */
+        $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes()
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
@@ -49,7 +49,7 @@ class QuoteList
                 "{$this->getBlockPrefix()}.list.paginator",
                 'footer'
             )->setRecordsPerPage(QuoteDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceItems->getItems()))
+                ->setTotalRecords(count($instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
         );
 
@@ -57,7 +57,7 @@ class QuoteList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
-            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceItems)
+            )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceCollection)
                 ->setStatusKey('tender_status')
                 ->setSortableColumns(QuoteDefinition::SORTABLE_COLUMNS)
                 ->setRowStatusClasses(QuoteDefinition::getRowClasses())
@@ -67,6 +67,10 @@ class QuoteList
                 ])
                 ->setPaginator($paginator)
         );
+
+        if(!count($instanceCollection->getItems())){
+            $this->addChildBlock($this->getNoItemsBlock());
+        }
 
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {
