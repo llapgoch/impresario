@@ -4,7 +4,9 @@ namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
+use DaveBaker\Form\Validation\Validator;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Enquiry;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
@@ -44,6 +46,13 @@ class Edit
 
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
+
+        wp_enqueue_script('impresario_form_validator');
+        $this->addClass('js-validate-form');
+
+        $this->addJsDataItems(
+            ['endpoint' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_SAVE_VALIDATOR)]
+        );
 
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
         $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($entityInstance);

@@ -4,8 +4,10 @@ namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Form\EnquiryConfigurator;
 
 /**
  * Class Enquiry
@@ -20,6 +22,24 @@ class Enquiry
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_ENQUIRY];
 
+    public function savevalidatorAction($params, \WP_REST_Request $request)
+    {
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+        /** @var EnquiryConfigurator $configurator */
+        $configurator = $this->createAppObject(EnquiryConfigurator::class);
+
+        /** @var Validator $validator */
+        $validator = $this->createAppObject(Validator::class)
+            ->setValues($params['formValues']);
+        $validator->configurate($configurator)->validate();
+
+        return [
+            'hasErrors' => $validator->hasErrors(),
+            'errorFields' => $validator->getErrorFields()
+        ];
+    }
     /**
      * @param $params
      * @param \WP_REST_Request $request
