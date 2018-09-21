@@ -143,6 +143,10 @@ class EditController
 
             $data['total_net_sell'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetSell());
             $data['total_net_cost'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetCost());
+            $data['amount_invoiced'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getAmountInvoiced());
+            $data['invoice_amount_remaining'] = $this->getLocaleHelper()->formatCurrency(
+                $this->modelInstance->getInvoiceAmountRemaining()
+            );
 
             if($this->modelInstance->getProfit()){
                 $data['profit'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getProfit());

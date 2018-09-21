@@ -238,8 +238,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Actual Cost',
                 'rowIdentifier' => 'cost_values',
                 'type' => 'Input\Text',
+                'attributes' => ['placeholder' => '£'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'total_net_cost',
@@ -250,7 +251,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-net-cost',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'total_net_sell',
@@ -261,18 +262,37 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-net-sell',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'profit',
                 'formGroup' => true,
-                'rowIdentifier' => 'cost_values',
+                'rowIdentifier' => 'cost_values_secondary',
                 'labelName' => 'Profit',
                 'type' => 'Input\Text',
                 'attributes' => ['disabled' => 'disabled'],
-                'class' => 'js-profit-calculate',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'amount_invoiced',
+                'formGroup' => true,
+                'rowIdentifier' => 'cost_values_secondary',
+                'labelName' => 'Amount Invoiced',
+                'type' => 'Input\Text',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'invoice_amount_remaining',
+                'formGroup' => true,
+                'rowIdentifier' => 'cost_values_secondary',
+                'labelName' => 'Invoice Amount Remaining',
+                'type' => 'Input\Text',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'project_start_date',

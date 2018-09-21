@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+
+use  \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 /**
  * Class Invoice
  * @package SuttonBaker\Impresario\Layout
@@ -8,6 +10,8 @@ namespace SuttonBaker\Impresario\Layout;
 class Invoice extends Base
 {
     const ID_KEY = 'invoice_id';
+    const INVOICE_TYPE_KEY = 'invoice_type';
+
     /** @var string  */
     protected $blockPrefix = 'invoice';
     /** @var string  */
@@ -36,13 +40,15 @@ class Invoice extends Base
         }
 
         $this->addHeading()->addMessages();
+        $invoiceTypeName = $this->getInvoiceHelper()->determineInvoiceTypeName($entityInstance);
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($this->getInvoiceHelper()->getActionVerb($entityInstance) . " <strong>Invoice</strong>")
+                ->setHeading(
+                    $this->getInvoiceHelper()->getActionVerb($entityInstance) . " <strong>Invoice for " . $invoiceTypeName . "</strong>")
                 ->setShortcode('body_content')
         );
 

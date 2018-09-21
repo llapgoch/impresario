@@ -54,6 +54,7 @@ class Project
               `actual_cost` decimal(10,4) DEFAULT NULL,
               `profit` decimal(10,4) DEFAULT NULL,
               `amount_invoiced` decimal(10,4) DEFAULT NULL,
+              `invoice_amount_remaining` decimal(10,4) DEFAULT NULL,
               `gp` decimal(10,4) DEFAULT NULL,
               `project_start_date` datetime DEFAULT NULL,
               `project_end_date` datetime DEFAULT NULL,

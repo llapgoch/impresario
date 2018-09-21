@@ -19,6 +19,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
     /** @var \SuttonBaker\Impresario\Model\Db\Invoice */
     protected $modelInstance;
+    /** @var \DaveBaker\Core\Model\Db\BaseInterface */
+    protected $parentItem;
 
     /**
      * @return \DaveBaker\Core\Block\Template|void
@@ -35,7 +37,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $heading = "Create {$prefixName}";
         $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $this->parentItem =  $this->getApp()->getRegistry()->get('parent_item');
+
         $editMode = $this->modelInstance->getId() ? true : false;
+        $invoiceTypeName = $this->getInvoiceHelper()->determineInvoiceTypeName($this->modelInstance);
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -65,7 +70,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'value',
@@ -74,7 +79,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ],
+            ], [
+                'name' => 'amount_remaining',
+                'labelName' => "Amount Remaining on {$invoiceTypeName}",
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'attributes' => ['readonly' => 'readonly'],
+                'value' => $this->getLocaleHelper()->formatCurrency($this->parentItem->getInvoiceAmountRemaining()),
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'submit',

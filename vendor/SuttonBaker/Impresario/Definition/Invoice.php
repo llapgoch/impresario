@@ -35,19 +35,4 @@ class Invoice
         ];
     }
 
-    /**
-     * @param string $invoiceType
-     * @return string
-     */
-    public static function getInvoiceTypeLabel($invoiceType)
-    {
-        $invoiceTypes = self::getInvoiceTypes();
-
-        if(in_array($invoiceType, array_keys($invoiceType))){
-            return $invoiceTypes[$invoiceType];
-        }
-
-        return '';
-    }
-
 }

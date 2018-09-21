@@ -137,4 +137,23 @@ class Invoice extends Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Invoice\Type');
     }
 
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Invoice $instance
+     * @return mixed|string
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function determineInvoiceTypeName(
+        \SuttonBaker\Impresario\Model\Db\Invoice $instance
+    ) {
+        if($instance->getId()){
+            return $this->getInvoiceTypeDisplayName($instance->getInvoiceType());
+        }
+
+        if($type = $this->getRequest()->getParam('invoice_type')) {
+            return $typeName = $this->getInvoiceTypeDisplayName($type);
+        }
+
+        return '';
+    }
+
 }

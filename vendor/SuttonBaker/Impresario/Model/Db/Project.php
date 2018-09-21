@@ -70,7 +70,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function calculateProfit()
+    protected function calculateProfit()
     {
         return $this->calculateTotalNetSell() - $this->calculateTotalNetCost();
     }
@@ -82,7 +82,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function calculateTotalNetCost()
+    protected function calculateTotalNetCost()
     {
         $netCost = (float) $this->getNetCost();
 
@@ -105,7 +105,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function calculateTotalNetSell()
+    protected function calculateTotalNetSell()
     {
         $netSell = (float) $this->getNetSell();
 
@@ -128,7 +128,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    function calculateAmountInvoiced()
+    protected function calculateAmountInvoiced()
     {
         $totalInvoiced = 0;
 
@@ -142,6 +142,17 @@ class Project extends Base
         return $totalInvoiced;
     }
 
+    /**
+     * @return mixed
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function calculateInvoiceAmountRemaining()
+    {
+        return max(0, $this->calculateTotalNetSell() - $this->calculateAmountInvoiced());
+    }
 
     /**
      * @return float|int
@@ -157,10 +168,11 @@ class Project extends Base
 
     protected function beforeSave()
     {
-        $this->setData('gp', $this->calculateGp());
-        $this->setData('profit', $this->calculateProfit());
-        $this->setData('total_net_cost', $this->calculateTotalNetCost());
-        $this->setData('total_net_sell', $this->calculateTotalNetSell());
-        $this->setData('amount_invoiced', $this->calculateAmountInvoiced());
+        $this->setData('gp', $this->calculateGp())
+            ->setData('profit', $this->calculateProfit())
+            ->setData('total_net_cost', $this->calculateTotalNetCost())
+            ->setData('total_net_sell', $this->calculateTotalNetSell())
+            ->setData('amount_invoiced', $this->calculateAmountInvoiced())
+            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining());
     }
 }
