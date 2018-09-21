@@ -2,6 +2,8 @@
 
 namespace SuttonBaker\Impresario\Form;
 
+use SuttonBaker\Impresario\Definition\Project;
+
 /**
  * Class ProjectConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
@@ -20,26 +22,6 @@ class ProjectConfigurator
             $this->createRule('DateCompare\Past', 'date_received', 'Date Received')
         );
 
-//        $this->addRule(
-//            $this->createRule('Required', 'client_id', 'Client')
-//        );
-
-//        $this->addRule(
-//            $this->createRule('Required', 'project_name', 'Project Name')
-//        );
-
-//        $this->addRule(
-//            $this->createRule('Required', 'site_name', 'Site Name')
-//        );
-
-//        $this->addRule(
-//            $this->createRule('Required', 'client_requested_by', 'Client Requested By')
-//        );
-//
-//        $this->addRule(
-//            $this->createRule('Required', 'client_reference', 'Client Reference')
-//        );
-
         $this->addRule(
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
@@ -53,18 +35,6 @@ class ProjectConfigurator
                 $this->createRule('User', 'assigned_foreman_id', 'Foreman')
             );
         }
-
-//        $this->addRule(
-//            $this->createRule('Numeric', 'net_cost', 'Net Cost')
-//        );
-//
-//        $this->addRule(
-//            $this->createRule('Numeric', 'net_sell', 'Net Sell')
-//        );
-
-//        $this->addRule(
-//            $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
-//        );
 
         $this->addRule(
             $this->createRule('Date', 'project_start_date', 'Project Start Date')
@@ -81,8 +51,8 @@ class ProjectConfigurator
         $netCost = $this->getValue('net_cost');
         $netSell = $this->getValue('net_sell');
 
-        $sellRule = $this->createRule('Custom', 'net_sell', 'Net Sell');
-        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
+        $sellRule = $this->createRule('Custom', 'net_sell', 'Net Sell')
+            ->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
             ->setInputError('This must be higher than Net Cost');
 
         $this->addRule($sellRule->setValidationMethod(
@@ -96,6 +66,23 @@ class ProjectConfigurator
             }
         ));
 
+        /** @var \SuttonBaker\Impresario\Model\Db\Project $modelInstance */
+        $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+
+        if($this->getValue('status') == Project::STATUS_COMPLETE){
+            $this->addRule(
+                $this->createRule('Custom', 'status', 'Status')
+                ->setMainError('This Project can\'t be marked as complete as there is still an amount remaining to be invoiced')
+                ->setInputError('This can\' be marked as complete yet')
+                ->setValidationMethod(function($value, $ruleInstance) use ($modelInstance){
+                    if($modelInstance->getInvoiceAmountRemaining() > 0){
+                        return $ruleInstance->createError();
+                    }
+
+                    return true;
+                })
+            );
+        }
     }
 
 }

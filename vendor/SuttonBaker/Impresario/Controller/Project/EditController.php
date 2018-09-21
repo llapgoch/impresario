@@ -61,6 +61,7 @@ class EditController
         }
 
         $this->modelInstance = $this->getProjectHelper()->getProject($instanceId);
+        $this->getApp()->getRegistry()->register('model_instance', $this->modelInstance);
 
         if(!$this->modelInstance->getId()){
             $this->addMessage('The project could not be found');
