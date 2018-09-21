@@ -32,6 +32,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        wp_register_script('impresario_invoice', get_template_directory_uri() . '/assets/js/invoice-edit.js', ['jquery']);
+        wp_enqueue_script('impresario_invoice');
+
+        $this->addClass('js-invoice-form');
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -78,6 +83,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
+                'class' => 'js-invoice-value',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ],
@@ -108,6 +114,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
+            ], [
+                'name' => 'invoice_data',
+                'type' => 'Input\Hidden',
+                'value' => json_encode([
+                    'amountRemaining' => (float) $this->parentItem->getInvoiceAmountRemaining()
+                ]),
+                'class' => 'js-invoice-data'
             ]
         ]);
 
