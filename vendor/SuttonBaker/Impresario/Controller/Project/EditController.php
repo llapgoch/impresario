@@ -63,6 +63,17 @@ class EditController
         $this->modelInstance = $this->getProjectHelper()->getProject($instanceId);
         $this->getApp()->getRegistry()->register('model_instance', $this->modelInstance);
 
+        if($this->getRequest()->getPostParam('action')) {
+            if ($this->modelInstance->isComplete()) {
+                $this->addMessage('The project has been archived and cannot be updated');
+
+                return $this->getResponse()->redirectReferer(
+                    $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST)
+                );
+            }
+        }
+
+
         if(!$this->modelInstance->getId()){
             $this->addMessage('The project could not be found');
 

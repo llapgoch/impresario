@@ -65,7 +65,7 @@ class Project
     public static function getRowClasses()
     {
         return [
-            self::STATUS_OPEN => 'danger',
+            self::STATUS_OPEN => 'info',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'
         ];

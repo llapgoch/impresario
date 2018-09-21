@@ -61,13 +61,15 @@ class Quote extends Base
      * @return string
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getActionVerb(\DaveBaker\Core\Model\Db\BaseInterface $instance)
-    {
-        if($instance->getIsSuperseded()){
+    public function getActionVerb(
+        \DaveBaker\Core\Model\Db\BaseInterface $instance,
+        $includeView = true
+    ) {
+        if($instance->getIsSuperseded() && $includeView){
             return 'View';
         }
 
-        return parent::getActionVerb($instance);
+        return parent::getActionVerb($instance, $includeView);
     }
 
     /**

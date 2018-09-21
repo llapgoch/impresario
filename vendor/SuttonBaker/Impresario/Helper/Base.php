@@ -88,16 +88,18 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
 
         return $tabBlock;
     }
+
     /**
-     * @param $instance
-     * @param $capabilities
+     * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
+     * @param bool $includeView
      * @return string
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getActionVerb(
-        \DaveBaker\Core\Model\Db\BaseInterface $instance)
-    {
-        if(!$this->getUserHelper()->hasCapability($this->getEditCapabilities())){
+        \DaveBaker\Core\Model\Db\BaseInterface $instance,
+        $includeView = true
+    ) {
+        if(!$this->getUserHelper()->hasCapability($this->getEditCapabilities()) && $includeView){
             return 'View';
         }
 
@@ -107,6 +109,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
 
         return 'Update';
     }
+
     /**
      * @param string $key
      * @param array $items

@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Model\Db;
 
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Model\Db
@@ -22,6 +23,14 @@ class Project extends Base
         $this->idColumn = 'project_id';
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isComplete()
+    {
+        return $this->getStatus() == ProjectDefinition::STATUS_COMPLETE;
     }
 
     /**

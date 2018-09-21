@@ -91,7 +91,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit()){
+        if($this->getQuoteHelper()->currentUserCanEdit() && !$this->modelInstance->isComplete()){
             $ignoreLockValue = true;
         }
 
@@ -99,7 +99,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
-        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $disabledAttrs = $this->modelInstance->getId() && !$this->modelInstance->isComplete() ? [] : ['disabled' => 'disabled'];
+        $updateAttrs = $this->modelInstance->isComplete() ? ['disabled' => 'disabled'] : [];
+
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
@@ -347,9 +349,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $this->getProjectHelper()->getActionVerb($this->modelInstance) . " Project",
+                    'button_name' => $this->getProjectHelper()->getActionVerb($this->modelInstance, false) . " Project",
                     'capabilities' => $this->getProjectHelper()->getEditCapabilities()
                 ],
+                'attributes' => $updateAttrs,
                 'class' => 'btn-block',
                 'formGroupSettings' => [
                     'class' => 'col-md-8'
@@ -394,7 +397,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
 
-        if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN)){
+        if(($this->modelInstance->getStatus() == ProjectDefinition::STATUS_CANCELLED)){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
