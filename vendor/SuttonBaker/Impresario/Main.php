@@ -97,6 +97,7 @@ class Main
             '\SuttonBaker\Impresario\Installer\Quote',
             '\SuttonBaker\Impresario\Installer\Project',
             '\SuttonBaker\Impresario\Installer\InvoiceVariation',
+            '\SuttonBaker\Impresario\Installer\Archive',
             '\SuttonBaker\Impresario\Installer\General'
         ]);
     }
@@ -116,6 +117,7 @@ class Main
             '\SuttonBaker\Impresario\Layout\Project',
             '\SuttonBaker\Impresario\Layout\Invoice',
             '\SuttonBaker\Impresario\Layout\Variation',
+            '\SuttonBaker\Impresario\Layout\Archive',
         ]);
         
     }

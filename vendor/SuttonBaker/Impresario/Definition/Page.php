@@ -26,4 +26,6 @@ class Page
 
     const VARIATION_EDIT = 'variation_edit';
     const INVOICE_EDIT = 'invoice_edit';
+
+    const ARCHIVE_LIST = 'archive_list';
 }
