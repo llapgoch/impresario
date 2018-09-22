@@ -188,7 +188,7 @@ class Enquiry
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return $this|array
      * @throws Exception
      * @throws \DaveBaker\Core\Db\Exception
@@ -261,6 +261,14 @@ class Enquiry
 
                 return $returnValues;
             }
+        }
+
+        // Reload the page so things like tasks appear
+        if($newSave){
+            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::ENQUIRY_EDIT,
+                ['enquiry_id' => $modelInstance->getId()]
+            );
         }
 
         $this->getApp()->getGeneralSession()->addMessage(

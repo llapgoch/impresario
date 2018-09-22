@@ -1,0 +1,22 @@
+<?php /** @var \DaveBaker\Core\Block\Template $block */ ?>
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <?php echo $block->getHeading();?>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo $block->_('Close');?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php echo $block->getBody();?>
+            </div>
+            <div class="modal-footer">
+                <?php echo $this->getChildHtml('buttons');?>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $block->_('Close');?></button>
+            </div>
+        </div>
+    </div>
+</div>

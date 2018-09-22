@@ -110,7 +110,7 @@ class Enquiry
         $converter = $this->createAppObject(EnquiryConverter::class);
         $formValues = $converter->convert($params['formValues']);
 
-        if(isset($formValues['enquiry_id'])){
+        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
             $modelInstance->load($formValues['enquiry_id']);
 
             if(!$modelInstance->getId()){
