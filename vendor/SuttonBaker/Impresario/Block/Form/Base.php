@@ -7,6 +7,8 @@ namespace SuttonBaker\Impresario\Block\Form;
  */
 abstract class Base extends \DaveBaker\Form\Block\Form
 {
+    /** @var string  */
+    protected $blockPrefix = '';
 
     /**
      * @return \DaveBaker\Form\Block\Form|void
@@ -28,6 +30,20 @@ abstract class Base extends \DaveBaker\Form\Block\Form
         );
 
         wp_enqueue_script('impresario_deleter');
+    }
+
+    /**
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function createFormErrorBlock()
+    {
+        /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
+        return $this->getApp()->getBlockManager()->createBlock(
+            '\DaveBaker\Form\Block\Error\Main',
+            "{$this->blockPrefix}.edit.form.errors"
+        )->setIsReplacerBlock(true);
     }
 
     /**

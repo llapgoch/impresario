@@ -3,9 +3,6 @@
 namespace SuttonBaker\Impresario\Controller\Enquiry;
 
 use DaveBaker\Core\Definitions\Messages;
-use DaveBaker\Core\Definitions\Upload;
-use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
-use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
 /**
@@ -30,16 +27,6 @@ class EditController
         Roles::CAP_ALL
     ];
 
-
-    /** @var array  */
-    protected $nonUserValues = [
-        'enquiry_id',
-        'created_by_id',
-        'created_at',
-        'updated_at',
-        'is_deleted',
-        'last_edited_by_id'
-    ];
 
     /**
      * @return \SuttonBaker\Impresario\Controller\Base|void
@@ -68,16 +55,9 @@ class EditController
     }
 
     /**
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Exception
-     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
-     * @throws \Zend_Db_Select_Exception
      */
     public function execute()
     {
@@ -90,43 +70,6 @@ class EditController
 
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-
-        wp_register_script('impresario_enquiry_edit', get_template_directory_uri() . '/assets/js/enquiry-edit.js', ['jquery']);
-        wp_enqueue_script('impresario_enquiry_edit');
-
-
-        // Form submission
-        if($this->getRequest()->getPostParam('action')){
-            $postParams = $this->getRequest()->getPostParams();
-
-            // Convert dates to DB
-            if (isset($postParams['date_received'])){
-                $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
-            }
-
-            if(isset($postParams['target_date'])){
-                $postParams['target_date'] = $helper->localDateToDb($postParams['target_date']);
-            }
-
-            if(isset($postParams['date_completed'])){
-                $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
-            }
-
-            /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\EnquiryConfigurator');
-
-            /** @var \DaveBaker\Form\Validation\Validator $validator */
-            $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
-                ->setValues($postParams)
-                ->configurate($configurator);
-
-            if(!$validator->validate()){
-                return $this->prepareFormErrors($validator);
-            }
-
-            $this->saveFormValues($postParams);
-        }
-
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
@@ -152,105 +95,5 @@ class EditController
                 $data
             );
         }
-    }
-
-    /**
-     * @param $data
-     * @return $this
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
-     */
-    protected function saveFormValues($data)
-    {
-        if(!$this->getApp()->getHelper('User')->isLoggedIn()){
-            return $this;
-        }
-
-        foreach($this->nonUserValues as $nonUserValue){
-            if(isset($data[$nonUserValue])){
-                unset($data[$nonUserValue]);
-            }
-        }
-
-        $newSave = false;
-
-        // Add created by user
-        if(!$this->modelInstance->getId()) {
-            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-            $newSave = true;
-        }
-
-        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
-        $this->modelInstance->setData($data)->save();
-
-        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_ENQUIRY,
-                $this->modelInstance->getId()
-            );
-        }
-
-        // Create a quote if enquiry is complete
-        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE){
-            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($this->modelInstance->getId());
-
-            if(!$quote->getId()) {
-                $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($this->modelInstance->getId());
-
-                $this->addMessage('A new quote has been created for the enquiry', Messages::SUCCESS);
-
-                $this->redirectToPage(
-                    PageDefinition::QUOTE_EDIT,
-                    ['quote_id' => $quote->getId()]
-                );
-            }
-        }
-
-        $this->addMessage(
-            "The enquiry has been " . ($newSave ? 'created' : 'updated'),
-            Messages::SUCCESS
-        );
-
-        if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-            return $this->redirectToPage(PageDefinition::ENQUIRY_LIST);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param \DaveBaker\Form\Validation\Validator $validator
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Form\Exception
-     */
-    protected function prepareFormErrors(
-        \DaveBaker\Form\Validation\Validator $validator
-    ) {
-        /** @var \DaveBaker\Form\BlockApplicator $applicator */
-        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
-
-        // Create main error block
-        /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
-        $errorBlock = $this->getApp()->getBlockManager()->createBlock(
-            '\DaveBaker\Form\Block\Error\Main',
-            'enquiry.edit.form.errors'
-        )->setOrder('before', '')->addErrors($validator->getErrors());
-
-        $this->enquiryEditForm->addChildBlock($errorBlock);
-
-        // Sets the values back onto the form element
-        $applicator->configure(
-            $this->enquiryEditForm,
-            $this->getRequest()->getPostParams(),
-            $validator
-        );
     }
 }

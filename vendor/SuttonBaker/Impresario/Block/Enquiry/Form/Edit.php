@@ -20,8 +20,8 @@ class Edit
     extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'enquiry_id';
-    const PREFIX_KEY = 'enquiry';
-    const PREFIX_NAME = 'Enquiry';
+    protected $prefixName = 'Enquiry';
+    protected $blockPrefix = 'enquiry';
 
     /** @var \DaveBaker\Core\Model\Db\Core\Upload\Collection */
     protected $attachmentCollection;
@@ -44,14 +44,15 @@ class Edit
     {
         parent::_preDispatch();
 
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
-
         wp_enqueue_script('impresario_form_validator');
         $this->addClass('js-validate-form');
 
         $this->addJsDataItems(
-            ['endpoint' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_SAVE_VALIDATOR)]
+            [
+                'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_VALIDATE_SAVE),
+                'endpointSave' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_SAVE),
+                'idElementSelector' => '[name="enquiry_id"]'
+            ]
         );
 
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
@@ -118,6 +119,12 @@ class Edit
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::ENQUIRY_LIST);
+
+
+        $this->addChildBlock(
+            $this->createFormErrorBlock()
+            ->setOrder('before', '')
+        );
 
         $elements = $builder->build([
             [
@@ -331,7 +338,7 @@ class Edit
         if($entityInstance->getId()) {
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
-                "{$prefixKey}.task.table"
+                "{$this->blockPrefix}.task.table"
             )->setOrder('after', 'enquiry.edit.notes.form.group')
                 ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
@@ -355,8 +362,8 @@ class Edit
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
-                    "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} " . ($entityInstance->getIsDeleted() ? "has been removed" : "is locked"))
+                    "{$this->blockPrefix}.warning.message"
+                )->setMessage("This {$this->prefixName} " . ($entityInstance->getIsDeleted() ? "has been removed" : "is locked"))
                 ->setMessageType($entityInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
@@ -368,7 +375,7 @@ class Edit
         $this->addChildBlock(
             $this->createBlock(
             '\SuttonBaker\Impresario\Block\Upload\TableContainer',
-            "{$prefixKey}.file.upload.container"
+            "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "enquiry.edit.button.bar")
             ->setUploadType($entityInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
             ->setIdentifier($entityInstance->getId() ? $entityInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
@@ -387,9 +394,6 @@ class Edit
      */
     protected function _preRender()
     {
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
-
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
 
@@ -402,7 +406,7 @@ class Edit
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
-                    "{$prefixKey}.file.uploader",
+                    "{$this->blockPrefix}.file.uploader",
                     'header_elements'
                 )->addJsDataItems(
                     ['endpoint' => $this->getUrlHelper()->getApiUrl(

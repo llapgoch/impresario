@@ -4,10 +4,13 @@ namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Form\Block\Error\Main;
 use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Form\EnquiryConfigurator;
+use SuttonBaker\Impresario\SaveConverter\Enquiry as EnquiryConverter;
+use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 
 /**
  * Class Enquiry
@@ -21,25 +24,151 @@ class Enquiry
     protected $blockPrefix = 'enquiry';
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_ENQUIRY];
+    /** @var bool  */
+    protected $requiresLogin = true;
 
-    public function savevalidatorAction($params, \WP_REST_Request $request)
+    /**
+     * @param $params
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     */
+    protected function validateValues($params)
     {
+        $helper = $this->getEnquiryHelper();
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        $saveResult = [];
         if(!isset($params['formValues'])){
             throw new Exception('No form values provided');
         }
+
+        $modelInstance = $helper->getEnquiry();
+
+        if(isset($params['enquiry_id'])){
+            $modelInstance->load($params['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
+        }
+
+        $converter = $this->createAppObject(EnquiryConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+        $blockManager = $this->getApp()->getBlockManager();
+
         /** @var EnquiryConfigurator $configurator */
         $configurator = $this->createAppObject(EnquiryConfigurator::class);
 
         /** @var Validator $validator */
         $validator = $this->createAppObject(Validator::class)
-            ->setValues($params['formValues']);
+            ->setValues($formValues);
+
         $validator->configurate($configurator)->validate();
+
+        $errorBlock = $blockManager->createBlock(Main::class, 'enquiry.edit.form.errors');
+        $errorBlock->addErrors($validator->getErrors())
+            ->setIsReplacerBlock(true);
+
+        $this->addReplacerBlock($errorBlock);
 
         return [
             'hasErrors' => $validator->hasErrors(),
             'errorFields' => $validator->getErrorFields()
         ];
     }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function validatesaveAction($params, \WP_REST_Request $request)
+    {
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $helper = $this->getEnquiryHelper();
+        $modelInstance = $helper->getEnquiry();
+        $converter = $this->createAppObject(EnquiryConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+
+        if(isset($formValues['enquiry_id'])){
+            $modelInstance->load($formValues['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
+        }
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        $validateResult = $this->validateValues($params);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        // Check whether a new quote will be created for this enquiry
+        if(isset($formValues['status'])
+            && $formValues['status'] == EnquiryDefinition::STATUS_COMPLETE){
+            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+
+            if(!$quote->getId()){
+                $validateResult['confirm'] = 'A new quote will be created for this enquiry, are you sure you want to proceed?';
+                return $validateResult;
+            }
+        }
+
+        return array_merge($validateResult, $helper->saveEnquiry($formValues));
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\SuttonBaker\Impresario\Helper\Enquiry|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function saveAction($params, \WP_REST_Request $request)
+    {
+        $helper = $this->getEnquiryHelper();
+        $validateResult = $this->validateValues($params);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        return $helper->saveEnquiry($params['formValues']);
+    }
+
     /**
      * @param $params
      * @param \WP_REST_Request $request
@@ -80,9 +209,7 @@ class Enquiry
      */
     public function deleteAction($params, \WP_REST_Request $request)
     {
-        /** @var \SuttonBaker\Impresario\Helper\Enquiry $helper */
-        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Enquiry');
-
+        $helper = $this->getEnquiryHelper();
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
@@ -104,6 +231,24 @@ class Enquiry
         $this->addMessage('The enquiry has been removed', Messages::SUCCESS);
 
         return true;
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Enquiry
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getEnquiryHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Enquiry');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Quote
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getQuoteHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
     }
 
 }

@@ -11,7 +11,8 @@ class Enquiry
 {
     const API_ENDPOINT_UPDATE_TABLE = 'enquiry/updatetable';
     const API_ENDPOINT_DELETE = 'enquiry/delete';
-    const API_ENDPOINT_SAVE_VALIDATOR = 'enquiry/savevalidator';
+    const API_ENDPOINT_VALIDATE_SAVE = 'enquiry/validatesave';
+    const API_ENDPOINT_SAVE = 'enquiry/save';
 
     const ICON = 'fa fa-thumb-tack';
 
@@ -47,6 +48,17 @@ class Enquiry
         'target_date' => [],
         'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
         'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
+    ];
+
+
+    /** @var array  */
+    const NON_USER_VALUES = [
+        'enquiry_id',
+        'created_by_id',
+        'created_at',
+        'updated_at',
+        'is_deleted',
+        'last_edited_by_id'
     ];
 
     /**

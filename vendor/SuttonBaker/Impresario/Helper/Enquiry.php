@@ -2,11 +2,15 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Core\Definitions\Upload;
+use DaveBaker\Core\Helper\Exception;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use SuttonBaker\Impresario\Definition\Flow;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Roles;
+
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Helper
@@ -181,6 +185,90 @@ class Enquiry
         }
 
         $enquiry->setIsDeleted(1)->save();
+    }
+
+    /**
+     * @param $data
+     * @return $this|array
+     * @throws Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function saveEnquiry($data)
+    {
+        $modelInstance = $this->getEnquiry();
+        $returnValues = [
+            'redirect' => null,
+            'enquiry_id' => null,
+        ];
+
+        if(isset($data['enquiry_id']) && $data['enquiry_id']){
+            $modelInstance->load($data['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
+        }
+
+        foreach(EnquiryDefinition::NON_USER_VALUES as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
+        $data = $this->createAppObject(\SuttonBaker\Impresario\SaveConverter\Enquiry::class)->convert($data);
+        $newSave = false;
+
+        // Add created by user
+        if(!$modelInstance->getId()) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+            $newSave = true;
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        $modelInstance->setData($data)->save();
+        $returnValues['enquiry_id'] = $modelInstance->getId();
+
+        if($newSave && ($temporaryId = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_ENQUIRY,
+                $modelInstance->getId()
+            );
+        }
+
+        // Create a quote if enquiry is complete
+        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE){
+            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+
+            if(!$quote->getId()) {
+                $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());
+
+                $this->getApp()->getGeneralSession()->addMessage(
+                    'A new quote has been created for the enquiry', Messages::SUCCESS
+                );
+
+                $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                    Page::QUOTE_EDIT,
+                    ['quote_id' => $quote->getId()]
+                );
+
+                return $returnValues;
+            }
+        }
+
+        $this->getApp()->getGeneralSession()->addMessage(
+            "The enquiry has been " . ($newSave ? 'created' : 'updated'),
+            Messages::SUCCESS
+        );
+
+        return $returnValues;
     }
 
     /**
