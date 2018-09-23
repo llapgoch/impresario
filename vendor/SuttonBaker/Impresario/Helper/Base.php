@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Helper;
+use DaveBaker\Core\Block\Template;
 use SuttonBaker\Impresario\Definition\Flow;
 
 /**
@@ -87,6 +88,26 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         )->setTabs($tabs);
 
         return $tabBlock;
+    }
+
+    /**
+     * @param $heading
+     * @param $body
+     * @return mixed
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function createAutoOpenModal(
+        $heading,
+        $body
+    ) {
+        return $this->getApp()->getBlockManager()->createBlock(
+            Template::class,
+            'modal'
+        )->setTemplate('components/modal.phtml')
+            ->setHeading($heading)
+            ->setBody($body)
+            ->addClass('js-modal-auto-show');
     }
 
     /**

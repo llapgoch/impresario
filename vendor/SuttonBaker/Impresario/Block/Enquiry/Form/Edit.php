@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
+use DaveBaker\Core\Block\Template;
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use DaveBaker\Form\Validation\Validator;
@@ -96,6 +97,8 @@ class Edit
                     'display_name'
                 )->getElementData();
         }
+
+
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
