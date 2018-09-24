@@ -25,9 +25,6 @@ class Enquiry
     protected $blockPrefix = 'enquiry';
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_ENQUIRY];
-    /** @var bool  */
-    protected $requiresLogin = true;
-
 
     /**
      * @param $params
@@ -44,22 +41,33 @@ class Enquiry
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
-    public function validatesaveAction($params, \WP_REST_Request $request)
-    {
-        if(!isset($params['formValues'])){
-            throw new Exception('No form values provided');
-        }
-
+    public function validatesaveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
         $helper = $this->getEnquiryHelper();
-        $modelInstance = $helper->getEnquiry();
-        $converter = $this->createAppObject(EnquiryConverter::class);
-        $formValues = $converter->convert($params['formValues']);
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        $validateResult = $this->validateValues($formValues);
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $modelInstance = $helper->getEnquiry();
+        $converter = $this->createAppObject(EnquiryConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+
+        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
+            $modelInstance->load($formValues['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
+        }
+
+        $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if($validateResult['hasErrors']){
             return $validateResult;
@@ -76,7 +84,7 @@ class Enquiry
             }
         }
 
-        return array_merge($validateResult, $this->saveEnquiry($validateResult['modelInstance'], $formValues));
+        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues));
     }
 
     /**
@@ -96,21 +104,39 @@ class Enquiry
      */
     public function saveAction($params, \WP_REST_Request $request)
     {
+        $helper = $this->getEnquiryHelper();
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
         if(!isset($params['formValues'])){
             throw new Exception('No form values provided');
+        }
+
+        $modelInstance = $helper->getEnquiry();
+        $converter = $this->createAppObject(EnquiryConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+
+        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
+            $modelInstance->load($formValues['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
         }
 
         $converter = $this->createAppObject(EnquiryConverter::class);
         $helper = $this->getEnquiryHelper();
         $formValues = $converter->convert($params['formValues']);
 
-        $validateResult = $this->validateValues($formValues);
+        $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if($validateResult['hasErrors']){
             return $validateResult;
         }
 
-        $saveResult = $this->saveEnquiry($validateResult['modelInstance'], $formValues);
+        $saveResult = $this->saveEnquiry($modelInstance, $formValues);
 
         return $saveResult;
     }
@@ -153,8 +179,10 @@ class Enquiry
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function deleteAction($params, \WP_REST_Request $request)
-    {
+    public function deleteAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
         $helper = $this->getEnquiryHelper();
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
@@ -180,55 +208,35 @@ class Enquiry
     }
 
     /**
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance
      * @param $formValues
-     * @return array|\WP_Error
-     * @throws Exception
+     * @return array
      * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
-    protected function validateValues($formValues)
-    {
-        $helper = $this->getEnquiryHelper();
-        if(!$helper->currentUserCanEdit()) {
-            return $this->getAccessDeniedError();
-        }
-
-        $saveResult = [];
-
-        $modelInstance = $helper->getEnquiry();
-
-        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
-            $modelInstance->load($formValues['enquiry_id']);
-
-            if(!$modelInstance->getId()){
-                throw new Exception('The enquiry could not be found');
-            }
-        }
-
+    protected function validateValues(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
+        $formValues
+    ) {
         $blockManager = $this->getApp()->getBlockManager();
+        $helper = $this->getEnquiryHelper();
+        $saveResult = [];
 
         /** @var EnquiryConfigurator $configurator */
         $configurator = $this->createAppObject(EnquiryConfigurator::class);
-
         /** @var Validator $validator */
-        $validator = $this->createAppObject(Validator::class)
-            ->setValues($formValues);
-
+        $validator = $this->createAppObject(Validator::class)->setValues($formValues);
         $validator->configurate($configurator)->validate();
 
         $errorBlock = $blockManager->createBlock(Main::class, 'enquiry.edit.form.errors');
-        $errorBlock->addErrors($validator->getErrors())
-            ->setIsReplacerBlock(true);
+        $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
 
         $this->addReplacerBlock($errorBlock);
 
         return [
             'hasErrors' => $validator->hasErrors(),
-            'errorFields' => $validator->getErrorFields(),
-            'modelInstance' => $modelInstance
+            'errorFields' => $validator->getErrorFields()
         ];
     }
 

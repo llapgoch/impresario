@@ -35,21 +35,6 @@ class EditController
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
     protected $modelInstance;
 
-    /** @var array  */
-    protected $nonUserValues = [
-        'quote_id',
-        'client_id',
-        'client_reference',
-        'site_name',
-        'created_by_id',
-        'last_edited_by_id',
-        'enquiry_id',
-        'parent_id',
-        'created_at',
-        'updated_at',
-        'is_deleted'
-    ];
-
 
     /**
      * @return bool|\SuttonBaker\Impresario\Controller\Base
@@ -100,36 +85,15 @@ class EditController
         wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
         wp_enqueue_script('impresario_calculator');
 
-        wp_register_script('impresario_quote', get_template_directory_uri() . '/assets/js/quote-edit.js', ['jquery']);
-        wp_enqueue_script('impresario_quote');
-
-        // Form submission
-        if($this->getRequest()->getPostParam('action')){
-            $postParams = $this->modifyFormValuesForSave($this->getRequest()->getPostParams());
-
-            /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\QuoteConfigurator');
-
-            /** @var \DaveBaker\Form\Validation\Validator $validator */
-            $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
-                ->setValues($postParams)
-                ->configurate($configurator);
-
-            if(!$validator->validate()){
-                return $this->prepareFormErrors($validator);
-            }
-
-            $this->saveFormValues($postParams);
-        }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
         /** @var \DaveBaker\Core\Helper\Date $helper */
         $helper = $this->getApp()->getHelper('Date');
 
+        $data = $this->modelInstance->getData();
         // Apply the values to the form element
         if($this->modelInstance->getId()) {
-            $data = $this->modelInstance->getData();
 
             if($this->modelInstance->getDateReturned()){
                 $data['date_returned'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDateReturned());
@@ -168,35 +132,6 @@ class EditController
                 $data
             );
         }
-    }
-
-    protected function modifyFormValuesForSave($postParams)
-    {
-        /** @var \DaveBaker\Core\Helper\Date $helper */
-        $helper = $this->getApp()->getHelper('Date');
-
-        // Convert dates to DB
-        if (isset($postParams['date_received'])){
-            $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
-        }
-
-        if(isset($postParams['date_required'])){
-            $postParams['date_required'] = $helper->localDateToDb($postParams['date_required']);
-        }
-
-        if(isset($postParams['date_return_by'])){
-            $postParams['date_return_by'] = $helper->localDateToDb($postParams['date_return_by']);
-        }
-
-        if(isset($postParams['date_returned'])){
-            $postParams['date_returned'] = $helper->localDateToDb($postParams['date_returned']);
-        }
-
-        if(isset($postParams['date_completed'])){
-            $postParams['date_completed'] = $helper->localDateToDb($postParams['date_completed']);
-        }
-
-        return $postParams;
     }
 
     /**

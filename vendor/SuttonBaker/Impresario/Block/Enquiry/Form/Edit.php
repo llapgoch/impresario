@@ -326,14 +326,6 @@ class Edit
                 'type' => 'Input\Hidden',
                 'value' => 'edit',
                 'data' => ['ignore_lock' => $ignoreLockValue]
-            ], [
-                'name' => 'enquiry_data',
-                'type' => 'Input\Hidden',
-                'value' => json_encode([
-                    'hasQuote' => ($quoteEntity->getId() ? 1 : 0),
-                    'completedStatus' => EnquiryDefinition::STATUS_COMPLETE
-                ]),
-                'class' => 'js-enquiry-data'
             ]
         ]);
 

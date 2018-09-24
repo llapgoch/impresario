@@ -18,8 +18,6 @@ class Enquiry extends Base
      */
     public function convert($data)
     {
-        /** @var EnquiryConverter $converter */
-        $converter = $this->createAppObject(EnquiryConverter::class);
         $helper = $this->getApp()->getHelper('Date');
 
         if (isset($data['date_received'])){

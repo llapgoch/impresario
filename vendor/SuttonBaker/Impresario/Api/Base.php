@@ -5,6 +5,9 @@ namespace SuttonBaker\Impresario\Api;
 class Base
     extends \DaveBaker\Core\Api\Base
 {
+    /** @var bool  */
+    protected $requiresLogin = true;
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Enquiry
      * @throws \DaveBaker\Core\Object\Exception

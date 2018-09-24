@@ -7,18 +7,55 @@ use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Roles;
 
+use SuttonBaker\Impresario\SaveConverter\Quote as QuoteConverter;
+
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Api
  *
  */
 class Quote
-    extends \DaveBaker\Core\Api\Base
+    extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'quote';
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_QUOTE];
+
+    public function validatesaveAction($params, \WP_REST_Request $request)
+    {
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $helper = $this->getQuoteHelper();
+        $modelInstance = $helper->getQuote();
+        $converter = $this->createAppObject(QuoteConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        $validateResult = $this->validateValues($formValues);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        // Check whether a new quote will be created for this enquiry
+        if(isset($formValues['status'])
+            && $formValues['status'] == EnquiryDefinition::STATUS_COMPLETE){
+            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+
+            if(!$quote->getId()){
+                $validateResult['confirm'] = 'A new quote will be created for this enquiry, are you sure you want to proceed?';
+                return $validateResult;
+            }
+        }
+
+        return array_merge($validateResult, $this->saveEnquiry($validateResult['modelInstance'], $formValues));
+    }
 
     /**
      * @param $params
@@ -48,7 +85,13 @@ class Quote
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 
-
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
     public function updaterevisiontableAction($params, \WP_REST_Request $request)
     {
         $helper = $this->getQuoteHelper();

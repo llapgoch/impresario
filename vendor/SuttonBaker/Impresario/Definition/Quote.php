@@ -12,6 +12,8 @@ class Quote
     const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const API_ENDPOINT_DELETE = 'quote/delete';
     const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisiontable';
+    const API_ENDPOINT_VALIDATE_SAVE = 'quote/validatesave';
+    const API_ENDPOINT_SAVE = 'quote/save';
 
     const ICON = 'fa fa-calculator';
 
@@ -63,6 +65,19 @@ class Quote
         'estimator_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
+    const NON_USER_VALUES = [
+        'quote_id',
+        'client_id',
+        'client_reference',
+        'site_name',
+        'created_by_id',
+        'last_edited_by_id',
+        'enquiry_id',
+        'parent_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
     /**
      * @return array
      */
