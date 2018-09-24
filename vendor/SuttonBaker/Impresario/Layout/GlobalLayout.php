@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+use DaveBaker\Core\Block\Block;
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 
 /**
@@ -12,6 +13,9 @@ class GlobalLayout extends Base
     protected $headingName = 'Dashboard';
     protected $icon = 'fa-tachometer';
     protected $headingShortcode = 'page_heading';
+
+    /** @var Block */
+    protected $rootContainer;
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
@@ -25,6 +29,17 @@ class GlobalLayout extends Base
                 'main.sidebar.nav'
             )->setShortcode('impressario_nav_items')
             ->setTemplate('nav/sidebar.phtml')
+        );
+
+        $this->addBlock(
+            $this->rootContainer = $this->createBlock(
+                Block::class,
+                'root.container'
+            )->setShortcode('root')
+        );
+
+        $this->rootContainer->addChildBlock(
+            $this->getModalHelper()->createModalPlaceholder()
         );
     }
 

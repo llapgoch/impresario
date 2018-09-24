@@ -120,4 +120,13 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Modal
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getModalHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Modal');
+    }
 }

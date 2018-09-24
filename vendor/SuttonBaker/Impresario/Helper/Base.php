@@ -91,26 +91,6 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     }
 
     /**
-     * @param $heading
-     * @param $body
-     * @return mixed
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function createAutoOpenModal(
-        $heading,
-        $body
-    ) {
-        return $this->getApp()->getBlockManager()->createBlock(
-            Template::class,
-            'modal'
-        )->setTemplate('components/modal.phtml')
-            ->setHeading($heading)
-            ->setBody($body)
-            ->addClass('js-modal-auto-show');
-    }
-
-    /**
      * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
      * @param bool $includeView
      * @return string
