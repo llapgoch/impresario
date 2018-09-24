@@ -198,21 +198,17 @@ class Enquiry
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
-    public function saveEnquiry($data)
-    {
-        $modelInstance = $this->getEnquiry();
+    public function saveEnquiry(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
+        $data
+    ) {
+
         $returnValues = [
             'redirect' => null,
             'enquiry_id' => null,
+            'quoteId' => null,
+            'quoteCreated' => false
         ];
-
-        if(isset($data['enquiry_id']) && $data['enquiry_id']){
-            $modelInstance->load($data['enquiry_id']);
-
-            if(!$modelInstance->getId()){
-                throw new Exception('The enquiry could not be found');
-            }
-        }
 
         foreach(EnquiryDefinition::NON_USER_VALUES as $nonUserValue){
             if(isset($data[$nonUserValue])){
@@ -220,7 +216,6 @@ class Enquiry
             }
         }
 
-        $data = $this->createAppObject(\SuttonBaker\Impresario\SaveConverter\Enquiry::class)->convert($data);
         $newSave = false;
 
         // Add created by user
@@ -229,6 +224,7 @@ class Enquiry
             $newSave = true;
         }
 
+        $returnValues['newSave'] = $newSave;
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $modelInstance->setData($data)->save();
@@ -249,16 +245,8 @@ class Enquiry
 
             if(!$quote->getId()) {
                 $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());
-
-                $this->getApp()->getGeneralSession()->addMessage(
-                    'A new quote has been created for the enquiry', Messages::SUCCESS
-                );
-
-                $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
-                    Page::QUOTE_EDIT,
-                    ['quote_id' => $quote->getId()]
-                );
-
+                $returnValues['quoteCreated'] = true;
+                $returnValues['quoteId'] = $quote->getId();
                 return $returnValues;
             }
         }
@@ -271,10 +259,6 @@ class Enquiry
             );
         }
 
-        $this->getApp()->getGeneralSession()->addMessage(
-            "The enquiry has been " . ($newSave ? 'created' : 'updated'),
-            Messages::SUCCESS
-        );
 
         return $returnValues;
     }

@@ -7,6 +7,7 @@ use DaveBaker\Core\Definitions\Messages;
 use DaveBaker\Form\Block\Error\Main;
 use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
+use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Form\EnquiryConfigurator;
 use SuttonBaker\Impresario\SaveConverter\Enquiry as EnquiryConverter;
@@ -18,7 +19,7 @@ use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
  *
  */
 class Enquiry
-    extends \DaveBaker\Core\Api\Base
+    extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'enquiry';
@@ -27,62 +28,6 @@ class Enquiry
     /** @var bool  */
     protected $requiresLogin = true;
 
-    /**
-     * @param $params
-     * @return array|\WP_Error
-     * @throws Exception
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
-     */
-    protected function validateValues($params)
-    {
-        $helper = $this->getEnquiryHelper();
-        if(!$helper->currentUserCanEdit()) {
-            return $this->getAccessDeniedError();
-        }
-
-        $saveResult = [];
-        if(!isset($params['formValues'])){
-            throw new Exception('No form values provided');
-        }
-
-        $modelInstance = $helper->getEnquiry();
-
-        if(isset($params['enquiry_id'])){
-            $modelInstance->load($params['enquiry_id']);
-
-            if(!$modelInstance->getId()){
-                throw new Exception('The enquiry could not be found');
-            }
-        }
-
-        $converter = $this->createAppObject(EnquiryConverter::class);
-        $formValues = $converter->convert($params['formValues']);
-        $blockManager = $this->getApp()->getBlockManager();
-
-        /** @var EnquiryConfigurator $configurator */
-        $configurator = $this->createAppObject(EnquiryConfigurator::class);
-
-        /** @var Validator $validator */
-        $validator = $this->createAppObject(Validator::class)
-            ->setValues($formValues);
-
-        $validator->configurate($configurator)->validate();
-
-        $errorBlock = $blockManager->createBlock(Main::class, 'enquiry.edit.form.errors');
-        $errorBlock->addErrors($validator->getErrors())
-            ->setIsReplacerBlock(true);
-
-        $this->addReplacerBlock($errorBlock);
-
-        return [
-            'hasErrors' => $validator->hasErrors(),
-            'errorFields' => $validator->getErrorFields()
-        ];
-    }
 
     /**
      * @param $params
@@ -110,19 +55,11 @@ class Enquiry
         $converter = $this->createAppObject(EnquiryConverter::class);
         $formValues = $converter->convert($params['formValues']);
 
-        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
-            $modelInstance->load($formValues['enquiry_id']);
-
-            if(!$modelInstance->getId()){
-                throw new Exception('The enquiry could not be found');
-            }
-        }
-
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        $validateResult = $this->validateValues($params);
+        $validateResult = $this->validateValues($formValues);
 
         if($validateResult['hasErrors']){
             return $validateResult;
@@ -139,7 +76,7 @@ class Enquiry
             }
         }
 
-        return array_merge($validateResult, $helper->saveEnquiry($formValues));
+        return array_merge($validateResult, $this->saveEnquiry($validateResult['modelInstance'], $formValues));
     }
 
     /**
@@ -159,14 +96,23 @@ class Enquiry
      */
     public function saveAction($params, \WP_REST_Request $request)
     {
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $converter = $this->createAppObject(EnquiryConverter::class);
         $helper = $this->getEnquiryHelper();
-        $validateResult = $this->validateValues($params);
+        $formValues = $converter->convert($params['formValues']);
+
+        $validateResult = $this->validateValues($formValues);
 
         if($validateResult['hasErrors']){
             return $validateResult;
         }
 
-        return $helper->saveEnquiry($params['formValues']);
+        $saveResult = $this->saveEnquiry($validateResult['modelInstance'], $formValues);
+
+        return $saveResult;
     }
 
     /**
@@ -234,21 +180,108 @@ class Enquiry
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Helper\Enquiry
+     * @param $formValues
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
-    protected function getEnquiryHelper()
+    protected function validateValues($formValues)
     {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Enquiry');
+        $helper = $this->getEnquiryHelper();
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        $saveResult = [];
+
+        $modelInstance = $helper->getEnquiry();
+
+        if(isset($formValues['enquiry_id']) && $formValues['enquiry_id']){
+            $modelInstance->load($formValues['enquiry_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The enquiry could not be found');
+            }
+        }
+
+        $blockManager = $this->getApp()->getBlockManager();
+
+        /** @var EnquiryConfigurator $configurator */
+        $configurator = $this->createAppObject(EnquiryConfigurator::class);
+
+        /** @var Validator $validator */
+        $validator = $this->createAppObject(Validator::class)
+            ->setValues($formValues);
+
+        $validator->configurate($configurator)->validate();
+
+        $errorBlock = $blockManager->createBlock(Main::class, 'enquiry.edit.form.errors');
+        $errorBlock->addErrors($validator->getErrors())
+            ->setIsReplacerBlock(true);
+
+        $this->addReplacerBlock($errorBlock);
+
+        return [
+            'hasErrors' => $validator->hasErrors(),
+            'errorFields' => $validator->getErrorFields(),
+            'modelInstance' => $modelInstance
+        ];
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Helper\Quote
+     * @param \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance
+     * @param $formValues
+     * @return array|\SuttonBaker\Impresario\Helper\Enquiry
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Helper\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
      */
-    protected function getQuoteHelper()
-    {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
+    protected function saveEnquiry(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
+        $formValues
+    ) {
+        $saveValues = $this->getEnquiryHelper()->saveEnquiry($modelInstance, $formValues);
+
+        if($saveValues['newSave'] == false && !$saveValues['quoteCreated']){
+            $this->addReplacerBlock(
+                $this->getModalHelper()->createAutoOpenModal(
+                    'Success',
+                    'The enquiry has been updated'
+                )
+            );
+        }
+
+        if($saveValues['quoteCreated']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                'A new quote has been created for the enquiry',
+                Messages::SUCCESS
+            );
+
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $saveValues['quoteId']]
+            );
+        }
+
+        if(!$saveValues['quoteCreated'] && $saveValues['newSave']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                "The enquiry has been created",
+                Messages::SUCCESS
+            );
+        }
+
+        return $saveValues;
     }
+
+
 
 }

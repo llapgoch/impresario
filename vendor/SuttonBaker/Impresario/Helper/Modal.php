@@ -21,10 +21,7 @@ class Modal
         $heading,
         $body
     ) {
-        return $this->getApp()->getBlockManager()->createBlock(
-            Template::class,
-            'global.modal'
-        )->setTemplate('components/modal.phtml')
+        return $this->createModalPlaceholder()
             ->setHeading($heading)
             ->setBody($body)
             ->addClass('js-modal-auto-show');
@@ -37,6 +34,8 @@ class Modal
      */
     public function createModalPlaceholder()
     {
+        $this->getApp()->getBlockManager()->deleteBlock('global.modal');
+
         return $this->getApp()->getBlockManager()->createBlock(
             Template::class,
             'global.modal'

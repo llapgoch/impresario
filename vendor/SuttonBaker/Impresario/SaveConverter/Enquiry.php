@@ -22,13 +22,11 @@ class Enquiry extends Base
         $converter = $this->createAppObject(EnquiryConverter::class);
         $helper = $this->getApp()->getHelper('Date');
 
-        // Convert dates to DB
         if (isset($data['date_received'])){
             $data['date_received'] = $helper->localDateToDb($data['date_received']);
         }
 
         if(isset($data['target_date'])){
-
             $data['target_date'] = $helper->localDateToDb($data['target_date']);
         }
 
