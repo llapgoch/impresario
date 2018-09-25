@@ -37,6 +37,7 @@ class Quote
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
     public function validatesaveAction(
@@ -65,13 +66,13 @@ class Quote
         }
 
         if($helper->saveQuoteDuplicateCheck($modelInstance, $formValues)){
-            $confirmMessages[] = 'This will create a new revision of the quote';
+            $confirmMessages[] = 'This will create a new revision of the quote.';
         }
 
         if($helper->saveQuoteCreateProjectCheck($modelInstance, $formValues)){
             $confirmMessages[] = sprintf(
-                'This will %s, create a new project for the quote.',
-                $confirmMessages ? 'also' : ''
+                'This will %screate a new project for the quote.',
+                $confirmMessages ? 'also ' : ''
             );
         }
 
@@ -90,9 +91,11 @@ class Quote
      * @param \WP_REST_Request $request
      * @return array|\WP_Error
      * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
     public function saveAction(
         $params,
@@ -110,7 +113,7 @@ class Quote
 
         $converter = $this->createAppObject(QuoteConverter::class);
         $formValues = $converter->convert($params['formValues']);
-        $modelInstance = $this->loadQuote($params);
+        $modelInstance = $this->loadQuote($formValues);
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
@@ -118,7 +121,7 @@ class Quote
             return $validateResult;
         }
 
-        $saveResult = $this->saveEnquiry($modelInstance, $formValues);
+        $saveResult = $this->saveQuote($modelInstance, $formValues);
 
         return $saveResult;
     }
@@ -129,6 +132,7 @@ class Quote
      * @return array
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
     protected function validateValues(
         \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
@@ -170,6 +174,15 @@ class Quote
     ) {
         $saveValues = $this->getQuoteHelper()->saveQuote($modelInstance, $formValues);
 
+
+        if($saveValues['new_save'] == true){
+            $this->getApp()->getGeneralSession()->addMessage(
+                "The quote has been created",
+                Messages::SUCCESS
+            );
+        }
+
+        // No need to redirect for updating
         if($saveValues['new_save'] == false
             && !$saveValues['project_created'] && !$saveValues['quote_duplicated']){
             $this->addReplacerBlock(
@@ -181,23 +194,21 @@ class Quote
         }
 
         if($saveValues['quote_duplicated']){
-            $message = 'The quote has been revised based on changes to net sell or net cost';
-
-            if($saveValues['project_created']){
-                $this->getApp()->getGeneralSession()->addMessage(
-                    $message,
-                    Messages::SUCCESS
-                );
-            }
-
-            $this->addReplacerBlock(
-                $this->getModalHelper()->createAutoOpenModal(
-                    'Success',
-                    $message
-                )
+            $this->getApp()->getGeneralSession()->addMessage(
+                'A new revision of the quote has been created',
+                Messages::SUCCESS
             );
         }
 
+        // Redirect to the new quote or quote edit page
+        if($saveValues['new_save'] || $saveValues['quote_duplicated']){
+            $saveValues['redirect'] =  $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $saveValues['quote_id']]
+            );
+        }
+
+        // Redirect to new project
         if($saveValues['project_created']){
             $this->getApp()->getGeneralSession()->addMessage(
                 'A new project has been created for the quote',
@@ -210,12 +221,8 @@ class Quote
             );
         }
 
-        if(!$saveValues['project_created'] && $saveValues['new_save']){
-            $this->getApp()->getGeneralSession()->addMessage(
-                "The quote has been created",
-                Messages::SUCCESS
-            );
-        }
+
+
 
         return $saveValues;
     }

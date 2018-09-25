@@ -343,13 +343,13 @@ class Quote extends Base
      * @throws \Zend_Db_Adapter_Exception
      */
     public function saveQuoteCreateProjectCheck(
-        \SuttonBaker\Impresario\Model\Db\Quote $quote,
+        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
         $data
     ) {
         if(isset($data['tender_status']) &&
             $data['tender_status'] == QuoteDefinition::TENDER_STATUS_WON) {
 
-            $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
+            $project = $this->getProjectHelper()->getProjectForQuote($modelInstance->getId());
 
             return $project->getId() ? false : true;
         }
@@ -363,11 +363,11 @@ class Quote extends Base
     ) {
 
         $returnValues = [
-            'redirect' => null,
             'quote_id' => null,
             'quote_duplicated' => false,
             'project_id' => null,
-            'project_created' => false
+            'project_created' => false,
+            'new_save' => false
         ];
 
         foreach(QuoteDefinition::NON_USER_VALUES as $nonUserValue){
@@ -385,45 +385,37 @@ class Quote extends Base
         }
 
         $returnValues['new_save'] = $newSave;
+        $returnValues['quote_id'] = $modelInstance->getId();
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-        $modelInstance->setData($data)->save();
-        $returnValues['quote_id'] = $modelInstance->getId();
 
-        if($newSave && ($temporaryId = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
-                $modelInstance->getId()
-            );
-        }
+        // Duplicate quote if required
+        if($this->saveQuoteDuplicateCheck($modelInstance, $data)){
+            $modelInstance = $this->duplicateQuote($modelInstance);
+            $returnValues['quote_duplicated'] = true;
+            $returnValues['quote_id'] = $modelInstance->getId();
 
-        // Reload the page so things like tasks appear
-        if($newSave){
             $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
                 ['quote_id' => $modelInstance->getId()]
             );
         }
 
-       // Duplicate quote if required
-        if($this->saveQuoteDuplicateCheck($modelInstance, $data)){
-            $newQuote = $this->duplicateQuote($modelInstance);
-            $returnValues['quote_duplicated'] = true;
-            $returnValues['quote_id'] = $newQuote->getId();
-
-            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
-                Page::QUOTE_EDIT,
-                ['quote_id' => $newQuote->getId()]
-            );
-
-        }
-
         if($this->saveQuoteCreateProjectCheck($modelInstance, $data)){
             $project = $this->getProjectHelper()->createProjectFromQuote($modelInstance->getId());
             $returnValues['project_created'] = true;
             $returnValues['project_id'] = $project->getId();
+        }
+
+        $modelInstance->setData($data)->save();
+
+        if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
+                $modelInstance->getId()
+            );
         }
 
         return $returnValues;

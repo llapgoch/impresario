@@ -138,9 +138,7 @@ class Enquiry
             return $validateResult;
         }
 
-        $saveResult = $this->saveEnquiry($modelInstance, $formValues);
-
-        return $saveResult;
+        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues));
     }
 
     /**
@@ -259,9 +257,22 @@ class Enquiry
         \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
         $formValues
     ) {
-        $saveValues = $this->getEnquiryHelper()->saveEnquiry($modelInstance, $formValues);
+        $saveResult = $this->getEnquiryHelper()->saveEnquiry($modelInstance, $formValues);
 
-        if($saveValues['newSave'] == false && !$saveValues['quoteCreated']){
+        // Reload the page so things like tasks appear
+        if($saveResult['new_save']){
+            $saveResult['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::ENQUIRY_EDIT,
+                ['enquiry_id' => $modelInstance->getId()]
+            );
+
+            $this->getApp()->getGeneralSession()->addMessage(
+                'The enquiry has been created',
+                Messages::SUCCESS
+            );
+        }
+
+        if($saveResult['new_save'] == false && !$saveResult['quote_created']){
             $this->addReplacerBlock(
                 $this->getModalHelper()->createAutoOpenModal(
                     'Success',
@@ -270,25 +281,18 @@ class Enquiry
             );
         }
 
-        if($saveValues['quoteCreated']){
+        if($saveResult['quote_created']){
             $this->getApp()->getGeneralSession()->addMessage(
                 'A new quote has been created for the enquiry',
                 Messages::SUCCESS
             );
 
-            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+            $saveResult['redirect'] = $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
-                ['quote_id' => $saveValues['quoteId']]
+                ['quote_id' => $saveResult['quote_id']]
             );
         }
 
-        if(!$saveValues['quoteCreated'] && $saveValues['newSave']){
-            $this->getApp()->getGeneralSession()->addMessage(
-                "The enquiry has been created",
-                Messages::SUCCESS
-            );
-        }
-
-        return $saveValues;
+        return $saveResult;
     }
 }

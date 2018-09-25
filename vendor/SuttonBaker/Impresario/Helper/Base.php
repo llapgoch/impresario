@@ -16,15 +16,17 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     protected $viewCapabilities = [];
 
     /**
-     * @param string $for
+     * @param $for
      * @param \SuttonBaker\Impresario\Model\Db\Enquiry|null $enquiry
      * @param \SuttonBaker\Impresario\Model\Db\Quote|null $quote
      * @param \SuttonBaker\Impresario\Model\Db\Project|null $project
      * @return mixed
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getTabBar(
         $for,
@@ -40,6 +42,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
             $for = 'quote_superseded';
             $supersededQuote = $quote;
             $quote = $quote->getParentQuote();
+            $project = $this->getProjectHelper()->getProjectForQuote($quote->getId());
         }
 
         foreach($tabs as $type => $tab){

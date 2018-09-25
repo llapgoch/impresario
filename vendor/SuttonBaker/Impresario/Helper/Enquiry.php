@@ -202,12 +202,10 @@ class Enquiry
         \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
         $data
     ) {
-
         $returnValues = [
-            'redirect' => null,
             'enquiry_id' => null,
-            'quoteId' => null,
-            'quoteCreated' => false
+            'quote_id' => null,
+            'quote_created' => false
         ];
 
         foreach(EnquiryDefinition::NON_USER_VALUES as $nonUserValue){
@@ -224,7 +222,7 @@ class Enquiry
             $newSave = true;
         }
 
-        $returnValues['newSave'] = $newSave;
+        $returnValues['new_save'] = $newSave;
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $modelInstance->setData($data)->save();
@@ -245,20 +243,11 @@ class Enquiry
 
             if(!$quote->getId()) {
                 $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());
-                $returnValues['quoteCreated'] = true;
-                $returnValues['quoteId'] = $quote->getId();
+                $returnValues['quote_created'] = true;
+                $returnValues['quote_id'] = $quote->getId();
                 return $returnValues;
             }
         }
-
-        // Reload the page so things like tasks appear
-        if($newSave){
-            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
-                Page::ENQUIRY_EDIT,
-                ['enquiry_id' => $modelInstance->getId()]
-            );
-        }
-
 
         return $returnValues;
     }

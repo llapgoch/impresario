@@ -27,19 +27,19 @@ class Quote
             $data['date_received'] = $helper->localDateToDb($data['date_received']);
         }
 
-        if(isset($postParams['date_required'])){
+        if(isset($data['date_required'])){
             $data['date_required'] = $helper->localDateToDb($data['date_required']);
         }
 
-        if(isset($postParams['date_return_by'])){
+        if(isset($data['date_return_by'])){
             $data['date_return_by'] = $helper->localDateToDb($data['date_return_by']);
         }
 
-        if(isset($postParams['date_returned'])){
+        if(isset($data['date_returned'])){
             $data['date_returned'] = $helper->localDateToDb($data['date_returned']);
         }
 
-        if(isset($postParams['date_completed'])){
+        if(isset($data['date_completed'])){
             $data['date_completed'] = $helper->localDateToDb($data['date_completed']);
         }
 
