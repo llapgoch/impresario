@@ -102,8 +102,10 @@ class Enquiry
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
-    public function saveAction($params, \WP_REST_Request $request)
-    {
+    public function saveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
         $helper = $this->getEnquiryHelper();
 
         if(!$helper->currentUserCanEdit()) {
@@ -289,7 +291,4 @@ class Enquiry
 
         return $saveValues;
     }
-
-
-
 }

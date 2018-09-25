@@ -4,10 +4,15 @@ namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Form\Block\Error\Main;
+use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
+use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
 
+use SuttonBaker\Impresario\Form\QuoteConfigurator;
 use SuttonBaker\Impresario\SaveConverter\Quote as QuoteConverter;
+use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 
 /**
  * Class Quote
@@ -22,39 +27,220 @@ class Quote
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_QUOTE];
 
-    public function validatesaveAction($params, \WP_REST_Request $request)
-    {
-        if(!isset($params['formValues'])){
-            throw new Exception('No form values provided');
-        }
-
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function validatesaveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
         $helper = $this->getQuoteHelper();
-        $modelInstance = $helper->getQuote();
-        $converter = $this->createAppObject(QuoteConverter::class);
-        $formValues = $converter->convert($params['formValues']);
+        $confirmMessages = [];
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        $validateResult = $this->validateValues($formValues);
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $converter = $this->createAppObject(QuoteConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+        $modelInstance = $this->loadQuote($formValues);
+
+        $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if($validateResult['hasErrors']){
             return $validateResult;
         }
 
-        // Check whether a new quote will be created for this enquiry
-        if(isset($formValues['status'])
-            && $formValues['status'] == EnquiryDefinition::STATUS_COMPLETE){
-            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+        if($helper->saveQuoteDuplicateCheck($modelInstance, $formValues)){
+            $confirmMessages[] = 'This will create a new revision of the quote';
+        }
 
-            if(!$quote->getId()){
-                $validateResult['confirm'] = 'A new quote will be created for this enquiry, are you sure you want to proceed?';
-                return $validateResult;
+        if($helper->saveQuoteCreateProjectCheck($modelInstance, $formValues)){
+            $confirmMessages[] = sprintf(
+                'This will %s, create a new project for the quote.',
+                $confirmMessages ? 'also' : ''
+            );
+        }
+
+        if($confirmMessages){
+            $confirmMessages[] = "Would you like to proceed?";
+            $validateResult['confirm'] = implode("\r", $confirmMessages);
+
+            return $validateResult;
+        }
+
+        return array_merge($validateResult, $this->saveQuote($modelInstance, $formValues));
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function saveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        $helper = $this->getQuoteHelper();
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $converter = $this->createAppObject(QuoteConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+        $modelInstance = $this->loadQuote($params);
+
+        $validateResult = $this->validateValues($modelInstance, $formValues);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        $saveResult = $this->saveEnquiry($modelInstance, $formValues);
+
+        return $saveResult;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
+     * @param $formValues
+     * @return array
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function validateValues(
+        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
+        $formValues
+    ) {
+        $blockManager = $this->getApp()->getBlockManager();
+        $helper = $this->getQuoteHelper();
+        $saveResult = [];
+
+        /** @var QuoteConfigurator $configurator */
+        $configurator = $this->createAppObject(QuoteConfigurator::class);
+        /** @var Validator $validator */
+        $validator = $this->createAppObject(Validator::class)->setValues($formValues);
+        $validator->configurate($configurator)->validate();
+
+        $errorBlock = $blockManager->createBlock(Main::class, 'quote.edit.form.errors');
+        $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
+
+        $this->addReplacerBlock($errorBlock);
+
+        return [
+            'hasErrors' => $validator->hasErrors(),
+            'errorFields' => $validator->getErrorFields()
+        ];
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
+     * @param $formValues
+     * @return array
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function saveQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
+        $formValues
+    ) {
+        $saveValues = $this->getQuoteHelper()->saveQuote($modelInstance, $formValues);
+
+        if($saveValues['new_save'] == false
+            && !$saveValues['project_created'] && !$saveValues['quote_duplicated']){
+            $this->addReplacerBlock(
+                $this->getModalHelper()->createAutoOpenModal(
+                    'Success',
+                    'The quote has been updated'
+                )
+            );
+        }
+
+        if($saveValues['quote_duplicated']){
+            $message = 'The quote has been revised based on changes to net sell or net cost';
+
+            if($saveValues['project_created']){
+                $this->getApp()->getGeneralSession()->addMessage(
+                    $message,
+                    Messages::SUCCESS
+                );
+            }
+
+            $this->addReplacerBlock(
+                $this->getModalHelper()->createAutoOpenModal(
+                    'Success',
+                    $message
+                )
+            );
+        }
+
+        if($saveValues['project_created']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                'A new project has been created for the quote',
+                Messages::SUCCESS
+            );
+
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::PROJECT_EDIT,
+                ['project_id' => $saveValues['project_id']]
+            );
+        }
+
+        if(!$saveValues['project_created'] && $saveValues['new_save']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                "The quote has been created",
+                Messages::SUCCESS
+            );
+        }
+
+        return $saveValues;
+    }
+
+    /**
+     * @param $params
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     * @throws Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function loadQuote($params)
+    {
+        $modelInstance = $this->getQuoteHelper()->getQuote();
+
+        if(isset($params['quote_id']) && $params['quote_id']){
+            $modelInstance->load($params['quote_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The quote could not be found');
             }
         }
 
-        return array_merge($validateResult, $this->saveEnquiry($validateResult['modelInstance'], $formValues));
+        return $modelInstance;
     }
 
     /**

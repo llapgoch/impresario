@@ -311,6 +311,125 @@ class Quote extends Base
     }
 
     /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
+     * @param $data
+     * @return bool
+     */
+    public function saveQuoteDuplicateCheck(
+        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
+        $data
+    ) {
+
+        if(isset($data['net_sell']) && isset($data['net_cost'])) {
+            if ((float)$modelInstance->getNetCost() && (float)$modelInstance->getNetSell()) {
+                if (((float)$modelInstance->getNetCost() !== (float)$data['net_cost'] ||
+                    (float)$modelInstance->getNetSell() !== (float)$data['net_sell'])
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @param $data
+     * @return bool
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function saveQuoteCreateProjectCheck(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote,
+        $data
+    ) {
+        if(isset($data['tender_status']) &&
+            $data['tender_status'] == QuoteDefinition::TENDER_STATUS_WON) {
+
+            $project = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
+
+            return $project->getId() ? false : true;
+        }
+
+        return false;
+    }
+
+    public function saveQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
+        $data
+    ) {
+
+        $returnValues = [
+            'redirect' => null,
+            'quote_id' => null,
+            'quote_duplicated' => false,
+            'project_id' => null,
+            'project_created' => false
+        ];
+
+        foreach(QuoteDefinition::NON_USER_VALUES as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
+        $newSave = false;
+
+        // Add created by user
+        if(!$modelInstance->getId()) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+            $newSave = true;
+        }
+
+        $returnValues['new_save'] = $newSave;
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        $modelInstance->setData($data)->save();
+        $returnValues['quote_id'] = $modelInstance->getId();
+
+        if($newSave && ($temporaryId = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
+                $modelInstance->getId()
+            );
+        }
+
+        // Reload the page so things like tasks appear
+        if($newSave){
+            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $modelInstance->getId()]
+            );
+        }
+
+       // Duplicate quote if required
+        if($this->saveQuoteDuplicateCheck($modelInstance, $data)){
+            $newQuote = $this->duplicateQuote($modelInstance);
+            $returnValues['quote_duplicated'] = true;
+            $returnValues['quote_id'] = $newQuote->getId();
+
+            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $newQuote->getId()]
+            );
+
+        }
+
+        if($this->saveQuoteCreateProjectCheck($modelInstance, $data)){
+            $project = $this->getProjectHelper()->createProjectFromQuote($modelInstance->getId());
+            $returnValues['project_created'] = true;
+            $returnValues['project_id'] = $project->getId();
+        }
+
+        return $returnValues;
+    }
+
+    /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
      * @return \SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Db\Exception

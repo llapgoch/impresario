@@ -52,6 +52,7 @@ class EditController
         }
 
         $this->modelInstance = $this->getQuoteHelper()->getQuote($instanceId);
+        $this->getApp()->getRegistry()->register('model_instance', $this->modelInstance);
 
         if(!$this->modelInstance->getId()){
             $this->addMessage('The quote could not be found');

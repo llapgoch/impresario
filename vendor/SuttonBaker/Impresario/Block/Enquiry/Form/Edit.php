@@ -2,10 +2,8 @@
 
 namespace SuttonBaker\Impresario\Block\Enquiry\Form;
 
-use DaveBaker\Core\Block\Template;
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
-use DaveBaker\Form\Validation\Validator;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use SuttonBaker\Impresario\Definition\Enquiry;
 use SuttonBaker\Impresario\Definition\Page;
@@ -52,18 +50,19 @@ class Edit
             [
                 'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_VALIDATE_SAVE),
                 'endpointSave' => $this->getUrlHelper()->getApiUrl(Enquiry::API_ENDPOINT_SAVE),
-                'idElementSelector' => '[name="enquiry_id"]'
+                'idElementSelector' => '[name="enquiry_id"]',
+                'idKey' => 'enquiry_id'
             ]
         );
 
-        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
-        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($entityInstance);
+        $modelInstance  = $this->getApp()->getRegistry()->get('model_instance');
+        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance);
 
         $this->addClass('js-enquiry-form');
         $this->addAttribute(
             ['data-update-url' => $this->getApp()->getApiManager()->getUrl(
                 'client/update',
-                ['clientid' => $entityInstance->getId() ? $entityInstance->getId() : 0]
+                ['clientid' => $modelInstance->getId() ? $modelInstance->getId() : 0]
             )]
         );
 
@@ -104,7 +103,7 @@ class Edit
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
         $ignoreLockValue = false;
 
-        if($this->getEnquiryHelper()->currentUserCanEdit() && !$entityInstance->getIsDeleted()){
+        if($this->getEnquiryHelper()->currentUserCanEdit() && !$modelInstance->getIsDeleted()){
             $ignoreLockValue = true;
         }
 
@@ -114,10 +113,10 @@ class Edit
             ->setGroupTemplate('form/group-vertical.phtml');
 
         $deleteAttrs = $quoteEntity->getId()
-            || $entityInstance->getId() == null
-            || $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+            || $modelInstance->getId() == null
+            || $modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
-        $updateAttrs = $entityInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
@@ -288,7 +287,7 @@ class Edit
                 'rowIdentifier' => 'button_bar',
                 'attributes' => $updateAttrs,
                 'data' => [
-                    'button_name' => $this->getEnquiryHelper()->getActionVerb($entityInstance, false) . " Enquiry",
+                    'button_name' => $this->getEnquiryHelper()->getActionVerb($modelInstance, false) . " Enquiry",
                     'capabilities' => $this->getEnquiryHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',
@@ -308,7 +307,7 @@ class Edit
                         'type' => 'Enquiry',
                         'endpoint' => $this->getUrlHelper()->getApiUrl(
                             EnquiryDefinition::API_ENDPOINT_DELETE,
-                            ['id' => $entityInstance->getId()]
+                            ['id' => $modelInstance->getId()]
                         ),
                         'returnUrl' => $returnUrl
                     ]
@@ -320,7 +319,7 @@ class Edit
             ], [
                 'name' => 'enquiry_id',
                 'type' => 'Input\Hidden',
-                'value' => $entityInstance->getId()
+                'value' => $modelInstance->getId()
             ], [
                 'name' => 'action',
                 'type' => 'Input\Hidden',
@@ -330,7 +329,7 @@ class Edit
         ]);
 
 
-        if($entityInstance->getId()) {
+        if($modelInstance->getId()) {
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->blockPrefix}.task.table"
@@ -339,7 +338,7 @@ class Edit
 
             $this->taskTableBlock->setInstanceCollection(
                 $collection = $this->getTaskHelper()->getTaskCollectionForEntity(
-                    $entityInstance->getId(),
+                    $modelInstance->getId(),
                     TaskDefinition::TASK_TYPE_ENQUIRY
                 )
             )->setEditLinkParams([
@@ -350,16 +349,16 @@ class Edit
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        $enquiryIsClosed = in_array($entityInstance->getStatus(),
+        $enquiryIsClosed = in_array($modelInstance->getStatus(),
             [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]);
 
-        if($enquiryIsClosed || $entityInstance->getIsDeleted()){
+        if($enquiryIsClosed || $modelInstance->getIsDeleted()){
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
                     "{$this->blockPrefix}.warning.message"
-                )->setMessage("This {$this->prefixName} " . ($entityInstance->getIsDeleted() ? "has been removed" : "is locked"))
-                ->setMessageType($entityInstance->getIsDeleted() ? 'danger' : 'warning')
+                )->setMessage("This {$this->prefixName} " . ($modelInstance->getIsDeleted() ? "has been removed" : "is locked"))
+                ->setMessageType($modelInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
 
@@ -372,8 +371,8 @@ class Edit
             '\SuttonBaker\Impresario\Block\Upload\TableContainer',
             "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "enquiry.edit.button.bar")
-            ->setUploadType($entityInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-            ->setIdentifier($entityInstance->getId() ? $entityInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+            ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+            ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
         if($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false){
@@ -389,12 +388,12 @@ class Edit
      */
     protected function _preRender()
     {
-        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
 
         $uploadParams = [
-            'upload_type' => $entityInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $entityInstance->getId() ? $entityInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'upload_type' => $modelInstance ->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $modelInstance ->getId() ? $modelInstance ->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
         if(!$this->isLocked()) {
@@ -412,7 +411,7 @@ class Edit
             );
         }
 
-        if($entityInstance->getId()) {
+        if($modelInstance ->getId()) {
             if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
                 $tableBlock->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
@@ -421,7 +420,7 @@ class Edit
                         TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
                         [
                             'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
-                            'parent_id' => $entityInstance->getId()
+                            'parent_id' => $modelInstance ->getId()
                         ]
                     )
                 ]);
@@ -443,7 +442,7 @@ class Edit
                         \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
                         [
                             'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_ENQUIRY,
-                            'parent_id' => $entityInstance->getId()
+                            'parent_id' => $modelInstance->getId()
                         ],
                         true
                     )])

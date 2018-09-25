@@ -17,8 +17,8 @@ use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'quote_id';
-    const PREFIX_KEY = 'quote';
-    const PREFIX_NAME = 'quote';
+    protected $prefixName = 'Quote';
+    protected $blockPrefix = 'quote';
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
@@ -43,17 +43,23 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         parent::_preDispatch();
 
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
+        wp_enqueue_script('impresario_form_validator');
+        $this->addClass('js-validate-form');
+
+        $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+
+        $this->addJsDataItems(
+            [
+                'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(QuoteDefinition::API_ENDPOINT_VALIDATE_SAVE),
+                'endpointSave' => $this->getUrlHelper()->getApiUrl(QuoteDefinition::API_ENDPOINT_SAVE),
+                'idElementSelector' => '[name="quote_id"]',
+                'idKey' => 'quote_id'
+            ]
+        );
 
         $this->addClass('js-quote-form');
 
-        if(!($entityId = $this->getRequest()->getParam(self::ID_KEY))){
-            return;
-        }
-
-        $this->modelInstance = $this->getQuoteHelper()->getQuote($entityId);
-        $projectEntity = $this->getProjectHelper()->getProjectForQuote($entityId);
+        $projectEntity = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
 
         // PMs
         if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
@@ -111,7 +117,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
-            ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+            ->setFormName("{$this->blockPrefix}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
         $deleteAttrs = $projectEntity->getId()
             || $this->modelInstance->getId() == null
@@ -124,6 +130,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST);
+
+        $this->addChildBlock(
+            $this->createFormErrorBlock()
+                ->setOrder('before', '')
+        );
 
         $elements = $builder->build([
             [
@@ -430,22 +441,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'quote_id',
                 'type' => 'Input\Hidden',
-                'value' => $entityId
+                'value' => $this->modelInstance->getId()
             ], [
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
-            ], [
-                'name' => 'quote_data',
-                'type' => 'Input\Hidden',
-                'value' => json_encode([
-                    'hasProject' => ($projectEntity->getId() ? 1 : 0),
-                    'completedTenderStatus' => QuoteDefinition::TENDER_STATUS_WON,
-                    'netCost' => $this->modelInstance->getNetCost(),
-                    'netSell' => $this->modelInstance->getNetSell(),
-                    'hasId' => $this->modelInstance->getId() ? 1 : 0
-                ]),
-                'class' => 'js-quote-data'
             ]
         ]);
 
@@ -468,8 +468,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
-                    "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} " . $message)
+                    "{$this->blockPrefix}.warning.message"
+                )->setMessage("This {$this->blockPrefix} " . $message)
                     ->setMessageType($this->modelInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
@@ -481,7 +481,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
-                "{$prefixKey}.file.upload.container"
+                "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "quote.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_QUOTE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
@@ -506,12 +506,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             return;
         }
 
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
-
         $this->taskTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Task\TableContainer',
-            "{$prefixKey}.task.table"
+            "{$this->blockPrefix}.task.table"
         )->setOrder('after', 'quote.edit.project.name.form.group')
             ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
@@ -548,12 +545,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             return $this;
         }
 
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
-
         $this->pastRevisionsTableBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
-            "{$prefixKey}.past.revisions.table"
+            "{$this->blockPrefix}.past.revisions.table"
         )->setOrder('after', 'quote.edit.project.name.form.group')
             ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
             ->setParentQuote($this->modelInstance);
@@ -568,10 +562,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preRender()
     {
-
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
 
         $uploadParams = [
@@ -583,7 +574,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
-                    "{$prefixKey}.file.uploader",
+                    "{$this->blockPrefix}.file.uploader",
                     'header_elements'
                 )->addJsDataItems(
                     ['endpoint' => $this->getUrlHelper()->getApiUrl(

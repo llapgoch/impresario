@@ -2,14 +2,18 @@
 
 namespace SuttonBaker\Impresario\SaveConverter;
 
+use SuttonBaker\Impresario\Api\Base;
+
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\SaveConverter
  */
 class Quote
+    extends Base
 {
     /**
      * @param $data
+     * @return mixed
      * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -38,5 +42,7 @@ class Quote
         if(isset($postParams['date_completed'])){
             $data['date_completed'] = $helper->localDateToDb($data['date_completed']);
         }
+
+        return $data;
     }
 }
