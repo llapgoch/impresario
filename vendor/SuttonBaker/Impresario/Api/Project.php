@@ -5,7 +5,11 @@ use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
+use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Form\ProjectConfigurator;
+use SuttonBaker\Impresario\SaveConverter\Project as ProjectConverter;
 
 /**
  * Class Project
@@ -19,6 +23,180 @@ class Project
     protected $blockPrefix = 'project';
     /** @var array  */
     protected $capabilities = [Roles::CAP_VIEW_PROJECT];
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function validatesaveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        $helper = $this->getProjectHelper();
+        $confirmMessages = [];
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $converter = $this->createAppObject(ProjectConverter::class);
+        $formValues = $converter->convert($params['formValues']);
+
+        $modelInstance = $this->loadProject($formValues);
+
+        $validateResult = $this->validateValues($modelInstance, $formValues);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        if($modelInstance->isComplete() == false && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE){
+            $validateResult['confirm'] = 'This will complete and archive the project. Would you like to proceed?';
+
+            return $validateResult;
+        }
+
+        return array_merge($validateResult, $this->saveProject($modelInstance, $formValues));
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function saveAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        $helper = $this->getProjectHelper();
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['formValues'])){
+            throw new Exception('No form values provided');
+        }
+
+        $converter = $this->createAppObject(ProjectConfigurator::class);
+        $formValues = $converter->convert($params['formValues']);
+        $modelInstance = $this->loadProject($formValues);
+
+        $validateResult = $this->validateValues($modelInstance, $formValues);
+
+        if($validateResult['hasErrors']){
+            return $validateResult;
+        }
+
+        $saveResult = $this->saveProject($modelInstance, $formValues);
+
+        return $saveResult;
+    }
+
+    protected function validateValues(
+        \SuttonBaker\Impresario\Model\Db\Project $modelInstance,
+        $formValues
+    ) {
+        $blockManager = $this->getApp()->getBlockManager();
+        $helper = $this->getQuoteHelper();
+        $saveResult = [];
+
+        /** @var QuoteConfigurator $configurator */
+        $configurator = $this->createAppObject(ProjectConfigurator::class);
+        /** @var Validator $validator */
+        $validator = $this->createAppObject(Validator::class)->setValues($formValues);
+        $validator->configurate($configurator)->validate();
+
+        $errorBlock = $blockManager->createBlock(Main::class, 'project.edit.form.errors');
+        $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
+
+        $this->addReplacerBlock($errorBlock);
+
+        return [
+            'hasErrors' => $validator->hasErrors(),
+            'errorFields' => $validator->getErrorFields()
+        ];
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Project $modelInstance
+     * @param $formValues
+     * @return array
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function saveProject(
+        \SuttonBaker\Impresario\Model\Db\Project $modelInstance,
+        $formValues
+    ) {
+        $saveValues = $this->getProjectHelper()->saveProject($modelInstance, $formValues);
+
+        if($saveValues['new_save'] == true){
+            $this->getApp()->getGeneralSession()->addMessage(
+                "The project has been created",
+                Messages::SUCCESS
+            );
+        }
+
+        // No need to redirect for updating
+        if($saveValues['new_save'] == false && !$saveValues['project_newly_completed']){
+            $this->addReplacerBlock(
+                $this->getModalHelper()->createAutoOpenModal(
+                    'Success',
+                    'The project has been updated'
+                )
+            );
+        }
+
+        if($saveValues['project_newly_completed']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                'A new project has been created for the quote',
+                Messages::SUCCESS
+            );
+
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
+        }
+
+        return $saveValues;
+    }
+
+    /**
+     * @param $params
+     * @return \SuttonBaker\Impresario\Model\Db\Project
+     * @throws Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function loadProject($params)
+    {
+        $modelInstance = $this->getProjectHelper()->getProject();
+
+        if(isset($params['project_id']) && $params['project_id']){
+            $modelInstance->load($params['project_id']);
+
+            if(!$modelInstance->getId()){
+                throw new Exception('The project could not be found');
+            }
+        }
+
+        return $modelInstance;
+    }
+
 
     /**
      * @param $params
@@ -59,8 +237,7 @@ class Project
      */
     public function deleteAction($params, \WP_REST_Request $request)
     {
-        /** @var \SuttonBaker\Impresario\Helper\Project $helper */
-        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
+        $helper = $this->getProjectHelper();
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
@@ -87,6 +264,16 @@ class Project
         $this->addMessage('The project has been removed', Messages::SUCCESS);
 
         return true;
+    }
+
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
     }
 
 }

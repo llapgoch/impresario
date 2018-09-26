@@ -3,7 +3,6 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use SuttonBaker\Impresario\Definition\Page;
-use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
@@ -58,9 +57,11 @@ class Project extends Base
      * @param \SuttonBaker\Impresario\Model\Db\Project $project
      * @return mixed
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function getTabBarForProject(
         \SuttonBaker\Impresario\Model\Db\Project $project
@@ -249,6 +250,56 @@ class Project extends Base
         }
 
         return $entity;
+    }
+
+    public function saveProject(
+        \SuttonBaker\Impresario\Model\Db\Project $modelInstance,
+        $data
+    ) {
+
+        $returnValues = [
+            'project_id' => null,
+            'project_closed' => false,
+            'project_newly_completed' => false,
+            'new_save' => false
+        ];
+
+        $isComplete = $modelInstance->isComplete();
+
+        foreach(ProjectDefinition::NON_USER_VALUES as $nonUserValue){
+            if(isset($data[$nonUserValue])){
+                unset($data[$nonUserValue]);
+            }
+        }
+
+        $newSave = false;
+
+        // Add created by user
+        if(!$modelInstance->getId()) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+            $newSave = true;
+        }
+
+        $returnValues['new_save'] = $newSave;
+        $returnValues['project_id'] = $modelInstance->getId();
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        $modelInstance->setData($data)->save();
+
+        if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
+                $modelInstance->getId()
+            );
+        }
+
+        if(!$isComplete && $modelInstance->isComplete()){
+            $returnValues['project_newly_completed'] = true;
+        }
+
+        return $returnValues;
     }
 
 

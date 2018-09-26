@@ -22,7 +22,7 @@ class ProjectList
     /** @var Collection */
     protected $instanceCollection;
     /** @var array  */
-    protected $tableHeaders = ProjectDefinition::SORTABLE_COLUMNS;
+    protected $tableHeaders = ProjectDefinition::TABLE_HEADERS;
     /** @var array  */
     protected $sortableColumns = ProjectDefinition::SORTABLE_COLUMNS;
     /** @var string */

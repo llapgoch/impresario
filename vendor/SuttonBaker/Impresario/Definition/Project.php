@@ -47,6 +47,23 @@ class Project
         'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
+    const NON_USER_VALUES = [
+        'project_id',
+        'client_id',
+        'client_requested_by',
+        'client_reference',
+        'project_name',
+        'created_by_id',
+        'last_edited_by_id',
+        'net_cost',
+        'net_sell',
+        'client_id',
+        'quote_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
+
     /**
      * @return array
      */

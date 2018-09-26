@@ -27,24 +27,6 @@ class EditController
         Roles::CAP_ALL
     ];
 
-    /** @var array  */
-    protected $nonUserValues = [
-        'project_id',
-        'client_id',
-        'client_requested_by',
-        'client_reference',
-        'project_name',
-        'created_by_id',
-        'last_edited_by_id',
-        'net_cost',
-        'net_sell',
-        'client_id',
-        'quote_id',
-        'created_at',
-        'updated_at',
-        'is_deleted'
-    ];
-
     /**
      * @return bool|\SuttonBaker\Impresario\Controller\Base
      * @throws \DaveBaker\Core\Event\Exception
@@ -105,28 +87,6 @@ class EditController
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
-        // Form submission
-        if($this->getRequest()->getPostParam('action')){
-            $postParams = $this->modifyFormValuesForSave($this->getRequest()->getPostParams());
-
-            /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\ProjectConfigurator');
-
-            /** @var \DaveBaker\Form\Validation\Validator $validator */
-            $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
-                ->setValues($postParams)
-                ->configurate($configurator);
-
-            if(!$validator->validate()){
-                return $this->prepareFormErrors($validator);
-            }
-
-            $this->saveFormValues($postParams);
-
-            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::PROJECT_LIST);
-            }
-        }
 
         /** @var \DaveBaker\Form\BlockApplicator $applicator */
         $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
@@ -169,31 +129,6 @@ class EditController
                 $data
             );
         }
-    }
-
-    protected function modifyFormValuesForSave($postParams)
-    {
-        /** @var \DaveBaker\Core\Helper\Date $helper */
-        $helper = $this->getApp()->getHelper('Date');
-
-        // Convert dates to DB
-        if (isset($postParams['date_received'])){
-            $postParams['date_received'] = $helper->localDateToDb($postParams['date_received']);
-        }
-
-        if(isset($postParams['date_required'])){
-            $postParams['date_required'] = $helper->localDateToDb($postParams['date_required']);
-        }
-
-        if(isset($postParams['project_start_date'])){
-            $postParams['project_start_date'] = $helper->localDateToDb($postParams['project_start_date']);
-        }
-
-        if(isset($postParams['project_end_date'])){
-            $postParams['project_end_date'] = $helper->localDateToDb($postParams['project_end_date']);
-        }
-
-        return $postParams;
     }
 
     /**
