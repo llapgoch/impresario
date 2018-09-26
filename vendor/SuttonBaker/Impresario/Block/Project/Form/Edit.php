@@ -4,7 +4,6 @@ namespace SuttonBaker\Impresario\Block\Project\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
-use SuttonBaker\Impresario\Api\Project;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
@@ -19,8 +18,8 @@ use SuttonBaker\Impresario\Definition\Upload;
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'project_id';
-    const PREFIX_KEY = 'project';
-    const PREFIX_NAME = 'Project';
+    protected $prefixName = 'Project';
+    protected $blockPrefix = 'project';
 
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
@@ -46,9 +45,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected function _preDispatch()
     {
         parent::_preDispatch();
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
+
+        wp_enqueue_script('impresario_form_validator');
+        $this->addClass('js-validate-form');
         $editMode = false;
+
+        $this->addJsDataItems([
+            'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
+            'endpointSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_SAVE),
+            'idElementSelector' => '[name="project_id"]',
+            'idKey' => 'projct_id'
+        ]);
 
         if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
             $this->modelInstance = $this->getProjectHelper()->getProject($entityId);
@@ -97,7 +104,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
-            ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+            ->setFormName("{$this->blockPrefix}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
         $disabledAttrs = $this->modelInstance->getId() && !$this->modelInstance->isComplete() ? [] : ['disabled' => 'disabled'];
         $updateAttrs = $this->modelInstance->isComplete() ? ['disabled' => 'disabled'] : [];
@@ -105,6 +112,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
+
+        $this->addChildBlock(
+            $this->createFormErrorBlock()
+                ->setOrder('before', '')
+        );
 
         $elements = $builder->build([
             [
@@ -401,8 +413,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
-                    "{$prefixKey}.warning.message"
-                )->setMessage("This {$prefixName} is currently locked")
+                    "{$this->blockPrefix}.warning.message"
+                )->setMessage("This {$this->prefixName} is currently locked")
             );
         }
 
@@ -412,7 +424,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
-                "{$prefixKey}.file.upload.container"
+                "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "project.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
@@ -436,12 +448,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             return;
         }
 
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
-
         $this->taskTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Task\TableContainer',
-            "{$prefixKey}.task.table"
+            "{$this->blockPrefix}.task.table"
         )->setOrder('after', 'project.edit.project.name.form.group');
 
         $this->taskTableBlock->setInstanceCollection(
@@ -461,18 +470,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function createInvoiceTableBlock()
     {
         if(!$this->getInvoiceHelper()->currentUserCanView()){
             return;
         }
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
 
         $this->invoiceTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Invoice\TableContainer',
-            "{$prefixKey}.invoice.table"
+            "{$this->blockPrefix}.invoice.table"
         )->setOrder('before', 'project.variation.table');
 
         $this->invoiceTableBlock->setInstanceCollection(
@@ -492,18 +500,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function createVariationTableBlock()
     {
         if(!$this->getVariationHelper()->currentUserCanView()){
             return;
         }
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
 
         $this->variationTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Variation\TableContainer',
-            "{$prefixKey}.variation.table"
+            "{$this->blockPrefix}.variation.table"
         )->setOrder('before', 'project.edit.cost.values');
 
         $this->variationTableBlock->setInstanceCollection(
@@ -520,15 +527,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     /**
      * @return \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function _preRender()
     {
-
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
-        $prefixKey = self::PREFIX_KEY;
-        $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
 
         $uploadParams = [
@@ -540,7 +543,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
-                    "{$prefixKey}.file.uploader",
+                    "{$this->blockPrefix}.file.uploader",
                     'header_elements'
                 )->addJsDataItems(
                     ['endpoint' => $this->getUrlHelper()->getApiUrl(

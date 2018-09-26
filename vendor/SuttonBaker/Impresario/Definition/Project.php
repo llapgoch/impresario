@@ -11,6 +11,9 @@ class Project
 {
     const API_ENDPOINT_UPDATE_TABLE = 'project/updatetable';
     const API_ENDPOINT_DELETE = 'project/delete';
+    const API_ENDPOINT_VALIDATE_SAVE = 'project/validatesave';
+    const API_ENDPOINT_SAVE = 'project/save';
+
     const ICON = 'fa fa-ravelry';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Project';

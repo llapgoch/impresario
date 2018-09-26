@@ -4,6 +4,8 @@ namespace SuttonBaker\Impresario\Api;
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
+use DaveBaker\Form\Block\Error\Main;
+use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -17,7 +19,7 @@ use SuttonBaker\Impresario\SaveConverter\Project as ProjectConverter;
  *
  */
 class Project
-    extends \DaveBaker\Core\Api\Base
+    extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'project';
@@ -29,6 +31,7 @@ class Project
      * @param \WP_REST_Request $request
      * @return array|\WP_Error
      * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -52,6 +55,7 @@ class Project
         $formValues = $converter->convert($params['formValues']);
 
         $modelInstance = $this->loadProject($formValues);
+        $this->setRegistryModelInstance($modelInstance);
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
@@ -73,6 +77,7 @@ class Project
      * @param \WP_REST_Request $request
      * @return array|\WP_Error
      * @throws Exception
+     * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -91,9 +96,10 @@ class Project
             throw new Exception('No form values provided');
         }
 
-        $converter = $this->createAppObject(ProjectConfigurator::class);
+        $converter = $this->createAppObject(ProjectConverter::class);
         $formValues = $converter->convert($params['formValues']);
         $modelInstance = $this->loadProject($formValues);
+        $this->setRegistryModelInstance($modelInstance);
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
@@ -111,7 +117,7 @@ class Project
         $formValues
     ) {
         $blockManager = $this->getApp()->getBlockManager();
-        $helper = $this->getQuoteHelper();
+        $helper = $this->getProjectHelper();
         $saveResult = [];
 
         /** @var QuoteConfigurator $configurator */
@@ -135,6 +141,7 @@ class Project
      * @param \SuttonBaker\Impresario\Model\Db\Project $modelInstance
      * @param $formValues
      * @return array
+     * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
@@ -164,7 +171,7 @@ class Project
 
         if($saveValues['project_newly_completed']){
             $this->getApp()->getGeneralSession()->addMessage(
-                'A new project has been created for the quote',
+                'The project has been saved and moved to the archive',
                 Messages::SUCCESS
             );
 
@@ -266,7 +273,6 @@ class Project
         return true;
     }
 
-
     /**
      * @return \SuttonBaker\Impresario\Helper\Project
      * @throws \DaveBaker\Core\Object\Exception
@@ -276,4 +282,14 @@ class Project
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
     }
 
+    /**
+     * @param $modelInstance
+     * @return $this
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function setRegistryModelInstance($modelInstance)
+    {
+        $this->getApp()->getRegistry()->register('model_instance', $modelInstance);
+        return $this;
+    }
 }
