@@ -10,14 +10,18 @@ use SuttonBaker\Impresario\Definition\Page as PageDefinition;
  */
 class GlobalLayout extends Base
 {
+    /** @var string  */
     protected $headingName = 'Dashboard';
+    /** @var string  */
     protected $icon = 'fa-tachometer';
+    /** @var string  */
     protected $headingShortcode = 'page_heading';
-
     /** @var Block */
     protected $rootContainer;
+
     /**
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -50,6 +54,9 @@ class GlobalLayout extends Base
      */
     protected function getPercentage($amount, $total)
     {
+        if($total == 0){
+            return 0;
+        }
         $amount = $total - $amount;
         return round(($amount / $total) * 100);
     }
@@ -60,6 +67,7 @@ class GlobalLayout extends Base
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
      */
     public function indexHandle()
@@ -143,7 +151,7 @@ class GlobalLayout extends Base
                 ->setHeading('Open Tasks')
                 ->setNumber($openTasks)
                 ->setProgressPercentage($this->getPercentage($openTasks, $totalTasks))
-                ->setProgressHeading("{$openTasks} open out of {$totalTasks} total quotes")
+                ->setProgressHeading("{$openTasks} open out of {$totalTasks} total tasks")
                 ->setColour('cyan')
                 ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::CLIENT_LIST))
                 ->setBackText('View Tasks')
