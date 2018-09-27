@@ -2,11 +2,19 @@
 
 namespace SuttonBaker\Impresario\Api;
 
-class Base
+use SuttonBaker\Impresario\Session\TableUpdater;
+
+/**
+ * Class Base
+ * @package SuttonBaker\Impresario\Api
+ */
+abstract class Base
     extends \DaveBaker\Core\Api\Base
 {
     /** @var bool  */
     protected $requiresLogin = true;
+    /** @var TableUpdater */
+    protected $tableUpdaterSession;
 
     /**
      * @return \SuttonBaker\Impresario\Helper\Enquiry
@@ -33,5 +41,18 @@ class Base
     protected function getModalHelper()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Modal');
+    }
+
+    /**
+     * @return mixed|TableUpdater
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getTableUpdaterSession()
+    {
+        if(!$this->tableUpdaterSession){
+            $this->tableUpdaterSession = $this->createAppObject(TableUpdater::class);
+        }
+
+        return $this->tableUpdaterSession;
     }
 }

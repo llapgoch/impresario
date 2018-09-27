@@ -9,5 +9,4 @@ abstract class Base
     extends \DaveBaker\Core\Block\Html\Table\Collection
 {
 
-
 }

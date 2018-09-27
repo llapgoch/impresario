@@ -145,6 +145,7 @@ class Enquiry
      * @param $params
      * @param \WP_REST_Request $request
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
@@ -153,6 +154,8 @@ class Enquiry
         $blockManager = $this->getApp()->getBlockManager();
 
         /** @var StatusLink $tableBlock */
+        $blocks = $blockManager->getAllBlocks();
+
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
