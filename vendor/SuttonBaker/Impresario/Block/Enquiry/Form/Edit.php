@@ -334,7 +334,8 @@ class Edit
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->blockPrefix}.task.table"
             )->setOrder('after', 'enquiry.edit.notes.form.group')
-                ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
+                ->setCapabilities($this->getTaskHelper()->getViewCapabilities())
+                ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE);
 
             $this->taskTableBlock->setInstanceCollection(
                 $collection = $this->getTaskHelper()->getTaskCollectionForEntity(
@@ -427,7 +428,6 @@ class Edit
             }
 
             $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
-                ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
                 ->removeClass('pagination-xl')->addClass('pagination-xs');
 
 
