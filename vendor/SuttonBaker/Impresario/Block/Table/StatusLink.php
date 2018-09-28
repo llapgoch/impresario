@@ -42,8 +42,6 @@ class StatusLink
         parent::_preDispatch();
     }
 
-
-
     /**
      * @param $item
      * @return $this
@@ -57,6 +55,7 @@ class StatusLink
         $this->sessionKeyItems = array_replace_recursive($this->sessionKeyItems, $item);
         return $this;
     }
+
     /**
      * @param $val
      * @return $this
@@ -82,7 +81,7 @@ class StatusLink
             $this->updateSession();
         });
 
-        $this->setSessionPaginatorValues();
+        $this->unpackSessionPaginatorValues();
 
         return $this;
     }
@@ -275,7 +274,7 @@ class StatusLink
                 $this->orderType = $data['orderType'];
             }
 
-            $this->setSessionPaginatorValues();
+            $this->unpackSessionPaginatorValues();
         }
 
         return $this;
@@ -285,7 +284,7 @@ class StatusLink
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function setSessionPaginatorValues()
+    protected function unpackSessionPaginatorValues()
     {
         $data = $this->getSessionData();
 

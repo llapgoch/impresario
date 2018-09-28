@@ -451,7 +451,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->taskTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Task\TableContainer',
             "{$this->blockPrefix}.task.table"
-        )->setOrder('after', 'project.edit.project.name.form.group');
+        )->setOrder('after', 'project.edit.project.name.form.group')
+            ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE);
 
         $this->taskTableBlock->setInstanceCollection(
             $this->getTaskHelper()->getTaskCollectionForEntity(

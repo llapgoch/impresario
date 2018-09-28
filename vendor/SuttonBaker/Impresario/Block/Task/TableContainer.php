@@ -25,6 +25,26 @@ class TableContainer
     protected $showSuperseded = false;
     /** @var bool  */
     protected $showNoItemsMessage = true;
+    /** @var int  */
+    protected $recordsPerPage = TaskDefinition::RECORDS_PER_PAGE;
+
+    /**
+     * @return int
+     */
+    public function getRecordsPerPage()
+    {
+        return $this->recordsPerPage;
+    }
+
+    /**
+     * @param int $recordsPerPage
+     * @return $this
+     */
+    public function setRecordsPerPage($recordsPerPage)
+    {
+        $this->recordsPerPage = $recordsPerPage;
+        return $this;
+    }
 
     /**
      * @return bool
@@ -117,7 +137,7 @@ class TableContainer
                 '\DaveBaker\Core\Block\Components\Paginator',
                 "{$this->getBlockPrefix()}.list.paginator",
                 'footer'
-            )->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE)
+            )->setRecordsPerPage($this->getRecordsPerPage())
                 ->setTotalRecords(count($instanceItems))
                 ->setIsReplacerBlock(true)
         );
