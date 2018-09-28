@@ -401,13 +401,14 @@ class Quote extends Base
             );
         }
 
-        if($this->saveQuoteCreateProjectCheck($modelInstance, $data)){
+        $shouldCreateProject = $this->saveQuoteCreateProjectCheck($modelInstance, $data);
+        $modelInstance->setData($data)->save();
+
+        if($shouldCreateProject){
             $project = $this->getProjectHelper()->createProjectFromQuote($modelInstance->getId());
             $returnValues['project_created'] = true;
             $returnValues['project_id'] = $project->getId();
         }
-
-        $modelInstance->setData($data)->save();
 
         if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
             // Assign any uploads to the enquiry

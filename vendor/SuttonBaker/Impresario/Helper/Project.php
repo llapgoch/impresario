@@ -14,6 +14,7 @@ class Project extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT];
+    /** @var array  */
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT, Roles::CAP_VIEW_PROJECT];
     /**
      * @var array
@@ -152,7 +153,6 @@ class Project extends Base
         return $this->getProjectCollection()->where('status=?', ProjectDefinition::STATUS_OPEN);
     }
 
-
     /**
      * @param $status
      * @return string
@@ -161,7 +161,6 @@ class Project extends Base
     {
         return $this->getDisplayName($status, ProjectDefinition::getStatuses());
     }
-
 
     /**
      * @param $quoteId

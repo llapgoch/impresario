@@ -14,6 +14,7 @@ class Project extends Base
     protected $variations;
     /** @var Invoice\Collection */
     protected $invoices;
+
     /**
      * @return $this
      */
@@ -170,6 +171,10 @@ class Project extends Base
      */
     public function calculateGp()
     {
+        if(!$this->calculateTotalNetSell()){
+            return 0;
+        }
+
         return (float) ($this->calculateProfit() / $this->calculateTotalNetSell()) * 100;
     }
 
