@@ -38,6 +38,7 @@ class StatusLink
     protected function _preDispatch()
     {
         $this->addSessionKeyItem($this->getName());
+        $this->addSessionKeyItem($this->getUrlHelper()->getCurrentUrl());
         $this->unpackSession();
         parent::_preDispatch();
     }
@@ -48,11 +49,9 @@ class StatusLink
      */
     public function addSessionKeyItem($item)
     {
-        if(!is_array($item)){
-            $item = [$item];
+        if(!in_array($item, $this->sessionKeyItems)) {
+            $this->sessionKeyItems[] = $item;
         }
-
-        $this->sessionKeyItems = array_replace_recursive($this->sessionKeyItems, $item);
         return $this;
     }
 
@@ -247,6 +246,9 @@ class StatusLink
      */
     protected function getSessionData()
     {
+//        var_dump($this->getName());
+//        var_dump($this->getSession()->createKey($this->sessionKeyItems));
+//        var_dump($this->sessionKeyItems);
         return $this->getSession()->get(
             $this->getSession()->createKey($this->sessionKeyItems)
         );
@@ -283,6 +285,7 @@ class StatusLink
     /**
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @return $this
      */
     protected function unpackSessionPaginatorValues()
     {
@@ -293,6 +296,8 @@ class StatusLink
                 $this->paginator->setPage($data['pageNumber']);
             }
         }
+
+        return $this;
     }
 
 }
