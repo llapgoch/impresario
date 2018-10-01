@@ -35,6 +35,10 @@ class GlobalEvents extends \DaveBaker\Core\Base
             return '';
         });
 
+        $this->addEvent('login_redirect', function($redirectTo, $request, $user){
+            return home_url();
+        });
+
         $event = $this->getApp()->getApiManager()->getRouteEvent(Client::API_ENDPOINT_UPDATE_TABLE);
         $this->addEvent($event, function(){
             $this->getApp()->getHandleManager()->addHandle(Page::CLIENT_LIST);
