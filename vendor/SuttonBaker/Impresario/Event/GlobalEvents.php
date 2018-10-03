@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Event;
+use DaveBaker\Core\Block\BlockInterface;
+use DaveBaker\Core\Block\Html\Heading;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Definition\Archive;
 use SuttonBaker\Impresario\Definition\Client;
@@ -33,6 +35,13 @@ class GlobalEvents extends \DaveBaker\Core\Base
 
         $this->addEvent('edit_post_link', function(){
             return '';
+        });
+
+        $this->addEvent('controller_index_execute', function(){
+            /** @var Heading $header */
+            if($header = $this->getApp()->getBlockManager()->getBlock('index.heading')){
+                $header->addClass('text-center');
+            }
         });
 
         $this->addEvent('login_redirect', function($redirectTo, $request, $user){

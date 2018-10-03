@@ -1,14 +1,21 @@
 <?php /** @var \SuttonBaker\Impresario\Block\Structure\Nav $block */?>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
+<!--    <a class="navbar-brand" href="#">Impresario</a>-->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
+
+            <?php foreach($block->getNavItems() as $navItem):?>
+                <li class="nav-item">
+                    <a href="<?php echo $navItem['link'];?>" class="nav-link">
+                        <i class="fa <?php echo $navItem['icon'];?>"></i> <?php echo $block->_($navItem['name']);?>
+<!--                                    <span class="badge badge-red">1</span>-->
+                    </a>
+                </li>
+            <?php endforeach; ?>
         </ul>
     </div>
 </nav>

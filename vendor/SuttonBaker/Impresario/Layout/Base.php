@@ -48,7 +48,7 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
         $this->addBlock(
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.form.edit.heading")
+                "{$this->getBlockPrefix()}.heading")
                 ->setTemplate('core/main-header.phtml')
                 ->setShortcode($this->headingShortcode)
                 ->setHeading($this->headingName)

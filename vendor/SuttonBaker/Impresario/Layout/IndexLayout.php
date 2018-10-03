@@ -18,6 +18,7 @@ class IndexLayout extends Base
     protected $headingShortcode = 'page_heading';
     /** @var Block */
     protected $rootContainer;
+    protected $blockPrefix = 'index';
 
 
     /**

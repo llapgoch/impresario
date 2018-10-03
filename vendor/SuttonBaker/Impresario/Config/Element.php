@@ -14,6 +14,7 @@ class Element extends \DaveBaker\Core\Config\Element
     {
         $this->mergeConfig([
             'elementClasses' => [
+                'main-heading' => 'pageheader col-12 text-center',
                 'input' => 'form-control',
                 'input-submit' => 'btn btn-primary',
                 'select' => 'form-control',
