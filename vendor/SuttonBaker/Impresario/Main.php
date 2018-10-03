@@ -112,7 +112,8 @@ class Main
     public function registerLayouts()
     {
         $this->getApp()->getLayoutManager()->register([
-            '\SuttonBaker\Impresario\Layout\GlobalLayout',
+            '\SuttonBaker\Impresario\Layout\DefaultLayout',
+            '\SuttonBaker\Impresario\Layout\IndexLayout',
             '\SuttonBaker\Impresario\Layout\Client',
             '\SuttonBaker\Impresario\Layout\Enquiry',
             '\SuttonBaker\Impresario\Layout\Task',
