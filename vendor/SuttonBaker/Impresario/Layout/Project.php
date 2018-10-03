@@ -2,7 +2,8 @@
 
 namespace SuttonBaker\Impresario\Layout;
 
-use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Layout
@@ -24,7 +25,7 @@ class Project extends Base
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Select_Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function projectEditHandle()
     {
@@ -97,5 +98,37 @@ class Project extends Base
                 'content'
             )->setInstanceCollection($instanceCollection)
         );
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function indexHandle()
+    {
+        $openProjects = count($this->getProjectHelper()->getOpenProjects()->load());
+        $totalProjects = count($this->getProjectHelper()->getProjectCollection()->load());
+
+        $this->addBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\FlipCard',
+                'projects.flip.card'
+            )->setShortcode('body_content')
+                ->setTemplate('core/flip-card.phtml')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Project::ICON)
+                ->setHeading('Open Projects')
+                ->setNumber($openProjects)
+                ->setColour('amethyst')
+                ->setProgressPercentage($this->getProjectHelper()->getPercentage($openProjects, $totalProjects))
+                ->setProgressHeading("{$openProjects} open out of {$totalProjects} total projects")
+                ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::PROJECT_LIST))
+                ->setBackText('View Projects')
+                ->setCapabilities($this->getProjectHelper()->getViewCapabilities())
+        );
+
     }
 }

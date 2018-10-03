@@ -1,6 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+
+use SuttonBaker\Impresario\Definition\Page as PageDefinition;
+
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Layout
@@ -100,6 +103,29 @@ class Enquiry extends Base
                 'enquiry.list',
                 'content'
             )
+        );
+    }
+
+    public function indexHandle()
+    {
+        $openEnquiries = count($this->getEnquiryHelper()->getOpenEnquiries()->load());
+        $totalEnquiries = count($this->getEnquiryHelper()->getEnquiryCollection()->load());
+
+        $this->addBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\FlipCard',
+                'enquiries.flip.card'
+            )->setShortcode('body_content')
+                ->setTemplate('core/flip-card.phtml')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Enquiry::ICON)
+                ->setHeading('Open Enquiries')
+                ->setNumber($openEnquiries)
+                ->setColour('slategray')
+                ->setProgressPercentage($this->getEnquiryHelper()->getPercentage($openEnquiries, $totalEnquiries))
+                ->setProgressHeading("{$openEnquiries} open out of {$totalEnquiries} total enquiries")
+                ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::ENQUIRY_LIST))
+                ->setBackText('View Enquiries')
+                ->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
         );
     }
 }

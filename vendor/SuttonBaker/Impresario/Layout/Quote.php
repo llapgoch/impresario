@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+
+use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Layout
@@ -85,6 +87,29 @@ class Quote extends Base
                 "{$this->getBlockPrefix()}.list",
                 'content'
             )
+        );
+    }
+
+    public function indexHandle()
+    {
+        $openQuotes = count($this->getQuoteHelper()->getOpenQuotes()->load());
+        $totalQuotes = count($this->getQuoteHelper()->getDisplayQuotes()->load());
+
+        $this->addBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\FlipCard',
+                'quotes.flip.card'
+            )->setShortcode('body_content')
+                ->setTemplate('core/flip-card.phtml')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Quote::ICON)
+                ->setHeading('Open Quotes')
+                ->setNumber($openQuotes)
+                ->setColour('greensea')
+                ->setProgressPercentage($this->getQuoteHelper()->getPercentage($openQuotes, $totalQuotes))
+                ->setProgressHeading("{$openQuotes} open out of {$totalQuotes} total quotes")
+                ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::QUOTE_LIST))
+                ->setBackText('View Quotes')
+                ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
         );
     }
 }

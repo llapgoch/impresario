@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Layout;
 
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 /**
  * Class Task
  * @package SuttonBaker\Impresario\Layout
@@ -78,6 +79,37 @@ class Task extends Base
                 '\SuttonBaker\Impresario\Block\Task\TaskList',
                 'task.list'
             )->setShortcode('body_content')
+        );
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function indexHandle()
+    {
+        $openTasks = count($this->getTaskHelper()->getOpenTasks()->load());
+        $totalTasks = count($this->getTaskHelper()->getTaskCollection()->load());
+
+        $this->addBlock(
+            $this->createBlock(
+                '\SuttonBaker\Impresario\Block\Core\FlipCard',
+                'tasks.flip.card'
+            )->setShortcode('body_content')
+                ->setTemplate('core/flip-card.phtml')
+                ->setIcon(\SuttonBaker\Impresario\Definition\Task::ICON)
+                ->setHeading('Open Tasks')
+                ->setNumber($openTasks)
+                ->setProgressPercentage($this->getTaskHelper()->getPercentage($openTasks, $totalTasks))
+                ->setProgressHeading("{$openTasks} open out of {$totalTasks} total tasks")
+                ->setColour('cyan')
+                ->setBackLink($this->getUrlHelper()->getPageUrl(PageDefinition::TASK_LIST))
+                ->setBackText('View Tasks')
+                ->setCapabilities($this->getTaskHelper()->getViewCapabilities())
         );
     }
 }

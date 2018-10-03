@@ -115,6 +115,20 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     }
 
     /**
+     * @param $amount
+     * @param $total
+     * @return float
+     */
+    public function getPercentage($amount, $total)
+    {
+        if($total == 0){
+            return 0;
+        }
+        $amount = $total - $amount;
+        return round(($amount / $total) * 100);
+    }
+
+    /**
      * @param string $key
      * @param array $items
      * @return mixed|string
