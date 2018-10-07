@@ -20,13 +20,13 @@ abstract class Base extends \DaveBaker\Form\Block\Form
         wp_register_script(
             'impresario_deleter',
             get_template_directory_uri() . '/assets/js/deleter.widget.js',
-            ['jquery', 'jquery-ui-widget']
+            ['jquery', 'jquery-ui-widget-impresario']
         );
 
         wp_register_script(
             'impresario_form_validator',
             get_template_directory_uri() . '/assets/js/form.validator.widget.js',
-            ['jquery', 'jquery-ui-widget']
+            ['jquery', 'jquery-ui-widget-impresario']
         );
 
         wp_enqueue_script('impresario_deleter');

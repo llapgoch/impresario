@@ -1,5 +1,5 @@
 <?php /** @var \SuttonBaker\Impresario\Block\Structure\Nav $block */?>
-<nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-sm navbar-dark navbar-transparent-black">
 <!--    <a class="navbar-brand" href="#">Impresario</a>-->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -9,13 +9,47 @@
         <ul class="navbar-nav">
 
             <?php foreach($block->getNavItems() as $navItem):?>
-                <li class="nav-item">
-                    <a href="<?php echo $navItem['link'];?>" class="nav-link">
-                        <i class="fa <?php echo $navItem['icon'];?>"></i> <?php echo $block->_($navItem['name']);?>
-<!--                                    <span class="badge badge-red">1</span>-->
+                <?php $hasSubs = isset($navItem['subs']); ?>
+                <li class="nav-item divided <?php echo $hasSubs ? 'dropdown' : '';?>"
+                    <?php if($hasSubs): ?>
+                    data-db-toggler-trigger-activate="mouseenter"
+                    data-db-toggler-trigger-deactivate="mouseleave"
+                    data-db-toggler-active-class="show"
+                    data-db-toggler-deactivate-delay="500"
+                    data-db-toggler-group="navMenuItem"
+                    data-db-toggler-target="#navbar-sub-<?php echo $navItem['identifier']; ?>"
+                    <?php endif; ?>
+                >
+                    <a href="<?php echo $block->escAttr($navItem['link']);?>" class="nav-link <?php echo $hasSubs ? 'dropdown-toggle' : '';?>" id="navbar-<?php echo $navItem['identifier'];?>">
+                        <?php if(isset($navItem['icon'])):?>
+                            <i class="fa <?php echo $navItem['icon'];?>"></i>
+                        <?php endif; ?>
+                        <span class="d-sm-none d-lg-inline"><?php echo $block->_($navItem['name']); ?></span>
+                        <?php if(isset($navItem['badge'])):?>
+                         <span class="label label-redbrown"><?php echo $block->escapeHtml($navItem['badge']);?></span>
+                        <?php endif; ?>
                     </a>
+                    <?php if($hasSubs):?>
+                    <ul class="dropdown-menu" aria-labelledby="navbar-<?php echo $navItem['identifier'];?>"
+                         data-db-toggler-active-class="show"
+                         id="navbar-sub-<?php echo $navItem['identifier']; ?>">
+
+                        <?php foreach($navItem['subs'] as $sub): ?>
+                            <li>
+                            <a class="dropdown-item" href="<?php echo $sub['link'];?>">
+                                <?php if(isset($sub['icon'])): ?>
+                                    <i class="fa <?php echo $sub['icon'];?>"></i>
+                                <?php endif; ?>
+                                <?php echo $block->_($sub['name']); ?>
+                            </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif;  ?>
                 </li>
             <?php endforeach; ?>
         </ul>
     </div>
+
+    <?php echo $this->getChildHtml('quickActions'); ?>
 </nav>

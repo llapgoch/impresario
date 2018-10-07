@@ -44,6 +44,12 @@ class GlobalEvents extends \DaveBaker\Core\Base
             }
         });
 
+        $this->addEvent('wp_enqueue_scripts', function(){
+            wp_deregister_script('jquery-ui-widget');
+            wp_register_script('jquery-ui-widget-impresario', get_template_directory_uri() . '/assets/js/jquery/jquery-ui-widget.min.js', ['jquery'], '1.12.1');
+            wp_enqueue_script('jquery-ui-widget-impresario');
+        });
+
         $this->addEvent('login_redirect', function($redirectTo, $request, $user){
             return home_url();
         });

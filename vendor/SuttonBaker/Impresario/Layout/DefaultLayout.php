@@ -3,6 +3,8 @@
 namespace SuttonBaker\Impresario\Layout;
 
 use DaveBaker\Core\Block\Block;
+use SuttonBaker\Impresario\Block\Structure\QuickActions;
+
 /**
  * Class DefaultLayout
  * @package SuttonBaker\Impresario\Layout
@@ -18,14 +20,6 @@ class DefaultLayout
      */
     public function defaultHandle()
     {
-//        $this->addBlock(
-//            $this->createBlock(
-//                '\SuttonBaker\Impresario\Block\Structure\Nav',
-//                'main.sidebar.nav'
-//            )->setShortcode('impressario_nav_items')
-//                ->setTemplate('nav/sidebar.phtml')
-//        );
-
         $this->addBlock(
             $this->rootContainer = $this->createBlock(
                 Block::class,
@@ -40,9 +34,16 @@ class DefaultLayout
         $this->addBlock(
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Structure\Nav',
-                'main.sidebar.nav'
+                'main.header.nav'
             )->setShortcode('impresario_header_nav')
                 ->setTemplate('nav/navbar.phtml')
+            ->addChildBlock(
+                $this->createBlock(
+                    QuickActions::class,
+                    'main.header.quick.actions',
+                    'quickActions'
+                )
+            )
         );
     }
 }

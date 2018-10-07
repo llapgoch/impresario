@@ -1,0 +1,25 @@
+<?php /** @var \SuttonBaker\Impresario\Block\Structure\QuickActions $block */ ?>
+<ul class="nav navbar-nav quick-actions">
+    <li class="dropdown divided user" id="current-user"
+    >
+        <div class="profile-photo">
+            <?php echo $block->getAvatar();?>
+        </div>
+        <a class="dropdown-toggle options js-db-toggler" href="#"
+           data-db-toggler-active-class="open"
+           data-db-toggler-action="toggle"
+           data-db-toggler-target=".js-header-user-dropdown"
+        >
+            <?php echo $block->escapeHtml($block->getUsername());?>
+        </a>
+
+        <ul class="navbar-quick-actions-user dropdown-menu arrow settings animated fadeInDown js-header-user-dropdown"
+            data-db-toggler-active-class="show"
+        >
+
+            <li>
+                <a href="<?php echo $block->getLogoutUrl();?>"><i class="fa fa-power-off"></i> Logout</a>
+            </li>
+        </ul>
+    </li>
+</ul>
