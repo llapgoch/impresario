@@ -6,11 +6,11 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav navbar-main">
 
             <?php foreach($block->getNavItems() as $navItem):?>
                 <?php $hasSubs = isset($navItem['subs']); ?>
-                <li class="nav-item divided <?php echo $hasSubs ? 'dropdown' : '';?>"
+                <li class="nav-item divided <?php echo $hasSubs ? 'dropdown' : '';?> navbar-item-<?php echo $navItem['identifier'];?>"
                     <?php if($hasSubs): ?>
                     data-db-toggler-trigger-activate="mouseenter"
                     data-db-toggler-trigger-deactivate="mouseleave"
@@ -24,7 +24,7 @@
                         <?php if(isset($navItem['icon'])):?>
                             <i class="fa <?php echo $navItem['icon'];?>"></i>
                         <?php endif; ?>
-                        <span class="d-sm-none d-lg-inline"><?php echo $block->_($navItem['name']); ?></span>
+                        <span class="navbar-label"><?php echo $block->_($navItem['name']); ?></span>
                         <?php if(isset($navItem['badge'])):?>
                          <span class="label label-redbrown"><?php echo $block->escapeHtml($navItem['badge']);?></span>
                         <?php endif; ?>

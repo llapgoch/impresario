@@ -23,7 +23,7 @@ class Nav extends \DaveBaker\Core\Block\Template
     {
         parent::_preDispatch();
 
-        wp_register_script('db-base-widget', get_template_directory_uri() . '/assets/js/db/db.base.widget.js', ['jquery-ui-widget-impresario']);
+        wp_register_script('db-base-widget', get_template_directory_uri() . '/assets/js/db/db.base.widget.js', ['jquery-ui-widget']);
         wp_register_script('db-toggler-widget', get_template_directory_uri() . '/assets/js/db/db.toggler.widget.js', ['db-base-widget']);
 
         wp_enqueue_script('db-toggler-widget');
@@ -56,7 +56,7 @@ class Nav extends \DaveBaker\Core\Block\Template
 
         $navItems[] = [
             'identifier' => 'dashboard',
-            'name' => '',
+            'name' => 'Dashboard',
             'link' => '/',
             'icon' => 'fa-tachometer'
         ];
@@ -136,6 +136,12 @@ class Nav extends \DaveBaker\Core\Block\Template
             ];
         }
 
+        $navItems[] = [
+            'identifier' => 'logout',
+            'name' => 'Logout',
+            'icon' => 'fa fa-power-off',
+            'link' => wp_logout_url()
+        ];
 
 
         return $navItems;
