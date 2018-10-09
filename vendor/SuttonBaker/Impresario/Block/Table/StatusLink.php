@@ -225,8 +225,7 @@ class StatusLink
     {
         $data = [
             'orderColumn' => $this->orderColumn,
-            'orderDir' => $this->orderDir,
-            'orderType' => $this->orderType
+            'orderDir' => $this->orderDir
         ];
 
         if($this->paginator){
@@ -246,9 +245,6 @@ class StatusLink
      */
     protected function getSessionData()
     {
-//        var_dump($this->getName());
-//        var_dump($this->getSession()->createKey($this->sessionKeyItems));
-//        var_dump($this->sessionKeyItems);
         return $this->getSession()->get(
             $this->getSession()->createKey($this->sessionKeyItems)
         );
@@ -256,8 +252,10 @@ class StatusLink
 
     /**
      * @return $this
+     * @throws \DaveBaker\Core\Block\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function unpackSession()
     {
@@ -272,10 +270,7 @@ class StatusLink
                 $this->orderDir = $data['orderDir'];
             }
 
-            if (isset($data['orderType'])){
-                $this->orderType = $data['orderType'];
-            }
-
+            $this->setColumnOrder($this->orderColumn, $this->orderDir);
             $this->unpackSessionPaginatorValues();
         }
 

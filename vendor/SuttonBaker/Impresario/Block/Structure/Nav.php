@@ -30,6 +30,14 @@ class Nav extends \DaveBaker\Core\Block\Template
     }
 
     /**
+     * @return string
+     */
+    public function getLogo()
+    {
+        return get_stylesheet_directory_uri() . '/assets/images/logo.svg';
+    }
+
+    /**
      * @return array
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
@@ -70,33 +78,57 @@ class Nav extends \DaveBaker\Core\Block\Template
             ];
         }
 
-        if($userHelper->hasCapability($clientHelper->getViewCapabilities())) {
-            $navItems[] = [
+        if($clientHelper->currentUserCanView()) {
+            $clientNavItem = [
                 'identifier' => 'clients',
                 'name' => 'Clients',
                 'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST),
                 'icon' => Client::ICON,
-                'subs' => [[
+                'subs' => []
+            ];
+
+            $clientNavItem['subs'][] = [
+                'name' => 'View Clients',
+                'icon' => 'fa-eye',
+                'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST)
+            ];
+
+            if($clientHelper->currentUserCanEdit()){
+                $clientNavItem['subs'][] = [
                     'name' => 'Add Client',
                     'icon' => 'fa-plus',
                     'link' => $this->getPageUrl(PageDefintion::CLIENT_EDIT)
-                ]]
-            ];
+                ];
+            }
+
+            $navItems[] = $clientNavItem;
         }
 
-        if($userHelper->hasCapability($enquiryHelper->getViewCapabilities())) {
-            $navItems[] = [
+        if($enquiryHelper->currentUserCanView()) {
+            $enquiryNavItem = [
                 'identifier' => 'enquiries',
                 'name' => 'Enquiries',
                 'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST),
                 'icon' => Enquiry::ICON,
                 'badge' => count($enquiryHelper->getOpenEnquiries()->load()),
-                'subs' => [[
+                'subs' => []
+            ];
+
+            $enquiryNavItem['subs'][] = [
+                'name' => 'View Enquiries',
+                'icon' => 'fa-eye',
+                'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST)
+            ];
+
+            if($enquiryHelper->currentUserCanEdit()){
+                $enquiryNavItem['subs'][] = [
                     'name' => 'Create Enquiry',
                     'icon' => 'fa-plus',
                     'link' => $this->getPageUrl(PageDefintion::ENQUIRY_EDIT)
-                ]]
-            ];
+                ];
+            }
+
+            $navItems[] = $enquiryNavItem;
         }
 
         if($userHelper->hasCapability($quoteHelper->getViewCapabilities())) {

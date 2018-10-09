@@ -1,6 +1,6 @@
 <?php /** @var \SuttonBaker\Impresario\Block\Structure\QuickActions $block */ ?>
 <ul class="nav navbar-nav quick-actions">
-    <li class="dropdown divided user" id="current-user"
+    <li class="dropdown user" id="current-user"
     >
         <div class="profile-photo">
             <?php echo $block->getAvatar();?>
@@ -9,6 +9,7 @@
            data-db-toggler-active-class="open"
            data-db-toggler-action="toggle"
            data-db-toggler-target=".js-header-user-dropdown"
+           data-db-toggler-group="navMenuItem"
         >
             <?php echo $block->escapeHtml($block->getUsername());?>
         </a>
