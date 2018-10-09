@@ -36,7 +36,9 @@
                         <?php if($link = $block->getLink($k, $record)):?>
                             <a href="<?php echo $link;?>" <?php echo $block->getAnchorAttrs($k);?>>
                         <?php endif;?>
-
+                        <strong>
+                            <?php echo $block->_('Description: '); ?>
+                        </strong>
                         <?php echo $block->escapeHtml($record->getDescription()); ?>
 
                         <?php if($link):?>
