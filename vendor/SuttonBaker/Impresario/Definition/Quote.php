@@ -40,7 +40,6 @@ class Quote
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
-        'project_manager_name' => 'Project Manager',
         'estimator_name' => 'Estimator'
     ];
 
@@ -61,7 +60,6 @@ class Quote
         'date_received' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
         'estimator_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 

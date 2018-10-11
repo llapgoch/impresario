@@ -30,15 +30,13 @@ class Project extends Base
         'client_requested_by',
         'client_reference',
         'date_required',
-        'project_manager_id',
         'po_number',
         'mi_number',
         'nm_mw_number',
         'net_cost',
         'net_sell',
         'profit',
-        'gp',
-        'comments'
+        'gp'
     ];
 
     /**

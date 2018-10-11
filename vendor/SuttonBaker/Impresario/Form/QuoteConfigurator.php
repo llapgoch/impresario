@@ -42,9 +42,6 @@ class QuoteConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
-        $this->addRule(
-            $this->createRule('User', 'project_manager_id', 'Project Manager')
-        );
 
         $this->addRule(
             $this->createRule('Date', 'date_return_by', 'Return By Date')

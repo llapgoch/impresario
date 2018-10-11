@@ -46,7 +46,6 @@ class Quote
               `client_requested_by` varchar(255) DEFAULT NULL,
               `client_reference` varchar(255) DEFAULT NULL,
               `date_required` datetime DEFAULT NULL,
-              `project_manager_id` int(11) DEFAULT NULL,
               `estimator_id` int(11) DEFAULT NULL,
               `date_return_by` datetime DEFAULT NULL,
               `net_cost` decimal(10,4) DEFAULT NULL,

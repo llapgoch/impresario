@@ -61,17 +61,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $projectEntity = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
 
-        // PMs
-        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
-            $projectManagers = $this->createCollectionSelectConnector()
-                ->configure(
-                    $projectManagers,
-                    'ID',
-                    'display_name'
-                )->getElementData();
-        }
-
-        // PMs
+        // Estimators
         if($estimators = $this->getRoleHelper()->getEstimators()) {
             $estimators = $this->createCollectionSelectConnector()
                 ->configure(
@@ -244,20 +234,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
                 ]
             ], [
-                'name' => 'project_manager_id',
-                'formGroup' => true,
-                'rowIdentifier' => 'project_manager_estimator',
-                'labelName' => 'Project Manager *',
-                'data' => [
-                    'select_options' => $projectManagers
-                ],
-                'type' => 'Select',
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ]
-            ], [
                 'name' => 'estimator_id',
-                'rowIdentifier' => 'project_manager_estimator',
+                'rowIdentifier' => 'cost_values',
                 'formGroup' => true,
                 'labelName' => 'Estimator',
                 'data' => [
@@ -265,7 +243,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'type' => 'Select',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'net_cost',
@@ -276,7 +254,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-cost',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'net_sell',
@@ -287,7 +265,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-sell',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'profit',

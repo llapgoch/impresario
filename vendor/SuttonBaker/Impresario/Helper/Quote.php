@@ -113,10 +113,6 @@ class Quote extends Base
         }
 
         $collection->joinLeft(
-            ['project_manager_user' => $userTable],
-            "project_manager_user.ID={{quote}}.project_manager_id",
-            ['project_manager_name' => 'user_login']
-        )->joinLeft(
             ['estimator_user' => $userTable],
             "estimator_user.ID={{quote}}.estimator_id",
             ['estimator_name' => 'user_login']

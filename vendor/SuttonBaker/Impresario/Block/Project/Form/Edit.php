@@ -226,7 +226,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'project_manager_id',
                 'formGroup' => true,
                 'rowIdentifier' => 'project_manager_foreman',
-                'labelName' => 'Project Manager *',
+                'labelName' => 'Project Manager',
                 'data' => [
                     'select_options' => $projectManagers
                 ],

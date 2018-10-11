@@ -24,6 +24,8 @@ class General extends \DaveBaker\Core\Config\General
             application/vnd.ms-word.document.macroenabled.12,
             application/vnd.ms-excel,
             application/vnd.ms-excel.sheet.macroenabled.12,
+            application/vnd.ms-excel.sheet.macroEnabled.12,
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
             application/vnd.openxmlformats-officedocument.presentationml.presentation,
             application/vnd.ms-powerpoint,
             application/x-msaccess'

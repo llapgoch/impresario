@@ -26,10 +26,6 @@ class ProjectConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
-        $this->addRule(
-            $this->createRule('User', 'project_manager_id', 'Project Manager')
-        );
-
         if($this->getValue('assigned_foreman_id')) {
             $this->addRule(
                 $this->createRule('User', 'assigned_foreman_id', 'Foreman')
@@ -68,6 +64,13 @@ class ProjectConfigurator
 
         /** @var \SuttonBaker\Impresario\Model\Db\Project $modelInstance */
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+
+        if($this->getValue('status') !== Project::STATUS_OPEN){
+            $this->addRule(
+                $this->createRule('User', 'project_manager_id', 'Project Manager')
+                    ->setMainError('\'{{niceName}}\' must be set if a project is not open')
+            );
+        }
 
         if($this->getValue('status') == Project::STATUS_COMPLETE){
             $this->addRule(
