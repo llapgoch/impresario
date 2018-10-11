@@ -324,9 +324,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'class' => ['js-date-picker', 'js-date-completed'],
                 'attributes' => ['autocomplete' => 'off'],
-                'data' => [
-                    'ignore_lock' => $ignoreLockValue
-                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
@@ -339,8 +336,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => 'js-completed-by-id',
                 'type' => 'Select',
                 'data' => [
-                    'select_options' => $completedUsers,
-                    'ignore_lock' => $ignoreLockValue
+                    'select_options' => $completedUsers
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-6'

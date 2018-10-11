@@ -303,6 +303,11 @@ class Enquiry
                 Page::ENQUIRY_EDIT,
                 ['enquiry_id' => $saveResult['enquiry_id']]
             );
+
+            $this->getApp()->getGeneralSession()->addMessage(
+                'The enquiry has been re-opened',
+                Messages::SUCCESS
+            );
         }
 
         return $saveResult;

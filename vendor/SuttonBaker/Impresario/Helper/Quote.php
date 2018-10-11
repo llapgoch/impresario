@@ -363,7 +363,8 @@ class Quote extends Base
             'quote_duplicated' => false,
             'project_id' => null,
             'project_created' => false,
-            'new_save' => false
+            'new_save' => false,
+            'reopened' => false
         ];
 
         foreach(QuoteDefinition::NON_USER_VALUES as $nonUserValue){
@@ -378,6 +379,13 @@ class Quote extends Base
         if(!$modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $newSave = true;
+        }
+
+        if($modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN
+            && $data['tender_status'] == QuoteDefinition::TENDER_STATUS_OPEN){
+                $returnValues['reopened'] = true;
+                $data['completed_by_id'] = null;
+                $data['date_completed'] = null;
         }
 
         $returnValues['new_save'] = $newSave;

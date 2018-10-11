@@ -76,6 +76,11 @@ class Quote
             );
         }
 
+        if($modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN
+            && $formValues['tender_status'] == QuoteDefinition::TENDER_STATUS_OPEN) {
+            $confirmMessages[] = 'This will re-open the quote.';
+        }
+
         if($confirmMessages){
             $confirmMessages[] = "Would you like to proceed?";
             $validateResult['confirm'] = implode("\r", $confirmMessages);
@@ -184,7 +189,7 @@ class Quote
 
         // No need to redirect for updating
         if($saveValues['new_save'] == false
-            && !$saveValues['project_created'] && !$saveValues['quote_duplicated']){
+            && !$saveValues['project_created'] && !$saveValues['quote_duplicated'] && !$saveValues['reopened']){
             $this->addReplacerBlock(
                 $this->getModalHelper()->createAutoOpenModal(
                     'Success',
@@ -221,7 +226,17 @@ class Quote
             );
         }
 
+        if($saveValues['reopened']){
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $saveValues['quote_id']]
+            );
 
+            $this->getApp()->getGeneralSession()->addMessage(
+                'The quote has been re-opened',
+                Messages::SUCCESS
+            );
+        }
 
 
         return $saveValues;
