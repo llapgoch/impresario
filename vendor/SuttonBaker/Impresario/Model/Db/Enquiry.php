@@ -18,4 +18,12 @@ class Enquiry extends Base
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isComplete()
+    {
+        return $this->getStatus() == \SuttonBaker\Impresario\Definition\Enquiry::STATUS_COMPLETE;
+    }
+
 }

@@ -205,7 +205,8 @@ class Enquiry
         $returnValues = [
             'enquiry_id' => null,
             'quote_id' => null,
-            'quote_created' => false
+            'quote_created' => false,
+            'reopened' => false
         ];
 
         foreach(EnquiryDefinition::NON_USER_VALUES as $nonUserValue){
@@ -224,6 +225,11 @@ class Enquiry
 
         $returnValues['new_save'] = $newSave;
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        if($modelInstance->isComplete() && $data['status'] !== EnquiryDefinition::STATUS_COMPLETE){
+            $data['date_completed'] = null;
+            $returnValues['reopened'] = true;
+        }
 
         $modelInstance->setData($data)->save();
         $returnValues['enquiry_id'] = $modelInstance->getId();

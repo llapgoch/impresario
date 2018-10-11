@@ -84,6 +84,12 @@ class Enquiry
             }
         }
 
+        if(isset($formValues['status'])
+            && $formValues['status'] !== EnquiryDefinition::STATUS_COMPLETE && $modelInstance->isComplete()){
+                $validateResult['confirm'] = 'This will re-open the enquiry. Are you sure?';
+                return $validateResult;
+        }
+
         return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues));
     }
 
@@ -127,10 +133,6 @@ class Enquiry
                 throw new Exception('The enquiry could not be found');
             }
         }
-
-        $converter = $this->createAppObject(EnquiryConverter::class);
-        $helper = $this->getEnquiryHelper();
-        $formValues = $converter->convert($params['formValues']);
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
@@ -275,7 +277,7 @@ class Enquiry
             );
         }
 
-        if($saveResult['new_save'] == false && !$saveResult['quote_created']){
+        if($saveResult['new_save'] == false && !$saveResult['quote_created'] && !$saveResult['reopened']){
             $this->addReplacerBlock(
                 $this->getModalHelper()->createAutoOpenModal(
                     'Success',
@@ -293,6 +295,13 @@ class Enquiry
             $saveResult['redirect'] = $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
                 ['quote_id' => $saveResult['quote_id']]
+            );
+        }
+
+        if($saveResult['reopened']){
+            $saveResult['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::ENQUIRY_EDIT,
+                ['enquiry_id' => $saveResult['enquiry_id']]
             );
         }
 

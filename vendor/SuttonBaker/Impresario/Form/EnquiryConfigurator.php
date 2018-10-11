@@ -68,22 +68,22 @@ class EnquiryConfigurator
             );
         }
 
-        if($this->getValue('date_completed')){
-            $statusRule = $this->createRule('Custom', 'status', 'Status');
-            $statusRule->setMainError('Status must be \'Complete\' if \'Date Completed\' has been set')
-                ->setInputError('This must be set to \'Complete\'');
-
-            $this->addRule($statusRule->setValidationMethod(
-                function($value, $ruleInstance) use($statusIsClosed) {
-
-                    if($statusIsClosed == false){
-                        return $ruleInstance->createError();
-                    }
-
-                    return true;
-                }
-            ));
-        }
+//        if($this->getValue('date_completed')){
+//            $statusRule = $this->createRule('Custom', 'status', 'Status');
+//            $statusRule->setMainError('Status must be \'Complete\' if \'Date Completed\' has been set')
+//                ->setInputError('This must be set to \'Complete\'');
+//
+//            $this->addRule($statusRule->setValidationMethod(
+//                function($value, $ruleInstance) use($statusIsClosed) {
+//
+//                    if($statusIsClosed == false){
+//                        return $ruleInstance->createError();
+//                    }
+//
+//                    return true;
+//                }
+//            ));
+//        }
 
     }
 }

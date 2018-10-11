@@ -19,9 +19,10 @@ class Edit
     extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'enquiry_id';
+    /** @var string  */
     protected $prefixName = 'Enquiry';
+    /** @var string  */
     protected $blockPrefix = 'enquiry';
-
     /** @var \DaveBaker\Core\Model\Db\Core\Upload\Collection */
     protected $attachmentCollection;
 
@@ -269,7 +270,6 @@ class Edit
                     'js-date-picker',
                     'js-date-completed'
                 ],
-                'data' => ['ignore_lock' => $ignoreLockValue],
                 'rowIdentifier' => 'creation_data',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
