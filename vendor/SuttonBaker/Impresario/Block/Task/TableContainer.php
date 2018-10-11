@@ -115,6 +115,7 @@ class TableContainer
         }
 
         $this->instanceCollection->addOutputProcessors([
+                'updated_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
                 'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),

@@ -38,7 +38,9 @@ class Task
         'assigned_to_name' => 'Assignee',
         'task_type' => 'Type',
         'target_date' => 'Target',
-        'priority' => 'Priority'
+        'priority' => 'Priority',
+        'updated_at' => 'Last Modified'
+
     ];
 
     const SORTABLE_COLUMNS = [
@@ -48,6 +50,7 @@ class Task
         'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
         'task_type' => [Table::HEADER_SORTABLE_ALPHA],
         'target_date' => [],
+        'updated_at' => [],
         'priority' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
