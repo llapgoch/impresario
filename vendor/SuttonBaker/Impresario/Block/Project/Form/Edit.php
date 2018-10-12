@@ -430,7 +430,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        if(($this->modelInstance->getStatus() !== ProjectDefinition::STATUS_OPEN) ||
+        if(in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
             $this->getProjectHelper()->currentUserCanEdit() == false){
             $this->lock();
         }

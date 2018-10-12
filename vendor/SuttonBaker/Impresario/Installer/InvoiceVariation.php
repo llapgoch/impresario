@@ -47,7 +47,7 @@ class InvoiceVariation
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`invoice_id`),
               KEY `invoice_number` (`invoice_number`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;"
         );
 
         $this->deltaTable('variation',
@@ -70,7 +70,7 @@ class InvoiceVariation
               PRIMARY KEY (`variation_id`),
               KEY `project_id` (`project_id`),
               KEY `status` (`status`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;"
         );
     }
 

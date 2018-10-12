@@ -54,7 +54,7 @@ class Enquiry
               `is_deleted` int(1) DEFAULT 0,
               PRIMARY KEY (`enquiry_id`),
               KEY `status` (`status`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;'
         );
     }
 }
