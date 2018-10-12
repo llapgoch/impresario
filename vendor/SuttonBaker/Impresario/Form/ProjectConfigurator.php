@@ -18,7 +18,7 @@ class ProjectConfigurator
      */
     protected function _collate()
     {
-        $projectStarted = in_array($this->getValue('status'), [Project::STATUS_ON_SITE, Project::STATUS_ON_SITE]);
+        $projectStarted = in_array($this->getValue('status'), [Project::STATUS_ON_SITE, Project::STATUS_COMPLETE]);
 
         $this->addRule(
             $this->createRule('DateCompare\Past', 'date_received', 'Date Received')

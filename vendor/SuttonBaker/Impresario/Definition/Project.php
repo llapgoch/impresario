@@ -20,7 +20,7 @@ class Project
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Project\Collection';
 
     const STATUS_OPEN = 'open';
-    const STATUS_ON_SITE = 'On Site';
+    const STATUS_ON_SITE = 'onsite';
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
 
