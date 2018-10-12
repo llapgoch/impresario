@@ -11,7 +11,8 @@ use SuttonBaker\Impresario\Definition\Upload;
  * Class Edit
  * @package SuttonBaker\Impresario\Block\Invoice\Form
  */
-class Edit extends \SuttonBaker\Impresario\Block\Form\Base
+class Edit
+    extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'invoice_id';
     const PREFIX_KEY = 'invoice';
@@ -32,6 +33,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
+
         wp_register_script('impresario_invoice', get_template_directory_uri() . '/assets/js/invoice-edit.js', ['jquery']);
         wp_enqueue_script('impresario_invoice');
 
@@ -50,6 +53,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
+        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
 
 
         $elements = $builder->build([
@@ -105,7 +109,34 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance, false) . " Invoice",
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
                 ],
-                'class' => 'btn-block'
+                'class' => 'btn-block',
+                'rowIdentifier' => 'button_bar',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Invoice',
+                    'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Invoice',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            InvoiceDefintion::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $this->getUrlHelper()->getRefererUrl()
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'invoice_id',
                 'type' => 'Input\Hidden',
@@ -131,7 +162,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "{$prefixKey}.edit.submit.element")
+            )->setOrder('before', "invoice.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_INVOICE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );

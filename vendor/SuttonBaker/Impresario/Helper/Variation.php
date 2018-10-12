@@ -88,5 +88,20 @@ class Variation extends Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Variation\Status');
     }
 
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Variation $variation
+     * @return $this
+     */
+    public function deleteVariation(
+        \SuttonBaker\Impresario\Model\Db\Variation $variation
+    ) {
+        if(!$variation->getId()){
+            return $this;
+        }
+
+        $variation->setIsDeleted(1)->save();
+        return $this;
+    }
+
 
 }

@@ -156,4 +156,19 @@ class Invoice extends Base
         return '';
     }
 
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+     * @return $this
+     */
+    public function deleteInvoice(
+        \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+    ) {
+        if(!$invoice->getId()){
+            return $this;
+        }
+
+        $invoice->setIsDeleted(1)->save();
+        return $this;
+    }
+
 }

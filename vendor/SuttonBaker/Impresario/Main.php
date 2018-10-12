@@ -57,6 +57,16 @@ class Main
         );
 
         $api->addRoute(
+            'invoice',
+            '\SuttonBaker\Impresario\Api\Invoice'
+        );
+
+        $api->addRoute(
+            'variation',
+            '\SuttonBaker\Impresario\Api\Variation'
+        );
+
+        $api->addRoute(
             'archive',
             '\SuttonBaker\Impresario\Api\Archive'
         );

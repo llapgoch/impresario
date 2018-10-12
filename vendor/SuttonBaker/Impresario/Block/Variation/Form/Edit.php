@@ -32,6 +32,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preDispatch()
     {
+        parent::_preDispatch();
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -55,6 +57,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure($statuses)->getElementData();
+        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
 
 
         $elements = $builder->build([
@@ -152,7 +155,34 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'button_name' => $this->getVariationHelper()->getActionVerb($this->modelInstance, false) . ' Variation',
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
                 ],
-                'class' => 'btn-block'
+                'class' => 'btn-block',
+                'rowIdentifier' => 'button_bar',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-8'
+                ]
+            ], [
+                'name' => 'delete_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $disabledAttrs,
+                'data' => [
+                    'button_name' => 'Remove Variation',
+                    'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Variation',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            VariationDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $this->getUrlHelper()->getRefererUrl()
+                    ]
+                ],
+                'class' => 'btn-block btn-danger js-delete-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'variation_id',
                 'type' => 'Input\Hidden',
@@ -175,7 +205,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "{$prefixKey}.edit.submit.element")
+            )->setOrder('before', "variation.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );

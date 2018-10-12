@@ -164,7 +164,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-8'
                 ]
-
             ], [
                 'name' => 'delete_button',
                 'rowIdentifier' => 'button_bar',

@@ -26,6 +26,7 @@ class Task
      * @param $params
      * @param \WP_REST_Request $request
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */

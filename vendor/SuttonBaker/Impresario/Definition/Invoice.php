@@ -8,6 +8,7 @@ namespace SuttonBaker\Impresario\Definition;
 class Invoice
 {
     const API_ENDPOINT_UPDATE_TABLE = 'invoice/updatetable';
+    const API_ENDPOINT_DELETE = 'invoice/delete';
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Invoice';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Invoice\Collection';
     const ICON = 'fa fa-gbp';
