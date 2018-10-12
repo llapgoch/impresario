@@ -169,9 +169,11 @@ class Quote
      * @param $formValues
      * @return array
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     protected function saveQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
@@ -269,6 +271,7 @@ class Quote
      * @param $params
      * @param \WP_REST_Request $request
      * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
@@ -298,10 +301,12 @@ class Quote
      * @param \WP_REST_Request $request
      * @throws Exception
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function updaterevisiontableAction($params, \WP_REST_Request $request)
-    {
+    public function updaterevisiontableAction(
+        $params, \WP_REST_Request $request
+    ) {
         $helper = $this->getQuoteHelper();
         $blockManager = $this->getApp()->getBlockManager();
 
@@ -315,11 +320,14 @@ class Quote
             throw new Exception('The quote could not be found');
         }
 
+        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+
         $blockManager->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
             "{$this->blockPrefix}.past.revisions.table"
         )->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
-            ->setParentQuote($quote)
+            ->setRevisions($revisions)
+            ->setQuote($quote)
             ->preDispatch();
 
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.revision.list.table");

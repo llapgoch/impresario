@@ -33,6 +33,7 @@ class Quote
 
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
+        'revision_number' => 'Revision',
         'client_name' => 'Client',
         'client_reference' => 'Client Ref',
         'status' => 'Status',
@@ -45,6 +46,7 @@ class Quote
 
     const TABLE_HEADERS_INLINE = [
         'quote_id' => 'ID',
+        'revision_number' => 'Revision',
         'created_at' => 'Date Created',
         'created_by_name' => 'Creator',
         'net_cost' => 'Net Cost',
@@ -60,7 +62,8 @@ class Quote
         'date_received' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'estimator_name' => [Table::HEADER_SORTABLE_ALPHA]
+        'estimator_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'revision_number' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
     const NON_USER_VALUES = [

@@ -80,5 +80,8 @@ class Quote extends Base
     {
         $this->setData('gp', $this->calculateGp());
         $this->setData('profit', $this->calculateProfit());
+
+        // Populate revision number
+        $this->setData('revision_number', $this->getQuoteHelper()->getRevisionNumber($this));
     }
 }

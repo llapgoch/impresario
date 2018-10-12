@@ -39,6 +39,7 @@ class QuoteList
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
+                'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor()
             ]);
 
         $mainTile = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.tile.main");

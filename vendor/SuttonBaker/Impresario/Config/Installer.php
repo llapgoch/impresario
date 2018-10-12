@@ -16,7 +16,7 @@ class Installer extends \DaveBaker\Core\Config\Installer
             'impresario_client' => '0.0.7',
             'impresario_enquiry' => '0.0.94',
             'impresario_task' => '0.0.8',
-            'impresario_quote' => '0.0.93',
+            'impresario_quote' => '0.0.94',
             'impresario_project' => '0.0.11',
             'impresario_invoice_variation' => '0.0.10',
             'impresario_general' => '0.0.99',

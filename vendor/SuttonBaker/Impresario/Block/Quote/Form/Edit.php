@@ -499,26 +499,27 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @return $this
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
     protected function createPastRevisionsTable()
     {
-        if(!$this->modelInstance->getId()
-            || !$this->modelInstance->getPastRevisions()
-            || !count($this->modelInstance->getPastRevisions()->getItems())){
-
+        if(!$this->modelInstance->getId()){
             return $this;
         }
+
+        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry(
+            $this->modelInstance->getEnquiryId(), $this->modelInstance->getId()
+        );
 
         $this->pastRevisionsTableBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
             "{$this->blockPrefix}.past.revisions.table"
         )->setOrder('after', 'quote.edit.project.name.form.group')
             ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
-            ->setParentQuote($this->modelInstance);
+            ->setRevisions($revisions)
+            ->setQuote($this->modelInstance);
 
         $this->addChildBlock($this->pastRevisionsTableBlock);
         return $this;

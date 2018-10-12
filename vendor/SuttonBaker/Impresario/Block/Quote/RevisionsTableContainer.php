@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Block\Quote;
 use DaveBaker\Core\Block\Exception;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Definition\Quote;
+use SuttonBaker\Impresario\Model\Db\Quote\Collection;
 
 /**
  * Class TableContainer
@@ -18,29 +19,46 @@ class RevisionsTableContainer
     protected $blockPrefix = 'quote.revision';
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
-    /** @var \SuttonBaker\Impresario\Model\Db\Quote */
-    protected $parentQuote;
+    /** @var Collection */
+    protected $revisions;
+    /** @var Quote */
+    protected $quote;
 
     /**
-     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     * @return Quote
      */
-    public function getParentQuote()
+    public function getQuote()
     {
-        return $this->parentQuote;
+        return $this->quote;
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Quote $parentQuote
+     * @param Quote $quote
      * @return $this
      */
-    public function setParentQuote($parentQuote)
+    public function setQuote($quote)
     {
-        $this->parentQuote = $parentQuote;
+        $this->quote = $quote;
         return $this;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getRevisions()
+    {
+        return $this->revisions;
+    }
 
-
+    /**
+     * @param Collection $revisions
+     * @return $this
+     */
+    public function setRevisions($revisions)
+    {
+        $this->revisions = $revisions;
+        return $this;
+    }
 
     /**
      * @return \SuttonBaker\Impresario\Block\Table\Container\Base|void
@@ -55,23 +73,22 @@ class RevisionsTableContainer
     {
         wp_enqueue_script('dbwpcore_table_updater');
 
-        if(!$this->getParentQuote()){
-            throw new Exception('Quote Revision Parent not set');
+        if(!$this->getQuote() || !($instanceCollection = $this->getRevisions())){
+            throw new Exception('Revisions or quote not set');
         }
-
-        $instanceCollection = $this->getParentQuote()->getPastRevisions();
 
         $instanceCollection->addOutputProcessors([
             'net_cost' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
             'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'created_at' => $this->getDateHelper()->getOutputProcessorShortDate()
+            'created_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor()
         ]);
 
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
-            )->setHeading('<strong>Past</strong> Revisions')
+            )->setHeading('<strong>Quote</strong> Revisions')
         );
 
         $tileBlock->addChildBlock(
@@ -85,6 +102,7 @@ class RevisionsTableContainer
                 ->setIsReplacerBlock(true)
                 ->addClass('pagination-xs')
         );
+
 
         if(count($instanceCollection->getItems())) {
             $tileBlock->setTileBodyClass('nopadding');
@@ -103,7 +121,7 @@ class RevisionsTableContainer
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                             $this->getUrlHelper()->getApiUrl(
                                 Quote::API_ENDPOINT_UPDATE_REVISIONS_TABLE,
-                                ['quote_id' => $this->getParentQuote()->getId()]
+                                ['quote_id' => $this->getQuote()->getId()]
                             )
                     ])
                     ->setPaginator($paginator)

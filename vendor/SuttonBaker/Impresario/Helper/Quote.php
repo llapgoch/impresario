@@ -28,7 +28,8 @@ class Quote extends Base
         'po_number',
         'mi_number',
         'nm_mw_number',
-        'client_reference'
+        'client_reference',
+        'quote_revision_number'
     ];
 
     /**
@@ -176,7 +177,7 @@ class Quote extends Base
     public function getQuoteCollectionForEnquiry($enquiryId, $status)
     {
         $collection = $this->getQuoteCollection();
-        $collection->getSelect()->where('enquiry_id=?', $enquiryId);
+        $collection->where('enquiry_id=?', $enquiryId);
 
         if($status) {
             $collection->getSelect()->where('status=?', $status);
@@ -201,7 +202,24 @@ class Quote extends Base
         }
 
         if($enquiryId) {
-            $collection = $this->getDisplayQuotes($deletedFlag)
+            /** @var \SuttonBaker\Impresario\Model\Db\Quote $collection */
+            $collection =  $collection = $this->createAppObject(
+                QuoteDefinition::DEFINITION_COLLECTION
+            );
+            $collection
+                ->where('enquiry_id=?', $enquiryId)
+                ->getSelect()->reset(\Zend_Db_Select::COLUMNS);
+
+            $collection->getSelect()->columns(
+                new \Zend_Db_Expr('MAX(revision_number) as revision_number')
+            );
+
+            if(!($firstItem = $collection->firstItem())){
+                return $this->getQuote();
+            }
+
+            $collection = $this->getDisplayQuotes()
+                ->where('revision_number=?', $firstItem->getRevisionNumber())
                 ->where('enquiry_id=?', $enquiryId);
 
             if ($item = $collection->firstItem()) {
@@ -210,6 +228,60 @@ class Quote extends Base
         }
 
         return $this->getQuote();
+    }
+
+    /**
+     * @param $enquiryId
+     * @param null $ignoreQuoteId
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection|null
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getQuotesForEnquiry(
+        $enquiryId,
+        $ignoreQuoteId = null
+    ) {
+        if(!$enquiryId){
+            return null;
+        }
+
+        if(is_object($enquiryId)){
+            $enquiryId = $enquiryId->getId();
+        }
+
+        if(is_object($ignoreQuoteId)){
+            $ignoreQuoteId = $ignoreQuoteId->getId();
+        }
+
+        $collection = $this->getQuoteCollection()
+            ->where('enquiry_id=?', $enquiryId);
+
+        if($enquiryId){
+            $collection->where('quote_id<>?', $ignoreQuoteId);
+        }
+
+        $collection->getSelect()->reset(\Zend_Db_Select::ORDER);
+        $collection->getSelect()->order('revision_number DESC');
+
+        return $collection;
+    }
+
+    /**
+     * @param $number
+     * @return string
+     *
+     * Only supports 1 - 26 at the moment
+     */
+    public function getRevisionLetter($number)
+    {
+        $range = range('A', 'Z');
+
+        if(isset($range[$number - 1])){
+            return $range[$number - 1];
+        }
+
+        return '- -';
     }
 
     /**
@@ -338,6 +410,55 @@ class Quote extends Base
         return false;
     }
 
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @return int
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function getRevisionNumber(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        if($quote->getRevisionNumber()){
+            return $quote->getRevisionNumber();
+        }
+
+        if(!$quote->getEnquiryId()){
+            throw new \Exception('Quote does not have an enquiry id');
+        }
+
+        $collection = $this->getQuoteCollection(false)
+            ->where('enquiry_id=?', $quote->getEnquiryId());
+
+        $collection->getSelect()->columns(
+            new \Zend_Db_Expr('MAX(revision_number) as max_revision_number')
+        );
+
+        if(!($firstItem = $collection->firstItem())){
+            return 1;
+        }
+
+        if(!$firstItem->getMaxRevisionNumber()){
+            return 1;
+        }
+
+        return $firstItem->getMaxRevisionNumber() + 1;
+    }
+
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
+     * @param $data
+     * @return array
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
     public function saveQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
         $data
@@ -428,7 +549,7 @@ class Quote extends Base
 
         $newQuote = clone $quote;
 
-        $newQuote->unsQuoteId()->save();
+        $newQuote->unsQuoteId()->unsRevisionNumber()->save();
 
         if($quote->getPastRevisions()) {
             foreach ($quote->getPastRevisions()->getItems() as $pastRevision) {
@@ -472,19 +593,6 @@ class Quote extends Base
         $quote->setIsDeleted(1)->save();
     }
 
-    /**
-     * @param $parentId
-     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    public function getQuotesForParent($parentId)
-    {
-        $collection = $this->getQuoteCollection()
-            ->where('parent_id=?', $parentId);
-
-        return $collection;
-    }
 
     /**
      * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status
@@ -502,5 +610,14 @@ class Quote extends Base
     public function getTenderStatusOutputProcessor()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Quote\TenderStatus');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Revision
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getRevisionOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Revision');
     }
 }

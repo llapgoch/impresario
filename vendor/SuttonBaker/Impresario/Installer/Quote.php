@@ -58,6 +58,7 @@ class Quote
               `po_number` varchar(255) DEFAULT NULL,
               `mi_number` varchar(255) DEFAULT NULL,
               `nm_mw_number` varchar(255) DEFAULT NULL,
+              `revision_number` int(11) DEFAULT NULL,
               `status` varchar(20) DEFAULT NULL,
               `tender_status` varchar(20) DEFAULT NULL,
               `comments` text,
