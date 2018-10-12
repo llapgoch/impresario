@@ -132,8 +132,9 @@ class Project extends Base
         );
 
         $collection->order(new \Zend_Db_Expr(sprintf(
-                "FIELD({{project}}.status,'%s', '%s', '%s')",
+                "FIELD({{project}}.status,'%s', '%s', '%s', '%s')",
                 ProjectDefinition::STATUS_OPEN,
+                ProjectDefinition::STATUS_ON_SITE,
                 ProjectDefinition::STATUS_COMPLETE,
                 ProjectDefinition::STATUS_CANCELLED)
         ))->order('{{project}}.date_required');

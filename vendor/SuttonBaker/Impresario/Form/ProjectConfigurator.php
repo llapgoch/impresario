@@ -18,6 +18,8 @@ class ProjectConfigurator
      */
     protected function _collate()
     {
+        $projectStarted = in_array($this->getValue('status'), [Project::STATUS_ON_SITE, Project::STATUS_ON_SITE]);
+
         $this->addRule(
             $this->createRule('DateCompare\Past', 'date_received', 'Date Received')
         );
@@ -26,19 +28,31 @@ class ProjectConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
-        if($this->getValue('assigned_foreman_id')) {
+
+
+        if ($projectStarted){
+            $this->addRule(
+                $this->createRule('Date', 'project_start_date', 'Project Start Date')
+                    ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
+            );
+
+            $this->addRule(
+                $this->createRule('Date', 'project_end_date', 'Project End Date')
+                    ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
+            );
+
+
             $this->addRule(
                 $this->createRule('User', 'assigned_foreman_id', 'Foreman')
+                    ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
+            );
+
+
+            $this->addRule(
+                $this->createRule('User', 'project_manager_id', 'Project Manager')
+                    ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
             );
         }
-
-        $this->addRule(
-            $this->createRule('Date', 'project_start_date', 'Project Start Date')
-        );
-
-        $this->addRule(
-            $this->createRule('Date', 'project_end_date', 'Project End Date')
-        );
 
         $this->addRule(
             $this->createRule('Required', 'status', 'Status')
@@ -64,13 +78,6 @@ class ProjectConfigurator
 
         /** @var \SuttonBaker\Impresario\Model\Db\Project $modelInstance */
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
-
-        if($this->getValue('status') !== Project::STATUS_OPEN){
-            $this->addRule(
-                $this->createRule('User', 'project_manager_id', 'Project Manager')
-                    ->setMainError('\'{{niceName}}\' must be set if a project is not open')
-            );
-        }
 
         if($this->getValue('status') == Project::STATUS_COMPLETE){
             $this->addRule(

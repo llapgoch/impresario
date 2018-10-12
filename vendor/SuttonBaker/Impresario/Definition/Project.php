@@ -20,6 +20,7 @@ class Project
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Project\Collection';
 
     const STATUS_OPEN = 'open';
+    const STATUS_ON_SITE = 'On Site';
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
 
@@ -73,7 +74,8 @@ class Project
     public static function getStatuses()
     {
         return [
-            self::STATUS_OPEN => 'Open',
+            self::STATUS_OPEN => 'Pre-start',
+            self::STATUS_ON_SITE => 'On Site',
             self::STATUS_COMPLETE=> "Complete",
             self::STATUS_CANCELLED => 'Cancelled'
         ];
@@ -86,6 +88,7 @@ class Project
     {
         return [
             self::STATUS_OPEN => 'info',
+            self::STATUS_ON_SITE => 'warning',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'
         ];
