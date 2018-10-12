@@ -23,7 +23,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     /** @var \SuttonBaker\Impresario\Block\Task\TableContainer */
     protected $taskTableBlock;
     /** @var \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer */
-    protected $pastRevisionsTableBlock;
+    protected $revisionsBlock;
     /** @var \SuttonBaker\Impresario\Model\Db\Quote */
     protected $modelInstance;
 
@@ -421,7 +421,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         ]);
 
         $this->createTaskTable();
-        $this->createPastRevisionsTable();
+        $this->createRevisionsTable();
 
         $isLocked = $this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN ||
             $this->modelInstance->getIsDeleted();
@@ -503,7 +503,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    protected function createPastRevisionsTable()
+    protected function createRevisionsTable()
     {
         if(!$this->modelInstance->getId()){
             return $this;
@@ -513,7 +513,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->modelInstance->getEnquiryId(), $this->modelInstance->getId()
         );
 
-        $this->pastRevisionsTableBlock = $this->createBlock(
+        $this->revisionsBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
             "{$this->blockPrefix}.past.revisions.table"
         )->setOrder('after', 'quote.edit.project.name.form.group')
@@ -521,7 +521,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setRevisions($revisions)
             ->setQuote($this->modelInstance);
 
-        $this->addChildBlock($this->pastRevisionsTableBlock);
+        $this->addChildBlock($this->revisionsBlock);
         return $this;
     }
 
