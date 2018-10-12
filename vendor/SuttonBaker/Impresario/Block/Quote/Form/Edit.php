@@ -100,7 +100,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         if($this->getQuoteHelper()->currentUserCanEdit()
             && !$this->modelInstance->getIsDeleted()
-            && !$this->modelInstance->getIsSuperseded()
         ){
             $ignoreLockValue = true;
         }
@@ -111,11 +110,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $deleteAttrs = $projectEntity->getId()
             || $this->modelInstance->getId() == null
-            || $this->modelInstance->getIsDeleted()
-            || $this->modelInstance->getIsSuperseded() ? ['disabled' => 'disabled'] : [];
+            || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
-        $updateAttrs = $this->modelInstance->getIsDeleted()
-            || $this->modelInstance->getIsSuperseded() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
@@ -426,14 +423,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->createTaskTable();
         $this->createPastRevisionsTable();
 
-        $isLocked = $this->modelInstance->getIsSuperseded() ||
-            $this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN ||
+        $isLocked = $this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN ||
             $this->modelInstance->getIsDeleted();
 
         if($isLocked){
-            if($this->modelInstance->getIsSuperseded()){
-                $message = 'has been superseded';
-            } elseif ($this->modelInstance->getIsDeleted()){
+            if($this->modelInstance->getIsDeleted()){
                 $message = 'has been removed';
             } else {
                 $message = 'is locked';

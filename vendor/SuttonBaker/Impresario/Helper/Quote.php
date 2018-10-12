@@ -56,21 +56,6 @@ class Quote extends Base
         );
     }
 
-    /**
-     * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
-     * @return string
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function getActionVerb(
-        \DaveBaker\Core\Model\Db\BaseInterface $instance,
-        $includeView = true
-    ) {
-        if($instance->getIsSuperseded() && $includeView){
-            return 'View';
-        }
-
-        return parent::getActionVerb($instance, $includeView);
-    }
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
@@ -178,7 +163,7 @@ class Quote extends Base
      */
     public function getDisplayQuotes($deletedFlag = true)
     {
-        return $this->getQuoteCollection($deletedFlag)->where('is_superseded=0');
+        return $this->getQuoteCollection($deletedFlag);
     }
 
     /**
@@ -447,18 +432,18 @@ class Quote extends Base
 
         if($quote->getPastRevisions()) {
             foreach ($quote->getPastRevisions()->getItems() as $pastRevision) {
-                $pastRevision->setParentId($newQuote->getId())->setIsSuperseded(1)->save();
+                $pastRevision->setParentId($newQuote->getId())->save();
             }
         }
 
-        $quote->setParentId($newQuote->getId())->setIsSuperseded(1)->save();
+        $quote->setParentId($newQuote->getId())->save();
 
         $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
             $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE
         )->load();
 
         foreach($taskItems as $taskItem){
-            $taskItem->setIsSuperseded(1)->save();
+            $taskItem->save();
         }
 
 
@@ -493,11 +478,10 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getSupersededQuotesForParent($parentId)
+    public function getQuotesForParent($parentId)
     {
         $collection = $this->getQuoteCollection()
-            ->where('parent_id=?', $parentId)
-            ->where('is_superseded', 1);
+            ->where('parent_id=?', $parentId);
 
         return $collection;
     }

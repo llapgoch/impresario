@@ -36,15 +36,6 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     ) {
         $tabs = Flow::getTabs();
 
-        if(!$quote->getIsSuperseded()){
-            unset($tabs['quote_superseded']);
-        }else{
-            $for = 'quote_superseded';
-            $supersededQuote = $quote;
-            $quote = $quote->getParentQuote();
-            $project = $this->getProjectHelper()->getProjectForQuote($quote->getId());
-        }
-
         foreach($tabs as $type => $tab){
             $item = null;
             $url = false;
@@ -61,9 +52,6 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
                 case 'enquiry':
                     $item = $enquiry;
                     $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry);
-                    break;
-                case 'quote_superseded':
-                    $item = $supersededQuote;
                     break;
                 case 'quote':
                     $item = $quote;

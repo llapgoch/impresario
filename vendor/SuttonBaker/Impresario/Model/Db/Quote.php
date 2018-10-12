@@ -35,8 +35,7 @@ class Quote extends Base
             $revisions->getSelect()->reset(\Zend_Db_Select::ORDER);
 
             $revisions->order('created_at DESC')
-                ->where('parent_id=?', $this->getId())
-                ->where('is_superseded=?', 1);
+                ->where('parent_id=?', $this->getId());
 
             $this->pastRevisionsCollection = $revisions;
         }

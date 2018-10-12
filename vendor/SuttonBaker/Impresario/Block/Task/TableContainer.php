@@ -22,8 +22,6 @@ class TableContainer
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
     /** @var bool  */
-    protected $showSuperseded = false;
-    /** @var bool  */
     protected $showNoItemsMessage = true;
     /** @var int  */
     protected $recordsPerPage = TaskDefinition::RECORDS_PER_PAGE;
@@ -65,16 +63,6 @@ class TableContainer
     }
 
     /**
-     * @param bool $showSuperseded
-     * @return $this
-     */
-    public function setShowSuperseded($showSuperseded)
-    {
-        $this->showSuperseded = $showSuperseded;
-        return $this;
-    }
-
-    /**
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
      */
     public function getInstanceCollection()
@@ -108,10 +96,6 @@ class TableContainer
 
         if(!$this->instanceCollection){
             $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
-        }
-
-        if($this->showSuperseded == false){
-            $this->instanceCollection->where('is_superseded=?', 0);
         }
 
         $this->instanceCollection->addOutputProcessors([

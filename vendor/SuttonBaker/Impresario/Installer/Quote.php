@@ -58,7 +58,6 @@ class Quote
               `po_number` varchar(255) DEFAULT NULL,
               `mi_number` varchar(255) DEFAULT NULL,
               `nm_mw_number` varchar(255) DEFAULT NULL,
-              `is_superseded` int(1) DEFAULT 0,
               `status` varchar(20) DEFAULT NULL,
               `tender_status` varchar(20) DEFAULT NULL,
               `comments` text,
