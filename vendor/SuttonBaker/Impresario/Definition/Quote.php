@@ -33,7 +33,6 @@ class Quote
 
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
-        'revision_number' => 'Revision',
         'client_name' => 'Client',
         'client_reference' => 'Client Ref',
         'status' => 'Status',
@@ -45,7 +44,6 @@ class Quote
     ];
 
     const TABLE_HEADERS_INLINE = [
-        'quote_id' => 'ID',
         'revision_number' => 'Revision',
         'created_at' => 'Date Created',
         'created_by_name' => 'Creator',

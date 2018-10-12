@@ -257,7 +257,7 @@ class Quote extends Base
         $collection = $this->getQuoteCollection()
             ->where('enquiry_id=?', $enquiryId);
 
-        if($enquiryId){
+        if($ignoreQuoteId){
             $collection->where('quote_id<>?', $ignoreQuoteId);
         }
 

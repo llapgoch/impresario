@@ -303,6 +303,7 @@ class Quote
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function updaterevisiontableAction(
         $params, \WP_REST_Request $request
@@ -320,7 +321,7 @@ class Quote
             throw new Exception('The quote could not be found');
         }
 
-        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId(), $quote->getId());
 
         $blockManager->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
