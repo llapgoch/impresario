@@ -44,7 +44,6 @@ class EditController
      */
     protected function _preDispatch()
     {
-
         if(!($instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM))){
             return $this->getResponse()->redirectReferer(
                 $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST)

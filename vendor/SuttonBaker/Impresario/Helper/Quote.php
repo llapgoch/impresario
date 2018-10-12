@@ -214,13 +214,14 @@ class Quote extends Base
                 new \Zend_Db_Expr('MAX(revision_number) as revision_number')
             );
 
-            if(!($firstItem = $collection->firstItem())){
+            if(!($collection->firstItem()->getId())){
                 return $this->getQuote();
             }
 
             $collection = $this->getDisplayQuotes()
-                ->where('revision_number=?', $firstItem->getRevisionNumber())
+                ->where('revision_number=?', $collection->firstItem()->getRevisionNumber())
                 ->where('enquiry_id=?', $enquiryId);
+
 
             if ($item = $collection->firstItem()) {
                 return $item;
