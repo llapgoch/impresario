@@ -34,8 +34,6 @@ class Enquiry extends Base
             return;
         }
 
-        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($entityInstance);
-
         $this->addHeading();
         $this->addMessages();
 

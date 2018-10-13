@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
@@ -76,7 +77,7 @@ class Enquiry
         // Check whether a new quote will be created for this enquiry
         if(isset($formValues['status'])
             && $formValues['status'] == EnquiryDefinition::STATUS_COMPLETE){
-            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+            $quote = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance->getId());
 
             if(!$quote->getId()){
                 $validateResult['confirm'] = 'A new quote will be created for this enquiry, are you sure you want to proceed?';

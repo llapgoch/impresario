@@ -37,7 +37,7 @@ class Enquiry
     public function getTabBarForEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
     ) {
-        $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($enquiry, !((bool)$enquiry->getIsDeleted()));
+        $quote = $this->getQuoteHelper()->getQuoteForEnquiry($enquiry, !((bool)$enquiry->getIsDeleted()));
         $project = $this->getProjectHelper()->getProjectForQuote($quote);
 
         return $this->getTabBar(
@@ -245,7 +245,7 @@ class Enquiry
 
         // Create a quote if enquiry is complete
         if($data['status'] == EnquiryDefinition::STATUS_COMPLETE){
-            $quote = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance->getId());
+            $quote = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance->getId());
 
             if(!$quote->getId()) {
                 $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());

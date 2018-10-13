@@ -188,6 +188,49 @@ class Quote extends Base
 
     /**
      * @param $enquiryId
+     * @param bool $deletedFlag
+     * @return mixed|null|\SuttonBaker\Impresario\Model\Db\Quote
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function getQuoteForEnquiry($enquiryId, $deletedFlag = true)
+    {
+        // Get the quote which has created a project by default,
+        // if there's no project then get the newest quote for the enquiry
+        if(is_object($enquiryId)){
+            $enquiryId = $enquiryId->getId();
+        }
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
+        $collection = $this->createAppObject(
+            QuoteDefinition::DEFINITION_COLLECTION
+        );
+
+        $collection->join(
+            "{{project}}",
+            "{{project}}.quote_id={{quote}}.quote_id",
+            []
+        );
+
+        $collection->where('{{quote}}.enquiry_id=?', $enquiryId);
+
+        if($deletedFlag){
+            $collection->where('{{quote}}.is_deleted=?', 0)
+                ->where('{{project}}.is_deleted=?', 0);
+        }
+
+        if(count($collection->load())){
+            return $collection->firstItem();
+        }
+
+        return $this->getNewestQuoteForEnquiry($enquiryId, $deletedFlag);
+    }
+
+    /**
+     * @param $enquiryId
      * @return \SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
@@ -202,25 +245,31 @@ class Quote extends Base
         }
 
         if($enquiryId) {
-            /** @var \SuttonBaker\Impresario\Model\Db\Quote $collection */
-            $collection =  $collection = $this->createAppObject(
+            /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
+            $collection = $this->createAppObject(
                 QuoteDefinition::DEFINITION_COLLECTION
             );
+
             $collection
                 ->where('enquiry_id=?', $enquiryId)
                 ->getSelect()->reset(\Zend_Db_Select::COLUMNS);
+
+            if($deletedFlag){
+                $collection->where('is_deleted=?', 0);
+            }
 
             $collection->getSelect()->columns(
                 new \Zend_Db_Expr('MAX(revision_number) as revision_number')
             );
 
-            if(!($collection->firstItem()->getId())){
+            if(!($collection->firstItem()->getRevisionNumber())){
                 return $this->getQuote();
             }
 
             $collection = $this->getDisplayQuotes()
                 ->where('revision_number=?', $collection->firstItem()->getRevisionNumber())
                 ->where('enquiry_id=?', $enquiryId);
+
 
 
             if ($item = $collection->firstItem()) {
@@ -318,7 +367,7 @@ class Quote extends Base
             return null;
         }
 
-        $quote = $this->getNewestQuoteForEnquiry($enquiryId);
+        $quote = $this->getQuoteForEnquiry($enquiryId);
 
         if($quote->getId()){
             throw new \Exception("Quote has already been created for enquiry {$enquiryId}");

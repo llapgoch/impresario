@@ -57,7 +57,7 @@ class Edit
         );
 
         $modelInstance  = $this->getApp()->getRegistry()->get('model_instance');
-        $quoteEntity = $this->getQuoteHelper()->getNewestQuoteForEnquiry($modelInstance);
+        $quoteEntity = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance);
 
         $this->addClass('js-enquiry-form');
         $this->addAttribute(
