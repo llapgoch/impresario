@@ -19,7 +19,7 @@
                                 <i class="fa <?php echo $navItem['icon'];?>"></i>
                             <?php endif; ?>
                             <span class="navbar-label"><?php echo $block->_($navItem['name']); ?></span>
-                            <?php if(isset($navItem['badge'])):?>
+                            <?php if(isset($navItem['badge']) && $navItem['badge']):?>
                              <span class="label label-redbrown"><?php echo $block->escapeHtml($navItem['badge']);?></span>
                             <?php endif; ?>
                         </a>
