@@ -41,12 +41,15 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Select_Exception
      */
     public function getTabBarForQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
 
         $enquiry = $this->getEnquiryHelper()->getEnquiryForQuote($quote);
+        // Get the actual quote which created the project
+        $quote = $this->getQuoteHelper()->getQuoteForEnquiry($enquiry->getId());
         $project = $this->getProjectHelper()->getProjectForQuote($quote);
 
         return $this->getTabBar(

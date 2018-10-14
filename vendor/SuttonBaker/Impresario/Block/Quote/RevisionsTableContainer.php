@@ -117,6 +117,8 @@ class RevisionsTableContainer
                     ->setRecords($instanceCollection)
                     ->setSortableColumns(Quote::SORTABLE_COLUMNS)
                     ->addClass('table-striped')
+                    ->setStatusKey('tender_status')
+                    ->setRowStatusClasses(Quote::getInlineRowClasses())
                     ->addJsDataItems([
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                             $this->getUrlHelper()->getApiUrl(

@@ -3,7 +3,8 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use SuttonBaker\Impresario\Definition\Page;
-use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
 /**
@@ -221,6 +222,16 @@ class Project extends Base
         $project->setLastEditedById($currentUserId)
             ->setCreatedById($currentUserId)
             ->setStatus(ProjectDefinition::STATUS_OPEN);
+
+        // Get all other quotes for this enquiry and cancel them
+        $quotes = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId())
+            ->where('quote_id<>?', $quoteId)
+            ->load();
+
+        foreach($quotes as $quote){
+            $quote->setTenderStatus(QuoteDefinition::TENDER_STATUS_CANCELLED)->save();
+        }
+
 
         return $project->save();
     }

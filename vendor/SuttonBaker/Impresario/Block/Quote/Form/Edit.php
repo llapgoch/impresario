@@ -521,6 +521,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setRevisions($revisions)
             ->setQuote($this->modelInstance);
 
+
         $this->addChildBlock($this->revisionsBlock);
         return $this;
     }

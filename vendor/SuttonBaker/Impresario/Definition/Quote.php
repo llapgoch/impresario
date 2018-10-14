@@ -115,5 +115,14 @@ class Quote
         ];
     }
 
+    /**
+     * @return array
+     */
+    public static function getInlineRowClasses()
+    {
+        return [
+            self::TENDER_STATUS_WON => 'success'
+        ];
+    }
 
 }
