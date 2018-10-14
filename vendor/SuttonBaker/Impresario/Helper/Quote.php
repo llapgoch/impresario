@@ -207,6 +207,10 @@ class Quote extends Base
             $enquiryId = $enquiryId->getId();
         }
 
+        if(!$enquiryId){
+            return $this->getQuote();
+        }
+
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
         $collection = $this->createAppObject(
             QuoteDefinition::DEFINITION_COLLECTION
