@@ -136,7 +136,7 @@ class Quote extends Base
      */
     public function getOpenQuotes()
     {
-        return $this->getDisplayQuotes()->where('status=?', QuoteDefinition::STATUS_OPEN);
+        return $this->getDisplayQuotes()->where('tender_status=?', QuoteDefinition::STATUS_OPEN);
     }
 
     /**
