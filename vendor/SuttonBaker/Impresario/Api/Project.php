@@ -51,6 +51,7 @@ class Project
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $converter = $this->createAppObject(ProjectConverter::class);
         $formValues = $converter->convert($params['formValues']);
 
@@ -69,7 +70,7 @@ class Project
             return $validateResult;
         }
 
-        return array_merge($validateResult, $this->saveProject($modelInstance, $formValues));
+        return array_merge($validateResult, $this->saveProject($modelInstance, $formValues, $navigatingAway));
     }
 
     /**
@@ -96,6 +97,7 @@ class Project
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $converter = $this->createAppObject(ProjectConverter::class);
         $formValues = $converter->convert($params['formValues']);
         $modelInstance = $this->loadProject($formValues);
@@ -107,7 +109,7 @@ class Project
             return $validateResult;
         }
 
-        $saveResult = $this->saveProject($modelInstance, $formValues);
+        $saveResult = $this->saveProject($modelInstance, $formValues, $navigatingAway);
 
         return $saveResult;
     }
@@ -148,7 +150,8 @@ class Project
      */
     protected function saveProject(
         \SuttonBaker\Impresario\Model\Db\Project $modelInstance,
-        $formValues
+        $formValues,
+        $navigatingAway = false
     ) {
         $saveValues = $this->getProjectHelper()->saveProject($modelInstance, $formValues);
 
@@ -161,12 +164,20 @@ class Project
 
         // No need to redirect for updating
         if($saveValues['new_save'] == false && !$saveValues['project_newly_completed']){
-            $this->addReplacerBlock(
-                $this->getModalHelper()->createAutoOpenModal(
-                    'Success',
-                    'The project has been updated'
-                )
-            );
+            $message = 'The project has been updated';
+            if($navigatingAway) {
+                $this->getApp()->getGeneralSession()->addMessage(
+                    $message,
+                    Messages::SUCCESS
+                );
+            } else {
+                $this->addReplacerBlock(
+                    $this->getModalHelper()->createAutoOpenModal(
+                        'Success',
+                        $message
+                    )
+                );
+            }
         }
 
         if($saveValues['project_newly_completed']){

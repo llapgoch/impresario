@@ -55,6 +55,7 @@ class Quote
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $converter = $this->createAppObject(QuoteConverter::class);
         $formValues = $converter->convert($params['formValues']);
         $modelInstance = $this->loadQuote($formValues);
@@ -88,7 +89,7 @@ class Quote
             return $validateResult;
         }
 
-        return array_merge($validateResult, $this->saveQuote($modelInstance, $formValues));
+        return array_merge($validateResult, $this->saveQuote($modelInstance, $formValues, $navigatingAway));
     }
 
     /**
@@ -97,10 +98,12 @@ class Quote
      * @return array|\WP_Error
      * @throws Exception
      * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function saveAction(
         $params,
@@ -116,6 +119,7 @@ class Quote
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $converter = $this->createAppObject(QuoteConverter::class);
         $formValues = $converter->convert($params['formValues']);
         $modelInstance = $this->loadQuote($formValues);
@@ -126,7 +130,7 @@ class Quote
             return $validateResult;
         }
 
-        $saveResult = $this->saveQuote($modelInstance, $formValues);
+        $saveResult = $this->saveQuote($modelInstance, $formValues, $navigatingAway);
 
         return $saveResult;
     }
@@ -167,6 +171,7 @@ class Quote
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
      * @param $formValues
+     * @param bool $navigatingAway
      * @return array
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Db\Exception
@@ -177,7 +182,8 @@ class Quote
      */
     protected function saveQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
-        $formValues
+        $formValues,
+        $navigatingAway = false
     ) {
         $saveValues = $this->getQuoteHelper()->saveQuote($modelInstance, $formValues);
 
@@ -192,12 +198,21 @@ class Quote
         // No need to redirect for updating
         if($saveValues['new_save'] == false
             && !$saveValues['project_created'] && !$saveValues['quote_duplicated'] && !$saveValues['reopened']){
-            $this->addReplacerBlock(
-                $this->getModalHelper()->createAutoOpenModal(
-                    'Success',
-                    'The quote has been updated'
-                )
-            );
+            $message = 'The quote has been updated';
+
+            if($navigatingAway){
+                $this->getApp()->getGeneralSession()->addMessage(
+                    $message,
+                    Messages::SUCCESS
+                );
+            } else {
+                $this->addReplacerBlock(
+                    $this->getModalHelper()->createAutoOpenModal(
+                        'Success',
+                        $message
+                    )
+                );
+            }
         }
 
         if($saveValues['quote_duplicated']){
