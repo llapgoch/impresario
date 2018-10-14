@@ -60,12 +60,7 @@ class Edit
         $quoteEntity = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance);
 
         $this->addClass('js-enquiry-form');
-        $this->addAttribute(
-            ['data-update-url' => $this->getApp()->getApiManager()->getUrl(
-                'client/update',
-                ['clientid' => $modelInstance->getId() ? $modelInstance->getId() : 0]
-            )]
-        );
+
 
         // Clients
         $clients = $this->createCollectionSelectConnector()

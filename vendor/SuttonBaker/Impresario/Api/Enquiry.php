@@ -56,6 +56,8 @@ class Enquiry
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
+
         $modelInstance = $helper->getEnquiry();
         $converter = $this->createAppObject(EnquiryConverter::class);
         $formValues = $converter->convert($params['formValues']);
@@ -91,7 +93,7 @@ class Enquiry
                 return $validateResult;
         }
 
-        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues));
+        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues, $navigatingAway));
     }
 
     /**
@@ -123,6 +125,7 @@ class Enquiry
             throw new Exception('No form values provided');
         }
 
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $modelInstance = $helper->getEnquiry();
         $converter = $this->createAppObject(EnquiryConverter::class);
         $formValues = $converter->convert($params['formValues']);
@@ -141,7 +144,7 @@ class Enquiry
             return $validateResult;
         }
 
-        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues));
+        return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues, $navigatingAway));
     }
 
     /**
@@ -261,7 +264,8 @@ class Enquiry
      */
     protected function saveEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $modelInstance,
-        $formValues
+        $formValues,
+        $navigatingAway = false
     ) {
         $saveResult = $this->getEnquiryHelper()->saveEnquiry($modelInstance, $formValues);
 
@@ -278,13 +282,22 @@ class Enquiry
             );
         }
 
-        if($saveResult['new_save'] == false && !$saveResult['quote_created'] && !$saveResult['reopened']){
-            $this->addReplacerBlock(
-                $this->getModalHelper()->createAutoOpenModal(
-                    'Success',
-                    'The enquiry has been updated'
-                )
-            );
+        if(!$saveResult['new_save'] && !$saveResult['quote_created'] && !$saveResult['reopened']){
+            $message = 'The enquiry has been updated';
+
+            if($navigatingAway){
+                $this->getApp()->getGeneralSession()->addMessage(
+                    $message,
+                    Messages::SUCCESS
+                );
+            }else{
+                $this->addReplacerBlock(
+                    $this->getModalHelper()->createAutoOpenModal(
+                        'Success',
+                        $message
+                    )
+                );
+            }
         }
 
         if($saveResult['quote_created']){
