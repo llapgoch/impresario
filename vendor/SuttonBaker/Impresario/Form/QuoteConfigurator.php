@@ -42,11 +42,6 @@ class QuoteConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
-
-        $this->addRule(
-            $this->createRule('Date', 'date_return_by', 'Return By Date')
-        );
-
         $netCost = $this->getValue('net_cost');
         $netSell = $this->getValue('net_sell');
 

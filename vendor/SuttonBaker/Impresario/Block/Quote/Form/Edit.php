@@ -290,22 +290,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
-                'name' => 'date_return_by',
-                'formGroup' => true,
-                'labelName' => 'Return By Date *',
-                'rowIdentifier' => 'returned_dates',
-                'type' => 'Input\Text',
-                'class' => 'js-date-picker',
-                'attributes' => [
-                    'autocomplete' => 'off',
-                    'data-date-settings' => json_encode(
-                        ['minDate' => '0', 'maxDate' => "+5Y"]
-                    )
-                ],
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ]
-            ], [
                 'name' => 'date_returned',
                 'formGroup' => true,
                 'labelName' => 'Returned Date',
