@@ -29,6 +29,7 @@ class Quote extends Base
         'mi_number',
         'nm_mw_number',
         'client_reference',
+        'client_requested_by',
         'quote_revision_number'
     ];
 

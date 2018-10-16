@@ -49,6 +49,10 @@ class EnquiryConfigurator
             $this->createRule('Required', 'status', 'Status')
         );
 
+        $this->addRule(
+            $this->createRule('Required', 'client_requested_by', 'Client Requested By')
+        );
+
 
         // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');

@@ -169,7 +169,7 @@ class Edit
                     'select_options' => $clients
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'client_reference',
@@ -179,7 +179,17 @@ class Edit
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'client_row_one',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'client_requested_by',
+                'labelName' => 'Client Requested By *',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'client_row_one',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'po_number',

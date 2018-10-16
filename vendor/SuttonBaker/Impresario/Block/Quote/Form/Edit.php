@@ -148,15 +148,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
-                'name' => 'client_requested_by',
-                'formGroup' => true,
-                'labelName' => 'Client Requested By *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'client_reference_row',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ]
-            ], [
                 'name' => 'client_id',
                 'formGroup' => true,
                 'rowIdentifier' => 'client_reference_row',
@@ -183,6 +174,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'attributes' => [
                     'readonly' => 'readonly'
+                ]
+            ], [
+                'name' => 'client_requested_by',
+                'formGroup' => true,
+                'labelName' => 'Client Requested By',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'client_reference_row',
+                'attributes' => [
+                    'readonly' => 'readonly'
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'po_number',

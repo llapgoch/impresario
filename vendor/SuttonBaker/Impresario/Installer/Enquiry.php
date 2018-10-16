@@ -38,6 +38,7 @@ class Enquiry
               `last_edited_by_id` int(11) DEFAULT NULL,
               `client_reference` varchar(255) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
+              `client_requested_by` varchar(255) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
               `date_received` datetime DEFAULT NULL,
               `status` varchar(255) DEFAULT NULL,
