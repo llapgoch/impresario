@@ -97,6 +97,46 @@ class Quote
      * @param \WP_REST_Request $request
      * @return array|\WP_Error
      * @throws Exception
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function createRevisionAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        $helper = $this->getQuoteHelper();
+
+        if(!$helper->currentUserCanEdit()) {
+            return $this->getAccessDeniedError();
+        }
+
+        if(!isset($params['quote_id'])){
+            throw new Exception('Quote ID not set');
+        }
+
+        $quote = $helper->getQuote($params['quote_id']);
+
+        if(!$quote->getId()){
+            throw new Exception('The quote could not be found');
+        }
+
+        $newQuote = $helper->duplicateQuote($quote);
+
+        return [
+          'redirect' => $this->getUrlHelper()->getUrl(
+              Page::QUOTE_EDIT, [
+                    'quote_id' => $newQuote->getId()
+              ]
+        )];
+    }
+
+    /**
+     * @param $params
+     * @param \WP_REST_Request $request
+     * @return array|\WP_Error
+     * @throws Exception
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Db\Exception
      * @throws \DaveBaker\Core\Event\Exception

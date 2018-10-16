@@ -329,7 +329,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'status',
                 'formGroup' => true,
                 'rowIdentifier' => 'status_tender_status',
-                'labelName' => 'Status *',
+                'labelName' => 'Quote Status *',
                 'type' => 'Select',
                 'class' => 'js-status',
                 'data' => [
@@ -371,9 +371,31 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'btn-block',
                 'formGroupSettings' => [
-                    'class' => 'col-md-8'
+                    'class' => 'col-md-6'
                 ]
 
+            ], [
+                'name' => 'create_new_revision_button',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $updateAttrs,
+                'data' => [
+                    'button_name' => 'Create Revision',
+                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'type' => 'Quote',
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            QuoteDefinition::API_ENDPOINT_DELETE,
+                            ['id' => $this->modelInstance->getId()]
+                        ),
+                        'returnUrl' => $returnUrl
+                    ]
+                ],
+                'class' => 'btn-block btn-info js-create-revision-confirm',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
             ], [
                 'name' => 'delete_button',
                 'rowIdentifier' => 'button_bar',
@@ -394,7 +416,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'btn-block btn-danger js-delete-confirm',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-2'
                 ]
             ], [
                 'name' => 'quote_id',

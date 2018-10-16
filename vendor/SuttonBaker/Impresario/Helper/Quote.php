@@ -617,13 +617,14 @@ class Quote extends Base
 
         $quote->setParentId($newQuote->getId())->save();
 
-        $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
-            $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE
-        )->load();
-
-        foreach($taskItems as $taskItem){
-            $taskItem->save();
-        }
+//        $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
+//            $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE
+//        )->load();
+//
+//        foreach($taskItems as $taskItem){
+//
+//            $taskItem->save();
+//        }
 
 
         return $newQuote;

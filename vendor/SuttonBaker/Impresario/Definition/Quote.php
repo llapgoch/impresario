@@ -14,6 +14,7 @@ class Quote
     const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisiontable';
     const API_ENDPOINT_VALIDATE_SAVE = 'quote/validatesave';
     const API_ENDPOINT_SAVE = 'quote/save';
+    const API_ENDPOINT_CREATE_REVISION = 'quote/createrevision';
 
     const ICON = 'fa fa-calculator';
 
