@@ -249,7 +249,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_cost',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Cost',
+                'labelName' => 'Net Cost (£)',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-cost',
@@ -260,7 +260,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'net_sell',
                 'formGroup' => true,
                 'rowIdentifier' => 'cost_values',
-                'labelName' => 'Net Sell',
+                'labelName' => 'Net Sell (£)',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£"],
                 'class' => 'js-net-sell',
@@ -552,7 +552,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                                 'type' => TaskDefinition::TASK_TYPE_QUOTE,
                                 'parent_id' => $this->modelInstance->getId()
                             ]
-
                         )
                 ]);
 

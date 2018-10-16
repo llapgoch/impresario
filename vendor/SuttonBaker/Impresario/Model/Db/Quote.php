@@ -70,7 +70,7 @@ class Quote extends Base
     public function calculateGp()
     {
         if(is_numeric($this->getNetSell()) && is_numeric($this->getNetCost()) && $this->getNetSell() > 0){
-            return ($this->getProfit() / $this->getNetSell()) * 100;
+            return ($this->calculateProfit() / $this->getNetSell()) * 100;
         }
 
         return 0;
