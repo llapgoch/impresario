@@ -293,12 +293,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'date_returned',
                 'formGroup' => true,
                 'labelName' => 'Returned Date',
-                'rowIdentifier' => 'returned_dates',
+                'rowIdentifier' => 'completion_fields',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => ['autocomplete' => 'off'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ],[
                 'name' => 'date_completed',
@@ -309,10 +309,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'class' => ['js-date-picker', 'js-date-completed'],
                 'attributes' => ['autocomplete' => 'off'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
 
-            ],[
+            ], [
                 'name' => 'completed_by_id',
                 'formGroup' => true,
                 'labelName' => 'Completed By ',
@@ -323,7 +323,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'select_options' => $completedUsers
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'status',
