@@ -503,11 +503,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         )->setOrder('after', 'quote.edit.project.name.form.group')
             ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
+
         $this->taskTableBlock->setInstanceCollection(
-            $this->getTaskHelper()->getTaskCollectionForEntity(
-                $this->modelInstance->getId(),
-                TaskDefinition::TASK_TYPE_QUOTE
-            )
+           $this->getQuoteHelper()->getTasksForQuote($this->modelInstance)
         )->setEditLinkParams([
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);

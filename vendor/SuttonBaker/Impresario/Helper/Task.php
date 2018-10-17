@@ -33,7 +33,6 @@ class Task extends Base
 
         $select->where('is_deleted=?', '0');
 
-
         $collection->joinLeft(
             ['assigned_to_user' => $userTable],
             "assigned_to_user.ID={{task}}.assigned_to_id",

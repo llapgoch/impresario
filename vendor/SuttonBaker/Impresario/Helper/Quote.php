@@ -632,6 +632,28 @@ class Quote extends Base
         $quote->setIsDeleted(1)->save();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param int|object $quoteId
+     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
+     * 
+     * Gets all tasks for all related quote (by enquiry ID)
+     */
+    public function getTasksForQuote($quote)
+    {
+        if(!is_object($quote)){
+            $quote = $this->getQuote($quote);
+        }
+
+        $quoteCollection = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+        $taskCollection = $this->getTaskHelper()->getTaskCollection()
+            ->where('parent_id IN(?)', $quoteCollection->getAllIds())
+            ->where('task_type=?', TaskDefinition::TASK_TYPE_QUOTE);
+
+        return $taskCollection;
+    }
+
 
     /**
      * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status

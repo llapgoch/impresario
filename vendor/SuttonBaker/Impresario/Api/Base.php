@@ -34,6 +34,15 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
     }
 
+     /**
+     * @return \SuttonBaker\Impresario\Helper\Task
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getTaskHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Modal
      * @throws \DaveBaker\Core\Object\Exception

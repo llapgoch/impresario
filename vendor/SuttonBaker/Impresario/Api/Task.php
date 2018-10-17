@@ -15,7 +15,7 @@ use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
  *
  */
 class Task
-    extends \DaveBaker\Core\Api\Base
+    extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'task.table';
@@ -37,6 +37,17 @@ class Task
 
         /** @var StatusLink $tableBlock */
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+        $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+
+           // Gah, has to add a task specific logic to get tasks for grouped quotes
+        if($params['type'] == TaskDefinition::TASK_TYPE_QUOTE){
+            $taskTable->setRecords(
+                $this->getQuoteHelper()->getTasksForQuote($params['parent_id']));    
+        }else{
+            $instanceCollection = $taskTable->getCollection()
+            ->where('task_type=?', $params['type'])
+            ->where('parent_id=?', $params['parent_id']);
+        }
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
@@ -49,31 +60,26 @@ class Task
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
 
-        if($instanceCollection = $taskTable->getCollection()) {
-            // For inline task blocks
-            if (isset($params['type']) && isset($params['parent_id'])) {
+        // For inline task blocks
+        if (isset($params['type']) && isset($params['parent_id'])) {
 
-                $tableBlock->removeHeader(['task_id', 'task_type'])
-                    ->addJsDataItems([
-                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                            $this->getUrlHelper()->getApiUrl(
-                                TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                                [
-                                    'type' => $params['type'],
-                                    'parent_id' => $params['parent_id']
-                                ]
+            $tableBlock->removeHeader(['task_id', 'task_type'])
+                ->addJsDataItems([
+                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                        $this->getUrlHelper()->getApiUrl(
+                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                            [
+                                'type' => $params['type'],
+                                'parent_id' => $params['parent_id']
+                            ]
 
-                            )
-                    ]);
+                        )
+                ]);
 
-                $instanceCollection->where('task_type=?', $params['type'])
-                    ->where('parent_id=?', $params['parent_id']);
-
-                $paginatorBlock->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
-                    ->removeClass('pagination-xl')->addClass('pagination-xs');
-            }
+            $paginatorBlock->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
+                ->removeClass('pagination-xl')->addClass('pagination-xs');
         }
-
+        
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);
         }
