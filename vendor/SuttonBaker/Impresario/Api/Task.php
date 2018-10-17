@@ -36,26 +36,23 @@ class Task
         $taskHelper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
 
         /** @var StatusLink $tableBlock */
-        $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
         $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
 
            // Gah, has to add a task specific logic to get tasks for grouped quotes
         if($params['type'] == TaskDefinition::TASK_TYPE_QUOTE){
-            $taskTable->setRecords(
-                $this->getQuoteHelper()->getTasksForQuote($params['parent_id']));    
+            $instanceCollection = $this->getQuoteHelper()->getTasksForQuote($params['parent_id']);
+            $taskTable->setRecords($instanceCollection);
         }else{
             $instanceCollection = $taskTable->getCollection()
             ->where('task_type=?', $params['type'])
             ->where('parent_id=?', $params['parent_id']);
         }
 
-        if(isset($params['order']['dir']) && isset($params['order']['column'])){
-            $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
-        }
+        $this->getTaskHelper()->addOutputProcessorsToCollection($instanceCollection);
 
-        /** @var '\SuttonBaker\Impresario\Block\Table\StatusLink' $taskTable */
-        $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
-        /** @var \SuttonBaker\Impresario\Model\Db\Task\Collection $instanceCollection */
+        if(isset($params['order']['dir']) && isset($params['order']['column'])){
+            $taskTable->setColumnOrder($params['order']['column'], $params['order']['dir']);
+        }
 
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
@@ -63,7 +60,7 @@ class Task
         // For inline task blocks
         if (isset($params['type']) && isset($params['parent_id'])) {
 
-            $tableBlock->removeHeader(['task_id', 'task_type'])
+            $taskTable->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                         $this->getUrlHelper()->getApiUrl(
@@ -84,7 +81,7 @@ class Task
             $paginatorBlock->setPage($params['pageNumber']);
         }
 
-        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+        $this->addReplacerBlock([$taskTable, $paginatorBlock]);
     }
 
     /**

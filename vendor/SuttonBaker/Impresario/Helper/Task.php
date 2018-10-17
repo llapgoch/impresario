@@ -173,6 +173,25 @@ class Task extends Base
     }
 
     /**
+     *
+     * @param \SuttonBaker\Impresario\Model\Db\Task\Collection $collection
+     * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
+     */
+    public function addOutputProcessorsToCollection(
+        \SuttonBaker\Impresario\Model\Db\Task\Collection $collection
+    ) {
+        $collection->addOutputProcessors([
+            'updated_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
+            'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),
+            'priority' => $this->getTaskHelper()->getPriorityOutputProcessor()
+        ]);
+
+        return $collection;
+    }
+
+    /**
      * @param $parentInstance
      * @return string
      */

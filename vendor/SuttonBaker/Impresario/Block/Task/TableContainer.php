@@ -98,13 +98,7 @@ class TableContainer
             $this->instanceCollection = $this->getTaskHelper()->getTaskCollection();
         }
 
-        $this->instanceCollection->addOutputProcessors([
-                'updated_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
-                'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
-                'status' => $this->getTaskHelper()->getStatusOutputProcessor(),
-                'task_type' => $this->getTaskHelper()->getTaskTypeOutputProcessor(),
-                'priority' => $this->getTaskHelper()->getPriorityOutputProcessor()
-            ]);
+        $this->getTaskHelper()->addOutputProcessorsToCollection($this->instanceCollection);
 
         $instanceItems = $this->instanceCollection->load();
 
