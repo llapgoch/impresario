@@ -22,6 +22,9 @@ use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 class Quote
     extends Base
 {
+    const ACTION_EDIT = 'edit';
+    const ACTION_REVISE = 'revise';
+
     /** @var string  */
     protected $blockPrefix = 'quote';
     /** @var array  */
@@ -66,10 +69,6 @@ class Quote
             return $validateResult;
         }
 
-        if($helper->saveQuoteDuplicateCheck($modelInstance, $formValues)){
-            $confirmMessages[] = 'This will create a new revision of the quote.';
-        }
-
         if($helper->saveQuoteCreateProjectCheck($modelInstance, $formValues)){
             $confirmMessages[] = sprintf(
                 'This will %screate a new project for the quote.',
@@ -112,11 +111,11 @@ class Quote
             return $this->getAccessDeniedError();
         }
 
-        if(!isset($params['quote_id'])){
+        if(!isset($params['id'])){
             throw new Exception('Quote ID not set');
         }
 
-        $quote = $helper->getQuote($params['quote_id']);
+        $quote = $helper->getQuote($params['id']);
 
         if(!$quote->getId()){
             throw new Exception('The quote could not be found');
@@ -225,10 +224,17 @@ class Quote
         $formValues,
         $navigatingAway = false
     ) {
-        $saveValues = $this->getQuoteHelper()->saveQuote($modelInstance, $formValues);
+        $saveValues = [];
 
+        if(isset($formValues['action']) && $formValues['action'] == self::ACTION_REVISE) {
+            $saveValues = $this->getQuoteHelper()->reviseQuote($modelInstance, $formValues);
+            $saveValues['revised'] = true;
+        } else {
+            $saveValues = $this->getQuoteHelper()->saveQuote($modelInstance, $formValues);
+            $saveValues['revised'] = false;
+        }
 
-        if($saveValues['new_save'] == true){
+        if ($saveValues['new_save'] == true) {
             $this->getApp()->getGeneralSession()->addMessage(
                 "The quote has been created",
                 Messages::SUCCESS
@@ -236,11 +242,11 @@ class Quote
         }
 
         // No need to redirect for updating
-        if($saveValues['new_save'] == false
-            && !$saveValues['project_created'] && !$saveValues['quote_duplicated'] && !$saveValues['reopened']){
+        if ($saveValues['new_save'] == false
+            && !$saveValues['project_created'] && !$saveValues['reopened'] && !$saveValues['revised']) {
             $message = 'The quote has been updated';
 
-            if($navigatingAway){
+            if ($navigatingAway) {
                 $this->getApp()->getGeneralSession()->addMessage(
                     $message,
                     Messages::SUCCESS
@@ -255,23 +261,28 @@ class Quote
             }
         }
 
-        if($saveValues['quote_duplicated']){
-            $this->getApp()->getGeneralSession()->addMessage(
-                'A new revision of the quote has been created',
-                Messages::SUCCESS
-            );
-        }
-
         // Redirect to the new quote or quote edit page
-        if($saveValues['new_save'] || $saveValues['quote_duplicated']){
-            $saveValues['redirect'] =  $this->getUrlHelper()->getPageUrl(
+        if ($saveValues['new_save'] && !$saveValues['revised']) {
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
                 ['quote_id' => $saveValues['quote_id']]
             );
         }
 
+        if($saveValues['revised']) {
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::QUOTE_EDIT,
+                ['quote_id' => $saveValues['quote_id']]
+            );
+
+            $this->getApp()->getGeneralSession()->addMessage(
+                'The quote has been revised',
+                Messages::SUCCESS
+            );
+        }
+
         // Redirect to new project
-        if($saveValues['project_created']){
+        if ($saveValues['project_created']) {
             $this->getApp()->getGeneralSession()->addMessage(
                 'A new project has been created for the quote',
                 Messages::SUCCESS
@@ -283,7 +294,7 @@ class Quote
             );
         }
 
-        if($saveValues['reopened']){
+        if ($saveValues['reopened']) {
             $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
                 Page::QUOTE_EDIT,
                 ['quote_id' => $saveValues['quote_id']]
@@ -294,7 +305,6 @@ class Quote
                 Messages::SUCCESS
             );
         }
-
 
         return $saveValues;
     }

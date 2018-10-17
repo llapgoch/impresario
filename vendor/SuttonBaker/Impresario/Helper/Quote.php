@@ -421,28 +421,6 @@ class Quote extends Base
         return $entity;
     }
 
-    /**
-     * @param \SuttonBaker\Impresario\Model\Db\Quote $modelInstance
-     * @param $data
-     * @return bool
-     */
-    public function saveQuoteDuplicateCheck(
-        \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
-        $data
-    ) {
-
-        if(isset($data['net_sell']) && isset($data['net_cost'])) {
-            if ((float)$modelInstance->getNetCost() && (float)$modelInstance->getNetSell()) {
-                if (((float)$modelInstance->getNetCost() !== (float)$data['net_cost'] ||
-                    (float)$modelInstance->getNetSell() !== (float)$data['net_sell'])
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
@@ -524,7 +502,6 @@ class Quote extends Base
 
         $returnValues = [
             'quote_id' => null,
-            'quote_duplicated' => false,
             'project_id' => null,
             'project_created' => false,
             'new_save' => false,
@@ -556,19 +533,6 @@ class Quote extends Base
         $returnValues['quote_id'] = $modelInstance->getId();
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-
-        // Duplicate quote if required
-        if($this->saveQuoteDuplicateCheck($modelInstance, $data)){
-            $modelInstance = $this->duplicateQuote($modelInstance);
-            $returnValues['quote_duplicated'] = true;
-            $returnValues['quote_id'] = $modelInstance->getId();
-
-            $returnValues['redirect'] = $this->getUrlHelper()->getPageUrl(
-                Page::QUOTE_EDIT,
-                ['quote_id' => $modelInstance->getId()]
-            );
-        }
-
         $shouldCreateProject = $this->saveQuoteCreateProjectCheck($modelInstance, $data);
         $modelInstance->setData($data)->save();
 
@@ -588,6 +552,28 @@ class Quote extends Base
         }
 
         return $returnValues;
+    }
+
+    /**
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @param $data
+     * @return array
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Model\Db\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function reviseQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote,
+        $data
+    ) {
+        if(!$quote->getId()){
+            throw new \Exception('Revising a quote must be performed on a saved quote');
+        }
+
+        $newQuote = $this->duplicateQuote($quote);
+        return $this->saveQuote($newQuote, $data);
     }
 
     /**

@@ -44,7 +44,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         parent::_preDispatch();
 
         wp_enqueue_script('impresario_form_validator');
-        $this->addClass('js-validate-form');
+        $this->addClass('js-validate-form js-action-form');
+
+        wp_register_script('impresario_action_switcher', get_template_directory_uri() . '/assets/js/action.switcher.widget.js');
+        wp_enqueue_script('impresario_action_switcher');
 
         $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
 
@@ -367,9 +370,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => $updateAttrs,
                 'data' => [
                     'button_name' => $this->getQuoteHelper()->getActionVerb($this->modelInstance, false) . " Quote",
-                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities()
+                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'action' => 'edit'
+                    ]
                 ],
-                'class' => 'btn-block',
+                'class' => 'btn-block js-action-switcher',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
@@ -384,15 +390,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'button_name' => 'Create Revision',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
                     'js_data_items' => [
-                        'type' => 'Quote',
-                        'endpoint' => $this->getUrlHelper()->getApiUrl(
-                            QuoteDefinition::API_ENDPOINT_DELETE,
-                            ['id' => $this->modelInstance->getId()]
-                        ),
-                        'returnUrl' => $returnUrl
+                        'action' => 'revise'
                     ]
                 ],
-                'class' => 'btn-block btn-info js-create-revision-confirm',
+                'class' => 'btn-block btn-info js-action-switcher',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
