@@ -63,6 +63,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addClass('js-quote-form');
 
         $projectEntity = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
+        $groupQuoteEntity = $this->getQuoteHelper()->getQuoteForEnquiry($this->modelInstance->getEnquiryId());
+        $groupProjectEntity = $this->getProjectHelper()->getProjectForQuote($groupQuoteEntity->getId());
+        // This logic should show whether the current quote has made the quote group's project
+        $finalQuoteNotCurrent = ($groupQuoteEntity->getId() !== $this->modelInstance->getId()) && $groupProjectEntity->getId();
+
 
         // Estimators
         if($estimators = $this->getRoleHelper()->getEstimators()) {
@@ -101,8 +106,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit()
-            && !$this->modelInstance->getIsDeleted()
+        if(($this->getQuoteHelper()->currentUserCanEdit()
+            && !$this->modelInstance->getIsDeleted()) && $finalQuoteNotCurrent == false
         ){
             $ignoreLockValue = true;
         }
@@ -115,7 +120,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             || $this->modelInstance->getId() == null
             || $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
-        $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $this->modelInstance->getIsDeleted()
+            || $finalQuoteNotCurrent ? ['disabled' => 'disabled'] : [];
+
+        $reviseAttrs = $projectEntity->getId()
+            || $this->modelInstance->getId() == null
+            || $this->modelInstance->getIsDeleted()
+            || $this->modelInstance->getTenderStatus() == QuoteDefinition::TENDER_STATUS_WON
+            || $finalQuoteNotCurrent
+            ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :
@@ -385,7 +398,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
-                'attributes' => $updateAttrs,
+                'attributes' => $reviseAttrs,
                 'data' => [
                     'button_name' => 'Create Revision',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),

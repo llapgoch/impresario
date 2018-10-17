@@ -33,17 +33,11 @@ class Quote extends Base
         'quote_revision_number'
     ];
 
-    /**
-     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
-     * @return mixed
-     * @throws \DaveBaker\Core\App\Exception
-     * @throws \DaveBaker\Core\Db\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Model\Db\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Select_Exception
-     */
+/**
+ *
+ * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+ * @return \SuttonBaker\Impresario\Block\Core\Tile\Tabs
+ */
     public function getTabBarForQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
