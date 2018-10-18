@@ -97,6 +97,7 @@ class Edit
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'invoice_number_val',
                 'attributes' => ['readonly' => 'readonly'],
+                'class' => 'js-amount-remaining',
                 'value' => $this->getLocaleHelper()->formatCurrency($this->parentItem->getInvoiceAmountRemaining()),
                 'formGroup' => true,
                 'formGroupSettings' => [
