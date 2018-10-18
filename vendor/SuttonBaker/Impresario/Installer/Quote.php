@@ -60,6 +60,7 @@ class Quote
               `revision_number` int(11) DEFAULT NULL,
               `status` varchar(20) DEFAULT NULL,
               `tender_status` varchar(20) DEFAULT NULL,
+              `is_master` int(1) DEFAULT 0,
               `comments` text,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
@@ -71,5 +72,4 @@ class Quote
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;"
         );
     }
-
 }

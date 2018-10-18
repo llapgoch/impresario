@@ -193,6 +193,8 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Select_Exception
+     * 
+     * This will get the quote which made a project, or failing that, the quote with the newest revision number
      */
     public function getQuoteForEnquiry($enquiryId, $deletedFlag = true)
     {
@@ -545,6 +547,7 @@ class Quote extends Base
             );
         }
 
+        $this->updateMasterFlagsForQuote($modelInstance);
         return $returnValues;
     }
 
@@ -586,7 +589,6 @@ class Quote extends Base
         }
 
         $newQuote = clone $quote;
-
         $newQuote->unsQuoteId()->unsRevisionNumber()->save();
 
         if($quote->getPastRevisions()) {
@@ -596,16 +598,6 @@ class Quote extends Base
         }
 
         $quote->setParentId($newQuote->getId())->save();
-
-//        $taskItems = $this->getTaskHelper()->getTaskCollectionForEntity(
-//            $quote->getId(), TaskDefinition::TASK_TYPE_QUOTE
-//        )->load();
-//
-//        foreach($taskItems as $taskItem){
-//
-//            $taskItem->save();
-//        }
-
 
         return $newQuote;
     }
@@ -629,11 +621,11 @@ class Quote extends Base
             $task->setIsDeleted(1)->save();
         }
 
+        $this->updateMasterFlagsForQuote($quote);
         $quote->setIsDeleted(1)->save();
     }
 
     /**
-     * Undocumented function
      *
      * @param int|object $quoteId
      * @return \SuttonBaker\Impresario\Model\Db\Task\Collection
@@ -654,6 +646,25 @@ class Quote extends Base
         return $taskCollection;
     }
 
+    public function updateMasterFlagsForQuote(
+        \SuttonBaker\Impresario\Model\Db\Quote $quote
+    ) {
+        // Ascertain whether this quote should be marked as master, mark all others as not 
+        $enquiry = $this->getEnquiryHelper()->getEnquiry($quote->getEnquiryId());
+        $groupedQuotes = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+        $masterQuote = $this->getQuoteHelper()->getQuoteForEnquiry($quote->getEnquiryId());
+        $masterQuote->setIsMaster(1)->save();
+
+        foreach($groupedQuotes->getItems() as $gQuote){
+            if($gQuote->getId() == $masterQuote->getId()){
+                continue;
+            }
+
+            $gQuote->setIsMasterQuote(0)->save();
+        }
+
+        return $quote;
+    }
 
     /**
      * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Quote\Status

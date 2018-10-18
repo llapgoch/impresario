@@ -510,12 +510,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);
 
-
         $this->addChildBlock($this->taskTableBlock);
         return $this;
     }
-
-
+    
     /**
      * @return $this
      * @throws \DaveBaker\Core\App\Exception
