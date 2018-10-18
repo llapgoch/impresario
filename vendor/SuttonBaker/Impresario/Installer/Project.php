@@ -42,6 +42,7 @@ class Project
               `quote_id` int(11) DEFAULT NULL,
               `project_name` varchar(255) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
+              `client_project_manager` varchar(255) DEFAULT NULL,
               `client_requested_by` varchar(255) DEFAULT NULL,
               `client_reference` varchar(255) DEFAULT NULL,
               `date_required` datetime DEFAULT NULL,

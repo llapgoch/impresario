@@ -232,7 +232,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'type' => 'Select',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'assigned_foreman_id',
@@ -244,7 +244,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'type' => 'Select',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'client_project_manager',
+                'formGroup' => true,
+                'labelName' => 'Client Project Manager',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'project_manager_foreman',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'actual_cost',
