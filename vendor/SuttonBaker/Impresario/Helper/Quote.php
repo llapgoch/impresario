@@ -162,7 +162,8 @@ class Quote extends Base
      */
     public function getDisplayQuotes($deletedFlag = true)
     {
-        return $this->getQuoteCollection($deletedFlag);
+        return $this->getQuoteCollection($deletedFlag)
+            ->where('is_master', 1);
     }
 
     /**
@@ -229,7 +230,7 @@ class Quote extends Base
         if(count($collection->load())){
             return $collection->firstItem();
         }
-
+        
         return $this->getNewestQuoteForEnquiry($enquiryId, $deletedFlag);
     }
 
@@ -270,7 +271,7 @@ class Quote extends Base
                 return $this->getQuote();
             }
 
-            $collection = $this->getDisplayQuotes()
+            $collection = $this->getQuoteCollection()
                 ->where('revision_number=?', $collection->firstItem()->getRevisionNumber())
                 ->where('enquiry_id=?', $enquiryId);
 
@@ -389,7 +390,9 @@ class Quote extends Base
             ->setStatus(QuoteDefinition::STATUS_OPEN)
             ->setTenderStatus(QuoteDefinition::TENDER_STATUS_OPEN);
 
-        return $quote->save();
+        $quote->save();
+
+        $this->updateMasterFlagsForQuote($quote);
     }
 
     /**
@@ -495,7 +498,6 @@ class Quote extends Base
         \SuttonBaker\Impresario\Model\Db\Quote $modelInstance,
         $data
     ) {
-
         $returnValues = [
             'quote_id' => null,
             'project_id' => null,
@@ -646,6 +648,11 @@ class Quote extends Base
         return $taskCollection;
     }
 
+    /**
+     *
+     * @param \SuttonBaker\Impresario\Model\Db\Quote $quote
+     * @return \SuttonBaker\Impresario\Model\Db\Quote
+     */
     public function updateMasterFlagsForQuote(
         \SuttonBaker\Impresario\Model\Db\Quote $quote
     ) {
