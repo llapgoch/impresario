@@ -63,7 +63,6 @@ class Quote
         $formValues = $converter->convert($params['formValues']);
         /** @var \SuttonBaker\Impresario\Model\Db\Quote */
         $modelInstance = $this->loadQuote($formValues);
-
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if($validateResult['hasErrors']){

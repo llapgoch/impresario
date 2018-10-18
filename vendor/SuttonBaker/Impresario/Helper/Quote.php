@@ -295,7 +295,8 @@ class Quote extends Base
      */
     public function getQuotesForEnquiry(
         $enquiryId,
-        $ignoreQuoteId = null
+        $ignoreQuoteId = null,
+        $deletedFlag = true
     ) {
         if(!$enquiryId){
             return null;
@@ -309,7 +310,7 @@ class Quote extends Base
             $ignoreQuoteId = $ignoreQuoteId->getId();
         }
 
-        $collection = $this->getQuoteCollection()
+        $collection = $this->getQuoteCollection($deletedFlag)
             ->where('enquiry_id=?', $enquiryId);
 
         if($ignoreQuoteId){
@@ -393,6 +394,7 @@ class Quote extends Base
         $quote->save();
 
         $this->updateMasterFlagsForQuote($quote);
+        return $quote;
     }
 
     /**
@@ -623,8 +625,9 @@ class Quote extends Base
             $task->setIsDeleted(1)->save();
         }
 
-        $this->updateMasterFlagsForQuote($quote);
         $quote->setIsDeleted(1)->save();
+        $this->updateMasterFlagsForQuote($quote);
+        return $this;
     }
 
     /**
@@ -658,16 +661,19 @@ class Quote extends Base
     ) {
         // Ascertain whether this quote should be marked as master, mark all others as not 
         $enquiry = $this->getEnquiryHelper()->getEnquiry($quote->getEnquiryId());
-        $groupedQuotes = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+        $groupedQuotes = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId(), null, false);
         $masterQuote = $this->getQuoteHelper()->getQuoteForEnquiry($quote->getEnquiryId());
-        $masterQuote->setIsMaster(1)->save();
+        
+        if($masterQuote->getId()){
+            $masterQuote->setIsMaster(1)->save();
+        }
 
         foreach($groupedQuotes->getItems() as $gQuote){
             if($gQuote->getId() == $masterQuote->getId()){
                 continue;
             }
 
-            $gQuote->setIsMasterQuote(0)->save();
+            $gQuote->setIsMaster(0)->save();
         }
 
         return $quote;

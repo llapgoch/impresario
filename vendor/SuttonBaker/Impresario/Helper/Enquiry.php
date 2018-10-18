@@ -247,7 +247,6 @@ class Enquiry
             $quote = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance->getId());
 
             if(!$quote->getId()) {
-                
                 $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());
                 $returnValues['quote_created'] = true;
                 $returnValues['quote_id'] = $quote->getId();
