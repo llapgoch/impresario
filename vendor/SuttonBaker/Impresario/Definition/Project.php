@@ -30,13 +30,14 @@ class Project
         'project_id' => 'ID',
         'client_name' => 'Client',
         'client_reference' => 'Client Ref',
-        'status' => 'Status',
+        'site_name' => 'Site',
+        'project_name' => 'Project',
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
         'invoice_amount_remaining' => "Amount Remaining",
-        'project_name' => 'Project',
         'project_manager_name' => 'Project Manager',
-        'foreman_name' => 'Foreman'
+        'foreman_name' => 'Foreman',
+        'status' => 'Status'
     ];
 
     const SORTABLE_COLUMNS = [
