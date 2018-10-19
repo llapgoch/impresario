@@ -32,19 +32,10 @@ class EnquiryList
     {
         wp_enqueue_script('dbwpcore_table_updater');
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $enquiryCollection */
-        $this->instanceCollection = $this->getEnquiryHelper()->getEnquiryCollection()
-            ->addOutputProcessors([
-                'date_received' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
-                'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml'])
-            ]);
-
         $tableHeaders = EnquiryDefinition::TABLE_HEADERS;
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
-        $instanceItems = $this->getEnquiryHelper()->getEnquiryCollection()
+        $this->instanceCollection = $this->getEnquiryHelper()->getDisplayEnquiries()
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
@@ -59,7 +50,7 @@ class EnquiryList
                 'enquiry.list.paginator',
                 'footer'
             )->setRecordsPerPage(EnquiryDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceItems->getItems()))
+                ->setTotalRecords(count($this->instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
         );
 
@@ -67,7 +58,7 @@ class EnquiryList
             $tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 'enquiry.list.table')
-                ->setHeaders($tableHeaders)->setRecords($instanceItems)
+                ->setHeaders($tableHeaders)->setRecords($this->instanceCollection)
                 ->setSortableColumns(EnquiryDefinition::SORTABLE_COLUMNS)
                 ->setStatusKey('status')
                 ->setRowStatusClasses(EnquiryDefinition::getRowClasses())

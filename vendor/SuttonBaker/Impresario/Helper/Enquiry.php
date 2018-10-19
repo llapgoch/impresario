@@ -10,6 +10,7 @@ use SuttonBaker\Impresario\Definition\Flow;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use \SuttonBaker\Impresario\Definition\Roles;
+use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 
 /**
  * Class Enquiry
@@ -82,7 +83,7 @@ class Enquiry
         );
 
         if($deletedFlag) {
-            $collection->getSelect()->where('is_deleted=?', '0');
+            $collection->where('{{enquiry}}.is_deleted=?', '0');
         }
 
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
@@ -108,6 +109,25 @@ class Enquiry
                 EnquiryDefinition::STATUS_CANCELLED)
         ))->order('{{enquiry}}.target_date');
 
+        return $collection;
+    }
+
+    public function getDisplayEnquiries($deletedFlag = true)
+    {
+        $collection = $this->getEnquiryCollection($deletedFlag)
+        ->joinLeft(
+            ['q' => '{{quote}}'],
+            '{{enquiry}}.enquiry_id=q.enquiry_id 
+                AND q.is_deleted=0 
+                AND q.is_master=1',
+            []
+        )->joinLeft(
+            ['p' => '{{project}}'],
+            'q.quote_id=p.quote_id 
+                AND p.is_deleted=0',
+            []
+        )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
+        
         return $collection;
     }
 
