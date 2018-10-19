@@ -28,8 +28,6 @@ class ProjectConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
-
-
         if ($projectStarted){
             $this->addRule(
                 $this->createRule('Date', 'project_start_date', 'Project Start Date')
@@ -52,6 +50,10 @@ class ProjectConfigurator
                 $this->createRule('User', 'project_manager_id', 'Project Manager')
                     ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
             );
+        }
+
+        if($this->getValue('actual_cost')){
+            $this->createRule('Number')
         }
 
         $this->addRule(

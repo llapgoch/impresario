@@ -77,7 +77,6 @@ class QuoteConfigurator
                 )
             );
 
-
         }
 
         if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
@@ -99,6 +98,18 @@ class QuoteConfigurator
                     ->setMainError('\'{{niceName}}\' must be set if a quote\'s status is \'Quoted\'')
                     ->setInputError('Please select an estimator')
             );
+        }else{
+            if($netCost){
+                $this->addRule(
+                    $this->createRule('Numeric', 'net_cost', 'Net Cost')
+                );
+            }
+
+            if($netSell){
+                $this->addRule(
+                    $this->createRule('Numeric', 'net_sell', 'Net Sell')
+                );
+            }
         }
 
 
