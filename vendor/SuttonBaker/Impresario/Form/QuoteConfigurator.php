@@ -89,13 +89,13 @@ class QuoteConfigurator
 
             $this->addRule(
                 $this->createRule('Numeric', 'net_sell', 'Net Sell')
-                    ->setMainError('\'{{niceName}}\' must be set if the quote\'s status is \'Quoted\'')
+                    ->setMainError('\'{{niceName}}\' must be a number if the quote\'s status is \'Quoted\'')
                     ->setInputError('This requires a numeric value')
             );
 
             $this->addRule(
                 $this->createRule('User', 'estimator_id', 'Estimator')
-                    ->setMainError('\'{{niceName}}\' must be set if a quote\'s status is \'Quoted\'')
+                    ->setMainError('\'{{niceName}}\' must be a number if a quote\'s status is \'Quoted\'')
                     ->setInputError('Please select an estimator')
             );
         }else{
