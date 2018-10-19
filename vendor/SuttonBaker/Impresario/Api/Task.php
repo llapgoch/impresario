@@ -37,15 +37,23 @@ class Task
 
         /** @var StatusLink $tableBlock */
         $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+        $taskType = isset($params['type']) ? $params['type'] : null;
+        $parentId = isset($params['parent_id']) ? $params['parent_id'] : null;
 
            // Gah, has to add a task specific logic to get tasks for grouped quotes
-        if($params['type'] == TaskDefinition::TASK_TYPE_QUOTE){
+        if($taskType == TaskDefinition::TASK_TYPE_QUOTE){
             $instanceCollection = $this->getQuoteHelper()->getTasksForQuote($params['parent_id']);
             $taskTable->setRecords($instanceCollection);
         }else{
-            $instanceCollection = $taskTable->getCollection()
-            ->where('task_type=?', $params['type'])
-            ->where('parent_id=?', $params['parent_id']);
+            $instanceCollection = $taskTable->getCollection();
+
+            if($parentId){
+                $instanceCollection->where('parent_id=?', $params['parent_id']);
+            }
+
+            if($taskType){
+                $instanceCollection->where('task_type=?', $taskType);
+            }
         }
 
         $this->getTaskHelper()->addOutputProcessorsToCollection($instanceCollection);
