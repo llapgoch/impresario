@@ -112,6 +112,10 @@ class Enquiry
         return $collection;
     }
 
+    /**
+     * @param boolean $deletedFlag
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry\Collection
+     */
     public function getDisplayEnquiries($deletedFlag = true)
     {
         $collection = $this->getEnquiryCollection($deletedFlag)

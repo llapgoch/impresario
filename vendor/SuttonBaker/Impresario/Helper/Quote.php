@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Helper;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
+use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 /**
  * Class Quote
@@ -131,7 +132,9 @@ class Quote extends Base
      */
     public function getOpenQuotes()
     {
-        return $this->getDisplayQuotes()->where('tender_status=?', QuoteDefinition::STATUS_OPEN);
+        return $this->getDisplayQuotes()->where(
+            'tender_status=?', QuoteDefinition::STATUS_OPEN
+        );
     }
 
     /**
@@ -162,8 +165,16 @@ class Quote extends Base
      */
     public function getDisplayQuotes($deletedFlag = true)
     {
-        return $this->getQuoteCollection($deletedFlag)
-            ->where('is_master', 1);
+        $collection = $this->getQuoteCollection($deletedFlag)
+            ->where('is_master', 1)
+            ->joinLeft(
+                ['p' => '{{project}}'],
+                '{{quote}}.quote_id=p.quote_id 
+                    AND p.is_deleted=0',
+                []
+            )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
+        
+        return $collection;
     }
 
     /**
