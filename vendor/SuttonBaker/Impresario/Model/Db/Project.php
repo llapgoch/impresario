@@ -184,12 +184,13 @@ class Project extends Base
     protected function calculateActualProfit()
     {
         $actualCost = (float) $this->getActualCost();
-        
-        if(is_nan($actualCost)){
+        $actualSell = (float) $this->getActualSell();
+
+        if(is_nan($actualCost) || is_nan($actualSell)){
             return null;
         }
 
-        return $this->getTotalNetSell() - $actualCost;
+        return $actualSell - $actualCost;
     }
 
     /**
@@ -200,7 +201,7 @@ class Project extends Base
         $actualSell = $this->getActualSell();
 
         if(is_nan($actualSell) === false && ($profit = $this->getActualProfit()) !== null){
-            return $profit / $actualSell;
+            return ($profit / $actualSell) * 100;
         }
             
         return null;

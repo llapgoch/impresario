@@ -46,6 +46,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         parent::_preDispatch();
 
+        wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
+        wp_enqueue_script('impresario_calculator');
+
         wp_enqueue_script('impresario_form_validator');
         $this->addClass('js-validate-form');
         $editMode = false;
@@ -261,7 +264,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'cost_values_profit',
                 'labelName' => 'Net Cost',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
+                'attributes' => [
+                    'placeholder' => "£", 
+                    'readonly' => 'readonly',
+                    'data-actual-value' => $this->modelInstance->getTotalNetCost()
+                ],
                 'class' => 'js-net-cost',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -272,7 +279,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'cost_values_profit',
                 'labelName' => 'Net Sell',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
+                'attributes' => [
+                    'placeholder' => "£", 
+                    'readonly' => 'readonly',
+                    'data-actual-value' => $this->modelInstance->getTotalNetSell()
+                ],
                 'class' => 'js-net-sell',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -295,7 +306,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-6'
                 ]
             ], [
                 'name' => 'invoice_amount_remaining',
@@ -305,11 +316,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-6'
                 ]
             ],  [
                 'name' => 'actual_cost',
                 'formGroup' => true,
+                'class' => 'js-actual-cost',
                 'labelName' => 'Actual Cost (£)',
                 'rowIdentifier' => 'actual_cost_values',
                 'type' => 'Input\Text',
@@ -320,6 +332,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'actual_sell',
                 'formGroup' => true,
+                'class' => 'js-actual-sell',
                 'labelName' => 'Actual Sell (£)',
                 'rowIdentifier' => 'actual_cost_values',
                 'type' => 'Input\Text',
@@ -333,11 +346,15 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'actual_cost_values',
                 'labelName' => 'Actual Profit',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
+                'attributes' => [
+                    'placeholder' => "£", 
+                    'readonly' => 'readonly',
+                    'data-actual-value' => $this->modelInstance->getActualProfit()
+                ],
                 'class' => 'js-actual-profit',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'
-                ]
+                ],
             ], [
                 'name' => 'actual_margin',
                 'formGroup' => true,
@@ -345,7 +362,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Actual Margin',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
-                'class' => 'js-actual-profit',
+                'class' => 'js-actual-margin',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'
                 ]
@@ -553,7 +570,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->variationTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Variation\TableContainer',
             "{$this->blockPrefix}.variation.table"
-        )->setOrder('before', 'project.edit.cost.values');
+        )->setOrder('before', 'project.edit.cost.values.profit');
 
         $this->variationTableBlock->setInstanceCollection(
             $this->getVariationHelper()->getVariationCollectionForProject(
