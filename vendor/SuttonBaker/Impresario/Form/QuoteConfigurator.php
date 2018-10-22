@@ -76,7 +76,34 @@ class QuoteConfigurator
                     }
                 )
             );
+        }
 
+        if($this->getValue('status') == QuoteDefinition::STATUS_OPEN){
+            $this->addRule(
+                $this->createRule('Custom', 'date_completed', 'Date Completed')
+                    ->setMainError('\'{{niceName}}\' must not be set if the quote\'s status is \'Open\'')
+                    ->setInputError('This cannot have a value')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if($value){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
+
+            $this->addRule(
+                $this->createRule('Custom', 'completed_by_id', 'Completed By')
+                    ->setMainError('\'{{niceName}}\' must not be set if the quote\'s status is \'Open\'')
+                    ->setInputError('This cannot have a value')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if($value){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
         }
 
         if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
@@ -136,13 +163,13 @@ class QuoteConfigurator
         $completedById = $this->getValue('completed_by_id');
 
 
-        if($quoteIsCompleted || $this->getValue('date_completed')){
+        if($quoteIsCompleted){
             $this->addRule(
                 $this->createRule('User', 'completed_by_id', 'Completed By')
             );
         }
 
-        if($quoteIsCompleted || $this->getValue('completed_by_id')){
+        if($quoteIsCompleted){
             $this->addRule(
                 $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
             );
