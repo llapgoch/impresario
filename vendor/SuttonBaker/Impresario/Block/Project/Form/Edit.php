@@ -256,19 +256,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ]
             ], [
-                'name' => 'actual_cost',
-                'formGroup' => true,
-                'labelName' => 'Actual Cost',
-                'rowIdentifier' => 'cost_values',
-                'type' => 'Input\Text',
-                'attributes' => ['placeholder' => '£'],
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ]
-            ], [
                 'name' => 'total_net_cost',
                 'formGroup' => true,
-                'rowIdentifier' => 'cost_values',
+                'rowIdentifier' => 'cost_values_profit',
                 'labelName' => 'Net Cost',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
@@ -279,7 +269,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'total_net_sell',
                 'formGroup' => true,
-                'rowIdentifier' => 'cost_values',
+                'rowIdentifier' => 'cost_values_profit',
                 'labelName' => 'Net Sell',
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
@@ -290,7 +280,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'profit',
                 'formGroup' => true,
-                'rowIdentifier' => 'cost_values_secondary',
+                'rowIdentifier' => 'cost_values_profit',
                 'labelName' => 'Profit',
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
@@ -317,7 +307,49 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
+            ],  [
+                'name' => 'actual_cost',
+                'formGroup' => true,
+                'labelName' => 'Actual Cost (£)',
+                'rowIdentifier' => 'actual_cost_values',
+                'type' => 'Input\Text',
+                'attributes' => ['placeholder' => '£'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
             ], [
+                'name' => 'actual_sell',
+                'formGroup' => true,
+                'labelName' => 'Actual Sell (£)',
+                'rowIdentifier' => 'actual_cost_values',
+                'type' => 'Input\Text',
+                'attributes' => ['placeholder' => '£'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ], [
+                'name' => 'actual_profit',
+                'formGroup' => true,
+                'rowIdentifier' => 'actual_cost_values',
+                'labelName' => 'Actual Profit',
+                'type' => 'Input\Text',
+                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
+                'class' => 'js-actual-profit',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ], [
+                'name' => 'actual_margin',
+                'formGroup' => true,
+                'rowIdentifier' => 'actual_cost_values',
+                'labelName' => 'Actual Margin',
+                'type' => 'Input\Text',
+                'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
+                'class' => 'js-actual-profit',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ],[
                 'name' => 'project_start_date',
                 'formGroup' => true,
                 'labelName' => 'Project Start Date *',

@@ -169,13 +169,41 @@ class Project extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function calculateGp()
+    protected function calculateGp()
     {
         if(!$this->calculateTotalNetSell()){
             return 0;
         }
 
         return (float) ($this->calculateProfit() / $this->calculateTotalNetSell()) * 100;
+    }
+
+    /**
+     * @return null|float
+     */
+    protected function calculateActualProfit()
+    {
+        $actualCost = (float) $this->getActualCost();
+        
+        if(is_nan($actualCost)){
+            return null;
+        }
+
+        return $this->getTotalNetSell() - $actualCost;
+    }
+
+    /**
+     * @return null|float
+     */
+    protected function calculateActualMargin()
+    {
+        $actualSell = $this->getActualSell();
+
+        if(is_nan($actualSell) === false && ($profit = $this->getActualProfit()) !== null){
+            return $profit / $actualSell;
+        }
+            
+        return null;
     }
 
     protected function beforeSave()
@@ -185,6 +213,8 @@ class Project extends Base
             ->setData('total_net_cost', $this->calculateTotalNetCost())
             ->setData('total_net_sell', $this->calculateTotalNetSell())
             ->setData('amount_invoiced', $this->calculateAmountInvoiced())
-            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining());
+            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining())
+            ->setData('actual_profit', $this->calculateActualProfit())
+            ->setData('actual_margin', $this->calculateActualMargin());
     }
 }
