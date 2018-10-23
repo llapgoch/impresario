@@ -45,7 +45,7 @@ class Edit
         parent::_preDispatch();
 
         wp_enqueue_script('impresario_form_validator');
-        $this->addClass('js-validate-form');
+        $this->addClass('js-validate-form js-form-overlay');
 
         $this->addJsDataItems(
             [

@@ -44,7 +44,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         parent::_preDispatch();
 
         wp_enqueue_script('impresario_form_validator');
-        $this->addClass('js-validate-form js-action-form');
+        $this->addClass('js-validate-form js-action-form js-quote-form js-form-overlay');
 
         wp_register_script('impresario_action_switcher', get_template_directory_uri() . '/assets/js/action.switcher.widget.js');
         wp_enqueue_script('impresario_action_switcher');
@@ -59,8 +59,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'idKey' => 'quote_id'
             ]
         );
-
-        $this->addClass('js-quote-form');
 
         $projectEntity = $this->getProjectHelper()->getProjectForQuote($this->modelInstance->getId());
         $groupQuoteEntity = $this->getQuoteHelper()->getQuoteForEnquiry($this->modelInstance->getEnquiryId());
@@ -388,7 +386,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         'action' => 'edit'
                     ]
                 ],
-                'class' => 'btn-block js-action-switcher',
+                'class' => 'js-button-loader btn-block js-action-switcher',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]

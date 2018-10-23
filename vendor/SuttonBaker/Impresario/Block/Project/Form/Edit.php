@@ -50,7 +50,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         wp_enqueue_script('impresario_calculator');
 
         wp_enqueue_script('impresario_form_validator');
-        $this->addClass('js-validate-form');
+        $this->addClass('js-validate-form js-form-overlay');
         $editMode = false;
 
         $this->addJsDataItems([

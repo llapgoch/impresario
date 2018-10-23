@@ -200,7 +200,7 @@ class Project extends Base
     {
         $actualSell = $this->getActualSell();
 
-        if(is_nan($actualSell) === false && ($profit = $this->getActualProfit()) !== null){
+        if($actualSell > 0 && is_nan($actualSell) === false && ($profit = $this->getActualProfit()) !== null){
             return ($profit / $actualSell) * 100;
         }
             
