@@ -41,7 +41,7 @@ class Roles
             self::ROLE_ENGINEER => 'Engineer',
             self::ROLE_ESTIMATOR => 'Estimator',
             self::ROLE_FOREMAN => 'Foreman',
-            self::ROLE_PROJECT_MANAGER => 'Project Manager',
+            self::ROLE_PROJECT_MANAGER => 'Contracts Manager',
         ];
     }
 

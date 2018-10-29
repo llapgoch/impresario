@@ -35,7 +35,7 @@ class Project
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
         'invoice_amount_remaining' => "Amount Remaining",
-        'project_manager_name' => 'Project Manager',
+        'project_manager_name' => 'Contracts Manager',
         'foreman_name' => 'Foreman',
         'status' => 'Status'
     ];

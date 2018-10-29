@@ -47,7 +47,7 @@ class ProjectConfigurator
 
 
             $this->addRule(
-                $this->createRule('User', 'project_manager_id', 'Project Manager')
+                $this->createRule('User', 'project_manager_id', 'Contracts Manager')
                     ->setMainError('\'{{niceName}}\' must be set if a project\'s status is on-site or complete')
             );
         }

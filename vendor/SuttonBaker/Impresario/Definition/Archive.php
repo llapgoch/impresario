@@ -18,7 +18,7 @@ class Archive
         'total_net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'project_name' => 'Project',
-        'project_manager_name' => 'Project Manager',
+        'project_manager_name' => 'Contracts Manager',
         'foreman_name' => 'Foreman',
     ];
 

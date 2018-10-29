@@ -229,7 +229,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'project_manager_id',
                 'formGroup' => true,
                 'rowIdentifier' => 'project_manager_foreman',
-                'labelName' => 'Project Manager',
+                'labelName' => 'Contracts Manager',
                 'data' => [
                     'select_options' => $projectManagers
                 ],
@@ -385,14 +385,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'project_end_date',
                 'formGroup' => true,
-                'labelName' => 'Project End Date *',
+                'labelName' => 'Project End Date',
                 'rowIdentifier' => 'project_dates',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                        ['minDate' => '-5Y', 'maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
