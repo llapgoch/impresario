@@ -12,14 +12,11 @@ class Archive
     const TABLE_HEADERS = [
         'project_id' => 'ID',
         'client_name' => 'Client',
+        'site_name' => 'Site',
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
-        'total_net_cost' => 'Net Cost',
-        'total_net_sell' => 'Net Sell',
-        'profit' => 'Profit',
         'project_name' => 'Project',
-        'project_manager_name' => 'Contracts Manager',
-        'foreman_name' => 'Foreman',
+        'project_manager_name' => 'Contracts Manager'
     ];
 
     const SORTABLE_COLUMNS = [
@@ -27,11 +24,8 @@ class Archive
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
         'date_received' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'total_net_cost' => [],
-        'total_net_sell' => [],
-        'profit' => [],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 }
