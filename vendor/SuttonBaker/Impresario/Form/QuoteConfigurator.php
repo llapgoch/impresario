@@ -122,7 +122,7 @@ class QuoteConfigurator
 
             $this->addRule(
                 $this->createRule('User', 'estimator_id', 'Estimator')
-                    ->setMainError('\'{{niceName}}\' must be a number if a quote\'s status is \'Quoted\'')
+                    ->setMainError('\'{{niceName}}\' must be assigned if a quote\'s status is \'Quoted\'')
                     ->setInputError('Please select an estimator')
             );
         }else{
