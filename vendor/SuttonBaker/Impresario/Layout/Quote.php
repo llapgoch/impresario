@@ -39,13 +39,14 @@ class Quote extends Base
         $this->addHeading()->addMessages();
 
         $quoteRevision = $this->getQuoteHelper()->getRevisionLetter($entityInstance->getRevisionNumber());
+        $masterText = $entityInstance->getIsMaster() ? '<i class="fa fa fa-star"></i> ' : '';
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
-                ->setHeading($this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote (Revision $quoteRevision)")
+                ->setHeading($masterText . $this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote (Revision $quoteRevision)")
                 ->setShortcode('body_content')
                 ->addChildBlock($this->getQuoteHelper()->getTabBarForQuote($entityInstance))
         );
