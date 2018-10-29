@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Helper;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
 /**
@@ -302,6 +303,20 @@ class Project extends Base
                 \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
                 $modelInstance->getId()
             );
+        }
+
+        if($data['status'] == ProjectDefinition::STATUS_COMPLETE
+            || $data['status'] == ProjectDefinition::STATUS_CANCELLED){
+
+            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $modelInstance->getId(), 
+                TaskDefinition::TASK_TYPE_PROJECT,
+                TaskDefinition::STATUS_OPEN
+            );
+    
+            foreach($openTasks->getItems() as $openTask){
+                $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
+            }
         }
 
         if(!$isComplete && $modelInstance->isComplete()){

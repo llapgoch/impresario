@@ -10,6 +10,7 @@ use SuttonBaker\Impresario\Block\Table\StatusLink;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Form\ProjectConfigurator;
 use SuttonBaker\Impresario\SaveConverter\Project as ProjectConverter;
 
@@ -63,9 +64,34 @@ class Project
         if($validateResult['hasErrors']){
             return $validateResult;
         }
+        
+        if($formValues['status'] == ProjectDefinition::STATUS_COMPLETE
+            || $formValues['status'] == ProjectDefinition::STATUS_CANCELLED){
 
-        if($modelInstance->isComplete() == false && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE){
-            $validateResult['confirm'] = 'This will complete and archive the project. Would you like to proceed?';
+            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $modelInstance->getId(), 
+                TaskDefinition::TASK_TYPE_PROJECT,
+                TaskDefinition::STATUS_OPEN
+            );
+    
+            if(count($openTasks->getItems())){
+                $confirmMessages[] = sprintf(
+                    'This will close %s open task%s for the project.',
+                    count($openTasks->getItems()),
+                    count($openTasks->getItems()) > 1 ? 's' : ''
+                );
+            }
+        }
+
+        if($modelInstance->isComplete() == false 
+            && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE){
+            
+            $confirmMessages[] = 'This will complete and archive the project.';
+        }
+
+        if($confirmMessages){
+            $confirmMessages[] = "Would you like to proceed?";
+            $validateResult['confirm'] = implode("\r", $confirmMessages);
 
             return $validateResult;
         }
