@@ -547,6 +547,12 @@ class Quote extends Base
         $shouldCreateProject = $this->saveQuoteCreateProjectCheck($modelInstance, $data);
         $modelInstance->setData($data)->save();
 
+        // Save all open Tasks
+        $openTasks = $this->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
+        foreach($openTasks->getItems() as $openTask){
+            $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
+        }
+
         if($shouldCreateProject){
             $project = $this->getProjectHelper()->createProjectFromQuote($modelInstance->getId());
             $returnValues['project_created'] = true;
@@ -648,7 +654,7 @@ class Quote extends Base
      * 
      * Gets all tasks for all related quote (by enquiry ID)
      */
-    public function getTasksForQuote($quote)
+    public function getTasksForQuote($quote, $status = null)
     {
         if(!is_object($quote)){
             $quote = $this->getQuote($quote);
@@ -658,6 +664,10 @@ class Quote extends Base
         $taskCollection = $this->getTaskHelper()->getTaskCollection()
             ->where('parent_id IN(?)', $quoteCollection->getAllIds())
             ->where('task_type=?', TaskDefinition::TASK_TYPE_QUOTE);
+
+        if($status){
+            $taskCollection->where('status=?', $status);
+        }
 
         return $taskCollection;
     }

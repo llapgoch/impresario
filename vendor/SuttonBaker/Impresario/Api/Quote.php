@@ -13,6 +13,7 @@ use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Form\QuoteConfigurator;
 use SuttonBaker\Impresario\SaveConverter\Quote as QuoteConverter;
 use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class Quote
@@ -79,6 +80,20 @@ class Quote
         if($modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN
             && $formValues['tender_status'] == QuoteDefinition::TENDER_STATUS_OPEN) {
             $confirmMessages[] = 'This will re-open the quote.';
+        }
+
+        // Check open quotes
+        
+        if($formValues['tender_status'] !== QuoteDefinition::TENDER_STATUS_OPEN){
+            $openTasks = $helper->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
+    
+            if(count($openTasks->getItems())){
+                $confirmMessages[] = sprintf(
+                    'This will close %s open task%s for the quote.',
+                    count($openTasks->getItems()),
+                    count($openTasks->getItems()) > 1 ? 's' : ''
+                );
+            }
         }
 
         if($confirmMessages){
