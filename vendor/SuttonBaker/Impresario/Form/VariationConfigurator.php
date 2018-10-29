@@ -57,10 +57,7 @@ class VariationConfigurator
         $netCost = $this->getValue('net_cost');
         $netSell = $this->getValue('value');
 
-        $sellRule = $this->createRule('Custom', 'value', 'Invoice Value');
-        $sellRule->setMainError('\'{{niceName}}\' cannot be lower than \'Net Cost\'')
-            ->setInputError('This must be higher than Net Cost');
-
+       
         if($this->getValue('status') == Variation::STATUS_APPROVED){
             $this->addRule(
                 $this->createRule('DateCompare\Past', 'date_approved', 'Date Approved')
@@ -75,18 +72,6 @@ class VariationConfigurator
             );
         }
 
-
-
-        $this->addRule($sellRule->setValidationMethod(
-            function($value, $ruleInstance) use($netCost) {
-
-                if((float) $value < (float) $netCost){
-                    return $ruleInstance->createError();
-                }
-
-                return true;
-            }
-        ));
     }
 
 }

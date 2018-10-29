@@ -38,7 +38,7 @@ class Edit
         wp_register_script('impresario_invoice', get_template_directory_uri() . '/assets/js/invoice-edit.js', ['jquery']);
         wp_enqueue_script('impresario_invoice');
 
-        $this->addClass('js-invoice-form');
+        $this->addClass('js-invoice-form js-form-basic');
 
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;

@@ -36,6 +36,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
+        $this->addClass('js-form-basic');
 
         $heading = "Create {$prefixName}";
         $editMode = false;

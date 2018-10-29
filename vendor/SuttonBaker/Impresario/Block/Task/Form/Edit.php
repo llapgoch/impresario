@@ -35,6 +35,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected function _preDispatch()
     {
         parent::_preDispatch();
+        $this->addClass('js-form-basic');
+        
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
