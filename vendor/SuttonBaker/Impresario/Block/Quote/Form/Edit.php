@@ -527,7 +527,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $revisions = $this->getQuoteHelper()->getQuotesForEnquiry(
-            $this->modelInstance->getEnquiryId(), $this->modelInstance->getId()
+            $this->modelInstance->getEnquiryId()
         );
 
         $this->revisionsBlock = $this->createBlock(
