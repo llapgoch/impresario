@@ -65,29 +65,30 @@ class EnquiryConfigurator
             );
         }
 
-        if($statusIsClosed){
+        if($statusIsClosed || $this->getValue('status') == EnquiryDefinition::STATUS_INVOICED){
             $this->addRule(
                 $this->createRule('DateCompare\Past', 'date_completed', 'Date Completed')
-                ->setMainError('Date Completed must be chosen if this enquiry\'s status is set to \'Complete\'')
+                ->setMainError('Date Completed must be chosen if this enquiry\'s status is set to \'Invoiced\' or \'Complete\'')
             );
         }
 
-//        if($this->getValue('date_completed')){
-//            $statusRule = $this->createRule('Custom', 'status', 'Status');
-//            $statusRule->setMainError('Status must be \'Complete\' if \'Date Completed\' has been set')
-//                ->setInputError('This must be set to \'Complete\'');
-//
-//            $this->addRule($statusRule->setValidationMethod(
-//                function($value, $ruleInstance) use($statusIsClosed) {
-//
-//                    if($statusIsClosed == false){
-//                        return $ruleInstance->createError();
-//                    }
-//
-//                    return true;
-//                }
-//            ));
-//        }
+       if($this->getValue('date_completed')){
+           $statusRule = $this->createRule('Custom', 'status', 'Status');
+           $statusRule->setMainError('Status must be \'Invoiced\' or  \'Complete\' if \'Date Completed\' has been set')
+               ->setInputError('This must be set to \'Complete\'');
+
+           $this->addRule($statusRule->setValidationMethod(
+               function($value, $ruleInstance) use($statusIsClosed) {
+
+                   if($statusIsClosed == false
+                        && $this->getValue('status') !== EnquiryDefinition::STATUS_INVOICED){
+                       return $ruleInstance->createError();
+                   }
+
+                   return true;
+               }
+           ));
+       }
 
     }
 }
