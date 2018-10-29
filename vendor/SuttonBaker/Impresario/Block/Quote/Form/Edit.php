@@ -398,7 +398,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'attributes' => $reviseAttrs,
                 'data' => [
-                    'button_name' => 'Create Revision',
+                    'button_name' => 'Create New Revision',
                     'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
                     'js_data_items' => [
                         'action' => 'revise'
