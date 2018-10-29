@@ -75,21 +75,9 @@ class Quote
                 'This will %screate a new project for the quote.',
                 $confirmMessages ? 'also ' : ''
             );
-        }
 
-        if($modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN
-            && $formValues['tender_status'] == QuoteDefinition::TENDER_STATUS_OPEN) {
-            $confirmMessages[] = 'This will re-open the quote.';
-        }
-
-        // Check open tasks
+            $openTasks = $helper->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
         
-        if($formValues['tender_status'] !== QuoteDefinition::TENDER_STATUS_OPEN){
-            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $modelInstance->getId(),
-                TaskDefinition::TASK_TYPE_ENQUIRY
-            );
-    
             if(count($openTasks->getItems())){
                 $confirmMessages[] = sprintf(
                     'This will close %s open task%s for the quote.',
@@ -99,6 +87,12 @@ class Quote
             }
         }
 
+        if($modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN
+            && $formValues['tender_status'] == QuoteDefinition::TENDER_STATUS_OPEN) {
+            $confirmMessages[] = 'This will re-open the quote.';
+        }
+        
+       
         if($confirmMessages){
             $confirmMessages[] = "Would you like to proceed?";
             $validateResult['confirm'] = implode("\r", $confirmMessages);

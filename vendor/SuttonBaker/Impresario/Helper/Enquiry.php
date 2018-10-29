@@ -278,6 +278,21 @@ class Enquiry
             }
         }
 
+        // Close open tasks if enquiry is cancelled or complete
+        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE 
+            || $data['status'] == EnquiryDefinition::STATUS_CANCELLED){
+              // Save all open Tasks
+            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $modelInstance->getId(), 
+                TaskDefinition::TASK_TYPE_ENQUIRY, 
+                TaskDefinition::STATUS_OPEN
+            );
+
+            foreach($openTasks->getItems() as $openTask){
+                $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
+            }
+        }
+
         return $returnValues;
     }
 

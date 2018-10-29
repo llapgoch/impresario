@@ -547,16 +547,16 @@ class Quote extends Base
         $shouldCreateProject = $this->saveQuoteCreateProjectCheck($modelInstance, $data);
         $modelInstance->setData($data)->save();
 
-        // Save all open Tasks
-        $openTasks = $this->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
-        foreach($openTasks->getItems() as $openTask){
-            $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
-        }
-
         if($shouldCreateProject){
             $project = $this->getProjectHelper()->createProjectFromQuote($modelInstance->getId());
             $returnValues['project_created'] = true;
             $returnValues['project_id'] = $project->getId();
+
+            // Save all open Tasks
+            $openTasks = $this->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
+            foreach($openTasks->getItems() as $openTask){
+                $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
+            }
         }
 
         if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
