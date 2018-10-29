@@ -82,10 +82,13 @@ class Quote
             $confirmMessages[] = 'This will re-open the quote.';
         }
 
-        // Check open quotes
+        // Check open tasks
         
         if($formValues['tender_status'] !== QuoteDefinition::TENDER_STATUS_OPEN){
-            $openTasks = $helper->getTasksForQuote($modelInstance, TaskDefinition::STATUS_OPEN);
+            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $modelInstance->getId(),
+                TaskDefinition::TASK_TYPE_ENQUIRY
+            );
     
             if(count($openTasks->getItems())){
                 $confirmMessages[] = sprintf(

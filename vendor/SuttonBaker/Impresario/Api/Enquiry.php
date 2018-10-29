@@ -13,6 +13,7 @@ use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Form\EnquiryConfigurator;
 use SuttonBaker\Impresario\SaveConverter\Enquiry as EnquiryConverter;
 use SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
+use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 
 /**
  * Class Enquiry
@@ -47,6 +48,7 @@ class Enquiry
         \WP_REST_Request $request
     ) {
         $helper = $this->getEnquiryHelper();
+        $confirmMessages = [];
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
@@ -82,15 +84,38 @@ class Enquiry
             $quote = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance->getId());
 
             if(!$quote->getId()){
-                $validateResult['confirm'] = 'A new quote will be created for this enquiry, are you sure you want to proceed?';
-                return $validateResult;
+                $confirmMessages[] = 'A new quote will be created for this enquiry.';
             }
         }
 
         if(isset($formValues['status'])
+            && ($formValues['status'] == EnquiryDefinition::STATUS_COMPLETE 
+            || $formValues['status'] == EnquiryDefinition::STATUS_CANCELLED)){
+                 // Check open tasks
+            $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
+                $modelInstance->getId(), 
+                TaskDefinition::TASK_TYPE_ENQUIRY,
+                TaskDefinition::STATUS_OPEN
+            );
+    
+            if(count($openTasks->getItems())){
+                $confirmMessages[] = sprintf(
+                    'This will close %s open task%s for the enquiry.',
+                    count($openTasks->getItems()),
+                    count($openTasks->getItems()) > 1 ? 's' : ''
+                );
+            }
+        }
+        
+        if(isset($formValues['status'])
             && $formValues['status'] !== EnquiryDefinition::STATUS_COMPLETE && $modelInstance->isComplete()){
-                $validateResult['confirm'] = 'This will re-open the enquiry. Are you sure?';
-                return $validateResult;
+                $confirmMessages[] = 'This will re-open the enquiry.';
+        }
+
+        if($confirmMessages){
+            $confirmMessages[] = "Would you like to proceed?";
+            $validateResult['confirm'] = implode("\r", $confirmMessages);
+            return $validateResult;
         }
 
         return array_merge($validateResult, $this->saveEnquiry($modelInstance, $formValues, $navigatingAway));
@@ -281,7 +306,7 @@ class Enquiry
                 Messages::SUCCESS
             );
         }
-
+        
         if(!$saveResult['new_save'] && !$saveResult['quote_created'] && !$saveResult['reopened']){
             $message = 'The enquiry has been updated';
 
