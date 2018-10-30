@@ -26,17 +26,9 @@ class QuoteConfigurator
             $this->createRule('Required', 'project_name', 'Project Name')
         );
 
-//        $this->addRule(
-//            $this->createRule('Required', 'site_name', 'Site Name')
-//        );
-
         $this->addRule(
             $this->createRule('Required', 'client_requested_by', 'Client Requested By')
         );
-
-//        $this->addRule(
-//            $this->createRule('Required', 'client_reference', 'Client Reference')
-//        );
 
         $this->addRule(
             $this->createRule('Date', 'date_required', 'Required By Date')
@@ -70,6 +62,36 @@ class QuoteConfigurator
                     ->setInputError('This must be \'Quoted\'')
                     ->setValidationMethod(function($value, $ruleInstance){
                         if($value !== QuoteDefinition::STATUS_QUOTED){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
+        }
+
+        if($this->getValue('date_returned')){
+            $this->addRule(
+                $this->createRule('Custom', 'status', 'Status')
+                    ->setMainError('\'{{niceName}}\' must be \'Quoted\' if Returned Date has been set')
+                    ->setInputError('This must be \'Quoted\'')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if($value !== QuoteDefinition::STATUS_QUOTED){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
+        }
+
+        if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
+            $this->addRule(
+                $this->createRule('Custom', 'date_returned', 'Reurned Date')
+                    ->setMainError('\'{{niceName}}\' must be set if the quote\'s status is \'Quoted\'')
+                    ->setInputError('This must be set')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if(!$value){
                             return $ruleInstance->createError();
                         }
                         return true;
