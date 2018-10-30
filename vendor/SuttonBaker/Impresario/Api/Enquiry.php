@@ -108,7 +108,7 @@ class Enquiry
         }
         
         if(isset($formValues['status'])
-            && $formValues['status'] !== EnquiryDefinition::STATUS_COMPLETE && $modelInstance->isComplete()){
+            && !(in_array($formValues['status'], [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED])) && $modelInstance->isComplete()){
                 $confirmMessages[] = 'This will re-open the enquiry.';
         }
 
@@ -258,7 +258,7 @@ class Enquiry
         $saveResult = [];
 
         /** @var EnquiryConfigurator $configurator */
-        $configurator = $this->createAppObject(EnquiryConfigurator::class);
+        $configurator = $this->createAppObject(EnquiryConfigurator::class)->setModel($modelInstance);
         /** @var Validator $validator */
         $validator = $this->createAppObject(Validator::class)->setValues($formValues);
         $validator->configurate($configurator)->validate();

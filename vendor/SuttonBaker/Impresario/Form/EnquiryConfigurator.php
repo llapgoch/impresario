@@ -11,12 +11,35 @@ class EnquiryConfigurator
     extends \DaveBaker\Form\Validation\Rule\Configurator\Base
     implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 {
+    /** @var SuttonBaker\Impresario\Model\Db\Enquiry */
+    protected $model;
+
+    /**
+     *
+     * @param SuttonBaker\Impresario\Model\Db\Enquiry $model
+     * @return $this
+     */
+    public function setModel(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $model
+    ) {
+        $this->model = $model;
+        return $this;
+    }
+
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \DaveBaker\Form\Validation\Rule\Configurator\Exception
      */
     protected function _collate()
     {
+        if(!$this->getModel()){
+            throw new \Exception("Model must be set on enquiry configurator");
+        }
         $this->addRule(
             $this->createRule('Date', 'date_received', 'Date Received')
         );
@@ -57,6 +80,8 @@ class EnquiryConfigurator
         // Conditional Rules
         $dateCompleted = $this->getValue('date_completed');
         $statusIsClosed = $this->getValue('status') == EnquiryDefinition::STATUS_COMPLETE;
+        $isReopening = $this->getModel()->getStatus() == EnquiryDefinition::STATUS_COMPLETE
+            && $this->getValue('status') == EnquiryDefinition::STATUS_OPEN;
 
         if($this->getValue('status') !== EnquiryDefinition::STATUS_OPEN){
             $this->addRule(
@@ -72,7 +97,7 @@ class EnquiryConfigurator
             );
         }
 
-       if($this->getValue('date_completed')){
+       if($this->getValue('date_completed') && !$isReopening){
            $statusRule = $this->createRule('Custom', 'status', 'Status');
            $statusRule->setMainError('Status must be \'Invoiced\' or  \'Complete\' if \'Date Completed\' has been set')
                ->setInputError('This must be set to \'Complete\'');
