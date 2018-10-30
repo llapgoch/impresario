@@ -128,6 +128,21 @@ class QuoteConfigurator
             );
         }
 
+        if($this->getValue('completed_by_id') || $this->getValue('date_completed')){
+            $this->addRule(
+                $this->createRule('Custom', 'status', 'Status')
+                    ->setMainError('\'{{niceName}}\' cannot be open if \'Completed By\' or \'Completion Date\' have been set\'')
+                    ->setInputError('This cannot be \'open\'')
+                    ->setValidationMethod(function($value, $ruleInstance){
+                        if($value == QuoteDefinition::STATUS_OPEN){
+                            return $ruleInstance->createError();
+                        }
+                        return true;
+                    }
+                )
+            );
+        }
+
         if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
             $this->addRule(
                 $this->createRule('Numeric', 'net_cost', 'Net Cost')
