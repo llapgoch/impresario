@@ -121,7 +121,7 @@ class EditController
             );
             $data['actual_profit'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getActualProfit());
             $data['actual_cost'] = (float)$data['actual_cost'];
-            $data['actual_margin'] = (float)$data['actual_margin'] . "%";
+            $data['actual_margin'] = round((float)$data['actual_margin'], 2) . "%";
 
             if($this->modelInstance->getProfit()){
                 $data['profit'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getProfit());
