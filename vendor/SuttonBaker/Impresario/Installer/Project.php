@@ -59,7 +59,6 @@ class Project
               `gp` decimal(10,4) DEFAULT NULL,
               `actual_profit` decimal(10,4) DEFAULT NULL,
               `actual_margin` decimal(10,4) DEFAULT NULL,
-              `actual_sell` decimal(10,4) DEFAULT NULL,
               `project_start_date` datetime DEFAULT NULL,
               `project_end_date` datetime DEFAULT NULL,
               `po_number` varchar(255) DEFAULT NULL,

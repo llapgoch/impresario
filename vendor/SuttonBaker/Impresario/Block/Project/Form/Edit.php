@@ -327,18 +327,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => '£'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
-                ]
-            ], [
-                'name' => 'actual_sell',
-                'formGroup' => true,
-                'class' => 'js-actual-sell',
-                'labelName' => 'Actual Sell (£)',
-                'rowIdentifier' => 'actual_cost_values',
-                'type' => 'Input\Text',
-                'attributes' => ['placeholder' => '£'],
-                'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'actual_profit',
@@ -353,7 +342,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'js-actual-profit',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'actual_margin',
@@ -364,7 +353,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-actual-margin',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ],[
                 'name' => 'project_start_date',
