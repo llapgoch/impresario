@@ -304,17 +304,36 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ], [
+                'name' => 'status',
+                'formGroup' => true,
+                'rowIdentifier' => 'status_returned_date',
+                'labelName' => 'Quote Status *',
+                'type' => 'Select',
+                'class' => 'js-status',
+                'data' => [
+                    'select_options' => $statuses,
+                    'show_first_option' => false
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
                 'name' => 'date_returned',
                 'formGroup' => true,
                 'labelName' => 'Returned Date',
-                'rowIdentifier' => 'completion_fields',
+                'rowIdentifier' => 'status_returned_date',
                 'type' => 'Input\Text',
                 'class' => 'js-date-picker',
                 'attributes' => ['autocomplete' => 'off'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
+                'name' => 'comments',
+                'formGroup' => true,
+                'labelName' => 'Comments',
+                'type' => 'Textarea',
+            ], [
                 'name' => 'date_completed',
                 'formGroup' => true,
                 'labelName' => 'Completion Date',
@@ -340,23 +359,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ]
             ], [
-                'name' => 'status',
-                'formGroup' => true,
-                'rowIdentifier' => 'status_tender_status',
-                'labelName' => 'Quote Status *',
-                'type' => 'Select',
-                'class' => 'js-status',
-                'data' => [
-                    'select_options' => $statuses,
-                    'show_first_option' => false
-                ],
-                'formGroupSettings' => [
-                    'class' => 'col-md-6'
-                ]
-            ], [
                 'name' => 'tender_status',
                 'formGroup' => true,
-                'rowIdentifier' => 'status_tender_status',
+                'rowIdentifier' => 'completion_fields',
                 'labelName' => 'Tender Status *',
                 'type' => 'Select',
                 'class' => 'js-tender-status',
@@ -366,14 +371,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'ignore_lock' => $ignoreLockValue
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
-            ], [
-                'name' => 'comments',
-                'formGroup' => true,
-                'labelName' => 'Comments',
-                'type' => 'Textarea',
-            ], [
+            ],  [
                 'name' => 'submit',
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',
