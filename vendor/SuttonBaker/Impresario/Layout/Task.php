@@ -38,10 +38,11 @@ class Task extends Base
         $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
         $parentItem = $this->getApp()->getRegistry()->get('parent_item');
         $taskType = $this->getApp()->getRegistry()->get('task_type');
+        $taskName = TaskDefinition::getTaskTypeLabel($taskType);
 
         if($parentItem && $parentItem->getId()){
             $heading = $this->getTaskHelper()->getActionVerb($entityInstance) .
-                " Task For " . TaskDefinition::getTaskTypeLabel($taskType) .
+                " Task For " . $taskName .
                 " '{$parentItem->getSiteName()}'";
         }
 
@@ -62,6 +63,20 @@ class Task extends Base
             )->setElementName("{$this->getBlockPrefix()}_edit_form")
 
         );
+
+        if(($taskLink = $this->getTaskHelper()->getLinkForParent($parentItem))){
+            $mainTile->addChildBlock(
+                $createLink = $mainTile->createBlock(
+                    '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                    'create.enquiry.link',
+                    'header_elements'
+                )
+                    ->setTagText("View $taskName")
+                    ->addAttribute(
+                        ['href' => $taskLink]
+                    )
+            );
+        }
 
     }
 

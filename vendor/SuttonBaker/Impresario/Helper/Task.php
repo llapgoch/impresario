@@ -208,6 +208,25 @@ class Task extends Base
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
             return TaskDefinition::TASK_TYPE_PROJECT;
         }
+
+        return null;
+    }
+
+    /**
+     * @param $parentInstance
+     * @return string
+     */
+    public function getLinkForParent($parentInstance)
+    {
+        // This assumes the edit page is the same as the task type, with an _edit suffix
+        if(($type = $this->getTaskTypeForParent($parentInstance))){
+            return $this->getApp()->getPageManager()->getUrl(
+                $type . "_edit",
+                [$type . "_id" => $parentInstance->getId()]
+            );
+        }
+
+        return null;
     }
 
     /**
