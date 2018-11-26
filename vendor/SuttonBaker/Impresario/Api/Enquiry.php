@@ -87,17 +87,17 @@ class Enquiry
                 $confirmMessages[] = 'A new quote will be created for this enquiry.';
             }
         }
-
-        if(isset($formValues['status'])
-            && ($formValues['status'] == EnquiryDefinition::STATUS_COMPLETE 
-            || $formValues['status'] == EnquiryDefinition::STATUS_CANCELLED)){
-                 // Check open tasks
+        
+        if($modelInstance->getId() && isset($formValues['status'])
+        && ($formValues['status'] == EnquiryDefinition::STATUS_COMPLETE 
+        || $formValues['status'] == EnquiryDefinition::STATUS_CANCELLED)){
+            // Check open tasks
             $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
                 $modelInstance->getId(), 
                 TaskDefinition::TASK_TYPE_ENQUIRY,
                 TaskDefinition::STATUS_OPEN
             );
-    
+            
             if(count($openTasks->getItems())){
                 $confirmMessages[] = sprintf(
                     'This will close %s open task%s for the enquiry.',
@@ -105,8 +105,8 @@ class Enquiry
                     count($openTasks->getItems()) > 1 ? 's' : ''
                 );
             }
+            
         }
-        
         if(isset($formValues['status'])
             && !(in_array($formValues['status'], [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED])) && $modelInstance->isComplete()){
                 $confirmMessages[] = 'This will re-open the enquiry.';
