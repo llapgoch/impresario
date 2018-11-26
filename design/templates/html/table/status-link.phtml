@@ -2,38 +2,35 @@
 /** @var SuttonBaker\Impresario\Block\Table\StatusLink $block */
 ?>
 <?php if($this->getRecords()): ?>
-    <div class="table-responsive">
-        <table <?php echo $block->getAttrs(); ?>>
+    <table <?php echo $block->getAttrs(); ?>>
+        <?php if($this->getHeaders()): ?>
+            <thead>
+            <tr>
+                <?php foreach($block->getHeaders() as $k => $header): ?>
+                    <th <?php echo $block->getThAttrs($k);?>><?php echo $block->escapeHtml($header); ?></th>
+                <?php endforeach;?>
+            </tr>
+            </thead>
 
-            <?php if($this->getHeaders()): ?>
-                <thead>
-                <tr>
-                    <?php foreach($block->getHeaders() as $k => $header): ?>
-                        <th <?php echo $block->getThAttrs($k);?>><?php echo $block->escapeHtml($header); ?></th>
-                    <?php endforeach;?>
+            <tbody>
+            <?php foreach($block->getRecords() as $record): ?>
+                <tr class="<?php echo $block->getRowClass($record);?>">
+                    <?php foreach($block->getHeaderKeys() as $k => $header): ?>
+                        <td <?php echo $block->getTdAttrs($k);?>>
+                            <?php if($link = $block->getLink($k, $record)):?>
+                                <a href="<?php echo $link;?>" <?php echo $block->getAnchorAttrs($k);?>>
+                            <?php endif;?>
+
+                            <?php echo $this->escapeHtml($record->getOutputData($header), $header); ?>
+
+                            <?php if($link):?>
+                                </a>
+                            <?php endif;?>
+                        </td>
+                    <?php endforeach; ?>
                 </tr>
-                </thead>
-
-                <tbody>
-                <?php foreach($block->getRecords() as $record): ?>
-                    <tr class="<?php echo $block->getRowClass($record);?>">
-                        <?php foreach($block->getHeaderKeys() as $k => $header): ?>
-                            <td <?php echo $block->getTdAttrs($k);?>>
-                                <?php if($link = $block->getLink($k, $record)):?>
-                                    <a href="<?php echo $link;?>" <?php echo $block->getAnchorAttrs($k);?>>
-                                <?php endif;?>
-
-                                <?php echo $this->escapeHtml($record->getOutputData($header), $header); ?>
-
-                                <?php if($link):?>
-                                    </a>
-                                <?php endif;?>
-                            </td>
-                        <?php endforeach; ?>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            <?php endif; ?>
-        </table>
-    </div>
+            <?php endforeach; ?>
+            </tbody>
+        <?php endif; ?>
+    </table>
 <?php endif; ?>

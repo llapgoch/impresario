@@ -2,9 +2,7 @@
 /** @var SuttonBaker\Impresario\Block\Table\StatusLink $block */
 ?>
 <?php if($this->getRecords()): ?>
-    <div class="table-responsive">
     <table <?php echo $block->getAttrs(); ?>>
-
         <?php if($this->getHeaders()): ?>
             <thead>
             <tr>
@@ -50,5 +48,4 @@
             </tbody>
         <?php endif; ?>
     </table>
-    </div>
 <?php endif; ?>

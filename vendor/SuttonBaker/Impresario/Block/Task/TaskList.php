@@ -46,7 +46,6 @@ class TaskList
      */
     protected function _preRender()
     {
-
         if(!count($this->tableContainer->getInstanceCollection()->getItems())){
             $this->tableContainer->getChildBlock('task.table.tile.block')
                 ->setTileBodyClass('nopadding')
