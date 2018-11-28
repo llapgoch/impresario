@@ -36,12 +36,12 @@ class Quote
         'quote_id' => 'ID',
         'client_name' => 'Client',
         'site_name' => 'Site Name',
-        'status' => 'Status',
-        'tender_status' => 'Tender Status',
+        'project_name' => 'Project',
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
-        'project_name' => 'Project',
-        'estimator_name' => 'Estimator'
+        'estimator_name' => 'Estimator',
+        'status' => 'Status',
+        'tender_status' => 'Tender Status'
     ];
 
     const TABLE_HEADERS_INLINE = [
