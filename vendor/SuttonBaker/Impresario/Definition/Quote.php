@@ -35,7 +35,7 @@ class Quote
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
         'client_name' => 'Client',
-        'client_reference' => 'Client Ref',
+        'site_name' => 'Site Name',
         'status' => 'Status',
         'tender_status' => 'Tender Status',
         'date_received' => 'Received',
@@ -55,7 +55,7 @@ class Quote
     const SORTABLE_COLUMNS = [
         'quote_id' => [],
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'client_ref' => [Table::HEADER_SORTABLE_ALPHA],
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
         'tender_status' => [],
         'date_received' => [],
