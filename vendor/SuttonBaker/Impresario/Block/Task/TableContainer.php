@@ -122,7 +122,7 @@ class TableContainer
         );
 
         if(count($instanceItems)) {
-            $tileBlock->setTileBodyClass('nopadding');
+            $tileBlock->setTileBodyClass('nopadding table-responsive');
 
             /** \SuttonBaker\Impresario\Block\Table\StatusLink $tableBlock */
             $tileBlock->addChildBlock(

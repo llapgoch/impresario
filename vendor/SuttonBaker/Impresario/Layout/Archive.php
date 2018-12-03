@@ -26,7 +26,7 @@ class Archive extends Base
                 "project.tile.main")
                 ->setHeading("<strong>Archived</strong> Projects")
                 ->setShortcode('body_content')
-                ->setTileBodyClass('nopadding')
+                ->setTileBodyClass('nopadding table-responsive')
         );
 
         $instanceCollection = $this->getProjectHelper()->getProjectCollection()

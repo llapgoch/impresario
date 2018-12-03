@@ -74,7 +74,7 @@ class Client extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading("<strong>Client</strong> List")
                 ->setShortcode('body_content')
-                ->setTileBodyClass('nopadding')
+                ->setTileBodyClass('nopadding table-responsive')
         );
 
         $mainTile->addChildBlock(

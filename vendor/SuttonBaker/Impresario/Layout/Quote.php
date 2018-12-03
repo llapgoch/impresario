@@ -80,7 +80,7 @@ class Quote extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading("<strong>Quote</strong> Register")
                 ->setShortcode('body_content')
-                ->setTileBodyClass('nopadding')
+                ->setTileBodyClass('nopadding table-responsive')
         );
 
 

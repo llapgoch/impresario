@@ -81,7 +81,7 @@ class Project extends Base
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading("<strong>Project</strong> List")
                 ->setShortcode('body_content')
-                ->setTileBodyClass('nopadding')
+                ->setTileBodyClass('nopadding table-responsive')
         );
 
         $instanceCollection = $this->getProjectHelper()->getProjectCollection()

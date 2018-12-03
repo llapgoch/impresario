@@ -77,7 +77,7 @@ class TableContainer
 
 
         if(count($instanceItems)) {
-            $tileBlock->setTileBodyClass('nopadding');
+            $tileBlock->setTileBodyClass('nopadding table-responsive');
 
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
