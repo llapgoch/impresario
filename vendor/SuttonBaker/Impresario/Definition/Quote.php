@@ -35,13 +35,13 @@ class Quote
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
         'client_name' => 'Client',
-        'client_reference' => 'Client Ref',
-        'status' => 'Status',
-        'tender_status' => 'Tender Status',
-        'date_received' => 'Received',
-        'created_by_name' => 'Creator',
+        'site_name' => 'Site Name',
         'project_name' => 'Project',
-        'estimator_name' => 'Estimator'
+        'date_required' => 'Required By',
+        'created_by_name' => 'Creator',
+        'estimator_name' => 'Estimator',
+        'status' => 'Status',
+        'tender_status' => 'Tender Status'
     ];
 
     const TABLE_HEADERS_INLINE = [
@@ -55,10 +55,10 @@ class Quote
     const SORTABLE_COLUMNS = [
         'quote_id' => [],
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'client_ref' => [Table::HEADER_SORTABLE_ALPHA],
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
         'tender_status' => [],
-        'date_received' => [],
+        'date_required' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'estimator_name' => [Table::HEADER_SORTABLE_ALPHA],

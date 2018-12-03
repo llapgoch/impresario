@@ -88,7 +88,7 @@ class Enquiry
             }
         }
         
-        if($modelInstance->getId() && isset($formValues['status'])
+        if($modelInstance->getId() &&  isset($formValues['status'])
         && ($formValues['status'] == EnquiryDefinition::STATUS_COMPLETE 
         || $formValues['status'] == EnquiryDefinition::STATUS_CANCELLED)){
             // Check open tasks

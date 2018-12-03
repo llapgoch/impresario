@@ -34,7 +34,7 @@ class QuoteList
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $instanceCollection */
         $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes()
             ->addOutputProcessors([
-                'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
+                'date_required' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
