@@ -39,7 +39,7 @@ class Element extends \DaveBaker\Core\Config\Element
                 'textarea' => ['rows' => 8]
             ],
             'hiddenClass' => 'd-none',
-            'sortableTableJsClass' => 'js-table-updater js-loader',
+            'sortableTableJsClass' => 'js-table-updater',
         ]);
 
     }
