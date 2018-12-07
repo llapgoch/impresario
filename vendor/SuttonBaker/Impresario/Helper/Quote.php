@@ -165,8 +165,7 @@ class Quote extends Base
      */
     public function getDisplayQuotes($deletedFlag = true)
     {
-        $collection = $this->getQuoteCollection($deletedFlag)
-            ->where('is_master', 1)
+        $collection = $this->getMasterQuotes($deletedFlag)
             ->joinLeft(
                 ['p' => '{{project}}'],
                 '{{quote}}.quote_id=p.quote_id 
@@ -175,6 +174,18 @@ class Quote extends Base
             )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
         
         return $collection;
+    }
+
+        /**
+     * @param bool $deletedFlag
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getMasterQuotes($deletedFlag = true)
+    {
+        return $this->getQuoteCollection($deletedFlag)
+            ->where('is_master', 1);
     }
 
     /**

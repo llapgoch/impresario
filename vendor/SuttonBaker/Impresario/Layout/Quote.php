@@ -96,7 +96,7 @@ class Quote extends Base
     public function indexHandle()
     {
         $openQuotes = count($this->getQuoteHelper()->getOpenQuotes()->load());
-        $totalQuotes = count($this->getQuoteHelper()->getDisplayQuotes()->load());
+        $totalQuotes = count($this->getQuoteHelper()->getMasterQuotes()->load());
 
         $this->addBlock(
             $this->createBlock(
