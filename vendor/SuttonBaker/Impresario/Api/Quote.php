@@ -398,7 +398,7 @@ class Quote
             throw new Exception('The quote could not be found');
         }
 
-        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId(), $quote->getId());
+        $revisions = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
 
         $blockManager->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
