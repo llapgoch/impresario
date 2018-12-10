@@ -105,7 +105,7 @@ class RevisionsTableContainer
 
 
         if(count($instanceCollection->getItems())) {
-            $tileBlock->setTileBodyClass('nopadding');
+            $tileBlock->setTileBodyClass('nopadding table-responsive');
 
             /** \SuttonBaker\Impresario\Block\Table\StatusLink $tableBlock */
             $tileBlock->addChildBlock(
