@@ -22,6 +22,7 @@ class Main
     {
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
         $this->createAppObject('\SuttonBaker\Impresario\Event\Upload');
+        $this->createAppObject('\SuttonBaker\Impresario\Event\LoginEvents');
     }
 
     /**
@@ -132,6 +133,7 @@ class Main
             '\SuttonBaker\Impresario\Layout\Invoice',
             '\SuttonBaker\Impresario\Layout\Variation',
             '\SuttonBaker\Impresario\Layout\Archive',
+            '\SuttonBaker\Impresario\Layout\Login'
         ]);
         
     }
