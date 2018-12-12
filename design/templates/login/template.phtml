@@ -1,5 +1,6 @@
 <div class="impresario-login-template" style="display:none">
     <div class="login-form-template">
+        <h1><strong>Welcome</strong></h1>
         <section>
             <div class="input-group user-group">
                 <div class="input-group-append">
@@ -23,7 +24,11 @@
                 
                 <label for="remember">Remember me</label>
             </div>
-            <a href="#">Forget password?</a>
+            <a href="<?php echo wp_lostpassword_url();?>">Forget password?</a>
+        </section>
+
+        <section class="log-in">
+            <button type="submit" class="btn btn-greensea">Log In</button>
         </section>
     </div>
 </div>
