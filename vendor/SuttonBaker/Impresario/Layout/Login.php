@@ -12,9 +12,8 @@ class Login extends Base
         $this->addBlock(
                 $this->createBlock(
                     '\DaveBaker\Core\Block\Template',
-                    "{$this->getBlockPrefix()}.header.wrap")
-                    ->setAction('login_header')
-                    ->setTemplate('login/header.phtml')
+                    "{$this->getBlockPrefix()}.header.wrap"
+                )->setAction('login_header')->setTemplate('login/header.phtml')
             );
 
             $this->addBlock(
