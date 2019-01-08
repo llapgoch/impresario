@@ -26,6 +26,7 @@ class General extends \DaveBaker\Core\Config\General
             appliation/x-msg,
             application/outlook,
             application/CDFV2-corrupt,
+            application/CDFV2-unknown,
             message/rfc822,
             zz-application/zz-winassoc-MSG,
             application/vnd.openxmlformats-officedocument.wordprocessingml.document,

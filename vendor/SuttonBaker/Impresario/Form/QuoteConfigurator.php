@@ -87,7 +87,7 @@ class QuoteConfigurator
 
         if($this->getValue('status') == QuoteDefinition::STATUS_QUOTED){
             $this->addRule(
-                $this->createRule('Custom', 'date_returned', 'Reurned Date')
+                $this->createRule('Custom', 'date_returned', 'Returned Date')
                     ->setMainError('\'{{niceName}}\' must be set if the quote\'s status is \'Quoted\'')
                     ->setInputError('This must be set')
                     ->setValidationMethod(function($value, $ruleInstance){
