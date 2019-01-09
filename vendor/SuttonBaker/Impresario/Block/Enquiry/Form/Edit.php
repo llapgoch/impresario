@@ -435,6 +435,21 @@ class Edit
             $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
                 ->removeClass('pagination-xl')->addClass('pagination-xs');
 
+            // Apply API settings to the Upload Table
+
+            if($uploadTable = $this->getBlockManager()->getBlock('upload.list.table')){
+                $uploadTable->addJsDataItems([
+                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                    $this->getUrlHelper()->getApiUrl(
+                        Upload::API_ENDPOINT_UPDATE_TABLE,
+                        [
+                            'upload_type' => Upload::TYPE_ENQUIRY,
+                            'parent_id' => $modelInstance ->getId()
+                        ]
+                    )
+                ]);
+            }
+
 
             if($this->isLocked() == false) {
                 $addButton = $this->createBlock(

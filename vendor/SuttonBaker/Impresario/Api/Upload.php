@@ -32,75 +32,31 @@ class Upload
      */
     public function updatetableAction($params, \WP_REST_Request $request)
     {
+        $uploadType = isset($params['upload_type']) ? $params['upload_type'] : null;
+        $parentId = isset($params['parent_id']) ? $params['parent_id'] : null;
+
         $blockManager = $this->getApp()->getBlockManager();
         $block = $blockManager->createBlock(
             \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
             'file.upload.container'
-        );
+        )->setIdentifier($parentId)
+            ->setUploadType($uploadType);
 
         $block->preDispatch();
 
-        var_dump($block->render());
-
-exit;
+        $listBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
 
         $taskHelper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
 
-        /** @var StatusLink $tableBlock */
-        $taskTable = $blockManager->getBlock("{$this->blockPrefix}.list.table");
-        $taskType = isset($params['type']) ? $params['type'] : null;
-        $parentId = isset($params['parent_id']) ? $params['parent_id'] : null;
-
-           // Gah, has to add a task specific logic to get tasks for grouped quotes
-        if($taskType == TaskDefinition::TASK_TYPE_QUOTE){
-            $instanceCollection = $this->getQuoteHelper()->getTasksForQuote($params['parent_id']);
-            $taskTable->setRecords($instanceCollection);
-        }else{
-            $instanceCollection = $taskTable->getCollection();
-
-            if($parentId){
-                $instanceCollection->where('parent_id=?', $params['parent_id']);
-            }
-
-            if($taskType){
-                $instanceCollection->where('task_type=?', $taskType);
-            }
-        }
-
-        $this->getTaskHelper()->addOutputProcessorsToCollection($instanceCollection);
-
-        if(isset($params['order']['dir']) && isset($params['order']['column'])){
-            $taskTable->setColumnOrder($params['order']['column'], $params['order']['dir']);
-        }
 
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
 
-        // For inline task blocks
-        if (isset($params['type']) && isset($params['parent_id'])) {
-
-            $taskTable->removeHeader(['task_id', 'task_type'])
-                ->addJsDataItems([
-                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl(
-                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                            [
-                                'type' => $params['type'],
-                                'parent_id' => $params['parent_id']
-                            ]
-
-                        )
-                ]);
-
-            $paginatorBlock->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
-                ->removeClass('pagination-xl')->addClass('pagination-xs');
-        }
-        
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);
         }
 
-        $this->addReplacerBlock([$taskTable, $paginatorBlock]);
+        $this->addReplacerBlock([$listBlock, $paginatorBlock]);
     }
 
     /**

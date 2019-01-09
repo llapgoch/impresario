@@ -112,7 +112,15 @@ class TableContainer
      */
     protected function _preDispatch()
     {
+
+        wp_register_script(
+            'impresario_file_upload_helper',
+            get_template_directory_uri() . '/assets/js/file.uploader.helper.js',
+            ['jquery', 'jquery-ui-widget']
+        );
+
         wp_enqueue_script('impresario_deleter');
+        wp_enqueue_script('impresario_file_upload_helper');
 
         $instanceItems = [];
         if(!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()){
@@ -161,14 +169,19 @@ class TableContainer
                     'content'
                 )->setHeaders(UploadDefinition::TABLE_HEADERS)
                     ->setRecords($this->instanceCollection)
-                    ->addClass('table-striped')
+                    ->addClass('table-striped js-table-updater-file')
                     ->setNewWindowLink(true)
                     ->addEscapeExcludes(['icon', 'remove'])
                     ->setThAttributes('icon', ['style' => 'width:20px'])
                     ->setThAttributes('remove', ['style' => 'width:70px'])
                     ->addJsDataItems([
                         Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                            $this->getUrlHelper()->getApiUrl(UploadDefinition::API_ENDPOINT_UPDATE_TABLE)
+                            $this->getUrlHelper()->getApiUrl(
+                                UploadDefinition::API_ENDPOINT_UPDATE_TABLE, [
+                                    'upload_type' => $this->getUploadType(),
+                                    'parent_id' => $this->getIdentifier()
+                                ]
+                            )
                     ])
                     ->setPaginator($paginator)
             );
