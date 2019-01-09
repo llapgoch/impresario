@@ -8,12 +8,14 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Upload
 {
+    const API_ENDPOINT_UPDATE_TABLE = 'upload/updatetable';
     const TYPE_ENQUIRY = 'enquiry';
     const TYPE_QUOTE = 'quote';
     const TYPE_PROJECT = 'project';
     const TYPE_TASK = 'task';
     const TYPE_VARIATION = 'variation';
     const TYPE_INVOICE = 'invoice';
+    const RECORDS_PER_PAGE = 1;
 
     const TABLE_HEADERS = [
         'icon' => '',

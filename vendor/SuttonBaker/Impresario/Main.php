@@ -71,6 +71,11 @@ class Main
             'archive',
             '\SuttonBaker\Impresario\Api\Archive'
         );
+
+        $api->addRoute(
+            'upload',
+            '\SuttonBaker\Impresario\Api\Upload'
+        );
     }
 
     /**

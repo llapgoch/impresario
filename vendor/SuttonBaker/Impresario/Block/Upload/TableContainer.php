@@ -1,6 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block\Upload;
+
+use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Definition\Upload as UploadDefinition;
 use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Icon;
 use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Remove as RemoveLink;
@@ -23,7 +25,26 @@ class TableContainer
     protected $uploadType;
     /** @var int */
     protected $identifier;
+    /** @var int */
+    protected $recordsPerPage = UploadDefinition::RECORDS_PER_PAGE;
 
+     /**
+     * @return int
+     */
+    public function getRecordsPerPage()
+    {
+        return $this->recordsPerPage;
+    }
+
+    /**
+     * @param int $recordsPerPage
+     * @return $this
+     */
+    public function setRecordsPerPage($recordsPerPage)
+    {
+        $this->recordsPerPage = $recordsPerPage;
+        return $this;
+    }
 
     /**
      * @return string
@@ -92,7 +113,7 @@ class TableContainer
     protected function _preDispatch()
     {
         wp_enqueue_script('impresario_deleter');
-        
+
         $instanceItems = [];
         if(!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()){
             $this->instanceCollection = $this->getUploadHelper()->getUploadCollection(
@@ -100,6 +121,11 @@ class TableContainer
             );
 
             $instanceItems = $this->instanceCollection->load();
+        }
+
+        /* TODO: Remove after testing API */
+        if(!$this->instanceCollection){
+            $this->instanceCollection = $this->getUploadHelper()->getUploadCollection();
         }
 
         $this->instanceCollection->addOutputProcessors([
@@ -113,6 +139,17 @@ class TableContainer
                 "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('<strong>File</strong> Attachments')
         );
+
+        $tileBlock->addChildBlock(
+            /** @var Paginator $paginator */
+                $paginator = $this->createBlock(
+                    '\DaveBaker\Core\Block\Components\Paginator',
+                    "{$this->getBlockPrefix()}.list.paginator",
+                    'footer'
+                )->setRecordsPerPage($this->getRecordsPerPage())
+                    ->setTotalRecords(count($instanceItems))
+                    ->setIsReplacerBlock(true)
+            );
 
         if(count($instanceItems)) {
             $tileBlock->setTileBodyClass('nopadding');
@@ -129,6 +166,11 @@ class TableContainer
                     ->addEscapeExcludes(['icon', 'remove'])
                     ->setThAttributes('icon', ['style' => 'width:20px'])
                     ->setThAttributes('remove', ['style' => 'width:70px'])
+                    ->addJsDataItems([
+                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                            $this->getUrlHelper()->getApiUrl(UploadDefinition::API_ENDPOINT_UPDATE_TABLE)
+                    ])
+                    ->setPaginator($paginator)
             );
 
             $tableBlock->setLinkCallback(
