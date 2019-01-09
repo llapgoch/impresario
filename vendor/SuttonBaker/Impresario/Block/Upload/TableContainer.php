@@ -119,6 +119,7 @@ class TableContainer
             ['jquery', 'jquery-ui-widget']
         );
 
+        wp_enqueue_script('dbwpcore_table_updater');
         wp_enqueue_script('impresario_deleter');
         wp_enqueue_script('impresario_file_upload_helper');
 
@@ -147,6 +148,7 @@ class TableContainer
                 "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('<strong>File</strong> Attachments')
             ->addClass('js-file-upload-container')
+            ->setTileBodyClass('nopadding table-responsive')
         );
 
         $tileBlock->addChildBlock(
@@ -158,11 +160,20 @@ class TableContainer
                 )->setRecordsPerPage($this->getRecordsPerPage())
                     ->setTotalRecords(count($instanceItems))
                     ->setIsReplacerBlock(true)
+                    ->removeClass('pagination-xl')->addClass('pagination-xs')
             );
 
-        if(count($instanceItems)) {
-            $tileBlock->setTileBodyClass('nopadding');
+        $jsDataItems = [
+            Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                $this->getUrlHelper()->getApiUrl(
+                    UploadDefinition::API_ENDPOINT_UPDATE_TABLE, [
+                        'upload_type' => $this->getUploadType(),
+                        'parent_id' => $this->getIdentifier()
+                    ]
+                )
+        ];
 
+        if(count($instanceItems)) {
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
@@ -175,15 +186,7 @@ class TableContainer
                     ->addEscapeExcludes(['icon', 'remove'])
                     ->setThAttributes('icon', ['style' => 'width:20px'])
                     ->setThAttributes('remove', ['style' => 'width:70px'])
-                    ->addJsDataItems([
-                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                            $this->getUrlHelper()->getApiUrl(
-                                UploadDefinition::API_ENDPOINT_UPDATE_TABLE, [
-                                    'upload_type' => $this->getUploadType(),
-                                    'parent_id' => $this->getIdentifier()
-                                ]
-                            )
-                    ])
+                    ->addJsDataItems($jsDataItems)
                     ->setPaginator($paginator)
             );
 
@@ -193,6 +196,7 @@ class TableContainer
                 }
             );
         }else{
+            // Add the jsDataItems as though this were a table so we can update it later
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
@@ -200,6 +204,8 @@ class TableContainer
                     'content'
                 )->setTagText('No attachments have currently been added')
                     ->setIsReplacerBlock(true)
+                    ->addJsDataItems($jsDataItems)
+                    ->addClass('js-table-updater js-table-updater-file px-3')
             );
         }
     }
