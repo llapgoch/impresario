@@ -39,7 +39,7 @@ class Remove
             'returnUrl' => ''
         ])->setTag('a')
             ->setTagText('Remove')
-            ->addClass('btn btn-danger btn-sm js-delete-confirm');
+            ->addClass('btn btn-danger btn-sm js-delete-confirm js-delete-confirm-file');
 
         return $button->render();        
     }

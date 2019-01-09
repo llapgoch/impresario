@@ -146,6 +146,7 @@ class TableContainer
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
             )->setHeading('<strong>File</strong> Attachments')
+            ->addClass('js-file-upload-container')
         );
 
         $tileBlock->addChildBlock(
