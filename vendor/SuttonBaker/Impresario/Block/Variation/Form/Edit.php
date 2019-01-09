@@ -7,6 +7,7 @@ use SuttonBaker\Impresario\Definition\Upload;
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Model\Db\Variation;
+use DaveBaker\Core\Definitions\Roles;
 
 /**
  * Class Edit
@@ -241,19 +242,20 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
             ];
 
-
-            $uploadTable->addChildBlock(
-                $uploadTable->createBlock(
-                    '\DaveBaker\Core\Block\Components\FileUploader',
-                    "{$prefixKey}.file.uploader",
-                    'header_elements'
-                )->addJsDataItems(
-                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
-                        Api::ENDPOINT_FILE_UPLOAD,
-                        $uploadParams
-                    )]
-                )
-            );
+            if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
+                $uploadTable->addChildBlock(
+                    $uploadTable->createBlock(
+                        '\DaveBaker\Core\Block\Components\FileUploader',
+                        "{$prefixKey}.file.uploader",
+                        'header_elements'
+                    )->addJsDataItems(
+                        ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                            Api::ENDPOINT_FILE_UPLOAD,
+                            $uploadParams
+                        )]
+                    )
+                );
+            }
         }
         return parent::_preRender();
     }

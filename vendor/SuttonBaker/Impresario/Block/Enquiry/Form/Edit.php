@@ -10,6 +10,7 @@ use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
+use DaveBaker\Core\Definitions\Roles;
 
 /**
  * Class Edit
@@ -402,7 +403,7 @@ class Edit
             'identifier' => $modelInstance ->getId() ? $modelInstance ->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        if(!$this->isLocked()) {
+        if(!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
