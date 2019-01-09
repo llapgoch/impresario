@@ -33,7 +33,6 @@ class Project
         'site_name' => 'Site',
         'project_name' => 'Project',
         'date_received' => 'Received',
-        'created_by_name' => 'Creator',
         'invoice_amount_remaining' => "Amount Remaining",
         'project_manager_name' => 'Contracts Manager',
         'foreman_name' => 'Foreman',
@@ -46,7 +45,6 @@ class Project
         'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
         'date_received' => [],
-        'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
         'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
