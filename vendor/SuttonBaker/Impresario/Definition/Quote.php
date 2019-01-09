@@ -27,6 +27,7 @@ class Quote
     const TENDER_STATUS_CANCELLED = 'cancelled';
 
     const STATUS_OPEN = 'open';
+    const STATUS_IN_QUERY = 'in_query';
     const STATUS_QUOTED = 'quoted';
 
     const RECORDS_PER_PAGE = 20;
@@ -98,6 +99,7 @@ class Quote
     {
         return [
             self::STATUS_OPEN => 'Open',
+            self::STATUS_IN_QUERY => 'In Query',
             self::STATUS_QUOTED => "Quoted"
         ];
     }
