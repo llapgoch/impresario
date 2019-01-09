@@ -18,10 +18,11 @@ class Upload
     const TABLE_HEADERS = [
         'icon' => '',
         'filename' => 'Attachment Name',
-        'created_by_name' => 'Uploaded By'
+        'created_by_name' => 'Uploaded By',
+        'remove' => ''
     ];
 
-    public static function getIcon($mineType) {
+    public static function getIcon($mimeType) {
         $iconClasses = array(
             // Media
             'image' => 'fa-file-image-o',
@@ -48,7 +49,7 @@ class Upload
         );
 
         foreach ($iconClasses as $text => $icon) {
-            if (strpos($mineType, $text) === 0) {
+            if (strpos($mimeType, $text) === 0) {
                 return 'fa ' . $icon;
             }
         }

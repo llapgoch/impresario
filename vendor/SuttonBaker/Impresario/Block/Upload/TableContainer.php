@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Upload;
 use SuttonBaker\Impresario\Definition\Upload as UploadDefinition;
 use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Icon;
+use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Remove as RemoveLink;
 
 /**
  * Class TableContainer
@@ -90,6 +91,8 @@ class TableContainer
      */
     protected function _preDispatch()
     {
+        wp_enqueue_script('impresario_deleter');
+        
         $instanceItems = [];
         if(!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()){
             $this->instanceCollection = $this->getUploadHelper()->getUploadCollection(
@@ -100,7 +103,8 @@ class TableContainer
         }
 
         $this->instanceCollection->addOutputProcessors([
-            'icon' => $this->createAppObject(Icon::class)
+            'icon' => $this->createAppObject(Icon::class),
+            'remove' => $this->createAppObject(RemoveLink::class)
         ]);
 
         $this->addChildBlock(
@@ -122,8 +126,9 @@ class TableContainer
                     ->setRecords($this->instanceCollection)
                     ->addClass('table-striped')
                     ->setNewWindowLink(true)
-                    ->addEscapeExcludes(['icon'])
+                    ->addEscapeExcludes(['icon', 'remove'])
                     ->setThAttributes('icon', ['style' => 'width:20px'])
+                    ->setThAttributes('remove', ['style' => 'width:70px'])
             );
 
             $tableBlock->setLinkCallback(

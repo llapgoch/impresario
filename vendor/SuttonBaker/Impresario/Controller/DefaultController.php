@@ -22,6 +22,13 @@ class DefaultController
             $this->requiresLogin = true;
         }
 
+        /* Global scripts which can be registered in block scope */
+        wp_register_script(
+            'impresario_deleter',
+            get_template_directory_uri() . '/assets/js/deleter.widget.js',
+            ['jquery', 'jquery-ui-widget']
+        );
+
         parent::preDispatch();
     }
 
