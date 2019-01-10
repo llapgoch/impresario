@@ -142,7 +142,9 @@ class Enquiry
      */
     public function getOpenEnquiries()
     {
-        return $this->getEnquiryCollection()->where('status<>?', EnquiryDefinition::STATUS_COMPLETE);
+        return $collection = $this->getEnquiryCollection()->where('status NOT IN (?)', [
+            EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED
+        ]);
     }
 
     /**
