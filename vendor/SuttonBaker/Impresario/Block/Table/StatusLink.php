@@ -39,8 +39,14 @@ class StatusLink
     {
         $this->addSessionKeyItem($this->getName());
         $this->addSessionKeyItem($this->getUrlHelper()->getCurrentUrl());
-        $this->unpackSession();
+
         parent::_preDispatch();
+    }
+
+    protected function _preRender()
+    {
+        $this->unpackSession();
+        parent::_preRender();
     }
 
     /**
@@ -262,7 +268,7 @@ class StatusLink
         $data = $this->getSessionData();
 
         // Check the column still exists before setting it!
-        if (is_array($data) && isset($data['orderColumn'])) {
+        if (is_array($data) && isset($data['orderColumn']) && $data['orderColumn']) {
             if (in_array($data['orderColumn'], array_keys($this->getCollection()->getSchema()))){
                 $this->orderColumn = $data['orderColumn'];
             
