@@ -42,7 +42,7 @@ class Client extends Base
         $client = $this->createAppObject(ClientDefinition::DEFINITION_MODEL);
 
         if($clientId){
-            $clientId->load($clientId);
+            $client->load($clientId);
         }
 
         return $client;

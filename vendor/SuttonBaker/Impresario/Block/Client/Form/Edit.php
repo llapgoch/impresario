@@ -206,6 +206,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
+        $this->addRecordMonitorBlock(
+            $entityInstance,
+            $this->getUrlHelper()->getApiUrl(ClientDefinition::API_ENDPOINT_RECORD_MONITOR)
+        );
+
         $this->addChildBlock(array_values($elements));
 
         if($this->getClientHelper()->currentUserCanEdit() == false){

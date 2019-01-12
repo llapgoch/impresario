@@ -9,6 +9,8 @@ class Variation
 {
     const API_ENDPOINT_UPDATE_TABLE = 'variation/updatetable';
     const API_ENDPOINT_DELETE = 'variation/delete';
+    const API_ENDPOINT_RECORD_MONITOR = 'variation/recordmonitor';
+    
     const ICON = 'fa fa-dot-circle-o';
 
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Variation';

@@ -202,7 +202,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addRecordMonitorBlock(
             $this->modelInstance,
-            $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_RECORD_MONITOR)
+            $this->getUrlHelper()->getApiUrl(TaskDefinition::API_ENDPOINT_RECORD_MONITOR)
         );
 
         $this->addChildBlock(array_values($elements));

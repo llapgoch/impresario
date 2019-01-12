@@ -11,6 +11,7 @@ class Client
 {
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Client';
     const API_ENDPOINT_UPDATE_TABLE = 'client/updatetable';
+    const API_ENDPOINT_RECORD_MONITOR = 'client/recordmonitor';
     const API_ENDPOINT_DELETE = 'client/delete';
     const ICON = 'fa fa-address-book';
 
