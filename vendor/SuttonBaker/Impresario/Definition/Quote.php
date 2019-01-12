@@ -12,6 +12,7 @@ class Quote
     const API_ENDPOINT_UPDATE_TABLE = 'quote/updatetable';
     const API_ENDPOINT_DELETE = 'quote/delete';
     const API_ENDPOINT_UPDATE_REVISIONS_TABLE = 'quote/updaterevisiontable';
+    const API_ENDPOINT_RECORD_MONITOR = 'quote/recordmonitor';
     const API_ENDPOINT_VALIDATE_SAVE = 'quote/validatesave';
     const API_ENDPOINT_SAVE = 'quote/save';
     const API_ENDPOINT_CREATE_REVISION = 'quote/createrevision';

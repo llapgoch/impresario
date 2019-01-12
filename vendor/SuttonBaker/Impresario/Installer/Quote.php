@@ -69,7 +69,7 @@ class Quote
               KEY `status` (`status`),
               KEY `tender_status` (`tender_status`),
               KEY `status_tender_status` (`status`, `tender_status`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
     }
 }

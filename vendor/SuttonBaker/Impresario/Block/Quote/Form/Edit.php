@@ -133,6 +133,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::QUOTE_LIST);
 
+        $this->addRecordMonitorBlock(
+            $this->modelInstance,
+            $this->getUrlHelper()->getApiUrl(QuoteDefinition::API_ENDPOINT_RECORD_MONITOR)
+        );
+
         $this->addChildBlock(
             $this->createFormErrorBlock()
                 ->setOrder('before', '')

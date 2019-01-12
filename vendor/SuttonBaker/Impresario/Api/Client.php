@@ -14,7 +14,7 @@ use DaveBaker\Core\Definitions\Table as TableDefinition;
  *
  */
 class Client
-    extends \DaveBaker\Core\Api\Base
+    extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'client';
@@ -80,6 +80,23 @@ class Client
         $this->addMessage('The client has been removed', Messages::SUCCESS);
 
         return true;
+    }
+
+    /**
+     * @param array $params
+     * @param \WP_REST_Request $request
+     * @return array
+     */
+    public function recordmonitorAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        if(!isset($params['id'])){
+            throw new Exception('ID is required');
+        }
+        
+        $object = $this->getClientHelper()->getClient($params['id']);
+        return $this->performRecordMonitor($params, $object);
     }
 
 }

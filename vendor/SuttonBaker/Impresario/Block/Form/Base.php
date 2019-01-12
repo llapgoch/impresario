@@ -26,6 +26,35 @@ abstract class Base extends \DaveBaker\Form\Block\Form
         wp_enqueue_script('impresario_deleter');
     }
 
+  /**
+     * @return \DaveBaker\Core\Block\BaseInterface
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function addRecordMonitorBlock(
+        \DaveBaker\Core\Model\Db\BaseInterface $model,
+        $endpoint
+    ) {
+        if(!$model->getId()){
+            return;
+        }
+
+        wp_enqueue_script('impresario_record_monitor');
+ 
+        /** @var \DaveBaker\Form\Block\Error\Main $errorBlock */
+        $this->addChildBlock(
+            $this->getApp()->getBlockManager()->createBlock(
+                '\DaveBaker\Core\Block\Template',
+                "{$this->blockPrefix}.edit.form.record.monitor"
+            )->setTemplate('components/record-monitor.phtml')
+             ->setWidgetData([
+                'id' => $model->getId(),
+                'timestamp' => strtotime($model->getUpdatedAt()),
+                'endpoint' => $endpoint
+            ])
+        );
+    }
+
     /**
      * @return mixed
      * @throws \DaveBaker\Core\App\Exception

@@ -1,6 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Controller;
+
+use SuttonBaker\Impresario\Definition\Enquiry;
+
 /**
  * Class DefaultController
  * @package SuttonBaker\Impresario\Controller
@@ -26,6 +29,12 @@ class DefaultController
         wp_register_script(
             'impresario_deleter',
             get_template_directory_uri() . '/assets/js/deleter.widget.js',
+            ['jquery', 'jquery-ui-widget']
+        );
+
+        wp_register_script(
+            'impresario_record_monitor',
+            get_template_directory_uri() . '/assets/js/record.monitor.widget.js',
             ['jquery', 'jquery-ui-widget']
         );
 

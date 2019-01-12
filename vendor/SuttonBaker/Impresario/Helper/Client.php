@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Helper;
 
 use SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Definition\Client as ClientDefinition;
 
 /**
  * Class Client
@@ -29,6 +30,22 @@ class Client extends Base
         $collection->getSelect()->where('is_deleted=?', '0');
 
         return $collection;
+    }
+
+    /**
+     * @param int|null $clientId
+     * @return \SuttonBaker\Impresario\Model\Db\Client
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getClient($clientId = null)
+    {
+        $client = $this->createAppObject(ClientDefinition::DEFINITION_MODEL);
+
+        if($clientId){
+            $clientId->load($clientId);
+        }
+
+        return $client;
     }
 
     /**

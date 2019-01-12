@@ -12,6 +12,7 @@ class Enquiry
     const API_ENDPOINT_UPDATE_TABLE = 'enquiry/updatetable';
     const API_ENDPOINT_DELETE = 'enquiry/delete';
     const API_ENDPOINT_VALIDATE_SAVE = 'enquiry/validatesave';
+    const API_ENDPOINT_RECORD_MONITOR = 'enquiry/recordmonitor';
     const API_ENDPOINT_SAVE = 'enquiry/save';
 
     const ICON = 'fa fa-thumb-tack';

@@ -99,6 +99,23 @@ class Project
         return array_merge($validateResult, $this->saveProject($modelInstance, $formValues, $navigatingAway));
     }
 
+       /**
+     * @param array $params
+     * @param \WP_REST_Request $request
+     * @return array
+     */
+    public function recordmonitorAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        if(!isset($params['id'])){
+            throw new Exception('ID is required');
+        }
+        
+        $object = $this->getProjectHelper()->getProject($params['id']);
+        return $this->performRecordMonitor($params, $object);
+    }
+
     /**
      * @param $params
      * @param \WP_REST_Request $request

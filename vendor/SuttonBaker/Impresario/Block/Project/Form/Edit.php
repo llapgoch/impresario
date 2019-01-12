@@ -117,6 +117,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
 
+        $this->addRecordMonitorBlock(
+            $this->modelInstance,
+            $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_RECORD_MONITOR)
+        );
+
         $this->addChildBlock(
             $this->createFormErrorBlock()
                 ->setOrder('before', '')

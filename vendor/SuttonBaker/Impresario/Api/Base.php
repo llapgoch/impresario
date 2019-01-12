@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Api;
 
 use SuttonBaker\Impresario\Session\TableUpdater;
+use DaveBaker\Core\Installer\Exception;
 
 /**
  * Class Base
@@ -15,6 +16,38 @@ abstract class Base
     protected $requiresLogin = true;
     /** @var TableUpdater */
     protected $tableUpdaterSession;
+
+    /**
+     *
+     * @param array $params
+     * @param \DaveBaker\Core\Model\Db\BaseInterface $object
+     * @return array
+     * @throws Exception
+     */
+    protected function performRecordMonitor(
+        $params,
+        $object
+    ) {
+        if(!isset($params['timestamp'])){
+            throw new Exception('Timestamp not set');
+        }
+
+        if(!$object->getId() || $object->getIsDeleted()){
+            throw new Exception("Record not found");
+        }
+
+        $updated = false;
+    
+        if((int) $object->getLastEditedById() !== (int) $this->getUserHelper()->getCurrentUserId()){
+            if((int) $params['timestamp'] < strtotime($object->getUpdatedAt())){
+                $updated = true;
+            }
+        }
+        
+        return [
+            'updated' => $updated
+        ];
+    }
 
     /**
      * @return \SuttonBaker\Impresario\Helper\Enquiry
@@ -41,6 +74,33 @@ abstract class Base
     protected function getTaskHelper()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
+    }
+
+     /**
+     * @return \SuttonBaker\Impresario\Helper\Variation
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getVariationHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Client
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getClientHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Client');
+    }
+
+     /**
+     * @return \SuttonBaker\Impresario\Helper\Invoice
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getInvoiceHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
     }
 
     /**

@@ -46,6 +46,7 @@ class Edit
         parent::_preDispatch();
 
         wp_enqueue_script('impresario_form_validator');
+        
         $this->addClass('js-validate-form js-form-overlay');
 
         $this->addJsDataItems(
@@ -119,6 +120,10 @@ class Edit
             $this->getRequest()->getReturnUrl() :
             $this->getUrlHelper()->getPageUrl(Page::ENQUIRY_LIST);
 
+        $this->addRecordMonitorBlock(
+            $modelInstance,
+            $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_RECORD_MONITOR)
+        );
 
         $this->addChildBlock(
             $this->createFormErrorBlock()

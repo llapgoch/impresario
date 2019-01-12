@@ -92,6 +92,24 @@ class Task
         $this->addReplacerBlock([$taskTable, $paginatorBlock]);
     }
 
+
+     /**
+     * @param array $params
+     * @param \WP_REST_Request $request
+     * @return array
+     */
+    public function recordmonitorAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        if(!isset($params['id'])){
+            throw new Exception('ID is required');
+        }
+        
+        $object = $this->getTaskHelper()->getTask($params['id']);
+        return $this->performRecordMonitor($params, $object);
+    }
+
     /**
      * @param $params
      * @param \WP_REST_Request $request

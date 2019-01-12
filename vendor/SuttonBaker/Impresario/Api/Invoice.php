@@ -52,4 +52,21 @@ class Invoice
         return true;
     }
 
+    /**
+     * @param array $params
+     * @param \WP_REST_Request $request
+     * @return array
+     */
+    public function recordmonitorAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        if(!isset($params['id'])){
+            throw new Exception('ID is required');
+        }
+        
+        $object = $this->getInvoiceHelper()->getInvoice($params['id']);
+        return $this->performRecordMonitor($params, $object);
+    }
+
 }

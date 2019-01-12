@@ -122,6 +122,23 @@ class Enquiry
     }
 
     /**
+     * @param array $params
+     * @param \WP_REST_Request $request
+     * @return array
+     */
+    public function recordmonitorAction(
+        $params,
+        \WP_REST_Request $request
+    ) {
+        if(!isset($params['id'])){
+            throw new Exception('ID is required');
+        }
+
+        $object = $this->getEnquiryHelper()->getEnquiry($params['id']);
+        return $this->performRecordMonitor($params, $object);
+    }
+
+    /**
      * @param $params
      * @param \WP_REST_Request $request
      * @return array|\SuttonBaker\Impresario\Helper\Enquiry|\WP_Error

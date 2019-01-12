@@ -54,7 +54,7 @@ class Task
               KEY `status` (`status`),
               KEY `task_id` (`task_id`,`priority`),
               KEY `task_id_2` (`task_id`,`priority`,`status`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_bin;'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;'
         );
     }
 
