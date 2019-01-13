@@ -27,7 +27,6 @@ class ClientList
      */
     protected function _preDispatch()
     {
-
         wp_enqueue_script('dbwpcore_table_updater');
 
         $tableHeaders = ClientDefinition::TABLE_HEADERS;
