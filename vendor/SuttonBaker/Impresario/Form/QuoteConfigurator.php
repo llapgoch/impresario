@@ -34,6 +34,8 @@ class QuoteConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
+   
+
         $netCost = $this->getValue('net_cost');
         $netSell = $this->getValue('net_sell');
 
@@ -69,6 +71,23 @@ class QuoteConfigurator
                 )
             );
         }
+
+        $dateReceived = new \DateTime($this->getValue('date_received'));
+        $dateRequired = new \DateTime($this->getValue('date_required'));
+
+
+        $this->addRule(
+            $this->createRule('Custom', 'date_required', 'Date Required')
+                ->setMainError('\'{{niceName}}\' must be after \'Date Received\'')
+                ->setInputError('This must be after Date Received')
+                ->setValidationMethod(function($value, $ruleInstance) use($dateReceived, $dateRequired){
+                    if($dateRequired->getTimestamp() < $dateReceived->getTimestamp()){
+                        return $ruleInstance->createError();
+                    }
+
+                    return true;
+                })
+        );
 
         if($this->getValue('date_returned')){
             $this->addRule(

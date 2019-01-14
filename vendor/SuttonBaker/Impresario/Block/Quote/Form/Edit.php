@@ -250,7 +250,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '0', 'maxDate' => "+5Y"]
+                        ['maxDate' => "+5Y"]
                     )
                 ]
             ], [
