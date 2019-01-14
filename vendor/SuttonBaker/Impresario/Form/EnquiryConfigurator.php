@@ -83,7 +83,7 @@ class EnquiryConfigurator
         $isReopening = $this->getModel()->getStatus() == EnquiryDefinition::STATUS_COMPLETE
             && $this->getValue('status') == EnquiryDefinition::STATUS_OPEN;
 
-        if($this->getValue('status') !== EnquiryDefinition::STATUS_OPEN){
+        if(in_array($this->getValue('status'), [EnquiryDefinition::STATUS_OPEN, EnquiryDefinition::STATUS_CANCELLED]) == false){
             $this->addRule(
                 $this->createRule('User', 'engineer_id', 'Engineer')
                 ->setMainError('An engineer must be assigned for this enquiry\'s status')
