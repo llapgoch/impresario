@@ -91,13 +91,13 @@ class Enquiry
         $collection->joinLeft(
             ['user_assigned' => $userTable],
             "user_assigned.ID={{enquiry}}.assigned_to_id",
-            ['assigned_to_name' => 'user_login']
+            ['assigned_to_name' => 'display_name']
         );
 
         $collection->joinLeft(
             ['engineer_user' => $userTable],
             "engineer_user.ID={{enquiry}}.engineer_id",
-            ['engineer_name' => 'user_login']
+            ['engineer_name' => 'display_name']
         );
 
         $collection->order(new \Zend_Db_Expr(sprintf(

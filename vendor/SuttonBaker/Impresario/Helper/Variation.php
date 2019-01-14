@@ -35,7 +35,7 @@ class Variation extends Base
         $collection->joinLeft(
             ['created_by_user'=> $userTable],
             "created_by_user.ID={{variation}}.created_by_id",
-            ['created_by_name' => 'user_login']
+            ['created_by_name' => 'display_name']
         )->order('{{variation}}.variation_id DESC');
 
 

@@ -36,11 +36,11 @@ class Task extends Base
         $collection->joinLeft(
             ['assigned_to_user' => $userTable],
             "assigned_to_user.ID={{task}}.assigned_to_id",
-            ['assigned_to_name' => 'user_login'])
+            ['assigned_to_name' => 'display_name'])
         ->joinLeft(
             ['created_by_user'=> $userTable],
             "created_by_user.ID={{task}}.created_by_id",
-            ['created_by_name' => 'user_login'])
+            ['created_by_name' => 'display_name'])
           ->order(new \Zend_Db_Expr(sprintf(
                 "FIELD({{task}}.status,'%s', '%s')",
                 TaskDefinition::STATUS_OPEN,

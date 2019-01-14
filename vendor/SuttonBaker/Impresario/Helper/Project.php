@@ -118,15 +118,15 @@ class Project extends Base
         $collection->joinLeft(
             ['project_manager_user' => $userTable],
             "project_manager_user.ID={{project}}.project_manager_id",
-            ['project_manager_name' => 'user_login']
+            ['project_manager_name' => 'display_name']
         )->joinLeft(
             ['foreman_user' => $userTable],
             "foreman_user.ID={{project}}.assigned_foreman_id",
-            ['foreman_name' => 'user_login']
+            ['foreman_name' => 'display_name']
         )->joinLeft(
             ['created_by_user' => $userTable],
             "created_by_user.ID={{project}}.created_by_id",
-            ['created_by_name' => 'user_login']
+            ['created_by_name' => 'display_name']
         )->joinLeft(
             "{{client}}",
             "{{client}}.client_id={{project}}.client_id",

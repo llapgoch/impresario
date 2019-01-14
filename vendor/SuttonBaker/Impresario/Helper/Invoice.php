@@ -35,7 +35,7 @@ class Invoice extends Base
         $collection->joinLeft(
             ['created_by_user'=> $userTable],
             "created_by_user.ID={{invoice}}.created_by_id",
-            ['created_by_name' => 'user_login']
+            ['created_by_name' => 'display_name']
         )->order('{{invoice}}.invoice_id DESC');
 
 

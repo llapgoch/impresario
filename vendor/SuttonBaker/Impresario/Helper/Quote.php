@@ -100,11 +100,11 @@ class Quote extends Base
         $collection->joinLeft(
             ['estimator_user' => $userTable],
             "estimator_user.ID={{quote}}.estimator_id",
-            ['estimator_name' => 'user_login']
+            ['estimator_name' => 'display_name']
         )->joinLeft(
             ['created_by_user' => $userTable],
             "created_by_user.ID={{quote}}.created_by_id",
-            ['created_by_name' => 'user_login']
+            ['created_by_name' => 'display_name']
         )->joinLeft(
             "{{client}}",
             "{{client}}.client_id={{quote}}.client_id",

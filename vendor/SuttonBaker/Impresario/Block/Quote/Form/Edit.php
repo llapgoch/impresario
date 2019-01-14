@@ -83,7 +83,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->configure(
                 $this->getApp()->getHelper('User')->getUserCollection(),
                 'ID',
-                'user_login'
+                'display_name'
             )->getElementData();
 
         // Clients
