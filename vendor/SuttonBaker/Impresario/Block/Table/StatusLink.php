@@ -19,6 +19,8 @@ class StatusLink
     protected $sessionKeyItems = [];
     /** @var TableUpdater */
     protected $session;
+    /** @var $rowClassCallback object */
+    protected $rowClassCallback;
 
     /**
      * @return \DaveBaker\Core\Block\Template|void
@@ -47,6 +49,12 @@ class StatusLink
     {
         $this->unpackSession();
         parent::_preRender();
+    }
+
+    public function setRowClassCallback($callback)
+    {
+        $this->rowClassCallback = $callback;
+        return $this;
     }
 
     /**
@@ -107,6 +115,9 @@ class StatusLink
     public function getRowClass(
         \DaveBaker\Core\Model\Db\BaseInterface $record
     ) {
+        if($this->rowClassCallback){
+           return call_user_func_array($this->rowClassCallback, [$record]);
+        }
         $statusClasses = $this->getRowStatusClasses();
         $statusKey = $this->getStatusKey();
 

@@ -111,6 +111,10 @@ class Quote extends Base
             ['client_name' => 'client_name']
         );
 
+        $collection->columns(
+            "CONCAT({{quote}}.status, ':', {{quote}}.tender_status) as aggregate_status"
+        );
+
         $collection->order(new \Zend_Db_Expr(sprintf(
                 "FIELD({{quote}}.tender_status,'%s', '%s', '%s', '%s')",
                 QuoteDefinition::TENDER_STATUS_OPEN,

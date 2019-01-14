@@ -34,6 +34,9 @@ class Quote
     const RECORDS_PER_PAGE = 20;
     const RECORDS_PER_PAGE_INLINE = 5;
 
+    const STATUS_COLUMN = 'tender_status';
+    const AGGREGATE_STATUS_COLUMN = 'aggregate_status';
+
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
         'client_name' => 'Client',
@@ -117,6 +120,29 @@ class Quote
             self::TENDER_STATUS_CLOSED_OUT => 'bg-secondary',
             self::TENDER_STATUS_CANCELLED => 'bg-dark'
         ];
+    }
+
+    public static function getAggregateStatusRowClasses()
+    {
+        return [
+            self::STATUS_QUOTED . ":" . self::TENDER_STATUS_OPEN => 'bg-blue'
+        ];
+    }
+
+    public static function getRowClass($record)
+    {
+        $aggregates = self::getAggregateStatusRowClasses();
+        $rowClasses = self::getRowClasses();
+
+        if(isset($aggregates[$record->getData(self::AGGREGATE_STATUS_COLUMN)])){
+            return $aggregates[$record->getData(self::AGGREGATE_STATUS_COLUMN)];
+        }
+
+        if(isset($rowClasses[$record->getData(self::STATUS_COLUMN)])){
+            return $rowClasses[$record->getData(self::STATUS_COLUMN)];
+        }
+
+        return '';
     }
 
     /**

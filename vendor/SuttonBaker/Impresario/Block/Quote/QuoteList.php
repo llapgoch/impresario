@@ -59,14 +59,15 @@ class QuoteList
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
             )->setHeaders(QuoteDefinition::TABLE_HEADERS)->setRecords($instanceCollection)
-                ->setStatusKey('tender_status')
                 ->setSortableColumns(QuoteDefinition::SORTABLE_COLUMNS)
-                ->setRowStatusClasses(QuoteDefinition::getRowClasses())
                 ->addJsDataItems([
                     TableDefinition::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                         $this->getUrlHelper()->getApiUrl(QuoteDefinition::API_ENDPOINT_UPDATE_TABLE)
                 ])
                 ->setPaginator($paginator)
+                ->setRowClassCallback(function($record){
+                    return QuoteDefinition::getRowClass($record);
+                })
         );
 
         if(!count($instanceCollection->getItems())){
