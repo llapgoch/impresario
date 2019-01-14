@@ -102,7 +102,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit() && !$this->modelInstance->isComplete()){
+        if($this->getQuoteHelper()->currentUserCanEdit()){
             $ignoreLockValue = true;
         }
 
@@ -111,7 +111,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setFormName("{$this->blockPrefix}_edit")->setGroupTemplate('form/group-vertical.phtml');
 
         $disabledAttrs = $this->modelInstance->getId() && !$this->modelInstance->isComplete() ? [] : ['disabled' => 'disabled'];
-        $updateAttrs = $this->modelInstance->isComplete() ? ['disabled' => 'disabled'] : [];
+        $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() :

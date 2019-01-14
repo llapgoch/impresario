@@ -271,6 +271,7 @@ class Project extends Base
             'project_id' => null,
             'project_closed' => false,
             'project_newly_completed' => false,
+            'reopened' => false,
             'new_save' => false
         ];
 
@@ -321,6 +322,11 @@ class Project extends Base
 
         if(!$isComplete && $modelInstance->isComplete()){
             $returnValues['project_newly_completed'] = true;
+        }
+
+        if($isComplete && in_array($modelInstance->getStatus(), 
+            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) == false) {
+            $returnValues['reopened'] = true;
         }
 
         return $returnValues;

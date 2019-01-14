@@ -87,6 +87,11 @@ class Project
             && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE){
             
             $confirmMessages[] = 'This will complete and archive the project.';
+        }    
+
+        if($modelInstance->isComplete() && in_array($formValues['status'], 
+            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) == false){
+                $confirmMessages[] = 'This will re-open the project';
         }
 
         if($confirmMessages){
@@ -206,7 +211,7 @@ class Project
         }
 
         // No need to redirect for updating
-        if($saveValues['new_save'] == false && !$saveValues['project_newly_completed']){
+        if($saveValues['new_save'] == false && !$saveValues['project_newly_completed'] && !$saveValues['reopened']){
             $message = 'The project has been updated';
             if($navigatingAway) {
                 $this->getApp()->getGeneralSession()->addMessage(
@@ -230,6 +235,18 @@ class Project
             );
 
             $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
+        }
+
+        if($saveValues['reopened']){
+            $this->getApp()->getGeneralSession()->addMessage(
+                'The project has been re-opened',
+                Messages::SUCCESS
+            );
+
+            $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
+                Page::PROJECT_EDIT, 
+                ['project_id' => $modelInstance->getId()]
+            );
         }
 
         return $saveValues;
