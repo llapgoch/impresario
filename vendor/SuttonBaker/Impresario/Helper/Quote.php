@@ -121,6 +121,11 @@ class Quote extends Base
                 QuoteDefinition::TENDER_STATUS_WON,
                 QuoteDefinition::TENDER_STATUS_CANCELLED,
                 QuoteDefinition::TENDER_STATUS_CLOSED_OUT)
+        ))->order(new \Zend_Db_Expr(sprintf(
+            "FIELD({{quote}}.status,'%s', '%s', '%s')",
+            QuoteDefinition::STATUS_OPEN,
+            QuoteDefinition::STATUS_IN_QUERY,
+            QuoteDefinition::STATUS_QUOTED)
         ))->order('{{quote}}.date_required');
 
         return $collection;
