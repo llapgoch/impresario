@@ -280,12 +280,10 @@ class StatusLink
 
         // Check the column still exists before setting it!
         if (is_array($data) && isset($data['orderColumn']) && $data['orderColumn']) {
-            if (in_array($data['orderColumn'], array_keys($this->getCollection()->getSchema()))){
-                $this->orderColumn = $data['orderColumn'];
-            
-                if (isset($data['orderDir'])){
-                    $this->orderDir = $data['orderDir'];
-                }
+            $this->orderColumn = $data['orderColumn'];
+        
+            if (isset($data['orderDir'])){
+                $this->orderDir = $data['orderDir'];
             }
 
             $this->setColumnOrder($this->orderColumn, $this->orderDir);
