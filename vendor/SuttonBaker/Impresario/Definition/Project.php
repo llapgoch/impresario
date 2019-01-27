@@ -47,6 +47,7 @@ class Project
         'status' => [],
         'date_received' => [],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
         'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
