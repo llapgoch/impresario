@@ -14,6 +14,7 @@ class Page
 
     const ENQUIRY_LIST = 'enquiry_list';
     const ENQUIRY_EDIT = 'enquiry_edit';
+    const ENQUIRY_REPORT_DOWNLOAD = 'enquiry_report_download';
 
     const TASK_LIST = 'task_list';
     const TASK_EDIT = 'task_edit';
