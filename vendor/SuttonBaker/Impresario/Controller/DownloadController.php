@@ -20,7 +20,7 @@ abstract class DownloadController
     {
         $this->outputHeaders();
         $this->outputFileContent();
-        $this->getResponse()->redirectReferer();
+        exit;
     }
 
     abstract protected function getFileName();
