@@ -21,9 +21,11 @@ class Page
 
     const QUOTE_LIST = 'quote_list';
     const QUOTE_EDIT = 'quote_edit';
+    const QUOTE_REPORT_DOWNLOAD = 'quote_report_download';
 
     const PROJECT_LIST = 'project_list';
     const PROJECT_EDIT = 'project_edit';
+    const PROJECT_REPORT_DOWNLOAD = 'project_report_download';
 
     const VARIATION_EDIT = 'variation_edit';
     const INVOICE_EDIT = 'invoice_edit';
