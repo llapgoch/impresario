@@ -81,14 +81,14 @@ class Quote
         'estimator_name' => 'Estimator',
         'revision_number' => 'Revison',
         'net_cost' => 'Net Cost',
-        'target_date' => 'Net Sell',
+        'net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'gp' => 'GP',
         'status' => 'Quote Status',
         'date_returned' => 'Date Returned',
         'comments' => 'Comments',
         'date_completed' => 'Completion Date',
-        'completed_by' => 'Completed By',
+        'completed_by_name' => 'Completed By',
         'tender_status' => 'Tender Status'
     ];
 

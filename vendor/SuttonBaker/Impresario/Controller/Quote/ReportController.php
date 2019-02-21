@@ -16,7 +16,7 @@ class ReportController
 {
     protected function getFileName()
     {
-        return 'enquiry-report.csv';
+        return 'quote-report.csv';
     }
 
     protected function outputFileContent()
@@ -25,14 +25,17 @@ class ReportController
         $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes()
         ->joinLeft(
             "{{client}}",
-            "{{client}}.client_id={{enquiry}}.client_id",
+            "{{client}}.client_id={{quote}}.client_id",
             ['client_name' => 'client_name']
         )
         ->addOutputProcessors([
+            'date_returned' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'date_completed' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
-            'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
+            'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
+            'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor(),
+            'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor()
         ]);
 
         $output = fopen("php://output", "w");
