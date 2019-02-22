@@ -32,10 +32,10 @@ class Project extends Base
         /** @var \SuttonBaker\Impresario\Model\Db\Project $entityInstance */
         $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Project');
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+        if ($entityId = $this->getRequest()->getParam(self::ID_KEY)) {
             $entityInstance->load($entityId);
 
-            if(!$entityInstance->getId()){
+            if (!$entityInstance->getId()) {
                 return;
             }
         }
@@ -46,11 +46,11 @@ class Project extends Base
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading($this->getProjectHelper()->getActionVerb($entityInstance) . " <strong>Project</strong>")
                 ->setShortcode('body_content')
-                ->addChildBlock($this->getProjectHelper()->getTabBarForProject($entityInstance)
-            )
+                ->addChildBlock($this->getProjectHelper()->getTabBarForProject($entityInstance))
         );
 
         $mainTile->addChildBlock(
@@ -78,7 +78,8 @@ class Project extends Base
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading("<strong>Project</strong> List")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding table-responsive')
@@ -89,6 +90,28 @@ class Project extends Base
             ->addOutputProcessors([
                 'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency()
             ]);
+
+        $mainTile->addChildBlock(
+            $buttonContainer = $mainTile->createBlock(
+                \DaveBaker\Core\Block\Block::class,
+                "{$this->getBlockPrefix()}.button.container",
+                'header_elements'
+            )
+        );
+
+
+        $buttonContainer->addChildBlock(
+            $buttonContainer->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                "report.{$this->getBlockPrefix()}.download.link"
+            )
+                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::PROJECT_REPORT_DOWNLOAD
+                    )]
+                )->setCapabilities($this->getProjectHelper()->getViewCapabilities())
+        );
 
 
         $mainTile->addChildBlock(
