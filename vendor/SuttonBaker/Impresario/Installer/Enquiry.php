@@ -31,6 +31,12 @@ class Enquiry
             ]
         );
 
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::ENQUIRY_REPORT_DOWNLOAD, [
+                "post_title" => "Enquiries' Report Downloader"
+            ]
+        );
+
         $this->deltaTable('enquiry',
             'CREATE TABLE `{{tableName}}` (
               `enquiry_id` int(11) unsigned NOT NULL AUTO_INCREMENT,

@@ -32,6 +32,13 @@ class Project
             ]
         );
 
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_REPORT_DOWNLOAD, [
+                "post_title" => "Project Report Downloader"
+            ]
+        );
+        
+
         $this->deltaTable('project',
             "CREATE TABLE `{{tableName}}` (
               `project_id` int(11) unsigned NOT NULL AUTO_INCREMENT,

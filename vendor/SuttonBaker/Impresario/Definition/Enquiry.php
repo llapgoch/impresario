@@ -50,6 +50,22 @@ class Enquiry
         'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
+    const REPORT_HEADERS = [
+        'enquiry_id' => 'ID',
+        'site_name' => 'Site',
+        'client_name' => 'Client',
+        'client_reference' => 'Client Ref',
+        'client_requested_by' => 'Client Requested By',
+        'po_number' => 'PO Number',
+        'assigned_to_name' => 'Assignee',
+        'engineer_name' => 'Engineer',
+        'notes' => 'Notes',
+        'date_received' => 'Received',
+        'target_date' => 'Target',
+        'status' => 'Enquiry Status',
+        'date_completed' => 'Date Completed'
+    ];
+
 
     /** @var array  */
     const NON_USER_VALUES = [

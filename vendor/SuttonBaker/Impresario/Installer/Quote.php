@@ -32,6 +32,12 @@ class Quote
             ]
         );
 
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::QUOTE_REPORT_DOWNLOAD, [
+                "post_title" => "Quote Report Downloader"
+            ]
+        );
+
         $this->deltaTable('quote',
             "CREATE TABLE `{{tableName}}` (
                 `quote_id` int(11) unsigned NOT NULL AUTO_INCREMENT,

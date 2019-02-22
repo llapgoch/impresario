@@ -41,6 +41,7 @@ class Quote extends Base
         $quoteRevision = $this->getQuoteHelper()->getRevisionLetter($entityInstance->getRevisionNumber());
         $masterText = $entityInstance->getIsMaster() ? '<i class="fa fa fa-star"></i> ' : '';
 
+
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
@@ -81,6 +82,28 @@ class Quote extends Base
                 ->setHeading("<strong>Quote</strong> Register")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding table-responsive')
+        );
+
+        $mainTile->addChildBlock(
+            $buttonContainer = $mainTile->createBlock(
+                \DaveBaker\Core\Block\Block::class,
+                "{$this->getBlockPrefix()}.button.container",
+                'header_elements'
+            )
+        );
+
+
+        $buttonContainer->addChildBlock(
+            $buttonContainer->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                "report.{$this->getBlockPrefix()}.download.link"
+            )
+                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::QUOTE_REPORT_DOWNLOAD
+                    )]
+                )->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
         );
 
 

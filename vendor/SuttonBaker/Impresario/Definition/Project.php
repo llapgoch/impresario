@@ -52,6 +52,30 @@ class Project
         'foreman_name' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
+    const REPORT_HEADERS = [
+        'project_id' => 'ID',
+        'site_name' => 'Site',
+        'project_name' => 'Project',
+        'client_name' => 'Client',
+        'client_reference' => 'Client Reference',
+        'po_number' => 'PO Number',
+        'project_start_date' => 'Start Date',
+        'project_end_date' => 'End Date',
+        'project_manager_name' => 'Contracts Manager',
+        'foreman_name' => 'Foreman',
+        'client_project_manager' => 'Client Project Manager',
+        'net_cost' => 'Net Cost',
+        'net_sell' => 'Net Sell',
+        'profit' => 'Profit',
+        'amount_invoiced' => 'Amount Invoiced',
+        'invoice_amount_remaining' => 'Invoice Amount Remaining',
+        'actual_cost' => 'Actual Cost',
+        'actual_profit' => 'Actual Profit',
+        'actual_margin' => 'Actual Margin',
+        'notes' => 'Notes',
+        'status' => 'Status'
+    ];
+
     const NON_USER_VALUES = [
         'project_id',
         'client_id',

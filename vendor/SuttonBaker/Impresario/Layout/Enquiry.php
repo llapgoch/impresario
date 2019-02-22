@@ -30,7 +30,7 @@ class Enquiry extends Base
     public function enquiryEditHandle()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Enquiry */
-        if(!($entityInstance = $this->getApp()->getRegistry()->get('model_instance'))){
+        if (!($entityInstance = $this->getApp()->getRegistry()->get('model_instance'))) {
             return;
         }
 
@@ -38,14 +38,14 @@ class Enquiry extends Base
         $this->addMessages();
 
         $this->addBlock(
-            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading($this->getEnquiryHelper()->getActionVerb($entityInstance) . " <strong>Enquiry</strong>")
                 ->setShortcode('body_content')
-                ->addChildBlock($this->getEnquiryHelper()->getTabBarForEnquiry($entityInstance)
-            )
+                ->addChildBlock($this->getEnquiryHelper()->getTabBarForEnquiry($entityInstance))
         );
 
         $mainTile->addChildBlock(
@@ -69,23 +69,31 @@ class Enquiry extends Base
     public function enquiryListHandle()
     {
 
-      $this->addHeading()->addMessages();
+        $this->addHeading()->addMessages();
 
         $this->addBlock(
         /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading("<strong>Enquiry</strong> List")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding table-responsive')
         );
 
         $mainTile->addChildBlock(
-            $createLink = $mainTile->createBlock(
-                '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                'create.enquiry.link',
+            $buttonContainer = $mainTile->createBlock(
+                \DaveBaker\Core\Block\Block::class,
+                'enquiry.button.container',
                 'header_elements'
+            )
+        );
+
+        $buttonContainer->addChildBlock(
+            $buttonContainer->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                'create.enquiry.link'
             )
                 ->setTagText('Create a New Enquiry')
                 ->addAttribute(
@@ -93,6 +101,21 @@ class Enquiry extends Base
                         \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT
                     )]
                 )->setCapabilities($this->getEnquiryHelper()->getEditCapabilities())
+        );
+
+
+
+        $buttonContainer->addChildBlock(
+            $buttonContainer->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                'report.enquiry.download.link'
+            )
+                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::ENQUIRY_REPORT_DOWNLOAD
+                    )]
+                )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
         );
 
         $mainTile->addChildBlock(

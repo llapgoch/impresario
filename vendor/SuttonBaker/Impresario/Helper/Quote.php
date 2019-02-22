@@ -106,6 +106,10 @@ class Quote extends Base
             "created_by_user.ID={{quote}}.created_by_id",
             ['created_by_name' => 'display_name']
         )->joinLeft(
+            ['completed_by_user' => $userTable],
+            "completed_by_user.ID={{quote}}.completed_by_id",
+            ['completed_by_name' => 'display_name']
+        )->joinLeft(
             "{{client}}",
             "{{client}}.client_id={{quote}}.client_id",
             ['client_name' => 'client_name']
