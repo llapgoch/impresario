@@ -37,6 +37,7 @@ class Project
                 "post_title" => "Project Report Downloader"
             ]
         );
+        
 
         $this->deltaTable('project',
             "CREATE TABLE `{{tableName}}` (
