@@ -71,6 +71,7 @@ class Project
         'actual_cost' => 'Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
+        'notes' => 'Notes',
         'status' => 'Status'
     ];
 
