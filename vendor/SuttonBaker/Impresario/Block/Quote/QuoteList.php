@@ -73,7 +73,7 @@ class QuoteList
         if(!count($instanceCollection->getItems())){
             $this->addChildBlock($this->getNoItemsBlock());
         }
-
+        
         $tableBlock->setLinkCallback(
             function ($headerKey, $record) {
                 return $this->getPageUrl(

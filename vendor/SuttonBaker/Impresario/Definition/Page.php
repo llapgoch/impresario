@@ -31,4 +31,5 @@ class Page
     const INVOICE_EDIT = 'invoice_edit';
 
     const ARCHIVE_LIST = 'archive_list';
+    const ARCHIVE_REPORT_DOWNLOAD = 'archive_report_download';
 }
