@@ -24,5 +24,11 @@ class Archive
                 "post_title" => "Archive"
             ]
         );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD, [
+                "post_title" => "Archive Report Downloader"
+            ]
+        );
     }
 }
