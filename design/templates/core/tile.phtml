@@ -12,7 +12,7 @@
                 </div>
             <?php endif; ?>
         </div>
-        <?php if($block->getChildHtml('controls')):?>
+        <?php if($childHtml = $block->getChildHtml('controls')):?>
             <div class="controls">
                 <?php echo $childHtml; ?>
             </div>

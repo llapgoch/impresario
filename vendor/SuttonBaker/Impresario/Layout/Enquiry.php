@@ -38,7 +38,7 @@ class Enquiry extends Base
         $this->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -56,7 +56,6 @@ class Enquiry extends Base
             )->setElementName('enquiry_edit_form')
 
         );
-
     }
 
     /**
@@ -72,7 +71,7 @@ class Enquiry extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -116,6 +115,20 @@ class Enquiry extends Base
                         \SuttonBaker\Impresario\Definition\Page::ENQUIRY_REPORT_DOWNLOAD
                     )]
                 )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+        );
+
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
+        $mainTile->addChildBlock(
+            $filterSet = $mainTile->createBlock(
+                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
+                'enquiry.filter.set',
+                'controls'
+            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\DaveBaker\Core\Block\Html\ButtonAnchor::class)
+                ->setTagText("TEST")
         );
 
         $mainTile->addChildBlock(
