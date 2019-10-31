@@ -17,9 +17,17 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
     protected $defaultLabelName = 'From';
     /** @var string */
     protected $defaultToName = 'To';
+    /** @var string */
+    protected $datePickerClass = 'js-date-picker';
     /** @var \DaveBaker\Form\Block\Label */
     protected $toLabel;
 
+    protected function _construct()
+    {
+        parent::_construct();
+        wp_enqueue_script('jquery-ui-datepicker');
+        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+    }
     /**
      *
      * @return \DaveBaker\Form\Block\Label
@@ -103,7 +111,7 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
                 null,
                 'main_element'
             );
-
+            $this->mainElement->addClass($this->datePickerClass);
             $this->addChildBlock($this->mainElement);
         }
 
@@ -121,7 +129,7 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
                 null,
                 'to_element'
             );
-
+            $this->toElement->addClass($this->datePickerClass);
             $this->addChildBlock($this->toElement);
         }
 

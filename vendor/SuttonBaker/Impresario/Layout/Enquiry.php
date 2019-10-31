@@ -140,6 +140,7 @@ class Enquiry extends Base
                 'controls'
             )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
             ->setSetName('enquiry_filters')
+            ->addClass('js-enquiry-filters')
         );
 
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */

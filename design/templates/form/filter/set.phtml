@@ -1,7 +1,7 @@
 <?php
 /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $block */
 ?>
-<div class="filter-set">
+<div <?php echo $this->getAttrs();?>>
     <?php foreach($block->getFilters() as $filter) : ?>
         <div class="filter-container">
             <?php echo $filter->render(); ?>
