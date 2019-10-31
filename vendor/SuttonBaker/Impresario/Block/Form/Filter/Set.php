@@ -9,6 +9,8 @@ extends \DaveBaker\Core\Block\Template
     protected $template = 'form/filter/set.phtml';
     /** @var array */
     protected $filters = [];
+    /** @string */
+    protected $setFormName = '';
 
     public function addFilter(
         $filter
@@ -19,6 +21,32 @@ extends \DaveBaker\Core\Block\Template
 
     public function getFilters()
     {
+        $this->applySetFormNameToFilters();
         return $this->filters;
+    }
+
+    /**
+     *
+     * @return $this
+     */
+    public function applySetFormNameToFilters()
+    {
+        foreach($this->filters as $filter){
+            $filter->setSetFormName($this->setFormName);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $setName
+     * @return $this
+     */
+    public function setSetName($setFormName)
+    {
+        $this->setFormName = $setFormName;
+        $this->applySetFormNameToFilters();
+        return $this;
     }
 }

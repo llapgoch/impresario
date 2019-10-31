@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
+use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 
 /**
  * Class Enquiry
@@ -117,19 +118,7 @@ class Enquiry extends Base
                 )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
         );
 
-        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
-        $mainTile->addChildBlock(
-            $filterSet = $mainTile->createBlock(
-                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
-                'enquiry.filter.set',
-                'controls'
-            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
-        );
-
-        $filterSet->addFilter(
-            $filterSet->createBlock(\DaveBaker\Core\Block\Html\ButtonAnchor::class)
-                ->setTagText("TEST")
-        );
+        $this->createFilterSet($mainTile);
 
         $mainTile->addChildBlock(
             $mainTile->createBlock(
@@ -138,6 +127,71 @@ class Enquiry extends Base
                 'content'
             )
         );
+    }
+
+    public function createFilterSet(
+        $location
+    ) {
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
+        $location->addChildBlock(
+            $filterSet = $location->createBlock(
+                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
+                'enquiry.filter.set',
+                'controls'
+            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+            ->setSetName('enquiry_filters')
+        );
+
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */
+        $filterSet->addFilter(
+            $status = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Status')
+                ->setFormName('status')
+        );
+
+        $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
+        $status->setSelectOptions($statuses);
+
+         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $assignee */
+         $filterSet->addFilter(
+            $assignee = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Assignee')
+                ->setFormName('assignee')
+        );
+
+        if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
+            $assignedToUsers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $csUsers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+
+            $assignee->setSelectOptions($assignedToUsers);
+        }
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('Client Ref')
+            ->setFormName('client_ref')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
+            ->setRangeName('Received')
+            ->setFormName('received')
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return \DaveBaker\Form\SelectConnector\AssociativeArray
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function createArraySelectConnector()
+    {
+        return $this->createAppObject(\DaveBaker\Form\SelectConnector\AssociativeArray::class);
     }
 
     public function indexHandle()

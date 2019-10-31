@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Layout;
+
 /**
  * Class Base
  * @package SuttonBaker\Impresario\Layout
@@ -48,7 +49,8 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
         $this->addBlock(
             $this->createBlock(
                 '\DaveBaker\Core\Block\Html\Heading',
-                "{$this->getBlockPrefix()}.heading")
+                "{$this->getBlockPrefix()}.heading"
+            )
                 ->setTemplate('core/main-header.phtml')
                 ->setShortcode($this->headingShortcode)
                 ->setHeading($this->headingName)
@@ -128,5 +130,23 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
     protected function getModalHelper()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Modal');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Role
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getRoleHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Role');
+    }
+
+    /**
+     * @return \DaveBaker\Form\SelectConnector\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function createCollectionSelectConnector()
+    {
+        return $this->createAppObject('\DaveBaker\Form\SelectConnector\Collection');
     }
 }
