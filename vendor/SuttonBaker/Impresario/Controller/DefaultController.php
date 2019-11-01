@@ -37,6 +37,12 @@ class DefaultController
             get_template_directory_uri() . '/assets/js/record.monitor.widget.js',
             ['jquery', 'jquery-ui-widget']
         );
+        
+        wp_register_script(
+            'impresario_serialize_object',
+            get_template_directory_uri() . '/assets/js/jquery.serialize-object.min.js',
+            ['jquery']
+        );
 
         parent::preDispatch();
     }

@@ -67,6 +67,7 @@ class EnquiryList
                         $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_UPDATE_TABLE)
                 ])
                 ->setPaginator($paginator)
+                ->addClass('js-enquiry-table')
         );
 
         if(!count($this->instanceCollection->getItems())){

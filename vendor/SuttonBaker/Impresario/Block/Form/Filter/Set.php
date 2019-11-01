@@ -12,6 +12,18 @@ extends \DaveBaker\Core\Block\Template
     /** @string */
     protected $setFormName = '';
 
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addTagIdentifier('filter-set');
+    }
+
+    protected function _preDispatch()
+    {
+        wp_register_script('impresario_filter_set', get_template_directory_uri() . '/assets/js/filter.set.widget.js', ['jquery', 'impresario_serialize_object']);
+        wp_enqueue_script('impresario_filter_set');
+    }
+
     public function addFilter(
         $filter
     ) {

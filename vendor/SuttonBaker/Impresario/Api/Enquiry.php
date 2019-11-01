@@ -217,6 +217,16 @@ class Enquiry
             $paginatorBlock->setPage($params['pageNumber']);
         }
 
+        $tableBlock->setFilterSchema(
+            \SuttonBaker\Impresario\Definition\Enquiry::FILTER_LISTING
+        );
+
+        if(isset($params['customData']['filters'])){
+            $tableBlock->setFilters(
+                json_decode($params['customData']['filters'], true)
+            );
+        }
+
         $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
     }
 

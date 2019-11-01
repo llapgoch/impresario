@@ -57,8 +57,8 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
 
     public function applyFormNameToElements()
     {
-        $name = $this->setFormName . "[" . $this->formName ."][low]";
-        $id = $this->setFormName . "_" . $this->formName . "_low" ;
+        $name = $this->formName . "[low]";
+        $id = $this->setFormName . "_" . $this->formName . "_low";
 
         $this->getMainElement()->setElementName(
             $name
@@ -68,8 +68,8 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
 
         $this->getLabel()->setForId($id);
 
-        $name = $this->setFormName . "[" . $this->formName ."][high]";
-        $id = $this->setFormName . "_" . $this->formName . "_high" ;
+        $name = $this->formName . "[high]";
+        $id = $this->setFormName . "_" . $this->formName . "_high";
 
         $this->getToElement()->setElementName(
             $name
@@ -107,10 +107,11 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
     {
         if (!$this->mainElement) {
             $this->mainElement = $this->createBlock(
-                \DaveBaker\Form\Block\Input\Date::class,
+                \DaveBaker\Form\Block\Input\Text::class,
                 null,
                 'main_element'
             );
+            $this->mainElement->addClass($this->defaultClass);
             $this->mainElement->addClass($this->datePickerClass);
             $this->addChildBlock($this->mainElement);
         }
@@ -125,10 +126,11 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
     {
         if (!$this->toElement) {
             $this->toElement = $this->createBlock(
-                \DaveBaker\Form\Block\Input\Date::class,
+                \DaveBaker\Form\Block\Input\Text::class,
                 null,
                 'to_element'
             );
+            $this->toElement->addClass($this->defaultClass);
             $this->toElement->addClass($this->datePickerClass);
             $this->addChildBlock($this->toElement);
         }

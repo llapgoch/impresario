@@ -15,10 +15,6 @@ class StatusLink
     protected $linkCallback;
     /** @var bool */
     protected $newWindowLink = false;
-    /** @var array  */
-    protected $sessionKeyItems = [];
-    /** @var TableUpdater */
-    protected $session;
     /** @var $rowClassCallback object */
     protected $rowClassCallback;
 
@@ -32,42 +28,12 @@ class StatusLink
         parent::_construct();
     }
 
-    /**
-     * @return Base|void
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function _preDispatch()
-    {
-        $this->addSessionKeyItem($this->getName());
-        $this->addSessionKeyItem($this->getUrlHelper()->getCurrentUrl());
-
-        parent::_preDispatch();
-    }
-
-    protected function _preRender()
-    {
-        $this->unpackSession();
-        parent::_preRender();
-    }
-
     public function setRowClassCallback($callback)
     {
         $this->rowClassCallback = $callback;
         return $this;
     }
 
-    /**
-     * @param $item
-     * @return $this
-     */
-    public function addSessionKeyItem($item)
-    {
-        if(!in_array($item, $this->sessionKeyItems)) {
-            $this->sessionKeyItems[] = $item;
-        }
-        return $this;
-    }
 
     /**
      * @param $val
@@ -206,18 +172,7 @@ class StatusLink
         return $this->getData('row_status_classes');
     }
 
-    /**
-     * @return mixed|TableUpdater
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function getSession()
-    {
-        if(!$this->session){
-            $this->session = $this->createAppObject(TableUpdater::class);
-        }
 
-        return $this->session;
-    }
 
     /**
      * @param $column
@@ -240,6 +195,7 @@ class StatusLink
      */
     protected function updateSession()
     {
+
         $data = [
             'orderColumn' => $this->orderColumn,
             'orderDir' => $this->orderDir
@@ -248,7 +204,7 @@ class StatusLink
         if($this->paginator){
             $data['pageNumber'] = $this->paginator->getPage();
         }
-
+        
         $this->getSession()->set(
             $this->getSession()->createKey($this->sessionKeyItems), $data
         );
@@ -256,16 +212,7 @@ class StatusLink
         return $this;
     }
 
-    /**
-     * @return array
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function getSessionData()
-    {
-        return $this->getSession()->get(
-            $this->getSession()->createKey($this->sessionKeyItems)
-        );
-    }
+
 
     /**
      * @return $this

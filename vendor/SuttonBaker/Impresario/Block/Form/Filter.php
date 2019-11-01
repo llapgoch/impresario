@@ -7,13 +7,20 @@ extends \DaveBaker\Core\Block\Template
 {
     /** @var \DaveBaker\Form\Block\Label */
     protected $label;
-    /** @string */
+    /** @var string */
     protected $setFormName = '';
-    /** @string */
+    /** @var string */
     protected $formName = '';
+    /** @var string */
+    protected $defaultClass = 'js-filter-item';
 
     public abstract function getMainElement();
     
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addTagIdentifier('filter-item');
+    }
     /**
      *
      * @return \DaveBaker\Form\Block\Label
@@ -52,7 +59,7 @@ extends \DaveBaker\Core\Block\Template
 
     public function applyFormNameToElements()
     {
-        $name = $this->setFormName . "[" . $this->formName ."]";
+        $name = $this->formName;
         $id = $this->setFormName . "_" . $this->formName;
 
         $this->getMainElement()->setElementName(

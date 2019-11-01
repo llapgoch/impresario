@@ -141,6 +141,9 @@ class Enquiry extends Base
             )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
             ->setSetName('enquiry_filters')
             ->addClass('js-enquiry-filters')
+            ->addJsDataItems([
+                'tableUpdaterSelector' => '.js-enquiry-table'
+            ])
         );
 
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */
@@ -157,7 +160,7 @@ class Enquiry extends Base
          $filterSet->addFilter(
             $assignee = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
                 ->setLabelName('Assignee')
-                ->setFormName('assignee')
+                ->setFormName('assigned_to_id')
         );
 
         if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
@@ -174,13 +177,13 @@ class Enquiry extends Base
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
             ->setLabelName('Client Ref')
-            ->setFormName('client_ref')
+            ->setFormName('client_reference')
         );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
             ->setRangeName('Received')
-            ->setFormName('received')
+            ->setFormName('date_received')
         );
 
         return $this;

@@ -21,7 +21,7 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
                 null,
                 'main_element'
             );
-
+            $this->mainElement->addClass($this->defaultClass);
             $this->addChildBlock($this->mainElement);
         }
 
