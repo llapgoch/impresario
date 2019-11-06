@@ -26,6 +26,9 @@ class Project
     const STATUS_ON_SITE = 'onsite';
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
+    const STATUS_ON_HOLD = 'on_hold';
+    const STATUS_ON_HOLD_VRF_SUBMITTED = 'on_hold_vrf_sub';
+    const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
 
     const RECORDS_PER_PAGE = 20;
 
@@ -150,6 +153,9 @@ class Project
         return [
             self::STATUS_OPEN => 'Pre-start',
             self::STATUS_ON_SITE => 'On Site',
+            self::STATUS_ON_HOLD => 'On Hold',
+            self::STATUS_ON_HOLD_VRF_REQUIRED => 'On Hold - VRF Required',
+            self::STATUS_ON_HOLD_VRF_SUBMITTED => 'On Hold - VRF Submitted',
             self::STATUS_COMPLETE => "Complete",
             self::STATUS_CANCELLED => 'Cancelled'
         ];

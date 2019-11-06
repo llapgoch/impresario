@@ -219,6 +219,9 @@ class Project extends Base
             ProjectDefinition::getStatuses()
         )->getElementData();
 
+        //TODO: Sort this!
+        unset($statuses[\SuttonBaker\Impresario\Definition\Project::STATUS_COMPLETE]);
+
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
                 ->setLabelName('Status')
