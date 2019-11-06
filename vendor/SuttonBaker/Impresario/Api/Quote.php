@@ -360,6 +360,8 @@ class Quote
 
         /** @var StatusLink $tableBlock */
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+        /** @var \SuttonBaker\Impresario\Block\Quote\QuoteList $list */
+        $list = $blockManager->getBlock("{$this->blockPrefix}.list");
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
@@ -368,11 +370,24 @@ class Quote
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
 
+        if(isset($params['customData']['filters'])){
+            $tableBlock->setFilters(
+                json_decode($params['customData']['filters'], true)
+            );
+        }
+
+        // Required at this point to get the recordset after the filters have been applied
+        $list->applyRecordCountToPaginator();
+
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);
         }
+        
+        $list->render();
 
-        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+        $noItems = $blockManager->getBlock("{$this->blockPrefix}.list.table.noitems");
+        
+        $this->addReplacerBlock([$paginatorBlock, $noItems, $tableBlock]);
     }
 
      /**

@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
+use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 
 /**
  * Class Enquiry
@@ -38,7 +39,7 @@ class Enquiry extends Base
         $this->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -56,7 +57,6 @@ class Enquiry extends Base
             )->setElementName('enquiry_edit_form')
 
         );
-
     }
 
     /**
@@ -72,7 +72,7 @@ class Enquiry extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -125,6 +125,86 @@ class Enquiry extends Base
                 'content'
             )
         );
+
+        $this->createFilterSet($mainTile);
+    }
+
+    /**
+     * @param string $location
+     * @return $this
+     */
+    public function createFilterSet(
+        $location
+    ) {
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
+        $location->addChildBlock(
+            $filterSet = $location->createBlock(
+                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
+                'enquiry.filter.set',
+                'controls'
+            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+            ->setSetName('enquiry_filters')
+            ->addClass('js-enquiry-filters')
+            ->addJsDataItems([
+                'tableUpdaterSelector' => '.js-enquiry-table'
+            ])
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('Client Ref')
+            ->setFormName('client_reference')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('Site')
+            ->setFormName('site_name')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('MI Number')
+            ->setFormName('mi_number')
+        );
+
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */
+        $filterSet->addFilter(
+            $status = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Status')
+                ->setFormName('status')
+        );
+
+        $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
+        $status->setSelectOptions($statuses);
+
+         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $assignee */
+         $filterSet->addFilter(
+            $assignee = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Assignee')
+                ->setFormName('assigned_to_id')
+        );
+
+        if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
+            $assignedToUsers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $csUsers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+
+            $assignee->setSelectOptions($assignedToUsers);
+        }
+
+
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
+            ->setLabelName('Received')
+            ->setFormName('date_received')
+        );
+
+        return $this;
     }
 
     public function indexHandle()

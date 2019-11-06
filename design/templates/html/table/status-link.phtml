@@ -1,7 +1,7 @@
 <?php
 /** @var SuttonBaker\Impresario\Block\Table\StatusLink $block */
 ?>
-<?php if($this->getRecords()): ?>
+<?php if($this->getRecords() || $block->getShowEmptyTable()): ?>
     <table <?php echo $block->getAttrs(); ?>>
         <?php if($this->getHeaders()): ?>
             <thead>

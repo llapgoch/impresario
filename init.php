@@ -28,5 +28,5 @@ new DaveBaker\Core\App(
     "impresario",
     '\SuttonBaker\Impresario\Main',
     '\DaveBaker\Core\Object\Manager',
-    '\SuttonBaker\Impresario\Config\Object'
+    '\SuttonBaker\Impresario\Config\ObjectConfig'
 );

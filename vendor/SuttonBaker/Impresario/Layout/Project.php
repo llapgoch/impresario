@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Layout
@@ -43,7 +44,7 @@ class Project extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -63,6 +64,7 @@ class Project extends Base
         );
     }
 
+
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
@@ -75,7 +77,7 @@ class Project extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main"
@@ -121,6 +123,113 @@ class Project extends Base
                 'content'
             )->setInstanceCollection($instanceCollection)
         );
+
+        $this->createFilterSet($mainTile);
+    }
+
+    /**
+     * @param string $location
+     * @return $this
+     */
+    public function createFilterSet(
+        $location
+    ) {
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
+        $location->addChildBlock(
+            $filterSet = $location->createBlock(
+                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
+                "{$this->getBlockPrefix()}.filter.set",
+                'controls'
+            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+                ->setSetName('project_filters')
+                ->addClass('js-project-filters')
+                ->addJsDataItems([
+                    'tableUpdaterSelector' => '.js-project-table'
+                ])
+        );
+
+        // Clients
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Client')
+                ->setFormName('client_id')
+                ->setSelectOptions($clients)
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Client Ref')
+                ->setFormName('client_reference')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Site')
+                ->setFormName('site_name')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Project')
+                ->setFormName('project_name')
+        );
+
+        if ($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+            $projectManagers = $this->createCollectionSelectConnector()
+                ->configure(
+                    $projectManagers,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+
+            $filterSet->addFilter(
+                $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                    ->setLabelName('Contracts Manager')
+                    ->setFormName('project_manager_id')
+                    ->setSelectOptions($projectManagers)
+            );
+        }
+
+        // Foremen
+        if ($foremen = $this->getRoleHelper()->getForemen()) {
+            $foremen = $this->createCollectionSelectConnector()
+                ->configure(
+                    $foremen,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+
+            $filterSet->addFilter(
+                $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                    ->setLabelName('Foreman')
+                    ->setFormName('assigned_foreman_id')
+                    ->setSelectOptions($foremen)
+            );
+        }
+
+        // Statuses
+        $statuses = $this->createArraySelectConnector()->configure(
+            ProjectDefinition::getStatuses()
+        )->getElementData();
+
+        //TODO: Sort this!
+        unset($statuses[\SuttonBaker\Impresario\Definition\Project::STATUS_COMPLETE]);
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Status')
+                ->setFormName('status')
+                ->setSelectOptions($statuses)
+        );
+
+        return $this;
     }
 
     /**
@@ -152,6 +261,5 @@ class Project extends Base
                 ->setBackText('View Projects')
                 ->setCapabilities($this->getProjectHelper()->getViewCapabilities())
         );
-
     }
 }

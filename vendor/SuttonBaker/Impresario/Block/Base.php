@@ -1,12 +1,29 @@
 <?php
 
 namespace SuttonBaker\Impresario\Block;
+
 /**
  * Class Base
  * @package SuttonBaker\Impresario\Block
  */
 abstract class Base extends \DaveBaker\Core\Block\Base
 {
+    /** @var \DaveBaker\Core\Config\Element */
+    protected $elementConfig;
+    
+    /**
+     * @return ConfigInterface|mixed
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getElementConfig()
+    {
+        if (!$this->elementConfig) {
+            $this->elementConfig = $this->createObject('\DaveBaker\Core\Config\Element');
+        }
+
+        return $this->elementConfig;
+    }
+
     /**
      * @return \DaveBaker\Core\Helper\Date
      * @throws \DaveBaker\Core\Object\Exception
@@ -86,5 +103,4 @@ abstract class Base extends \DaveBaker\Core\Block\Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Role');
     }
-
 }

@@ -1,7 +1,9 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
+
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Filter as FilterDefinition;
 
 /**
  * Class Project
@@ -24,8 +26,58 @@ class Project
     const STATUS_ON_SITE = 'onsite';
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
+    const STATUS_ON_HOLD = 'on_hold';
+    const STATUS_ON_HOLD_VRF_SUBMITTED = 'on_hold_vrf_sub';
+    const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
 
     const RECORDS_PER_PAGE = 20;
+
+    const FILTER_LISTING = [
+        'client_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.client_id"
+        ],
+        'client_reference' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.client_reference"
+        ],
+        'site_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.site_name"
+        ],
+        'project_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.project_name"
+        ],
+        'date_received' => [
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_RANGE,
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_RANGE,
+            FilterDefinition::MAP => "{{projcet}}.date_received",
+            FilterDefinition::DATA_CONVERTER => [
+                FilterDefinition::DATA_CONVERTER_CLASS => \DaveBaker\Core\Helper\Date::class,
+                FilterDefinition::DATA_CONVERTER_METHOD => 'localDateToDb'
+            ]
+        ],
+        'project_manager_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.project_manager_id"
+        ],
+        'assigned_foreman_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.assigned_foreman_id"
+        ],
+        'status' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.status"
+        ]
+    ];
 
     const TABLE_HEADERS = [
         'project_id' => 'ID',
@@ -101,7 +153,10 @@ class Project
         return [
             self::STATUS_OPEN => 'Pre-start',
             self::STATUS_ON_SITE => 'On Site',
-            self::STATUS_COMPLETE=> "Complete",
+            self::STATUS_ON_HOLD => 'On Hold',
+            self::STATUS_ON_HOLD_VRF_REQUIRED => 'On Hold - VRF Required',
+            self::STATUS_ON_HOLD_VRF_SUBMITTED => 'On Hold - VRF Submitted',
+            self::STATUS_COMPLETE => "Complete",
             self::STATUS_CANCELLED => 'Cancelled'
         ];
     }
@@ -118,6 +173,4 @@ class Project
             self::STATUS_CANCELLED => 'bg-dark'
         ];
     }
-
-
 }

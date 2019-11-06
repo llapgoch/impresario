@@ -5,7 +5,7 @@ namespace SuttonBaker\Impresario\Config;
  * Class Object
  * @package SuttonBaker\Impresario\Config
  */
-class Object extends \DaveBaker\Core\Config\Object
+class ObjectConfig extends \DaveBaker\Core\Config\ObjectConfig
 {
     public function __construct()
     {
