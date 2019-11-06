@@ -19,6 +19,7 @@ implements \DaveBaker\Core\Block\BlockInterface
 
     /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $instanceCollection */
     protected $instanceCollection;
+    /** @var \DaveBaker\Core\Block\Components\Paginator */
     protected $paginator;
     /** @var \SuttonBaker\Impresario\Block\Table\StatusLink */
     protected $tableBlock;
@@ -94,11 +95,13 @@ implements \DaveBaker\Core\Block\BlockInterface
         }
 
         $this->tableBlock->unpackSession();
-
-        // echo $this->instanceCollection->getSelect();
-        // var_dump(count($this->instanceCollection->getItems()));
     }
 
+    /**
+     * Method to allow the resetting of paginator values when using the API
+     *
+     * @return void
+     */
     public function applyRecordCountToPaginator()
     {
         $this->paginator
@@ -112,14 +115,7 @@ implements \DaveBaker\Core\Block\BlockInterface
             
         $this->applyRecordCountToPaginator();
 
-        // This is required as we need to reference elements which can only be created on render
-
-
-        $mainTile = $this->getBlockManager()->getBlock('enquiry.tile.main');
         $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
-
-
-
 
         $this->addChildBlock(
             $noItemsBlock = $this->getNoItemsBlock('enquiry.list.table.noitems')

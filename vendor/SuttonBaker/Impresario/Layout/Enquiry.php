@@ -207,15 +207,6 @@ class Enquiry extends Base
         return $this;
     }
 
-    /**
-     * @return \DaveBaker\Form\SelectConnector\AssociativeArray
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function createArraySelectConnector()
-    {
-        return $this->createAppObject(\DaveBaker\Form\SelectConnector\AssociativeArray::class);
-    }
-
     public function indexHandle()
     {
         $openEnquiries = count($this->getEnquiryHelper()->getOpenEnquiries()->load());

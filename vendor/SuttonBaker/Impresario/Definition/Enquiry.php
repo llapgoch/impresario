@@ -85,7 +85,7 @@ class Enquiry
         'date_received' => [],
         'target_date' => [],
         'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
+        'mi_number' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
     const REPORT_HEADERS = [

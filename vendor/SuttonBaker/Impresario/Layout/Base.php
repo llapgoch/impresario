@@ -61,6 +61,15 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
     }
 
     /**
+     * @return \DaveBaker\Form\SelectConnector\AssociativeArray
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function createArraySelectConnector()
+    {
+        return $this->createAppObject(\DaveBaker\Form\SelectConnector\AssociativeArray::class);
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception
      */
