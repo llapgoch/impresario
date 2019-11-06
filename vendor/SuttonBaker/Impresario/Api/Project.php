@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
@@ -20,7 +21,7 @@ use SuttonBaker\Impresario\SaveConverter\Project as ProjectConverter;
  *
  */
 class Project
-    extends Base
+extends Base
 {
     /** @var string  */
     protected $blockPrefix = 'project';
@@ -44,11 +45,11 @@ class Project
         $helper = $this->getProjectHelper();
         $confirmMessages = [];
 
-        if(!$helper->currentUserCanEdit()) {
+        if (!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        if(!isset($params['formValues'])){
+        if (!isset($params['formValues'])) {
             throw new Exception('No form values provided');
         }
 
@@ -61,20 +62,22 @@ class Project
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
-        if($validateResult['hasErrors']){
+        if ($validateResult['hasErrors']) {
             return $validateResult;
         }
-        
-        if($formValues['status'] == ProjectDefinition::STATUS_COMPLETE
-            || $formValues['status'] == ProjectDefinition::STATUS_CANCELLED){
+
+        if (
+            $formValues['status'] == ProjectDefinition::STATUS_COMPLETE
+            || $formValues['status'] == ProjectDefinition::STATUS_CANCELLED
+        ) {
 
             $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $modelInstance->getId(), 
+                $modelInstance->getId(),
                 TaskDefinition::TASK_TYPE_PROJECT,
                 TaskDefinition::STATUS_OPEN
             );
-    
-            if(count($openTasks->getItems())){
+
+            if (count($openTasks->getItems())) {
                 $confirmMessages[] = sprintf(
                     'This will close %s open task%s for the project.',
                     count($openTasks->getItems()),
@@ -83,18 +86,22 @@ class Project
             }
         }
 
-        if($modelInstance->isComplete() == false 
-            && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE){
-            
-            $confirmMessages[] = 'This will complete and archive the project.';
-        }    
+        if (
+            $modelInstance->isComplete() == false
+            && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE
+        ) {
 
-        if($modelInstance->isComplete() && in_array($formValues['status'], 
-            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) == false){
-                $confirmMessages[] = 'This will re-open the project';
+            $confirmMessages[] = 'This will complete and archive the project.';
         }
 
-        if($confirmMessages){
+        if ($modelInstance->isComplete() && in_array(
+            $formValues['status'],
+            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]
+        ) == false) {
+            $confirmMessages[] = 'This will re-open the project';
+        }
+
+        if ($confirmMessages) {
             $confirmMessages[] = "Would you like to proceed?";
             $validateResult['confirm'] = implode("\r", $confirmMessages);
 
@@ -104,7 +111,7 @@ class Project
         return array_merge($validateResult, $this->saveProject($modelInstance, $formValues, $navigatingAway));
     }
 
-       /**
+    /**
      * @param array $params
      * @param \WP_REST_Request $request
      * @return array
@@ -113,10 +120,10 @@ class Project
         $params,
         \WP_REST_Request $request
     ) {
-        if(!isset($params['id'])){
+        if (!isset($params['id'])) {
             throw new Exception('ID is required');
         }
-        
+
         $object = $this->getProjectHelper()->getProject($params['id']);
         return $this->performRecordMonitor($params, $object);
     }
@@ -137,11 +144,11 @@ class Project
     ) {
         $helper = $this->getProjectHelper();
 
-        if(!$helper->currentUserCanEdit()) {
+        if (!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        if(!isset($params['formValues'])){
+        if (!isset($params['formValues'])) {
             throw new Exception('No form values provided');
         }
 
@@ -153,7 +160,7 @@ class Project
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
-        if($validateResult['hasErrors']){
+        if ($validateResult['hasErrors']) {
             return $validateResult;
         }
 
@@ -203,7 +210,7 @@ class Project
     ) {
         $saveValues = $this->getProjectHelper()->saveProject($modelInstance, $formValues);
 
-        if($saveValues['new_save'] == true){
+        if ($saveValues['new_save'] == true) {
             $this->getApp()->getGeneralSession()->addMessage(
                 "The project has been created",
                 Messages::SUCCESS
@@ -211,9 +218,9 @@ class Project
         }
 
         // No need to redirect for updating
-        if($saveValues['new_save'] == false && !$saveValues['project_newly_completed'] && !$saveValues['reopened']){
+        if ($saveValues['new_save'] == false && !$saveValues['project_newly_completed'] && !$saveValues['reopened']) {
             $message = 'The project has been updated';
-            if($navigatingAway) {
+            if ($navigatingAway) {
                 $this->getApp()->getGeneralSession()->addMessage(
                     $message,
                     Messages::SUCCESS
@@ -228,7 +235,7 @@ class Project
             }
         }
 
-        if($saveValues['project_newly_completed']){
+        if ($saveValues['project_newly_completed']) {
             $this->getApp()->getGeneralSession()->addMessage(
                 'The project has been saved and moved to the archive',
                 Messages::SUCCESS
@@ -237,14 +244,14 @@ class Project
             $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
         }
 
-        if($saveValues['reopened']){
+        if ($saveValues['reopened']) {
             $this->getApp()->getGeneralSession()->addMessage(
                 'The project has been re-opened',
                 Messages::SUCCESS
             );
 
             $saveValues['redirect'] = $this->getUrlHelper()->getPageUrl(
-                Page::PROJECT_EDIT, 
+                Page::PROJECT_EDIT,
                 ['project_id' => $modelInstance->getId()]
             );
         }
@@ -264,10 +271,10 @@ class Project
     {
         $modelInstance = $this->getProjectHelper()->getProject();
 
-        if(isset($params['project_id']) && $params['project_id']){
+        if (isset($params['project_id']) && $params['project_id']) {
             $modelInstance->load($params['project_id']);
 
-            if(!$modelInstance->getId()){
+            if (!$modelInstance->getId()) {
                 throw new Exception('The project could not be found');
             }
         }
@@ -289,19 +296,33 @@ class Project
 
         /** @var StatusLink $tableBlock */
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+        /** @var \SuttonBaker\Impresario\Block\Quote\QuoteList $list */
+        $list = $blockManager->getBlock("{$this->blockPrefix}.list");
 
-        if(isset($params['order']['dir']) && isset($params['order']['column'])){
+        if (isset($params['order']['dir']) && isset($params['order']['column'])) {
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
         }
 
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
 
-        if(isset($params['pageNumber'])){
-            $paginatorBlock->setPage($params['pageNumber']);
+        if (isset($params['customData']['filters'])) {
+            $tableBlock->setFilters(
+                json_decode($params['customData']['filters'], true)
+            );
         }
 
-        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+        // Required at this point to get the recordset after the filters have been applied
+        $list->applyRecordCountToPaginator();
+
+        if (isset($params['pageNumber'])) {
+            $paginatorBlock->setPage($params['pageNumber']);
+        }
+        
+        $list->render();
+        $noItems = $blockManager->getBlock("{$this->blockPrefix}.list.table.noitems");
+
+        $this->addReplacerBlock([$paginatorBlock, $noItems, $tableBlock]);
     }
 
     /**
@@ -317,11 +338,11 @@ class Project
     {
         $helper = $this->getProjectHelper();
 
-        if(!$helper->currentUserCanEdit()) {
+        if (!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
-        if(!isset($params['id'])){
+        if (!isset($params['id'])) {
             throw new Exception('The item could not be found');
         }
 
@@ -330,11 +351,11 @@ class Project
             \SuttonBaker\Impresario\Definition\Project::DEFINITION_MODEL
         )->load($params['id']);
 
-        if($item->isComplete()){
+        if ($item->isComplete()) {
             throw new Exception('The project cannot be deleted because it has been completed');
         }
 
-        if(!$item->getId()){
+        if (!$item->getId()) {
             throw new Exception('The project could not be found');
         }
 
