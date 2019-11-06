@@ -118,8 +118,6 @@ class Enquiry extends Base
                 )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
         );
 
-        $this->createFilterSet($mainTile);
-
         $mainTile->addChildBlock(
             $mainTile->createBlock(
                 '\SuttonBaker\Impresario\Block\Enquiry\EnquiryList',
@@ -127,8 +125,14 @@ class Enquiry extends Base
                 'content'
             )
         );
+
+        $this->createFilterSet($mainTile);
     }
 
+    /**
+     * @param string $location
+     * @return $this
+     */
     public function createFilterSet(
         $location
     ) {
@@ -144,6 +148,24 @@ class Enquiry extends Base
             ->addJsDataItems([
                 'tableUpdaterSelector' => '.js-enquiry-table'
             ])
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('Client Ref')
+            ->setFormName('client_reference')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('Site')
+            ->setFormName('site_name')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+            ->setLabelName('MI Number')
+            ->setFormName('mi_number')
         );
 
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */
@@ -174,15 +196,11 @@ class Enquiry extends Base
             $assignee->setSelectOptions($assignedToUsers);
         }
 
-        $filterSet->addFilter(
-            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-            ->setLabelName('Client Ref')
-            ->setFormName('client_reference')
-        );
+
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
-            ->setRangeName('Received')
+            ->setLabelName('Received')
             ->setFormName('date_received')
         );
 

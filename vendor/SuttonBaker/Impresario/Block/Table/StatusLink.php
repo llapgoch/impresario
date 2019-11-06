@@ -45,25 +45,6 @@ class StatusLink
         return $this;
     }
 
-    /**
-     * @param Paginator $paginator
-     * @return $this|Base
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    public function setPaginator($paginator)
-    {
-        parent::setPaginator($paginator);
-
-        // Add a local event to the paginator to update the session data when the page is changed
-        $paginator->addLocalEvent('set_page', function(){
-            $this->updateSession();
-        });
-
-        $this->unpackSessionPaginatorValues();
-
-        return $this;
-    }
 
     /**
      * @return Base|void
@@ -170,92 +151,6 @@ class StatusLink
     public function getRowStatusClasses()
     {
         return $this->getData('row_status_classes');
-    }
-
-
-
-    /**
-     * @param $column
-     * @param string $dir
-     * @return $this|\DaveBaker\Core\Block\Html\Table|Base
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    public function setColumnOrder($column, $dir = 'ASC')
-    {
-        parent::setColumnOrder($column, $dir);
-        $this->updateSession();
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function updateSession()
-    {
-
-        $data = [
-            'orderColumn' => $this->orderColumn,
-            'orderDir' => $this->orderDir
-        ];
-
-        if($this->paginator){
-            $data['pageNumber'] = $this->paginator->getPage();
-        }
-        
-        $this->getSession()->set(
-            $this->getSession()->createKey($this->sessionKeyItems), $data
-        );
-
-        return $this;
-    }
-
-
-
-    /**
-     * @return $this
-     * @throws \DaveBaker\Core\Block\Exception
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    protected function unpackSession()
-    {
-        $data = $this->getSessionData();
-
-        // Check the column still exists before setting it!
-        if (is_array($data) && isset($data['orderColumn']) && $data['orderColumn']) {
-            $this->orderColumn = $data['orderColumn'];
-        
-            if (isset($data['orderDir'])){
-                $this->orderDir = $data['orderDir'];
-            }
-
-            $this->setColumnOrder($this->orderColumn, $this->orderDir);
-            $this->unpackSessionPaginatorValues();
-        }
-
-        return $this;
-    }
-
-    /**
-     * @throws \DaveBaker\Core\Event\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     * @return $this
-     */
-    protected function unpackSessionPaginatorValues()
-    {
-        $data = $this->getSessionData();
-
-        if(is_array($data)){
-            if (isset($data['pageNumber']) && $this->paginator){
-                $this->paginator->setPage($data['pageNumber']);
-            }
-        }
-
-        return $this;
     }
 
 }

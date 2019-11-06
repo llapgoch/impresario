@@ -1,12 +1,8 @@
 <?php
 /** @var \SuttonBaker\Impresario\Block\Form\Filter\DateRange $block */
 ?>
-<div class="<?php echo $block->getAttrs();?>">
-    <?php if($rangeName = $block->getRangeName()):?>
-    <h4 class="control-label"><?php echo $rangeName; ?></h4>
-    <?php endif; ?>
+<div <?php echo $block->getAttrs();?>>
     <?php echo $block->getChildHtml('label'); ?>
     <?php echo $block->getChildHtml('main_element'); ?>
-    <?php echo $block->getChildHtml('to_label'); ?>
     <?php echo $block->getChildHtml('to_element'); ?>
 </div>

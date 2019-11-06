@@ -39,6 +39,27 @@ extends \DaveBaker\Core\Block\Template
 
     /**
      *
+     * @param string $formElementName
+     * @param mixed $value
+     * @return $this
+     */
+    public function setFilterValue(
+        $formElementName, 
+        $value
+    ) {
+        
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter $filter */
+        foreach($this->getFilters() as $filter) {
+            if($filter->getFormName() == $formElementName){
+                $filter->setFormValue($value);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     *
      * @return $this
      */
     public function applySetFormNameToFilters()

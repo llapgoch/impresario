@@ -53,6 +53,16 @@ class Enquiry
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{enquiry}}.assigned_to_id"
+        ],
+        'mi_number' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.mi_number"
+        ],
+        'site_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.site_name"
         ]
     ];
 
@@ -64,7 +74,7 @@ class Enquiry
         'date_received' => 'Received',
         'target_date' => 'Target',
         'assigned_to_name' => 'Assignee',
-        'engineer_name' => 'Engineer'
+        'mi_number' => 'MI Number'
     ];
 
     const SORTABLE_COLUMNS = [

@@ -1,34 +1,37 @@
-<?php /** @var \DaveBaker\Core\Block\Template $block */ ?>
-<section <?php echo $block->getAttrs();?>>
-    <?php echo $block->getChildHtml('tabs'); ?>
-    <?php if($block->getHeading()):?>
-        <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2";?>
-        <div class="tile-header">
-            <<?php echo $headingTag;?>><?php echo $block->getHeading();?></<?php echo $headingTag;?>>
+<?php
 
-            <?php if($childHtml = $this->getChildHtml('header_elements')):;?>
+/** @var \DaveBaker\Core\Block\Template $block */ ?>
+<section <?php echo $block->getAttrs(); ?>>
+    <?php echo $block->getChildHtml('tabs'); ?>
+    <?php if ($block->getHeading()) : ?>
+        <?php $headingTag = $block->getHeadingTag() ? $block->getHeadingTag() : "h2"; ?>
+        <div class="tile-header">
+            <<?php echo $headingTag; ?>><?php echo $block->getHeading(); ?></<?php echo $headingTag; ?>>
+
+            <?php if ($childHtml = $this->getChildHtml('header_elements')) :; ?>
                 <div class="header-bar">
                     <?php echo $childHtml; ?>
                 </div>
             <?php endif; ?>
         </div>
-        <?php if($childHtml = $block->getChildHtml('controls')):?>
-            <div class="controls">
-                <?php echo $childHtml; ?>
-            </div>
-        <?php endif; ?>
-    <?php endif;?>
+    <?php endif; ?>
 
-    <?php if($childHtml = $block->getChildHtml('content')):?>
-        <div class="tile-body <?php echo $this->getTileBodyClass();?>">
-            <?php echo $childHtml;?>
+    <?php if ($childHtml = $block->getChildHtml('controls')) : ?>
+        <div class="tile-widget color transparent-white">
+            <?php echo $childHtml; ?>
         </div>
-    <?php endif;?>
+    <?php endif; ?>
 
-    <?php if($childHtml = $block->getChildHtml('footer')):?>
+    <?php if ($childHtml = $block->getChildHtml('content')) : ?>
+        <div class="tile-body <?php echo $this->getTileBodyClass(); ?>">
+            <?php echo $childHtml; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($childHtml = $block->getChildHtml('footer')) : ?>
         <div class="tile-footer">
             <div>
-                <?php echo $childHtml;?>
+                <?php echo $childHtml; ?>
             </div>
         </div>
     <?php endif; ?>

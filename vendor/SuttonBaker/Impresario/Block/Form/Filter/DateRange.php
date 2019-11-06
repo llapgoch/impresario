@@ -14,13 +14,8 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
     /** @var string */
     protected $rangeName = '';
     /** @var string */
-    protected $defaultLabelName = 'From';
-    /** @var string */
-    protected $defaultToName = 'To';
-    /** @var string */
     protected $datePickerClass = 'js-date-picker';
-    /** @var \DaveBaker\Form\Block\Label */
-    protected $toLabel;
+
 
     protected function _construct()
     {
@@ -28,32 +23,21 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
     }
+
     /**
-     *
-     * @return \DaveBaker\Form\Block\Label
+     * @param mixed $value
+     * @return $this
      */
-    public function getToLabel()
+    public function setFormValue($value)
     {
-        if (!$this->toLabel) {
-            $this->toLabel = $this->createBlock(
-                \DaveBaker\Form\Block\Label::class,
-                null,
-                'to_label'
-            );
-            $this->toLabel->setLabelName($this->defaultToName);
-            $this->addChildBlock($this->toLabel);
+        if(!is_array($value) || !isset($value['high']) || !isset($value['low'])){
+            throw new \Exception("Setting a date range filter reqires a low and high key");
         }
 
-        return $this->toLabel;
+        $this->getMainElement()->setElementValue($value['low']);
+        $this->getToElement()->setElementValue($value['high']);
+        return $this;
     }
-
-    public function getLabel()
-    {
-        parent::getLabel();
-        $this->label->setLabelName($this->defaultLabelName);
-        return $this->label;
-    }
-
 
     public function applyFormNameToElements()
     {
@@ -111,8 +95,9 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
                 null,
                 'main_element'
             );
-            $this->mainElement->addClass($this->defaultClass);
-            $this->mainElement->addClass($this->datePickerClass);
+            $this->mainElement->addClass($this->defaultClass)
+                ->addClass($this->datePickerClass)
+                ->addAttribute(['placeholder' =>'From']);
             $this->addChildBlock($this->mainElement);
         }
 
@@ -130,8 +115,11 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
                 null,
                 'to_element'
             );
-            $this->toElement->addClass($this->defaultClass);
-            $this->toElement->addClass($this->datePickerClass);
+            $this->toElement->addClass($this->defaultClass)
+                ->addClass($this->datePickerClass)
+                ->addClass('mt-2')
+                ->addAttribute(['placeholder' =>'To']);
+
             $this->addChildBlock($this->toElement);
         }
 
@@ -142,6 +130,5 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
     {
         parent::_preRender();
         $this->getToElement();
-        $this->getToLabel();
     }
 }

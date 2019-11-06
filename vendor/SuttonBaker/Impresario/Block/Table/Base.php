@@ -15,11 +15,13 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     /** @var TableUpdater */
     protected $session;
     /** @var array  */
-    protected $sessionKeyItems = [];
+    public $sessionKeyItems = [];
     /** @var array */
     protected $filters = [];
     /** @var array */
     protected $filterSchema = [];
+    /** @var bool */
+    protected $showEmptyTable;
 
     /**
      * @return Base|void
@@ -30,19 +32,124 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     {
         $this->addSessionKeyItem($this->getName());
         $this->addSessionKeyItem($this->getUrlHelper()->getCurrentUrl());
-
+        
         parent::_preDispatch();
     }
+
 
     /**
      * @return array
      * @throws \DaveBaker\Core\Object\Exception
      */
-    protected function getSessionData()
+    public function getSessionData()
     {
         return $this->getSession()->get(
             $this->getSession()->createKey($this->sessionKeyItems)
         );
+    }
+
+    /**
+     * @return $this
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function unpackSession()
+    {
+        $data = $this->getSessionData();
+        
+        if(isset($data['filters'])){
+            $this->setFilters($data['filters'], false);
+        }
+        
+        // Check the column still exists before setting it!
+        if (is_array($data) && isset($data['orderColumn']) && $data['orderColumn']) {
+            $this->orderColumn = $data['orderColumn'];
+
+            if (isset($data['orderDir'])) {
+                $this->orderDir = $data['orderDir'];
+            }
+
+            $this->setColumnOrder($this->orderColumn, $this->orderDir, false);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @return $this
+     */
+    protected function unpackSessionPaginatorValues()
+    {
+        $data = $this->getSessionData();
+        
+        if (is_array($data)) {
+            if (isset($data['pageNumber']) && $this->paginator) {
+                $this->paginator->setPage($data['pageNumber']);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Paginator $paginator
+     * @return $this|Base
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function setPaginator($paginator)
+    {
+        parent::setPaginator($paginator);
+
+        // Add a local event to the paginator to update the session data when the page is changed
+        $paginator->addLocalEvent('set_page', function () {
+            $this->updateSession();
+        });
+
+        // $this->unpackSessionPaginatorValues();
+
+        return $this;
+    }
+
+
+    /**
+     * @param $column
+     * @param string $dir
+     * @return $this|\DaveBaker\Core\Block\Html\Table|Base
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function setColumnOrder($column, $dir = 'ASC', $updateSession = true)
+    {
+        parent::setColumnOrder($column, $dir);
+
+        if($updateSession){
+            $this->updateSession();
+        }
+        return $this;
+    }
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setShowEmptyTable($value)
+    {
+        $this->showEmptyTable = (bool) $value;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowEmptyTable()
+    {
+        return $this->showEmptyTable;
     }
 
     /**
@@ -70,28 +177,77 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
         return $this->session;
     }
 
+    /**
+     * @return $this
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function updateSession()
+    {
+        
+        $data = [
+            'orderColumn' => $this->orderColumn,
+            'orderDir' => $this->orderDir
+        ];
+        
+        if ($this->paginator) {
+            $data['pageNumber'] = $this->paginator->getPage();
+        }
+
+        $data['filters'] = $this->getFilters();
+
+        $this->getSession()->set(
+            $this->getSession()->createKey($this->sessionKeyItems),
+            $data
+        );
+        
+
+        return $this;
+    }
+
 
     protected function _preRender()
-    {
-        $this->unpackSession();
+    {           
+        $this->unpackSessionPaginatorValues();
         parent::_preRender();
     }
+
     /**
      * @param array $filters
      * @return $this
      */
     public function setFilters(
-        $filters
+        $filters,
+        $updateSession = true
     ) {
         $this->filters = $filters;
 
+        $this->getCollection()->getSelect()->reset(\Zend_Db_Select::WHERE);
+        
         foreach ($this->filters as $name => $item) {
             $this->applyFilter($name, $item);
+        }
+
+        if($updateSession){
+            $this->updateSession();
         }
 
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
+    /**
+     *
+     * @param string $name
+     * @param array $filter
+     * @return $this
+     */
     protected function applyFilter(
         $name,
         $filter
@@ -113,11 +269,13 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
         $dataConverterClass = null;
         $dataConverterMethod = null;
 
-        if(isset($schema[FilterDefinition::DATA_CONVERTER])){
-            if(!isset($schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_CLASS])
-                || !isset($schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_METHOD])){
-                    throw new \Exception("Class or method not defined for data converter");
-                }
+        if (isset($schema[FilterDefinition::DATA_CONVERTER])) {
+            if (
+                !isset($schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_CLASS])
+                || !isset($schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_METHOD])
+            ) {
+                throw new \Exception("Class or method not defined for data converter");
+            }
 
             $dataConverterClass = $schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_CLASS];
             $dataConverterMethod = $schema[FilterDefinition::DATA_CONVERTER][FilterDefinition::DATA_CONVERTER_METHOD];
@@ -136,12 +294,11 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
         }
 
         if ($filter) {
-            if ($fieldType == FilterDefinition::FIELD_TYPE_RANGE) { 
-                $rangeLow = null;
-                $rangeHigh = null;
-
-                if(isset($filter[FilterDefinition::RANGE_LOW]) && 
-                    $filter[FilterDefinition::RANGE_LOW] !== "") {
+            if ($fieldType == FilterDefinition::FIELD_TYPE_RANGE) {
+                if (
+                    isset($filter[FilterDefinition::RANGE_LOW]) &&
+                    $filter[FilterDefinition::RANGE_LOW] !== ""
+                ) {
                     $value = $this->applyDataConverter(
                         $dataConverterClass,
                         $dataConverterMethod,
@@ -151,8 +308,10 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
                     $collection->where("$column >= ?", $value);
                 }
 
-                if(isset($filter[FilterDefinition::RANGE_HIGH])
-                    && $filter[FilterDefinition::RANGE_HIGH] !== "") {
+                if (
+                    isset($filter[FilterDefinition::RANGE_HIGH])
+                    && $filter[FilterDefinition::RANGE_HIGH] !== ""
+                ) {
                     $value = $this->applyDataConverter(
                         $dataConverterClass,
                         $dataConverterMethod,
@@ -161,15 +320,14 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
 
                     $collection->where("$column <= ?", $value);
                 }
-
             } else {
-                $this->applyDataConverter(
-                    $dataConverterClass, 
+                $filter = $this->applyDataConverter(
+                    $dataConverterClass,
                     $dataConverterMethod,
                     $filter
                 );
 
-                if($compareType == FilterDefinition::COMPARE_TYPE_LIKE){
+                if ($compareType == FilterDefinition::COMPARE_TYPE_LIKE) {
                     $filter = "%$filter%";
                 }
                 $collection->where("$column $compareType ?", $filter);
@@ -192,7 +350,7 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
         $converterMethod,
         $value
     ) {
-        if(!$converterClass || !$converterMethod){
+        if (!$converterClass || !$converterMethod) {
             return $value;
         }
 

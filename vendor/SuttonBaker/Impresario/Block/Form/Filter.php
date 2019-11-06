@@ -2,7 +2,7 @@
 
 namespace SuttonBaker\Impresario\Block\Form;
 
-abstract class Filter  
+abstract class Filter
 extends \DaveBaker\Core\Block\Template
 {
     /** @var \DaveBaker\Form\Block\Label */
@@ -14,8 +14,9 @@ extends \DaveBaker\Core\Block\Template
     /** @var string */
     protected $defaultClass = 'js-filter-item';
 
+    /** @return \DaveBaker\Form\Block\ValueSetterInterface */
     public abstract function getMainElement();
-    
+
     protected function _construct()
     {
         parent::_construct();
@@ -27,7 +28,7 @@ extends \DaveBaker\Core\Block\Template
      */
     public function getLabel()
     {
-        if(!$this->label){
+        if (!$this->label) {
             $this->label = $this->createBlock(
                 \DaveBaker\Form\Block\Label::class,
                 null,
@@ -41,6 +42,16 @@ extends \DaveBaker\Core\Block\Template
     }
 
     /**
+     * @param string $value
+     * @return $this
+     */
+    public function setFormValue($value)
+    {
+        $this->getMainElement()->setElementValue($value);
+        return $this;
+    }
+
+    /**
      *
      * @param string $text
      * @return $this
@@ -51,19 +62,36 @@ extends \DaveBaker\Core\Block\Template
         return $this;
     }
 
+    /**
+     *
+     * @param string $text
+     * @return $this
+     */
     public function setFormName($name)
     {
         $this->formName = $name;
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getFormName()
+    {
+        return $this->formName;
+    }
+
+    /**
+     *
+     * @return $this
+     */
     public function applyFormNameToElements()
     {
         $name = $this->formName;
         $id = $this->setFormName . "_" . $this->formName;
 
         $this->getMainElement()->setElementName(
-            $name    
+            $name
         );
 
         $this->getMainElement()->addAttribute(['id' => $id]);
@@ -87,7 +115,7 @@ extends \DaveBaker\Core\Block\Template
 
     protected function _preRender()
     {
-        if(!$this->formName || !$this->setFormName){
+        if (!$this->formName || !$this->setFormName) {
             throw new \Exception('Set name or set form name not set');
         }
         $this->getLabel();

@@ -1,10 +1,9 @@
 <?php
 /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $block */
 ?>
+<h5>Filter</h5>
 <form <?php echo $this->getAttrs();?>>
     <?php foreach($block->getFilters() as $filter) : ?>
-        <div class="filter-container">
             <?php echo $filter->render(); ?>
-        </div>
     <?php endforeach; ?>
 </form>
