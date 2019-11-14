@@ -131,10 +131,11 @@ class Project
     ];
 
     const VARIATION_REPORT_HEADERS = [
-        'description' => 'Description',
+        'status' => 'Status',
         'value' => 'Value',
         'net_cost' => 'Net Cost',
-        'po_number' => 'PO Number'
+        'po_number' => 'PO Number',
+        'description' => 'Description'
     ];
 
     const NON_USER_VALUES = [

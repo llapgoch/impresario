@@ -195,30 +195,11 @@ class Project extends Base
             );
         }
 
-        // Foremen
-        if ($foremen = $this->getRoleHelper()->getForemen()) {
-            $foremen = $this->createCollectionSelectConnector()
-                ->configure(
-                    $foremen,
-                    'ID',
-                    'display_name'
-                )->getElementData();
-
-            $filterSet->addFilter(
-                $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
-                    ->setLabelName('Foreman')
-                    ->setFormName('assigned_foreman_id')
-                    ->setSelectOptions($foremen)
-            );
-        }
-
+      
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(
             ProjectDefinition::getStatuses()
         )->getElementData();
-
-        //TODO: Sort this!
-        unset($statuses[\SuttonBaker\Impresario\Definition\Project::STATUS_COMPLETE]);
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)

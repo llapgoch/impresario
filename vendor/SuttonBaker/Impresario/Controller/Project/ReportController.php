@@ -58,7 +58,14 @@ extends DownloadController
                 $fields[] = $item->getOutputData($key);
             }
 
-            $variations = $item->getVariations()->getItems();
+            $variationCollection = $item->getVariations();
+            $variationCollection->addOutputProcessors([
+                'status' => $this->createAppObject(
+                    \SuttonBaker\Impresario\Helper\OutputProcessor\Variation\Status::class
+                )
+            ]);
+
+            $variations = $variationCollection->getItems();
 
             for ($i = 0; $i <= $variationsAmount; $i++) {
                 $variation = isset($variations[$i]) ? $variations[$i] : null;
