@@ -93,8 +93,6 @@ implements \DaveBaker\Core\Block\BlockInterface
                 $filterBlock->setFilterValue($filterKey, $filterValue);
             }
         }
-
-        $this->tableBlock->unpackSession();
     }
 
     /**
@@ -111,6 +109,7 @@ implements \DaveBaker\Core\Block\BlockInterface
 
     protected function _preRender()
     {
+        $this->tableBlock->unpackSession();
         $this->tableBlock->setRecords($this->instanceCollection);
             
         $this->applyRecordCountToPaginator();

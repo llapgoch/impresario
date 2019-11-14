@@ -73,7 +73,9 @@ implements \DaveBaker\Core\Block\BlockInterface
         $instanceCollection->addOutputProcessors([
             'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-            'status' => $this->getProjectHelper()->getStatusOutputProcessor()
+            'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
+            'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+            'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
         ]);
 
 
@@ -135,16 +137,15 @@ implements \DaveBaker\Core\Block\BlockInterface
             }
         }
 
-        $this->tableBlock->unpackSession();
     }
 
     protected function _preRender()
     {
-        
+        $this->tableBlock->unpackSession();        
         $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
         $this->tableBlock->setRecords($this->instanceCollection);
         $this->applyRecordCountToPaginator();
-
+        
         $this->addChildBlock(
             $noItemsBlock = $this->getNoItemsBlock("{$this->getBlockPrefix()}.list.table.noitems")
         );

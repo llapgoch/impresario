@@ -97,7 +97,11 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
             );
             $this->mainElement->addClass($this->defaultClass)
                 ->addClass($this->datePickerClass)
-                ->addAttribute(['placeholder' =>'From']);
+                ->addClass('display-active')
+                ->addAttribute([
+                    'placeholder' =>'From', 
+                    'readonly' => 'readonly'
+                ]);
             $this->addChildBlock($this->mainElement);
         }
 
@@ -118,7 +122,11 @@ extends \SuttonBaker\Impresario\Block\Form\Filter
             $this->toElement->addClass($this->defaultClass)
                 ->addClass($this->datePickerClass)
                 ->addClass('mt-2')
-                ->addAttribute(['placeholder' =>'To']);
+                ->addClass('display-active')
+                ->addAttribute([
+                    'placeholder' =>'To',
+                    'readonly' => 'readonly'
+                ]);
 
             $this->addChildBlock($this->toElement);
         }

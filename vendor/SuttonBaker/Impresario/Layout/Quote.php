@@ -176,12 +176,6 @@ class Quote extends Base
                 'display_name'
             )->getElementData();
 
-        $filterSet->addFilter(
-            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
-                ->setLabelName('Creator')
-                ->setFormName('created_by_id')
-                ->setSelectOptions($assignedToUsers)
-        );
 
         if ($estimators = $this->getRoleHelper()->getEstimators()) {
             $estimators = $this->createCollectionSelectConnector()

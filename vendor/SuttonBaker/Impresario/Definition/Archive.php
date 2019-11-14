@@ -16,7 +16,8 @@ class Archive
         'date_received' => 'Received',
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
-        'project_manager_name' => 'Contracts Manager'
+        'project_manager_name' => 'Contracts Manager',
+        'net_sell' => 'Net Sell',
     ];
 
     const SORTABLE_COLUMNS = [
@@ -26,7 +27,8 @@ class Archive
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'site_name' => [Table::HEADER_SORTABLE_ALPHA]
+        'site_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'net_sell' => [Table::HEADER_SORTABLE_NUMERIC]
     ];
 
     const REPORT_HEADERS = [

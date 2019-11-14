@@ -88,7 +88,7 @@ class Project
         'date_received' => 'Received',
         'invoice_amount_remaining' => "Amount Remaining",
         'project_manager_name' => 'Contracts Manager',
-        'foreman_name' => 'Foreman',
+        'net_sell' => 'Net Sell',
         'status' => 'Status'
     ];
 
@@ -98,6 +98,8 @@ class Project
         'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
         'date_received' => [],
+        'invoice_amount_remaining' => [Table::HEADER_SORTABLE_NUMERIC],
+        'net_sell' => [Table::HEADER_SORTABLE_NUMERIC],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
@@ -126,6 +128,13 @@ class Project
         'actual_margin' => 'Actual Margin',
         'notes' => 'Notes',
         'status' => 'Status'
+    ];
+
+    const VARIATION_REPORT_HEADERS = [
+        'description' => 'Description',
+        'value' => 'Value',
+        'net_cost' => 'Net Cost',
+        'po_number' => 'PO Number'
     ];
 
     const NON_USER_VALUES = [

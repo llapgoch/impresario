@@ -93,6 +93,7 @@ class Quote
         'date_required' => 'Required By',
         'created_by_name' => 'Creator',
         'estimator_name' => 'Estimator',
+        'net_sell' => 'Net Sell',
         'status' => 'Status',
         'tender_status' => 'Tender Status'
     ];
@@ -113,6 +114,7 @@ class Quote
         'tender_status' => [],
         'date_required' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'net_sell' => [Table::HEADER_SORTABLE_NUMERIC],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'estimator_name' => [Table::HEADER_SORTABLE_ALPHA],
         'revision_number' => [Table::HEADER_SORTABLE_ALPHA]

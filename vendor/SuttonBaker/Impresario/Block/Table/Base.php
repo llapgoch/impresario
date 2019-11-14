@@ -221,7 +221,7 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     ) {
         $this->filters = $filters;
 
-        $this->getCollection()->getSelect()->reset(\Zend_Db_Select::WHERE);
+        // $this->getCollection()->getSelect()->reset(\Zend_Db_Select::WHERE);
         
         foreach ($this->filters as $name => $item) {
             $this->applyFilter($name, $item);

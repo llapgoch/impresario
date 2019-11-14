@@ -9,8 +9,14 @@ extends \DaveBaker\Core\Block\Template
     protected $template = 'form/filter/set.phtml';
     /** @var array */
     protected $filters = [];
-    /** @string */
+    /** @var string */
     protected $setFormName = '';
+    /** @var bool */
+    protected $showResetButton = true;
+    /** @var \DaveBaker\Form\Block\Button */
+    protected $resetButton;
+    /** @var string */
+    protected $resetLabel = 'Reset Filter';
 
     protected function _construct()
     {
@@ -35,6 +41,44 @@ extends \DaveBaker\Core\Block\Template
     {
         $this->applySetFormNameToFilters();
         return $this->filters;
+    }
+
+    /**
+     *
+     * @return \DaveBaker\Form\Block\Button
+     */
+    public function getResetButton()
+    {
+        if(!$this->resetButton){
+            $this->resetButton = $this->createBlock(
+                \DaveBaker\Form\Block\Button::class,
+                "{$this->setFormName}.reset_button",
+                'reset_button'
+            )->setButtonName($this->resetLabel)
+            ->addAttribute(['type' => 'reset']);
+        }
+
+        return $this->resetButton;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function getShowResetButton()
+    {
+        return $this->showResetButton;
+    }
+
+    /**
+     *
+     * @param bool $show
+     * @return $this
+     */
+    public function setShowResetButton($show)
+    {
+        $this->showResetButton = (bool) $show;
+        return $this;
     }
 
     /**

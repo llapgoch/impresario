@@ -34,8 +34,8 @@ class Element extends \DaveBaker\Core\Config\Element
                 'table-status-rows' => 'table-status-rows',
                 'paginator' => 'pagination pagination-xl nomargin pagination-custom justify-content-center',
                 'file-uploader-component-label' => 'btn btn-sm btn-primary',
-                'filter-set' => 'js-filter-set form-row',
-                'filter-item' => ' col-auto'
+                'filter-set' => 'js-filter-set',
+                'filter-item' => 'col-md-4 col-lg-3 mb-3'
             ],
             'elementAttributes' => [
                 'textarea' => ['rows' => 8]
