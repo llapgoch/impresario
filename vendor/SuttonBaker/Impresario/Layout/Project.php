@@ -201,6 +201,12 @@ class Project extends Base
             ProjectDefinition::getStatuses()
         )->getElementData();
 
+        
+        // Remove complete status as this signifies an archived project
+        if(false !== ($completePos = array_search(\SuttonBaker\Impresario\Definition\Project::STATUS_COMPLETE, array_column($statuses, 'value')))) {
+            unset($statuses[$completePos]);
+        }
+
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
                 ->setLabelName('Status')
