@@ -87,7 +87,6 @@ implements \DaveBaker\Core\Block\BlockInterface
                 "{$this->getBlockPrefix()}.list.paginator",
                 'footer'
             )->setRecordsPerPage(ProjectDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
         );
 
@@ -124,7 +123,7 @@ implements \DaveBaker\Core\Block\BlockInterface
                 );
             }
         );
-
+        
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterBlock */
         $filterBlock = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.filter.set");
         $this->tableBlock->preDispatch();
@@ -136,12 +135,12 @@ implements \DaveBaker\Core\Block\BlockInterface
                 $filterBlock->setFilterValue($filterKey, $filterValue);
             }
         }
-
+        
     }
 
     protected function _preRender()
     {
-        $this->tableBlock->unpackSession();        
+        $this->tableBlock->unpackSession();
         $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
         $this->tableBlock->setRecords($this->instanceCollection);
         $this->applyRecordCountToPaginator();
