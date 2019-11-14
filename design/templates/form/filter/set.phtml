@@ -1,9 +1,18 @@
 <?php
+
 /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $block */
 ?>
 <h5>Filter</h5>
-<form <?php echo $this->getAttrs();?>>
-    <?php foreach($block->getFilters() as $filter) : ?>
+<form <?php echo $this->getAttrs(); ?>>
+    <div class="form-row">
+        <?php foreach ($block->getFilters() as $filter) : ?>
             <?php echo $filter->render(); ?>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($block->getShowResetButton()) : ?>
+        <div class="text-right">
+            <?php echo $block->getResetButton()->render(); ?>
+        </div>
+    <?php endif; ?>
 </form>

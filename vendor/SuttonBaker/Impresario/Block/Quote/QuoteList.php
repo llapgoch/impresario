@@ -47,7 +47,8 @@ implements \DaveBaker\Core\Block\BlockInterface
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
-                'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor()
+                'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor(),
+                'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
             ]);
 
         $mainTile = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.tile.main");
@@ -102,11 +103,13 @@ implements \DaveBaker\Core\Block\BlockInterface
             }
         }
 
-        $this->tableBlock->unpackSession();
+        
     }
 
     protected function _preRender()
     {
+        $this->tableBlock->unpackSession();
+        
         $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
         $this->tableBlock->setRecords($this->instanceCollection);
         $this->applyRecordCountToPaginator();

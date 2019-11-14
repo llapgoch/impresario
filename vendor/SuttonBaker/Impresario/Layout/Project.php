@@ -88,10 +88,8 @@ class Project extends Base
         );
 
         $instanceCollection = $this->getProjectHelper()->getProjectCollection()
-            ->where('status<>?', ProjectDefinition::STATUS_COMPLETE)
-            ->addOutputProcessors([
-                'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency()
-            ]);
+            ->where('status<>?', ProjectDefinition::STATUS_COMPLETE);
+          
 
         $mainTile->addChildBlock(
             $buttonContainer = $mainTile->createBlock(

@@ -61,7 +61,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'idKey' => 'projct_id'
         ]);
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+        if ($entityId = $this->getRequest()->getParam(self::ID_KEY)) {
             $this->modelInstance = $this->getProjectHelper()->getProject($entityId);
             $editMode = true;
         }
@@ -75,7 +75,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             )->getElementData();
 
         // PMs
-        if($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
+        if ($projectManagers = $this->getRoleHelper()->getProjectManagers()) {
             $projectManagers = $this->createCollectionSelectConnector()
                 ->configure(
                     $projectManagers,
@@ -85,7 +85,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         // Foremen
-        if($foremen = $this->getRoleHelper()->getForemen()) {
+        if ($foremen = $this->getRoleHelper()->getForemen()) {
             $foremen = $this->createCollectionSelectConnector()
                 ->configure(
                     $foremen,
@@ -102,7 +102,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if($this->getQuoteHelper()->currentUserCanEdit()){
+        if ($this->getQuoteHelper()->currentUserCanEdit()) {
             $ignoreLockValue = true;
         }
 
@@ -114,8 +114,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
-            $this->getRequest()->getReturnUrl() :
-            $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
+            $this->getRequest()->getReturnUrl() : $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
 
         $this->addRecordMonitorBlock(
             $this->modelInstance,
@@ -209,7 +208,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'mi_number',
@@ -219,7 +218,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'nm_mw_number',
@@ -229,7 +228,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-3'
+                ]
+            ], [
+                'name' => 'po_mi_number',
+                'labelName' => 'PO/MI Number',
+                'formGroup' => true,
+                'type' => 'Input\Text',
+                'attributes' => ['autocomplete' => 'off'],
+                'rowIdentifier' => 'po_mi_mw_numbers',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'project_manager_id',
@@ -271,7 +280,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Net Cost',
                 'type' => 'Input\Text',
                 'attributes' => [
-                    'placeholder' => "£", 
+                    'placeholder' => "£",
                     'readonly' => 'readonly',
                     'data-actual-value' => $this->modelInstance->getTotalNetCost()
                 ],
@@ -286,7 +295,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Net Sell',
                 'type' => 'Input\Text',
                 'attributes' => [
-                    'placeholder' => "£", 
+                    'placeholder' => "£",
                     'readonly' => 'readonly',
                     'data-actual-value' => $this->modelInstance->getTotalNetSell()
                 ],
@@ -342,7 +351,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Actual Profit',
                 'type' => 'Input\Text',
                 'attributes' => [
-                    'placeholder' => "£", 
+                    'placeholder' => "£",
                     'readonly' => 'readonly',
                     'data-actual-value' => $this->modelInstance->getActualProfit()
                 ],
@@ -361,7 +370,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
-            ],[
+            ], [
                 'name' => 'project_start_date',
                 'formGroup' => true,
                 'labelName' => 'Project Start Date *',
@@ -371,7 +380,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        ['minDate' => '-2W', 'maxDate' => "+5Y"]
+                        [ 'maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
@@ -455,14 +464,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ]
         ]);
 
-        if($entityId) {
+        if ($entityId) {
             $this->createTaskTableBlock();
             $this->createInvoiceTableBlock();
             $this->createVariationTableBlock();
         }
 
 
-        if(($this->modelInstance->getStatus() == ProjectDefinition::STATUS_CANCELLED)){
+        if (($this->modelInstance->getStatus() == ProjectDefinition::STATUS_CANCELLED)) {
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
@@ -483,8 +492,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        if(in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
-            $this->getProjectHelper()->currentUserCanEdit() == false){
+        if (
+            in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
+            $this->getProjectHelper()->currentUserCanEdit() == false
+        ) {
             $this->lock();
         }
     }
@@ -497,7 +508,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createTaskTableBlock()
     {
-        if(!$this->getTaskHelper()->currentUserCanView()){
+        if (!$this->getTaskHelper()->currentUserCanView()) {
             return;
         }
 
@@ -528,7 +539,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createInvoiceTableBlock()
     {
-        if(!$this->getInvoiceHelper()->currentUserCanView()){
+        if (!$this->getInvoiceHelper()->currentUserCanView()) {
             return;
         }
 
@@ -558,7 +569,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createVariationTableBlock()
     {
-        if(!$this->getVariationHelper()->currentUserCanView()){
+        if (!$this->getVariationHelper()->currentUserCanView()) {
             return;
         }
 
@@ -593,7 +604,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        if(!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -608,18 +619,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             );
         }
 
-        if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
+        if ($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
             $tableBlock->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl(
-                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                            [
-                                'type' => TaskDefinition::TASK_TYPE_PROJECT,
-                                'parent_id' => $this->modelInstance->getId()
-                            ]
+                    $this->getUrlHelper()->getApiUrl(
+                        TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                        [
+                            'type' => TaskDefinition::TASK_TYPE_PROJECT,
+                            'parent_id' => $this->modelInstance->getId()
+                        ]
 
-                        ),
+                    ),
                 ]);
         }
 
@@ -627,38 +638,56 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
             ->removeClass('pagination-xl')->addClass('pagination-xs');
 
-        if($this->isLocked() == false) {
+        if ($this->isLocked() == false) {
             if (($taskTileBlock = $this->getBlockManager()->getBlock('task.table.tile.block'))) {
                 $taskTileBlock->addChildBlock(
-                    $this->createSmallButtonElement('Create Task', $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::TASK_EDIT, [
-                        'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
-                        'parent_id' => $entityId],
-                        true
-                    ), 'create.task.button', 'header_elements'
+                    $this->createSmallButtonElement(
+                        'Create Task',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::TASK_EDIT,
+                            [
+                                'task_type' => \SuttonBaker\Impresario\Definition\Task::TASK_TYPE_PROJECT,
+                                'parent_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'create.task.button',
+                        'header_elements'
                     )->setCapabilities($this->getTaskHelper()->getEditCapabilities())
                 );
             }
 
             if ($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block')) {
                 $variationTileBlock->addChildBlock(
-                    $this->createSmallButtonElement('Create Variation', $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
-                        'project_id' => $entityId],
-                        true
-                    ), 'create.variation.button', 'header_elements'
+                    $this->createSmallButtonElement(
+                        'Create Variation',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT,
+                            [
+                                'project_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'create.variation.button',
+                        'header_elements'
                     )->setCapabilities($this->getVariationHelper()->getEditCapabilities())
                 );
             }
 
             if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
                 $invoiceTileBlock->addChildBlock(
-                    $this->createSmallButtonElement('Create Invoice', $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
-                        'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PROJECT,
-                        'parent_id' => $entityId],
-                        true
-                    ), 'create.invoice.button', 'header_elements'
+                    $this->createSmallButtonElement(
+                        'Create Invoice',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
+                            [
+                                'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PROJECT,
+                                'parent_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'create.invoice.button',
+                        'header_elements'
                     )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
                 );
             }
@@ -666,6 +695,4 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         return parent::_preRender();
     }
-
-
 }
