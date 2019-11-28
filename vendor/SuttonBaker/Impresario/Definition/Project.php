@@ -88,7 +88,7 @@ class Project
         'date_received' => 'Received',
         'invoice_amount_remaining' => "Amount Remaining",
         'project_manager_name' => 'Contracts Manager',
-        'net_sell' => 'Net Sell',
+        'total_net_sell' => 'Net Sell',
         'status' => 'Status'
     ];
 
@@ -99,7 +99,7 @@ class Project
         'status' => [],
         'date_received' => [],
         'invoice_amount_remaining' => [Table::HEADER_SORTABLE_NUMERIC],
-        'net_sell' => [Table::HEADER_SORTABLE_NUMERIC],
+        'total_net_sell' => [Table::HEADER_SORTABLE_NUMERIC],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'project_manager_name' => [Table::HEADER_SORTABLE_ALPHA],
