@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Api;
+
 use DaveBaker\Core\Api\Exception;
 use DaveBaker\Core\Block\Components\Paginator;
 use DaveBaker\Core\Definitions\Messages;
@@ -13,7 +14,7 @@ use SuttonBaker\Impresario\Definition\Roles;
  *
  */
 class Archive
-    extends \DaveBaker\Core\Api\Base
+extends \DaveBaker\Core\Api\Base
 {
     /** @var string  */
     protected $blockPrefix = 'archive';
@@ -33,19 +34,33 @@ class Archive
 
         /** @var StatusLink $tableBlock */
         $tableBlock = $blockManager->getBlock("project.list.table");
-
-        if(isset($params['order']['dir']) && isset($params['order']['column'])){
+        /** @var \SuttonBaker\Impresario\Block\Quote\QuoteList $list */
+        $list = $blockManager->getBlock("project.list");
+        
+        if (isset($params['order']['dir']) && isset($params['order']['column'])) {
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
         }
 
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("project.list.paginator");
 
-        if(isset($params['pageNumber'])){
+        if (isset($params['customData']['filters'])) {
+            $tableBlock->setFilters(
+                json_decode($params['customData']['filters'], true)
+            );
+        }
+
+        // Required at this point to get the recordset after the filters have been applied
+        $list->applyRecordCountToPaginator();
+
+
+        if (isset($params['pageNumber'])) {
             $paginatorBlock->setPage($params['pageNumber']);
         }
 
-        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
-    }
+        $list->render();
+        $noItems = $blockManager->getBlock("project.list.table.noitems");
 
+        $this->addReplacerBlock([$tableBlock, $paginatorBlock, $noItems]);
+    }
 }

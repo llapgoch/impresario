@@ -91,7 +91,6 @@ class Quote
         'site_name' => 'Site Name',
         'project_name' => 'Project',
         'date_required' => 'Required By',
-        'created_by_name' => 'Creator',
         'estimator_name' => 'Estimator',
         'net_sell' => 'Net Sell',
         'status' => 'Status',
