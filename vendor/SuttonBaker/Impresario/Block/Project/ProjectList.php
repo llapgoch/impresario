@@ -75,7 +75,7 @@ implements \DaveBaker\Core\Block\BlockInterface
             'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
             'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
             'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+            'total_net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
         ]);
 
 
