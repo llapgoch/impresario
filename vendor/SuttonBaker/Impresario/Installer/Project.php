@@ -70,6 +70,7 @@ class Project
               `project_end_date` datetime DEFAULT NULL,
               `po_number` varchar(255) DEFAULT NULL,
               `mi_number` varchar(255) DEFAULT NULL,
+              `po_mi_number` varchar(255) DEFAULT NULL,
               `nm_mw_number` varchar(255) DEFAULT NULL,
               `status` varchar(20) DEFAULT NULL,
               `comments` text,

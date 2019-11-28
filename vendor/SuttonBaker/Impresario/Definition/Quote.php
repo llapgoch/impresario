@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Definition;
 
 use DaveBaker\Core\Definitions\Table;
+use SuttonBaker\Impresario\Definition\Filter as FilterDefinition;
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Definition
@@ -37,6 +38,53 @@ class Quote
     const STATUS_COLUMN = 'tender_status';
     const AGGREGATE_STATUS_COLUMN = 'aggregate_status';
 
+    const FILTER_LISTING = [
+        'client_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.client_id"
+        ],
+        'status' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.status"
+        ],
+        'tender_status' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.tender_status"
+        ],
+        'estimator_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.estimator_id"
+        ],
+        'created_by_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.created_by_id"
+        ],
+        'project_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.project_name"
+        ],
+        'date_required' => [
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_RANGE,
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_RANGE,
+            FilterDefinition::MAP => "{{quote}}.date_required",
+            FilterDefinition::DATA_CONVERTER => [
+                FilterDefinition::DATA_CONVERTER_CLASS => \DaveBaker\Core\Helper\Date::class,
+                FilterDefinition::DATA_CONVERTER_METHOD => 'localDateToDb'
+            ]
+        ],
+        'site_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.site_name"
+        ]
+    ];
+
     const TABLE_HEADERS = [
         'quote_id' => 'ID',
         'client_name' => 'Client',
@@ -45,6 +93,7 @@ class Quote
         'date_required' => 'Required By',
         'created_by_name' => 'Creator',
         'estimator_name' => 'Estimator',
+        'net_sell' => 'Net Sell',
         'status' => 'Status',
         'tender_status' => 'Tender Status'
     ];
@@ -65,6 +114,7 @@ class Quote
         'tender_status' => [],
         'date_required' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
+        'net_sell' => [Table::HEADER_SORTABLE_NUMERIC],
         'project_name' => [Table::HEADER_SORTABLE_ALPHA],
         'estimator_name' => [Table::HEADER_SORTABLE_ALPHA],
         'revision_number' => [Table::HEADER_SORTABLE_ALPHA]

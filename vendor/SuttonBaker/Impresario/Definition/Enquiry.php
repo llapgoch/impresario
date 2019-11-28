@@ -1,7 +1,8 @@
 <?php
 
 namespace SuttonBaker\Impresario\Definition;
-use DaveBaker\Core\Definitions\Table;
+use \DaveBaker\Core\Definitions\Table;
+use \SuttonBaker\Impresario\Definition\Filter as FilterDefinition;
 
 /**
  * Class Enquiry
@@ -28,6 +29,43 @@ class Enquiry
 
     const RECORDS_PER_PAGE = 20;
 
+    const FILTER_LISTING = [
+        'status' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.status"
+        ],
+        'client_reference' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.client_reference"
+        ],
+        'date_received' => [
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_RANGE,
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_RANGE,
+            FilterDefinition::MAP => "{{enquiry}}.date_received",
+            FilterDefinition::DATA_CONVERTER => [
+                FilterDefinition::DATA_CONVERTER_CLASS => \DaveBaker\Core\Helper\Date::class,
+                FilterDefinition::DATA_CONVERTER_METHOD => 'localDateToDb'
+            ]
+        ],
+        'assigned_to_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.assigned_to_id"
+        ],
+        'mi_number' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.mi_number"
+        ],
+        'site_name' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.site_name"
+        ]
+    ];
+
     const TABLE_HEADERS = [
         'enquiry_id' => 'ID',
         'client_reference' => 'Client Ref',
@@ -36,7 +74,7 @@ class Enquiry
         'date_received' => 'Received',
         'target_date' => 'Target',
         'assigned_to_name' => 'Assignee',
-        'engineer_name' => 'Engineer'
+        'mi_number' => 'MI Number'
     ];
 
     const SORTABLE_COLUMNS = [
@@ -47,7 +85,7 @@ class Enquiry
         'date_received' => [],
         'target_date' => [],
         'assigned_to_name' => [Table::HEADER_SORTABLE_ALPHA],
-        'engineer_name' => [Table::HEADER_SORTABLE_ALPHA]
+        'mi_number' => [Table::HEADER_SORTABLE_ALPHA]
     ];
 
     const REPORT_HEADERS = [

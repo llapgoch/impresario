@@ -13,8 +13,8 @@ use SuttonBaker\Impresario\Model\Db\Project\Collection;
  * @package SuttonBaker\Impresario\Block\Project
  */
 class ProjectList
-    extends \SuttonBaker\Impresario\Block\ListBase
-    implements \DaveBaker\Core\Block\BlockInterface
+extends \SuttonBaker\Impresario\Block\ListBase
+implements \DaveBaker\Core\Block\BlockInterface
 {
     const BLOCK_PREFIX = 'project';
     const ID_PARAM = 'project_id';
@@ -29,6 +29,10 @@ class ProjectList
     protected $endpointUrl = ProjectDefinition::API_ENDPOINT_UPDATE_TABLE;
     /** @var array|bool  */
     protected $rowClasses = [];
+    /** @var \DaveBaker\Core\Block\Components\Paginator */
+    protected $paginator;
+    /** @var \SuttonBaker\Impresario\Block\Table\StatusLink */
+    protected $tableBlock;
 
     /**
      * @return Collection
@@ -61,32 +65,33 @@ class ProjectList
     {
         wp_enqueue_script('dbwpcore_table_updater');
 
-        if(!($instanceCollection = $this->getInstanceCollection())){
+        if (!($instanceCollection = $this->getInstanceCollection())) {
             throw new Exception('Instance collection not set');
         }
 
         /** @var \SuttonBaker\Impresario\Model\Db\Project\Collection $enquiryCollection */
-            $instanceCollection->addOutputProcessors([
-                'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
-                'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
-                'status' => $this->getProjectHelper()->getStatusOutputProcessor()
-            ]);
+        $instanceCollection->addOutputProcessors([
+            'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'target_date' => $this->getDateHelper()->getOutputProcessorFullDate(),
+            'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
+            'invoice_amount_remaining' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+            'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+        ]);
 
 
         $mainTile = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.tile.main");
         $mainTile->addChildBlock(
-        /** @var Paginator $paginator */
-            $paginator = $this->createBlock(
+            /** @var Paginator $paginator */
+            $this->paginator = $this->createBlock(
                 '\DaveBaker\Core\Block\Components\Paginator',
                 "{$this->getBlockPrefix()}.list.paginator",
                 'footer'
             )->setRecordsPerPage(ProjectDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($instanceCollection->getItems()))
                 ->setIsReplacerBlock(true)
         );
 
         $this->addChildBlock(
-            $tableBlock = $this->createBlock(
+            $this->tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
                 "{$this->getBlockPrefix()}.list.table"
             )->setHeaders($this->getTableHeaders())
@@ -94,22 +99,23 @@ class ProjectList
                 ->setStatusKey('status')
                 ->setRowStatusClasses($this->getRowClasses())
                 ->setSortableColumns($this->getSortableColumns())
+                ->setShowEmptyTable(true)
                 ->addJsDataItems([
                     TableDefinition::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl($this->getEndpointUrl())
+                    $this->getUrlHelper()->getApiUrl($this->getEndpointUrl())
                 ])
-                ->setPaginator($paginator)
+                ->addClass('js-project-table')
+                ->setPaginator($this->paginator)
+                ->setFilterSchema(
+                    \SuttonBaker\Impresario\Definition\Project::FILTER_LISTING
+                )
         );
 
-        if(!count($instanceCollection->getItems())){
-           $this->addChildBlock($this->getNoItemsBlock());
+        if ($this->rowClasses === false) {
+            $this->tableBlock->addClass('table-striped');
         }
 
-        if($this->rowClasses === false){
-            $tableBlock->addClass('table-striped');
-        }
-
-        $tableBlock->setLinkCallback(
+        $this->tableBlock->setLinkCallback(
             function ($headerKey, $record) {
                 return $this->getPageUrl(
                     \SuttonBaker\Impresario\Definition\Page::PROJECT_EDIT,
@@ -117,6 +123,51 @@ class ProjectList
                 );
             }
         );
+        
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterBlock */
+        $filterBlock = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.filter.set");
+        $this->tableBlock->preDispatch();
+
+        if (($sessionData = $this->tableBlock->getSessionData())
+            && isset($sessionData['filters'])
+        ) {
+            foreach ($sessionData['filters'] as $filterKey => $filterValue) {
+                $filterBlock->setFilterValue($filterKey, $filterValue);
+            }
+        }
+        
+    }
+
+    protected function _preRender()
+    {
+        $this->tableBlock->unpackSession();
+        $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
+        $this->tableBlock->setRecords($this->instanceCollection);
+        $this->applyRecordCountToPaginator();
+        
+        $this->addChildBlock(
+            $noItemsBlock = $this->getNoItemsBlock("{$this->getBlockPrefix()}.list.table.noitems")
+        );
+        $noItemsBlock->setIsReplacerBlock(true);
+
+        if (!count($this->instanceCollection->getItems())) {
+            $this->paginator->addClass($hiddenClass);
+            $this->tableBlock->addClass($hiddenClass);
+        } else {
+            $noItemsBlock->addClass($hiddenClass);
+        }
+    }
+
+    /**
+     * Method to allow the resetting of paginator values when using the API
+     *
+     * @return void
+     */
+    public function applyRecordCountToPaginator()
+    {
+        $this->paginator
+            ->setTotalRecords(count($this->instanceCollection->getItems()));
+        return $this;
     }
 
     /**
@@ -152,11 +203,11 @@ class ProjectList
      */
     protected function getRowClasses()
     {
-        if($this->rowClasses === false){
+        if ($this->rowClasses === false) {
             return [];
         }
 
-        if($this->rowClasses){
+        if ($this->rowClasses) {
             return $this->rowClasses;
         }
 
@@ -222,5 +273,4 @@ class ProjectList
     {
         return PageDefinition::PROJECT_EDIT;
     }
-
 }

@@ -23,11 +23,13 @@ class Client extends Base
      */
     public function getClientCollection()
     {
+        /** @var \SuttonBaker\Impresario\Model\Db\Client\Collection $collection */
         $collection = $this->createAppObject(
             '\SuttonBaker\Impresario\Model\Db\Client\Collection'
         );
 
         $collection->getSelect()->where('is_deleted=?', '0');
+        $collection->getSelect()->order('client_name');
 
         return $collection;
     }

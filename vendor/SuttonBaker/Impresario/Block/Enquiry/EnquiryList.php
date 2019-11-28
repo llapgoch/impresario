@@ -5,19 +5,24 @@ namespace SuttonBaker\Impresario\Block\Enquiry;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
 use \DaveBaker\Core\Definitions\Table as TableDefinition;
+
 /**
  * Class EnquiryList
  * @package SuttonBaker\Impresario\Block\Enquiry
  */
 class EnquiryList
-    extends \SuttonBaker\Impresario\Block\ListBase
-    implements \DaveBaker\Core\Block\BlockInterface
+extends \SuttonBaker\Impresario\Block\ListBase
+implements \DaveBaker\Core\Block\BlockInterface
 {
     const ID_PARAM = 'enquiry_id';
     const BLOCK_PREFIX = 'enquiry';
 
     /** @var \SuttonBaker\Impresario\Model\Db\Enquiry\Collection $instanceCollection */
     protected $instanceCollection;
+    /** @var \DaveBaker\Core\Block\Components\Paginator */
+    protected $paginator;
+    /** @var \SuttonBaker\Impresario\Block\Table\StatusLink */
+    protected $tableBlock;
 
     /**
      * @return \SuttonBaker\Impresario\Block\ListBase|void
@@ -33,6 +38,8 @@ class EnquiryList
         wp_enqueue_script('dbwpcore_table_updater');
 
         $tableHeaders = EnquiryDefinition::TABLE_HEADERS;
+        $mainTile = $this->getBlockManager()->getBlock('enquiry.tile.main');
+
 
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $this->instanceCollection = $this->getEnquiryHelper()->getDisplayEnquiries()
@@ -42,38 +49,86 @@ class EnquiryList
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
             ]);
 
-        $mainTile = $this->getBlockManager()->getBlock('enquiry.tile.main');
+
         $mainTile->addChildBlock(
-        /** @var Paginator $paginator */
-            $paginator = $this->createBlock(
+            /** @var Paginator $paginator */
+            $this->paginator = $this->createBlock(
                 '\DaveBaker\Core\Block\Components\Paginator',
                 'enquiry.list.paginator',
                 'footer'
             )->setRecordsPerPage(EnquiryDefinition::RECORDS_PER_PAGE)
-                ->setTotalRecords(count($this->instanceCollection->getItems()))
-                ->setIsReplacerBlock(true)
+            ->setIsReplacerBlock(true)
         );
 
+
         $this->addChildBlock(
-            $tableBlock = $this->createBlock(
+            $this->tableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                'enquiry.list.table')
+                'enquiry.list.table'
+            )
                 ->setHeaders($tableHeaders)->setRecords($this->instanceCollection)
                 ->setSortableColumns(EnquiryDefinition::SORTABLE_COLUMNS)
                 ->setStatusKey('status')
                 ->setRowStatusClasses(EnquiryDefinition::getRowClasses())
                 ->addJsDataItems([
                     TableDefinition::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_UPDATE_TABLE)
+                    $this->getUrlHelper()->getApiUrl(EnquiryDefinition::API_ENDPOINT_UPDATE_TABLE)
                 ])
-                ->setPaginator($paginator)
+                ->setPaginator($this->paginator)
+                ->addClass('js-enquiry-table')
+                ->setShowEmptyTable(true)
+                ->setFilterSchema(
+                    \SuttonBaker\Impresario\Definition\Enquiry::FILTER_LISTING
+                )
         );
 
-        if(!count($this->instanceCollection->getItems())){
-            $this->addChildBlock($this->getNoItemsBlock());
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterBlock */
+        $filterBlock = $this->getBlockManager()->getBlock('enquiry.filter.set');
+        $this->tableBlock->preDispatch();
+
+        if (($sessionData = $this->tableBlock->getSessionData())
+            && isset($sessionData['filters'])
+        ) {
+            foreach ($sessionData['filters'] as $filterKey => $filterValue) {
+                $filterBlock->setFilterValue($filterKey, $filterValue);
+            }
+        }
+    }
+
+    /**
+     * Method to allow the resetting of paginator values when using the API
+     *
+     * @return void
+     */
+    public function applyRecordCountToPaginator()
+    {
+        $this->paginator
+        ->setTotalRecords(count($this->instanceCollection->getItems()));
+        return $this;
+    }
+
+    protected function _preRender()
+    {
+        $this->tableBlock->unpackSession();
+        $this->tableBlock->setRecords($this->instanceCollection);
+            
+        $this->applyRecordCountToPaginator();
+
+        $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
+
+        $this->addChildBlock(
+            $noItemsBlock = $this->getNoItemsBlock('enquiry.list.table.noitems')
+        );
+        $noItemsBlock->setIsReplacerBlock(true);
+
+        if (!count($this->instanceCollection->getItems())) {
+            $this->paginator->addClass($hiddenClass);
+            $this->tableBlock->addClass($hiddenClass);
+        } else {
+            $noItemsBlock->addClass($hiddenClass);
         }
 
-        $tableBlock->setLinkCallback(
+        $this->tableBlock->setLinkCallback(
             function ($headerKey, $record) {
                 return $this->getPageUrl(
                     \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT,
@@ -82,8 +137,6 @@ class EnquiryList
             }
         );
     }
-
-
     /**
      * @return string
      */
@@ -107,5 +160,4 @@ class EnquiryList
     {
         return self::BLOCK_PREFIX;
     }
-
 }

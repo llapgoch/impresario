@@ -205,6 +205,8 @@ class Enquiry
         $blocks = $blockManager->getAllBlocks();
 
         $tableBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
+        /** @var \SuttonBaker\Impresario\Block\Enquiry\EnquiryList $list */
+        $list = $blockManager->getBlock('enquiry.list');
 
         if(isset($params['order']['dir']) && isset($params['order']['column'])){
             $tableBlock->setColumnOrder($params['order']['column'], $params['order']['dir']);
@@ -213,11 +215,24 @@ class Enquiry
         /** @var Paginator $paginatorBlock */
         $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
 
+        if(isset($params['customData']['filters'])){
+            $tableBlock->setFilters(
+                json_decode($params['customData']['filters'], true)
+            );
+        }
+
+        // Required at this point to get the recordset after the filters have been applied
+        $list->applyRecordCountToPaginator();
+
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);
         }
 
-        $this->addReplacerBlock([$tableBlock, $paginatorBlock]);
+        $list->render();
+
+        $noItems = $blockManager->getBlock("{$this->blockPrefix}.list.table.noitems");
+        
+        $this->addReplacerBlock([$paginatorBlock, $noItems, $tableBlock]);
     }
 
     /**

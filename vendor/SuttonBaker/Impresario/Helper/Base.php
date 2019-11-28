@@ -112,7 +112,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         if($total == 0){
             return 0;
         }
-        $amount = $total - $amount;
+        
         return round(($amount / $total) * 100);
     }
 

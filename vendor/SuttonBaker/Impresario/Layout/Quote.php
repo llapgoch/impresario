@@ -3,6 +3,8 @@
 namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
+use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+
 /**
  * Class Quote
  * @package SuttonBaker\Impresario\Layout
@@ -31,7 +33,7 @@ class Quote extends Base
         /** @var \SuttonBaker\Impresario\Model\Db\Quote $entityInstance */
         $entityInstance = $this->createAppObject('\SuttonBaker\Impresario\Model\Db\Quote');
 
-        if($entityId = $this->getRequest()->getParam(self::ID_KEY)){
+        if ($entityId = $this->getRequest()->getParam(self::ID_KEY)) {
             /** @var \SuttonBaker\Impresario\Model\Db\Quote $entityInstance */
             $entityInstance->load($entityId);
         }
@@ -43,10 +45,11 @@ class Quote extends Base
 
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading($masterText . $this->getQuoteHelper()->getActionVerb($entityInstance) . " Quote (Revision $quoteRevision)")
                 ->setShortcode('body_content')
                 ->addChildBlock($this->getQuoteHelper()->getTabBarForQuote($entityInstance))
@@ -60,7 +63,6 @@ class Quote extends Base
             )->setElementName('enquiry_edit_form')
 
         );
-
     }
 
     /**
@@ -75,10 +77,11 @@ class Quote extends Base
         $this->addHeading()->addMessages();
 
         $this->addBlock(
-        /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
+            /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
-                "{$this->getBlockPrefix()}.tile.main")
+                "{$this->getBlockPrefix()}.tile.main"
+            )
                 ->setHeading("<strong>Quote</strong> Register")
                 ->setShortcode('body_content')
                 ->setTileBodyClass('nopadding table-responsive')
@@ -114,6 +117,116 @@ class Quote extends Base
                 'content'
             )
         );
+
+        $this->createFilterSet($mainTile);
+    }
+
+    /**
+     * @param string $location
+     * @return $this
+     */
+    public function createFilterSet(
+        $location
+    ) {
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterSet */
+        $location->addChildBlock(
+            $filterSet = $location->createBlock(
+                \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
+                "{$this->getBlockPrefix()}.filter.set",
+                'controls'
+            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+                ->setSetName('quote_filters')
+                ->addClass('js-quote-filters')
+                ->addJsDataItems([
+                    'tableUpdaterSelector' => '.js-quote-table'
+                ])
+        );
+
+        // Clients
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Client')
+                ->setFormName('client_id')
+                ->setSelectOptions($clients)
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Site Name')
+                ->setFormName('site_name')
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Project')
+                ->setFormName('project_name')
+        );
+
+        $assignedToUsers = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getApp()->getHelper('User')->getUserCollection(),
+                'ID',
+                'display_name'
+            )->getElementData();
+
+
+        if ($estimators = $this->getRoleHelper()->getEstimators()) {
+            $estimators = $this->createCollectionSelectConnector()
+                ->configure(
+                    $estimators,
+                    'ID',
+                    'display_name'
+                )->getElementData();
+
+            $filterSet->addFilter(
+                $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                    ->setLabelName('Estimator')
+                    ->setFormName('estimator_id')
+                    ->setSelectOptions($estimators)
+            );
+        }
+
+        $statuses = $this->createArraySelectConnector()->configure(QuoteDefinition::getStatuses())->getElementData();
+        $filterSet->addFilter(
+            $status = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Status')
+                ->setFormName('status')
+                ->setSelectOptions($statuses)
+        );
+
+        $tenderStatuses = $this->createArraySelectConnector()->configure(QuoteDefinition::getTenderStatuses())->getElementData();
+        $filterSet->addFilter(
+            $status = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Tender Status')
+                ->setFormName('tender_status')
+                ->setSelectOptions($tenderStatuses)
+        );
+
+
+        $filterSet->addFilter(
+            /** @var \SuttonBaker\Impresario\Block\Form\Filter\DateRange $range */
+            $range = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
+            ->setLabelName('Required By')
+            ->setFormName('date_required')
+        );
+
+        $range->getMainElement()->addAttribute(['data-date-settings' => json_encode(
+            ['maxDate' => "+5Y"]
+        )]);
+
+
+        $range->getToElement()->addAttribute(['data-date-settings' => json_encode(
+            ['maxDate' => "+5Y"]
+        )]);
+
+        return $this;
     }
 
     public function indexHandle()

@@ -131,7 +131,8 @@ class Enquiry
                 AND p.is_deleted=0',
             []
         )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
-        
+    
+
         return $collection;
     }
 

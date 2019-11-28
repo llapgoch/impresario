@@ -10,8 +10,11 @@ use SuttonBaker\Impresario\Block\Structure\QuickActions;
  * @package SuttonBaker\Impresario\Layout
  */
 class DefaultLayout
-    extends Base
+extends Base
 {
+    /** @var \DaveBaker\Core\Block\BlockInterface */
+    protected $rootContainer;
+    
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
@@ -37,13 +40,13 @@ class DefaultLayout
                 'main.header.nav'
             )->setShortcode('impresario_header_nav')
                 ->setTemplate('nav/navbar.phtml')
-            ->addChildBlock(
-                $this->createBlock(
-                    QuickActions::class,
-                    'main.header.quick.actions',
-                    'quickActions'
+                ->addChildBlock(
+                    $this->createBlock(
+                        QuickActions::class,
+                        'main.header.quick.actions',
+                        'quickActions'
+                    )
                 )
-            )
         );
     }
 }
