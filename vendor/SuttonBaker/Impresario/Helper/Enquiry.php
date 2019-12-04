@@ -95,6 +95,12 @@ class Enquiry
         );
 
         $collection->joinLeft(
+            "{{client}}",
+            "{{client}}.client_id={{enquiry}}.client_id",
+            ['client_name' => 'client_name']
+        );
+
+        $collection->joinLeft(
             ['engineer_user' => $userTable],
             "engineer_user.ID={{enquiry}}.engineer_id",
             ['engineer_name' => 'display_name']
