@@ -143,29 +143,44 @@ class Enquiry extends Base
                 'enquiry.filter.set',
                 'controls'
             )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
-            ->setSetName('enquiry_filters')
-            ->addClass('js-enquiry-filters')
-            ->addJsDataItems([
-                'tableUpdaterSelector' => '.js-enquiry-table'
-            ])
+                ->setSetName('enquiry_filters')
+                ->addClass('js-enquiry-filters')
+                ->addJsDataItems([
+                    'tableUpdaterSelector' => '.js-enquiry-table'
+                ])
+        );
+
+        // Clients
+        $clients = $this->createCollectionSelectConnector()
+            ->configure(
+                $this->getClientHelper()->getClientCollection(),
+                'client_id',
+                'client_name'
+            )->getElementData();
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Client')
+                ->setFormName('client_id')
+                ->setSelectOptions($clients)
         );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-            ->setLabelName('Client Ref')
-            ->setFormName('client_reference')
+                ->setLabelName('Client Ref')
+                ->setFormName('client_reference')
         );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-            ->setLabelName('Site')
-            ->setFormName('site_name')
+                ->setLabelName('Site')
+                ->setFormName('site_name')
         );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-            ->setLabelName('MI Number')
-            ->setFormName('mi_number')
+                ->setLabelName('MI Number')
+                ->setFormName('mi_number')
         );
 
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $status */
@@ -178,14 +193,14 @@ class Enquiry extends Base
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
         $status->setSelectOptions($statuses);
 
-         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $assignee */
-         $filterSet->addFilter(
+        /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $assignee */
+        $filterSet->addFilter(
             $assignee = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
                 ->setLabelName('Assignee')
                 ->setFormName('assigned_to_id')
         );
 
-        if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
+        if ($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
             $assignedToUsers = $this->createCollectionSelectConnector()
                 ->configure(
                     $csUsers,
@@ -200,8 +215,8 @@ class Enquiry extends Base
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
-            ->setLabelName('Received')
-            ->setFormName('date_received')
+                ->setLabelName('Received')
+                ->setFormName('date_received')
         );
 
         return $this;
