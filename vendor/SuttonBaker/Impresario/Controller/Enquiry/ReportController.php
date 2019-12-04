@@ -23,11 +23,6 @@ class ReportController
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $enquiryCollection */
         $instanceCollection = $this->getEnquiryHelper()->getDisplayEnquiries()
-        ->joinLeft(
-            "{{client}}",
-            "{{client}}.client_id={{enquiry}}.client_id",
-            ['client_name' => 'client_name']
-        )
         ->addOutputProcessors([
             'date_completed' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),

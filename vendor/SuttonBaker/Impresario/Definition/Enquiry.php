@@ -35,6 +35,11 @@ class Enquiry
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{enquiry}}.status"
         ],
+        'client_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.client_id"
+        ],
         'client_reference' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_LIKE,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
@@ -68,6 +73,7 @@ class Enquiry
 
     const TABLE_HEADERS = [
         'enquiry_id' => 'ID',
+        'client_name' => 'Client',
         'client_reference' => 'Client Ref',
         'status' => 'Status',
         'site_name' => 'Site',
@@ -80,6 +86,7 @@ class Enquiry
     const SORTABLE_COLUMNS = [
         'enquiry_id' => [],
         'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
+        'client_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'date_received' => [],
