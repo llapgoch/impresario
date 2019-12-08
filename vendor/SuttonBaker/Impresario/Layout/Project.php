@@ -146,6 +146,12 @@ class Project extends Base
                 ])
         );
 
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('ID')
+                ->setFormName('project_id')
+        );
+
         // Clients
         $clients = $this->createCollectionSelectConnector()
             ->configure(
