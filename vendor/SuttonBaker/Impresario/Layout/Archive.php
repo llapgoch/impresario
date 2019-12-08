@@ -37,7 +37,8 @@ class Archive extends Base
         $instanceCollection->addOutputProcessors([
             'profit' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
             'total_net_cost' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'total_net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+            'total_net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+            'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
         ]);
 
         $mainTile->addChildBlock(
@@ -98,6 +99,12 @@ class Archive extends Base
                 ->addJsDataItems([
                     'tableUpdaterSelector' => '.js-project-table'
                 ])
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('ID')
+                ->setFormName('project_id')
         );
 
         // Clients
