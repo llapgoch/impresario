@@ -30,6 +30,11 @@ class Enquiry
     const RECORDS_PER_PAGE = 20;
 
     const FILTER_LISTING = [
+        'enquiry_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.enquiry_id"
+        ],
         'status' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
