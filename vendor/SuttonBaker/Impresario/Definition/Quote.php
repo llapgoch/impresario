@@ -39,6 +39,11 @@ class Quote
     const AGGREGATE_STATUS_COLUMN = 'aggregate_status';
 
     const FILTER_LISTING = [
+        'quote_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.quote_id"
+        ],
         'client_id' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,

@@ -150,6 +150,12 @@ class Enquiry extends Base
                 ])
         );
 
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('ID')
+                ->setFormName('enquiry_id')
+        );
+
         // Clients
         $clients = $this->createCollectionSelectConnector()
             ->configure(

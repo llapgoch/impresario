@@ -33,6 +33,11 @@ class Project
     const RECORDS_PER_PAGE = 20;
 
     const FILTER_LISTING = [
+        'project_id' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{project}}.project_id"
+        ],
         'client_id' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,

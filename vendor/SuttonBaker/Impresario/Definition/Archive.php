@@ -17,7 +17,7 @@ class Archive
         'created_by_name' => 'Creator',
         'project_name' => 'Project',
         'project_manager_name' => 'Contracts Manager',
-        'net_sell' => 'Net Sell',
+        'total_net_sell' => 'Net Sell',
     ];
 
     const SORTABLE_COLUMNS = [

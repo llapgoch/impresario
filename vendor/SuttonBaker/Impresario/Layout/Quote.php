@@ -142,6 +142,12 @@ class Quote extends Base
                 ])
         );
 
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('ID')
+                ->setFormName('quote_id')
+        );
+
         // Clients
         $clients = $this->createCollectionSelectConnector()
             ->configure(
