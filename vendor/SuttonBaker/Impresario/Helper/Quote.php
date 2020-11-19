@@ -180,15 +180,21 @@ class Quote extends Base
      *
      * Gets a list of the most recent quotes for display
      */
-    public function getDisplayQuotes($deletedFlag = true)
-    {
-        $collection = $this->getMasterQuotes($deletedFlag)
-            ->joinLeft(
+    public function getDisplayQuotes(
+        $deletedFlag = true,
+        $omitForCompletedProjects = true
+    ) {
+        $collection = $this->getMasterQuotes($deletedFlag);
+
+        if($omitForCompletedProjects) {
+            $collection->joinLeft(
                 ['p' => '{{project}}'],
                 '{{quote}}.quote_id=p.quote_id 
                     AND p.is_deleted=0',
                 []
             )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
+        }
+        
         
         return $collection;
     }

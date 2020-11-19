@@ -22,7 +22,7 @@ class ReportController
     protected function outputFileContent()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $instanceCollection */
-        $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes()
+        $instanceCollection = $this->getQuoteHelper()->getDisplayQuotes(true, false)
         ->addOutputProcessors([
             'date_returned' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'date_completed' => $this->getDateHelper()->getOutputProcessorShortDate(),
