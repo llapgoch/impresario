@@ -31,7 +31,7 @@ class General extends \DaveBaker\Core\Config\General
             zz-application/zz-winassoc-MSG,
             application/vnd.openxmlformats-officedocument.wordprocessingml.document,
             application/msword,
-            application/vnd.ms-outlook
+            application/vnd.ms-outlook,
             application/vnd.ms-word.document.macroenabled.12,
             application/vnd.ms-excel,
             application/vnd.ms-excel.sheet.macroenabled.12,
