@@ -31,7 +31,7 @@ class Project
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
     const STATUS_PRESTART_BOOKED = 'prestart_booked';
     const STATUS_PRESTART_COMPLETED = 'prestart_completed';
-    const STATUS_ON_SITE_VRF_SUBMITTED = 'on_site_vrf_submitted';
+    const STATUS_ON_SITE_VRF_SUBMITTED = 'onsite_vrf_submit';
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
     const STATUS_READY_TO_SHUTDOWN = 'ready_to_shutdown';
 
