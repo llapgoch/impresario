@@ -134,9 +134,14 @@ class Project extends Base
         );
 
         $collection->order(new \Zend_Db_Expr(sprintf(
-                "FIELD({{project}}.status,'%s', '%s', '%s', '%s')",
+                "FIELD({{project}}.status,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 ProjectDefinition::STATUS_OPEN,
+                ProjectDefinition::STATUS_PRESTART_BOOKED,
+                ProjectDefinition::STATUS_PRESTART_COMPLETED,
                 ProjectDefinition::STATUS_ON_SITE,
+                ProjectDefinition::STATUS_ON_SITE_VRF_SUBMITTED,
+                ProjectDefinition::STATUS_READY_TO_INVOICE,
+                ProjectDefinition::STATUS_READY_TO_SHUTDOWN,
                 ProjectDefinition::STATUS_COMPLETE,
                 ProjectDefinition::STATUS_CANCELLED)
         ))->order('{{project}}.date_required');
@@ -151,7 +156,11 @@ class Project extends Base
      */
     public function getOpenProjects()
     {
-        return $this->getProjectCollection()->where('status=?', ProjectDefinition::STATUS_OPEN);
+        return $this->getProjectCollection()->where('status IN (?)', [
+            ProjectDefinition::STATUS_OPEN,
+            ProjectDefinition::STATUS_PRESTART_BOOKED,
+            ProjectDefinition::STATUS_PRESTART_COMPLETED
+        ]);
     }
 
     /**
