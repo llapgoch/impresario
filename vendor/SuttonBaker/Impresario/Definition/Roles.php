@@ -28,6 +28,8 @@ class Roles
     const CAP_EDIT_VARIATION = 'edit_variation';
     const CAP_VIEW_INVOICE = 'view_invoice';
     const CAP_EDIT_INVOICE = 'edit_invoice';
+    const CAP_VIEW_COST = 'view_cost';
+    const CAP_EDIT_COST = 'edit_cost';
     const CAP_ALL = 'all';
 
     /**

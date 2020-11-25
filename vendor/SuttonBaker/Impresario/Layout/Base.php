@@ -124,6 +124,16 @@ abstract class Base extends \DaveBaker\Core\Layout\Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Helper\Cost
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCostHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Cost');
+    }
+
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\Variation
      * @throws \DaveBaker\Core\Object\Exception
      */

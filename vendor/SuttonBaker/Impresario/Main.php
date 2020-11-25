@@ -118,6 +118,7 @@ class Main
             '\SuttonBaker\Impresario\Installer\Enquiry',
             '\SuttonBaker\Impresario\Installer\Task',
             '\SuttonBaker\Impresario\Installer\Quote',
+            '\SuttonBaker\Impresario\Installer\Cost',
             '\SuttonBaker\Impresario\Installer\Project',
             '\SuttonBaker\Impresario\Installer\InvoiceVariation',
             '\SuttonBaker\Impresario\Installer\Archive',
