@@ -59,16 +59,16 @@ class Cost extends Base
      * @param string $costType
      * @return mixed|string
      */
-    public function getInvoiceTypeDisplayName($costType)
+    public function getCostTypeDisplayName($costType)
     {
         return $this->getDisplayName($costType, CostDefinition::getCostTypes());
     }
 
     /**
-     * @param $invoiceType
+     * @param $costType
      * @return bool
      */
-    public function isValidInvoiceType($costType)
+    public function isValidCostType($costType)
     {
         return in_array($costType, array_keys(CostDefinition::getCostTypes()));
     }
@@ -80,29 +80,25 @@ class Cost extends Base
      */
     public function getCost($costId = null)
     {
-        $invoice = $this->createAppObject(InvoiceDefinition::DEFINITION_MODEL);
+        $cost = $this->createAppObject(CostDefinition::DEFINITION_MODEL);
 
-        if($invoiceId){
-            $invoice->load($invoiceId);
+        if($costId){
+            $cost->load($costId);
         }
 
-        return $invoice;
+        return $cost;
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Invoice $invoice
-     * @return null|\SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project
+     * @param \SuttonBaker\Impresario\Model\Db\Cost $cost
+     * @return null|\SuttonBaker\Impresario\Model\Db\Project
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getParentForInvoice(
-        \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+    public function getParentForCost(
+        \SuttonBaker\Impresario\Model\Db\Cost $cost
     ) {
-        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_ENQUIRY){
-            return $this->getEnquiryHelper()->getEnquiry($invoice->getParentId());
-        }
-
-        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PROJECT){
-            return $this->getProjectHelper()->getProject($invoice->getParentId());
+        if($cost->getCostType() == CostDefinition::COST_TYPE_PROJECT){
+            return $this->getProjectHelper()->getProject($cost->getParentId());
         }
 
         return null;
@@ -112,59 +108,55 @@ class Cost extends Base
      * @param $parentInstance
      * @return string
      */
-    public function getInvoiceTypeForParent($parentInstance)
+    public function getCostTypeForParent($parentInstance)
     {
-        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Enquiry){
-            return InvoiceDefinition::INVOICE_TYPE_ENQUIRY;
-        }
-
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
-            return InvoiceDefinition::INVOICE_TYPE_PROJECT;
+            return CostDefinition::COST_TYPE_PROJECT;
         }
 
         return null;
     }
 
     /**
-     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Invoice\Type
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Type
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getInvoiceTypeOutputProcessor()
+    public function getCostTypeOutputProcessor()
     {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Invoice\Type');
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Type');
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Invoice $instance
+     * @param \SuttonBaker\Impresario\Model\Db\Cost $instance
      * @return mixed|string
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function determineInvoiceTypeName(
-        \SuttonBaker\Impresario\Model\Db\Invoice $instance
+    public function determineCostTypeName(
+        \SuttonBaker\Impresario\Model\Db\Cost $instance
     ) {
         if($instance->getId()){
-            return $this->getInvoiceTypeDisplayName($instance->getInvoiceType());
+            return $this->getCostTypeDisplayName($instance->getCostType());
         }
 
-        if($type = $this->getRequest()->getParam('invoice_type')) {
-            return $typeName = $this->getInvoiceTypeDisplayName($type);
+        if($type = $this->getRequest()->getParam('cost_type')) {
+            return $typeName = $this->getCostTypeDisplayName($type);
         }
 
         return '';
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+     * @param \SuttonBaker\Impresario\Model\Db\Cost $cost
      * @return $this
      */
-    public function deleteInvoice(
-        \SuttonBaker\Impresario\Model\Db\Invoice $invoice
+    public function deleteCost(
+        \SuttonBaker\Impresario\Model\Db\Cost $cost
     ) {
-        if(!$invoice->getId()){
+        if(!$cost->getId()){
             return $this;
         }
 
-        $invoice->setIsDeleted(1)->save();
+        $cost->setIsDeleted(1)->save();
         return $this;
     }
 
