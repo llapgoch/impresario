@@ -15,6 +15,7 @@ class Upload
     const TYPE_TASK = 'task';
     const TYPE_VARIATION = 'variation';
     const TYPE_INVOICE = 'invoice';
+    const TYPE_COST = 'cost';
     const RECORDS_PER_PAGE = 10;
 
     const TABLE_HEADERS = [

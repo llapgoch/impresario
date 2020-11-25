@@ -139,7 +139,7 @@ class Cost extends Base
         }
 
         if($type = $this->getRequest()->getParam('cost_type')) {
-            return $typeName = $this->getCostTypeDisplayName($type);
+            return $this->getCostTypeDisplayName($type);
         }
 
         return '';
