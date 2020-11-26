@@ -101,6 +101,7 @@ class Main
             \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\ListController',
             \SuttonBaker\Impresario\Definition\Page::PROJECT_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\ReportController',
             \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT => '\SuttonBaker\Impresario\Controller\Invoice\EditController',
+            \SuttonBaker\Impresario\Definition\Page::COST_EDIT => '\SuttonBaker\Impresario\Controller\Cost\EditController',
             \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT => '\SuttonBaker\Impresario\Controller\Variation\EditController',
             \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Archive\ReportController',
             \DaveBaker\Core\Layout\Handle\Manager::HANDLE_DEFAULT => '\SuttonBaker\Impresario\Controller\DefaultController'
@@ -141,6 +142,7 @@ class Main
             '\SuttonBaker\Impresario\Layout\Quote',
             '\SuttonBaker\Impresario\Layout\Project',
             '\SuttonBaker\Impresario\Layout\Invoice',
+            '\SuttonBaker\Impresario\Layout\Cost',
             '\SuttonBaker\Impresario\Layout\Variation',
             '\SuttonBaker\Impresario\Layout\Archive',
             '\SuttonBaker\Impresario\Layout\Login'

@@ -142,7 +142,7 @@ class Edit
                     'js_data_items' => [
                         'type' => 'Invoice',
                         'endpoint' => $this->getUrlHelper()->getApiUrl(
-                            InvoiceDefintion::API_ENDPOINT_DELETE,
+                            CostDefintion::API_ENDPOINT_DELETE,
                             ['id' => $this->modelInstance->getId()]
                         ),
                         'returnUrl' => $this->getUrlHelper()->getRefererUrl()
@@ -172,7 +172,7 @@ class Edit
 
         $this->addRecordMonitorBlock(
             $this->modelInstance,
-            $this->getUrlHelper()->getApiUrl(InvoiceDefintion::API_ENDPOINT_RECORD_MONITOR)
+            $this->getUrlHelper()->getApiUrl(CostDefintion::API_ENDPOINT_RECORD_MONITOR)
         );
 
         $this->addChildBlock(array_values($elements));
@@ -182,12 +182,12 @@ class Edit
             $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
-            )->setOrder('before', "invoice.edit.button.bar")
-                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_INVOICE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+            )->setOrder('before', "cost.edit.button.bar")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_COST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        if($this->getInvoiceHelper()->currentUserCanEdit() == false) {
+        if($this->getCostHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }

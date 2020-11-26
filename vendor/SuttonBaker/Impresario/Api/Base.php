@@ -103,6 +103,15 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
     }
 
+     /**
+     * @return \SuttonBaker\Impresario\Helper\Cost
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCostHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Cost');
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Modal
      * @throws \DaveBaker\Core\Object\Exception

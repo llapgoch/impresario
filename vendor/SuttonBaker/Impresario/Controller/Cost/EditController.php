@@ -56,7 +56,7 @@ class EditController
         $costType = $this->getRequest()->getParam(self::COST_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-
+        
         $this->setModelInstance($this->getCostHelper()->getCost());
 
         if(!$instanceId){

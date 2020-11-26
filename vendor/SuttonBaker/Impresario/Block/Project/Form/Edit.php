@@ -97,7 +97,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 )->getElementData();
         }
 
-
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(
             ProjectDefinition::getStatuses()
@@ -735,7 +734,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         $this->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
                             [
-                                'invoice_type' => CostDefinition::COST_TYPE_PROJECT,
+                                'cost_type' => CostDefinition::COST_TYPE_PROJECT,
                                 'parent_id' => $entityId
                             ],
                             true

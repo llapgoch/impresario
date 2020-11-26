@@ -48,7 +48,7 @@ class Cost extends Base
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
-                    $this->getCostHelper()->getActionVerb($entityInstance) . " <strong>Cost for " . $costTypeName . "</strong>")
+                    $this->getCostHelper()->getActionVerb($entityInstance) . " <strong>Cost Invoice for " . $costTypeName . "</strong>")
                 ->setShortcode('body_content')
         );
 
