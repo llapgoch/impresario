@@ -67,7 +67,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 'invoice.tile.block'
-            )->setHeading('<strong>Invoices</strong>')
+            )->setHeading('<strong>Sales Invoices</strong>')
         );
 
 
