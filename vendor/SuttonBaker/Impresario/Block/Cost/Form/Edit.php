@@ -153,7 +153,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'button_name' => 'Remove Invoice',
                     'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
                     'js_data_items' => [
-                        'type' => 'Invoice',
+                        'type' => 'Cost Invoice',
                         'endpoint' => $this->getUrlHelper()->getApiUrl(
                             CostDefintion::API_ENDPOINT_DELETE,
                             ['id' => $this->modelInstance->getId()]

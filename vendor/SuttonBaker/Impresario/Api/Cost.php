@@ -16,7 +16,7 @@ class Cost
     /** @var string */
     protected $blockPrefix = 'cost';
     /** @var array */
-    protected $capabilities = [Roles::CAP_VIEW_COST];
+    protected $capabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_COST];
 
     /**
      * @param $params

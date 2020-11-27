@@ -63,6 +63,11 @@ class Main
         );
 
         $api->addRoute(
+            'cost',
+            '\SuttonBaker\Impresario\Api\Cost'
+        );
+
+        $api->addRoute(
             'variation',
             '\SuttonBaker\Impresario\Api\Variation'
         );
