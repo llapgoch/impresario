@@ -13,7 +13,7 @@ use DaveBaker\Core\Definitions\Roles;
  * @package SuttonBaker\Impresario\Block\Cost\Form
  */
 class Edit
-    extends \SuttonBaker\Impresario\Block\Form\Base
+extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'cost_id';
     const PREFIX_KEY = 'cost';
@@ -61,18 +61,19 @@ class Edit
         /*  Do it this way rather than using getTotalAmountRemaining and taking off the current invoice amount
             in case the current invoice amount is greater than the amount remaining 
         */
-        foreach($this->parentItem->getInvoices()->load() as $invoice){
-            if($invoice->getId() == $this->modelInstance->getId()){
+        foreach ($this->parentItem->getInvoices()->load() as $invoice) {
+            if ($invoice->getId() == $this->modelInstance->getId()) {
                 continue;
             }
-            
+
             $totalAmountRemaining = max(0, $totalAmountRemaining - $invoice->getValue());
         }
 
+        $costTypes = CostDefintion::getVisibleCostInvoiceTypes();
 
         $elements = $builder->build([
             [
-                'name' => 'invoice_date',
+                'name' => 'cost_date',
                 'labelName' => 'Invoice Date *',
                 'class' => 'js-date-picker',
                 'rowIdentifier' => 'invoice_date',
@@ -87,7 +88,19 @@ class Edit
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "0"])
                 ],
             ], [
-                'name' => 'invoice_number',
+                'name' => 'cost_invoice_type',
+                'labelName' => 'Invoice Type',
+                'formGroup' => true,
+                'type' => 'Select',
+                'rowIdentifier' => 'invoice_date',
+                'data' => [
+                    'select_options' => $costTypes,
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'cost_number',
                 'labelName' => 'Invoice Number *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'invoice_number_val',
@@ -153,7 +166,7 @@ class Edit
                     'class' => 'col-md-4'
                 ]
             ], [
-                'name' => 'invoice_id',
+                'name' => 'cost_id',
                 'type' => 'Input\Hidden',
                 'value' => $this->modelInstance->getId()
             ], [
@@ -187,7 +200,7 @@ class Edit
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        if($this->getCostHelper()->currentUserCanEdit() == false) {
+        if ($this->getCostHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }
@@ -203,11 +216,11 @@ class Edit
         $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $uploadParams = [
-            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_INVOICE: CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_COST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
             'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
         ];
 
-        if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
+        if ($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -223,5 +236,4 @@ class Edit
         }
         return parent::_preRender();
     }
-
 }

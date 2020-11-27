@@ -48,7 +48,7 @@ class Archive
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
         'invoice_amount_remaining' => 'Invoice Amount Remaining',
-        'actual_cost' => 'Actual Cost',
+        'total_actual_cost' => 'Total Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
         'notes' => 'Notes',

@@ -73,12 +73,6 @@ class ProjectConfigurator
             }
         ));
 
-        if($this->getValue('actual_cost')){
-            $this->addRule(
-                $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
-            );
-        }
-
         /** @var \SuttonBaker\Impresario\Model\Db\Project $modelInstance */
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
 

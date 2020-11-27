@@ -339,7 +339,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'total_actual_cost',
                 'formGroup' => true,
                 'class' => 'js-actual-cost',
-                'labelName' => 'Actual Cost (£)',
+                'labelName' => 'Actual Cost',
                 'rowIdentifier' => 'actual_cost_values',
                 'type' => 'Input\Text',
                 'attributes' => [

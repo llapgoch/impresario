@@ -53,9 +53,9 @@ class Cost
     {
         return [
             [self::COST_VALUE => self::COST_INVOICE_TYPE_LABOUR, self::COST_NAME => 'Labour'],
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_PLANT, self::COST_NAME => 'Labour'],
+            [self::COST_VALUE => self::COST_INVOICE_TYPE_PLANT, self::COST_NAME => 'Plant'],
             [self::COST_VALUE => self::COST_INVOICE_TYPE_MATERIAL, self::COST_NAME => 'Material'],
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_SUBCONTRACTOR, self::COST_NAME => 'Subcontractor'],
+            [self::COST_VALUE => self::COST_INVOICE_TYPE_SUBCONTRACTOR, self::COST_NAME => 'Sub-contractor'],
         ];
     }
 
