@@ -67,13 +67,20 @@ implements \DaveBaker\Core\Installer\InstallerInterface
     }
 
 
-    protected function migrateCosts()
+    public function migrateCosts()
     {
+        // Make sure the project installer has created the actual cost total column before migrating.
+
+        /** @var \SuttonBaker\Impresario\Installer\Project $projectInstaller */
+        $projectInstaller = $this->createAppObject(\SuttonBaker\Impresario\Installer\Project::class);
+        $projectInstaller->install();
+
         $collection = $this->getProjectCollection()
             ->where('actual_cost > 0');
 
         $projectsWithActualCost = $collection->load();
 
+        
         /** @var \SuttonBaker\Impresario\Model\Db\Project $project */
         foreach ($projectsWithActualCost as $project) {
             $costItem = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Cost::class);
@@ -86,11 +93,10 @@ implements \DaveBaker\Core\Installer\InstallerInterface
                 ->setCostDate($this->getDateHelper()->utcTimestampToDb())
                 ->setCostInvoiceType(CostDefinition::COST_INVOICE_TYPE_MIGRATION_INITIAL);
             $costItem->save();
-
+            
+            // The actual cost column will no longer be used
             $project->setActualCost(0)
                 ->save();
-
-            exit;
         }
     }
 }
