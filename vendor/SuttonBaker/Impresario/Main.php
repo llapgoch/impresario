@@ -68,6 +68,11 @@ class Main
         );
 
         $api->addRoute(
+            'supplier',
+            '\SuttonBaker\Impresario\Api\Supplier'
+        );
+
+        $api->addRoute(
             'variation',
             '\SuttonBaker\Impresario\Api\Variation'
         );
@@ -93,7 +98,8 @@ class Main
         $this->getApp()->getContollerManager()->register([
             \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT => '\SuttonBaker\Impresario\Controller\Client\EditController',
             \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
-            \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
+            \SuttonBaker\Impresario\Definition\Page::SUPPLIER_LIST => '\SuttonBaker\Impresario\Controller\Supplier\ListController',
+            \SuttonBaker\Impresario\Definition\Page::SUPPLIER_EDIT => '\SuttonBaker\Impresario\Controller\Supplier\EditController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT => '\SuttonBaker\Impresario\Controller\Enquiry\EditController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST => '\SuttonBaker\Impresario\Controller\Enquiry\ListController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Enquiry\ReportController',
@@ -121,6 +127,7 @@ class Main
     {
         $this->getApp()->getInstallerManager()->register([
             '\SuttonBaker\Impresario\Installer\Client',
+            '\SuttonBaker\Impresario\Installer\Supplier',
             '\SuttonBaker\Impresario\Installer\Enquiry',
             '\SuttonBaker\Impresario\Installer\Task',
             '\SuttonBaker\Impresario\Installer\Quote',
@@ -142,6 +149,7 @@ class Main
             '\SuttonBaker\Impresario\Layout\DefaultLayout',
             '\SuttonBaker\Impresario\Layout\IndexLayout',
             '\SuttonBaker\Impresario\Layout\Client',
+            '\SuttonBaker\Impresario\Layout\Supplier',
             '\SuttonBaker\Impresario\Layout\Enquiry',
             '\SuttonBaker\Impresario\Layout\Task',
             '\SuttonBaker\Impresario\Layout\Quote',

@@ -36,11 +36,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     {
         parent::_preDispatch();
 
-        wp_register_script('impresario_cost', get_template_directory_uri() . '/assets/js/cost-edit.js', ['jquery']);
-        wp_enqueue_script('impresario_cost');
-
-        $this->addClass('js-cost-form js-loader');
-
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -55,19 +50,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
         $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
-        $totalAmountRemaining = $this->parentItem->getTotalNetSell();
-
-        // Get the invoice amount remaining, without this invoice amount
-        /*  Do it this way rather than using getTotalAmountRemaining and taking off the current invoice amount
-            in case the current invoice amount is greater than the amount remaining 
-        */
-        foreach ($this->parentItem->getInvoices()->load() as $invoice) {
-            if ($invoice->getId() == $this->modelInstance->getId()) {
-                continue;
-            }
-
-            $totalAmountRemaining = max(0, $totalAmountRemaining - $invoice->getValue());
-        }
 
         $costTypes = CostDefintion::getVisibleCostInvoiceTypes();
 
@@ -106,7 +88,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-6'
                 ],
             ], [
                 'name' => 'value',
@@ -116,19 +98,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'class' => 'js-invoice-value',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ],
-            ], [
-                'name' => 'amount_remaining',
-                'labelName' => "Amount Remaining on {$invoiceTypeName}",
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number_val',
-                'attributes' => ['readonly' => 'readonly'],
-                'class' => 'js-amount-remaining',
-                'value' => $this->getLocaleHelper()->formatCurrency($this->parentItem->getInvoiceAmountRemaining()),
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-6'
                 ],
             ], [
                 'name' => 'submit',

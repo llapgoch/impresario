@@ -11,6 +11,9 @@ class Page
 {
     const CLIENT_LIST = 'client_list';
     const CLIENT_EDIT = 'client_edit';
+    
+    const SUPPLIER_LIST = 'supplier_list';
+    const SUPPLIER_EDIT = 'supplier_edit';
 
     const ENQUIRY_LIST = 'enquiry_list';
     const ENQUIRY_EDIT = 'enquiry_edit';
