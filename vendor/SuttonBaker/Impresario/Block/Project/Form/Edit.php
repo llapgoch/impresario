@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Block\Project\Form;
 use DaveBaker\Core\Definitions\Api;
 use DaveBaker\Core\Definitions\Table;
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
@@ -26,6 +27,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     protected $taskTableBlock;
     /** @var \SuttonBaker\Impresario\Block\Invoice\TableContainer */
     protected $invoiceTableBlock;
+    /** @var \SuttonBaker\Impresario\Block\Cost\TableContainer */
+    protected $costTableBlock;
     /** @var \SuttonBaker\Impresario\Block\Variation\TableContainer */
     protected $variationTableBlock;
     /** @var \SuttonBaker\Impresario\Model\Db\Project */
@@ -93,7 +96,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'display_name'
                 )->getElementData();
         }
-
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(
@@ -334,13 +336,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ],  [
-                'name' => 'actual_cost',
+                'name' => 'total_actual_cost',
                 'formGroup' => true,
                 'class' => 'js-actual-cost',
-                'labelName' => 'Actual Cost (£)',
+                'labelName' => 'Actual Cost',
                 'rowIdentifier' => 'actual_cost_values',
                 'type' => 'Input\Text',
-                'attributes' => ['placeholder' => '£'],
+                'attributes' => [
+                    'placeholder' => '£',
+                    'readonly' => 'readonly'
+                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]
@@ -467,6 +472,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         if ($entityId) {
             $this->createTaskTableBlock();
             $this->createInvoiceTableBlock();
+            $this->createCostTableBlock();
             $this->createVariationTableBlock();
         }
 
@@ -559,6 +565,35 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
 
         $this->addChildBlock($this->invoiceTableBlock);
+    }
+
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function createCostTableBlock()
+    {
+        if (!$this->getInvoiceHelper()->currentUserCanView()) {
+            return;
+        }
+
+        $this->costTableBlock = $this->createBlock(
+            '\SuttonBaker\Impresario\Block\Cost\TableContainer',
+            "{$this->blockPrefix}.cost.table"
+        )->setOrder('before', 'project.variation.table');
+
+        $this->costTableBlock->setInstanceCollection(
+            $this->getCostHelper()->getCostCollectionForEntity(
+                $this->modelInstance->getId(),
+                CostDefinition::COST_TYPE_PROJECT
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+        $this->addChildBlock($this->costTableBlock);
     }
 
     /**
@@ -677,7 +712,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
                 $invoiceTileBlock->addChildBlock(
                     $this->createSmallButtonElement(
-                        'Create Invoice',
+                        'Create Sales Invoice',
                         $this->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
                             [
@@ -689,6 +724,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         'create.invoice.button',
                         'header_elements'
                     )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+                );
+            }
+
+            if ($costTileBlock = $this->getBlockManager()->getBlock('cost.tile.block')) {
+                $costTileBlock->addChildBlock(
+                    $this->createSmallButtonElement(
+                        'Create Cost Invoice',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
+                            [
+                                'cost_type' => CostDefinition::COST_TYPE_PROJECT,
+                                'parent_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'create.cost.button',
+                        'header_elements'
+                    )->setCapabilities($this->getCostHelper()->getEditCapabilities())
                 );
             }
         }

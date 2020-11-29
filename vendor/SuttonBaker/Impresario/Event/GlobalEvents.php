@@ -6,6 +6,7 @@ use DaveBaker\Core\Block\Html\Heading;
 use DaveBaker\Core\Definitions\Table;
 use SuttonBaker\Impresario\Definition\Archive;
 use SuttonBaker\Impresario\Definition\Client;
+use SuttonBaker\Impresario\Definition\Supplier;
 use SuttonBaker\Impresario\Definition\Enquiry;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Quote;
@@ -60,6 +61,11 @@ class GlobalEvents extends \DaveBaker\Core\Base
         $event = $this->getApp()->getApiManager()->getRouteEvent(Client::API_ENDPOINT_UPDATE_TABLE);
         $this->addEvent($event, function(){
             $this->getApp()->getHandleManager()->addHandle(Page::CLIENT_LIST);
+        });
+
+        $event = $this->getApp()->getApiManager()->getRouteEvent(Supplier::API_ENDPOINT_UPDATE_TABLE);
+        $this->addEvent($event, function(){
+            $this->getApp()->getHandleManager()->addHandle(Page::SUPPLIER_LIST);
         });
 
         $event = $this->getApp()->getApiManager()->getRouteEvent(Enquiry::API_ENDPOINT_UPDATE_TABLE);

@@ -63,6 +63,16 @@ class Main
         );
 
         $api->addRoute(
+            'cost',
+            '\SuttonBaker\Impresario\Api\Cost'
+        );
+
+        $api->addRoute(
+            'supplier',
+            '\SuttonBaker\Impresario\Api\Supplier'
+        );
+
+        $api->addRoute(
             'variation',
             '\SuttonBaker\Impresario\Api\Variation'
         );
@@ -88,7 +98,8 @@ class Main
         $this->getApp()->getContollerManager()->register([
             \SuttonBaker\Impresario\Definition\Page::CLIENT_EDIT => '\SuttonBaker\Impresario\Controller\Client\EditController',
             \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
-            \SuttonBaker\Impresario\Definition\Page::CLIENT_LIST => '\SuttonBaker\Impresario\Controller\Client\ListController',
+            \SuttonBaker\Impresario\Definition\Page::SUPPLIER_LIST => '\SuttonBaker\Impresario\Controller\Supplier\ListController',
+            \SuttonBaker\Impresario\Definition\Page::SUPPLIER_EDIT => '\SuttonBaker\Impresario\Controller\Supplier\EditController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_EDIT => '\SuttonBaker\Impresario\Controller\Enquiry\EditController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_LIST => '\SuttonBaker\Impresario\Controller\Enquiry\ListController',
             \SuttonBaker\Impresario\Definition\Page::ENQUIRY_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Enquiry\ReportController',
@@ -101,6 +112,7 @@ class Main
             \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\ListController',
             \SuttonBaker\Impresario\Definition\Page::PROJECT_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\ReportController',
             \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT => '\SuttonBaker\Impresario\Controller\Invoice\EditController',
+            \SuttonBaker\Impresario\Definition\Page::COST_EDIT => '\SuttonBaker\Impresario\Controller\Cost\EditController',
             \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT => '\SuttonBaker\Impresario\Controller\Variation\EditController',
             \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Archive\ReportController',
             \DaveBaker\Core\Layout\Handle\Manager::HANDLE_DEFAULT => '\SuttonBaker\Impresario\Controller\DefaultController'
@@ -115,9 +127,11 @@ class Main
     {
         $this->getApp()->getInstallerManager()->register([
             '\SuttonBaker\Impresario\Installer\Client',
+            '\SuttonBaker\Impresario\Installer\Supplier',
             '\SuttonBaker\Impresario\Installer\Enquiry',
             '\SuttonBaker\Impresario\Installer\Task',
             '\SuttonBaker\Impresario\Installer\Quote',
+            '\SuttonBaker\Impresario\Installer\Cost',
             '\SuttonBaker\Impresario\Installer\Project',
             '\SuttonBaker\Impresario\Installer\InvoiceVariation',
             '\SuttonBaker\Impresario\Installer\Archive',
@@ -135,11 +149,13 @@ class Main
             '\SuttonBaker\Impresario\Layout\DefaultLayout',
             '\SuttonBaker\Impresario\Layout\IndexLayout',
             '\SuttonBaker\Impresario\Layout\Client',
+            '\SuttonBaker\Impresario\Layout\Supplier',
             '\SuttonBaker\Impresario\Layout\Enquiry',
             '\SuttonBaker\Impresario\Layout\Task',
             '\SuttonBaker\Impresario\Layout\Quote',
             '\SuttonBaker\Impresario\Layout\Project',
             '\SuttonBaker\Impresario\Layout\Invoice',
+            '\SuttonBaker\Impresario\Layout\Cost',
             '\SuttonBaker\Impresario\Layout\Variation',
             '\SuttonBaker\Impresario\Layout\Archive',
             '\SuttonBaker\Impresario\Layout\Login'

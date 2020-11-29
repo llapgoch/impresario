@@ -4,19 +4,19 @@ namespace SuttonBaker\Impresario\Api;
 
 use \DaveBaker\Core\Definitions\Messages;
 use SuttonBaker\Impresario\Definition\Roles;
-use SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 
 /**
  * Class Invoice
  * @package SuttonBaker\Impresario\Api
  */
-class Invoice
+class Cost
     extends Base
 {
     /** @var string */
-    protected $blockPrefix = 'invoice';
+    protected $blockPrefix = 'cost';
     /** @var array */
-    protected $capabilities = [Roles::CAP_VIEW_INVOICE];
+    protected $capabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_COST];
 
     /**
      * @param $params
@@ -26,28 +26,28 @@ class Invoice
      */
     public function deleteAction($params, \WP_REST_Request $request)
     {
-        /** @var \SuttonBaker\Impresario\Helper\Invoice $helper */
-        $helper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
+        /** @var \SuttonBaker\Impresario\Helper\Cost $helper */
+        $helper = $this->getCostHelper();
 
         if(!$helper->currentUserCanEdit()) {
             return $this->getAccessDeniedError();
         }
 
         if(!isset($params['id'])){
-            throw new Exception('The item could not be found');
+            throw new \Exception('The item could not be found');
         }
 
-        /** @var \SuttonBaker\Impresario\Model\Db\Invoice $item */
+        /** @var \SuttonBaker\Impresario\Model\Db\Cost $item */
         $item = $this->createAppObject(
-            InvoiceDefinition::DEFINITION_MODEL
+            CostDefinition::DEFINITION_MODEL
         )->load($params['id']);
 
         if(!$item->getId()){
-            throw new Exception('The invoice could not be found');
+            throw new \Exception('The invoice could not be found');
         }
 
-        $helper->deleteInvoice($item);
-        $this->addMessage('The invoice has been removed', Messages::SUCCESS);
+        $helper->deleteCost($item);
+        $this->addMessage('The cost invoice has been removed', Messages::SUCCESS);
 
         return true;
     }
@@ -62,10 +62,10 @@ class Invoice
         \WP_REST_Request $request
     ) {
         if(!isset($params['id'])){
-            throw new Exception('ID is required');
+            throw new \Exception('ID is required');
         }
         
-        $object = $this->getInvoiceHelper()->getInvoice($params['id']);
+        $object = $this->getCostHelper()->getCost($params['id']);
         return $this->performRecordMonitor($params, $object);
     }
 

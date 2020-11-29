@@ -1,9 +1,9 @@
 <?php
 
-namespace SuttonBaker\Impresario\Block\Invoice;
+namespace SuttonBaker\Impresario\Block\Cost;
 
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
-use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 /**
  * Class TableContainer
  * @package SuttonBaker\Impresario\Block\Task
@@ -13,16 +13,16 @@ class TableContainer
     implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string  */
-    protected $blockPrefix = 'invoice_table';
+    protected $blockPrefix = 'cost_table';
     /** @var string  */
-    protected $idParam = 'invoice_id';
-    /** @var \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection */
+    protected $idParam = 'cost_id';
+    /** @var \SuttonBaker\Impresario\Model\Db\Cost\Collection $instanceCollection */
     protected $instanceCollection;
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
 
     /**
-     * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection
+     * @return \SuttonBaker\Impresario\Model\Db\Cost\Collection
      */
     public function getInstanceCollection()
     {
@@ -30,11 +30,11 @@ class TableContainer
     }
 
     /**
-     * @param \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection
+     * @param \SuttonBaker\Impresario\Model\Db\Cost\Collection $instanceCollection
      * @return $this
      */
     public function setInstanceCollection(
-        \SuttonBaker\Impresario\Model\Db\Invoice\Collection $instanceCollection
+        \SuttonBaker\Impresario\Model\Db\Cost\Collection $instanceCollection
     ) {
         $this->instanceCollection = $instanceCollection;
         return $this;
@@ -53,11 +53,11 @@ class TableContainer
     {
 
         if(!$this->instanceCollection){
-            $this->instanceCollection = $this->getInvoiceHelper()->getInvoiceCollection();
+            $this->instanceCollection = $this->getCostHelper()->getCostCollection();
         }
 
         $this->instanceCollection->addOutputProcessors([
-            'invoice_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'cost_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'value' => $this->getLocaleHelper()->getOutputProcessorCurrency()
         ]);
 
@@ -66,8 +66,8 @@ class TableContainer
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
-                'invoice.tile.block'
-            )->setHeading('<strong>Sales Invoices</strong>')
+                'cost.tile.block'
+            )->setHeading('<strong>Cost Invoices</strong>')
         );
 
 
@@ -77,9 +77,9 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                    "invoice.list.table",
+                    "cost.list.table",
                     'content'
-                )->setHeaders(InvoiceDefinition::TABLE_HEADERS)
+                )->setHeaders(CostDefinition::TABLE_HEADERS)
                     ->setRecords($this->instanceCollection)
                     ->addClass('table-striped')
             );
@@ -87,8 +87,8 @@ class TableContainer
             $tableBlock->setLinkCallback(
                 function ($headerKey, $record) {
                     return $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
-                        ['invoice_id' => $record->getId()],
+                        \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
+                        ['cost_id' => $record->getId()],
                         true
                     );
                 }
@@ -97,9 +97,9 @@ class TableContainer
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
-                    "invoice.list.no.records",
+                    "cost.list.no.records",
                     'content'
-                )->setTagText('No invoices have currently been created')
+                )->setTagText('No costs have currently been created')
             );
         }
     }

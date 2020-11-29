@@ -3,7 +3,9 @@
 namespace SuttonBaker\Impresario\Model\Db;
 
 use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Model\Db
@@ -14,6 +16,8 @@ class Project extends Base
     protected $variations;
     /** @var Invoice\Collection */
     protected $invoices;
+    /** @var Cost\Collection */
+    protected $costs;
 
     /**
      * @return $this
@@ -42,11 +46,11 @@ class Project extends Base
      */
     public function getVariations($reload = false)
     {
-        if(!$this->getId()){
+        if (!$this->getId()) {
             return null;
         }
 
-        if(!$this->variations || $reload) {
+        if (!$this->variations || $reload) {
             $this->variations = $this->getVariationHelper()->getVariationCollectionForProject($this->getId());
         }
 
@@ -61,16 +65,40 @@ class Project extends Base
      */
     public function getInvoices($reload = false)
     {
-        if(!$this->getId()){
+        if (!$this->getId()) {
             return null;
         }
 
-        if(!$this->invoices || $reload) {
+        if (!$this->invoices || $reload) {
             $this->invoices = $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
-                $this->getId(), InvoiceDefinition::INVOICE_TYPE_PROJECT);
+                $this->getId(),
+                InvoiceDefinition::INVOICE_TYPE_PROJECT
+            );
         }
 
         return $this->invoices;
+    }
+
+    /**
+     * @param $reload
+     * @return null|Cost\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getCosts($reload = false)
+    {
+        if (!$this->getId()) {
+            return null;
+        }
+
+        if (!$this->costs || $reload) {
+            $this->costs = $this->getCostHelper()->getCostCollectionForEntity(
+                $this->getId(),
+                CostDefinition::COST_TYPE_PROJECT
+            );
+        }
+
+        return $this->costs;
     }
 
     /**
@@ -96,10 +124,10 @@ class Project extends Base
     {
         $netCost = (float) $this->getNetCost();
 
-        if($this->getVariations()){
+        if ($this->getVariations()) {
             /** @var Variation $variation */
             foreach ($this->getVariations()->load() as $variation) {
-                if ($variation->isApproved()){
+                if ($variation->isApproved()) {
                     $netCost += (float)$variation->getNetCost();
                 }
             }
@@ -119,7 +147,7 @@ class Project extends Base
     {
         $netSell = (float) $this->getNetSell();
 
-        if($this->getVariations()) {
+        if ($this->getVariations()) {
             foreach ($this->getVariations()->load() as $variation) {
                 if ($variation->isApproved()) {
                     $netSell += (float)$variation->getValue();
@@ -140,9 +168,9 @@ class Project extends Base
     {
         $totalInvoiced = 0;
 
-        if($invoices = $this->getInvoices()){
+        if ($invoices = $this->getInvoices()) {
             /** @var Invoice $invoice */
-            foreach($invoices->load() as $invoice){
+            foreach ($invoices->load() as $invoice) {
                 $totalInvoiced += (float) $invoice->getValue();
             }
         }
@@ -171,7 +199,7 @@ class Project extends Base
      */
     protected function calculateGp()
     {
-        if(!$this->calculateTotalNetSell()){
+        if (!$this->calculateTotalNetSell()) {
             return 0;
         }
 
@@ -183,14 +211,32 @@ class Project extends Base
      */
     protected function calculateActualProfit()
     {
-        $actualCost = (float) $this->getActualCost();
+        $actualCost = (float) $this->getTotalActualCost();
         $netSell = (float) $this->calculateTotalNetSell();
 
-        if(is_nan($actualCost) || is_nan($netSell)){
+        if (is_nan($actualCost) || is_nan($netSell)) {
             return null;
         }
 
         return $netSell - $actualCost;
+    }
+
+
+    /**
+     * @return null|float
+     */
+    protected function calculateTotalActualCost()
+    {
+        $totalCost = 0;
+
+        if ($costs = $this->getCosts()) {
+            /** @var Invoice $invoice */
+            foreach ($costs->load() as $cost) {
+                $totalCost += (float) $cost->getValue();
+            }
+        }
+
+        return $totalCost;
     }
 
     /**
@@ -200,16 +246,17 @@ class Project extends Base
     {
         $netSell = $this->calculateTotalNetSell();
 
-        if($netSell > 0 && is_nan($netSell) === false && ($profit = $this->getActualProfit()) !== null){
+        if ($netSell > 0 && is_nan($netSell) === false && ($profit = $this->getActualProfit()) !== null) {
             return ($profit / $netSell) * 100;
         }
-            
+
         return null;
     }
 
     protected function beforeSave()
     {
         $this->setData('gp', $this->calculateGp())
+            ->setData('total_actual_cost', $this->calculateTotalActualCost())
             ->setData('profit', $this->calculateProfit())
             ->setData('total_net_cost', $this->calculateTotalNetCost())
             ->setData('total_net_sell', $this->calculateTotalNetSell())

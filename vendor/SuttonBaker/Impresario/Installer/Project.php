@@ -60,6 +60,7 @@ class Project
               `total_net_cost` decimal(10,4) DEFAULT NULL,
               `total_net_sell` decimal(10,4) DEFAULT NULL,
               `actual_cost` decimal(10,4) DEFAULT NULL,
+              `total_actual_cost` decimal(10,4) DEFAULT NULL,
               `profit` decimal(10,4) DEFAULT NULL,
               `amount_invoiced` decimal(10,4) DEFAULT NULL,
               `invoice_amount_remaining` decimal(10,4) DEFAULT NULL,
