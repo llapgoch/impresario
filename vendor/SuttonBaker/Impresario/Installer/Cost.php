@@ -1,14 +1,19 @@
 <?php
 
 namespace SuttonBaker\Impresario\Installer;
+
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+
 /**
  * Class InvoiceVariation
  * @package SuttonBaker\Impresario\Installer
  */
 class Cost
-    extends \DaveBaker\Core\Installer\Base
-    implements \DaveBaker\Core\Installer\InstallerInterface
+extends \DaveBaker\Core\Installer\Base
+implements \DaveBaker\Core\Installer\InstallerInterface
 {
+    const DEFAULT_COST_NUMBER = 'MIGRATION';
+    /** @var string */
     protected $installerCode = 'impresario_cost';
 
     /**
@@ -21,12 +26,14 @@ class Cost
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::COST_EDIT, [
+            \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
+            [
                 "post_title" => "Edit Cost"
             ]
         );
 
-        $this->deltaTable('cost',
+        $this->deltaTable(
+            'cost',
             "CREATE TABLE `{{tableName}}` (
               `cost_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `cost_date` datetime DEFAULT NULL,
@@ -46,6 +53,44 @@ class Cost
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
 
+        $this->migrateCosts();
     }
 
+
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectCollection()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Project\Collection::class);
+    }
+
+
+    protected function migrateCosts()
+    {
+        $collection = $this->getProjectCollection()
+            ->where('actual_cost > 0');
+
+        $projectsWithActualCost = $collection->load();
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Project $project */
+        foreach ($projectsWithActualCost as $project) {
+            $costItem = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Cost::class);
+            $costItem
+                ->setCostNumber(self::DEFAULT_COST_NUMBER)
+                ->setValue($project->getActualCost())
+                ->setCreatedById(1)
+                ->setCostType(CostDefinition::COST_TYPE_PROJECT)
+                ->setParentId($project->getId())
+                ->setCostDate($this->getDateHelper()->utcTimestampToDb())
+                ->setCostInvoiceType(CostDefinition::COST_INVOICE_TYPE_MIGRATION_INITIAL);
+            $costItem->save();
+
+            $project->setActualCost(0)
+                ->save();
+
+            exit;
+        }
+    }
 }
