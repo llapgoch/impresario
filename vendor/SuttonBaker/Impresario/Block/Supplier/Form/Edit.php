@@ -123,19 +123,19 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'select_options' => $countries
                 ]
             ], [
-                'name' => 'sales_contact_phone',
-                'rowIdentifier' => 'sales_contact',
+                'name' => 'supplier_contact_phone',
+                'rowIdentifier' => 'supplier_contact',
                 'formGroup' => true,
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ],
-                'labelName' => 'Sales Phone Number *',
+                'labelName' => 'Supplier Phone Number *',
                 'type' => 'Input\Text'
             ], [
-                'name' => 'sales_contact',
-                'labelName' => 'Sales Contact Name *',
+                'name' => 'supplier_contact',
+                'labelName' => 'Supplier Contact Name *',
                 'type' => 'Input\Text',
-                'rowIdentifier' => 'sales_contact',
+                'rowIdentifier' => 'supplier_contact',
                 'formGroup' => true,
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
