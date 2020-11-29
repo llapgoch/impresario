@@ -34,6 +34,7 @@ class Cost
               `value` decimal(10,4) DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
+              `supplier_id` int(11) DEFAULT NULL,
               `cost_type` varchar(20) DEFAULT NULL,
               `parent_id` int(11) DEFAULT NULL,
               `cost_invoice_type` varchar(30) DEFAULT NULL,

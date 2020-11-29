@@ -21,6 +21,10 @@ class CostConfigurator
         );
 
         $this->addRule(
+            $this->createRule('Required', 'cost_invoice_type', 'Invoice Type')
+        );
+
+        $this->addRule(
             $this->createRule('Required', 'cost_number', 'Cost Number')
         );
 

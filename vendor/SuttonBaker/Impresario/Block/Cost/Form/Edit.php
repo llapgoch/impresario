@@ -53,16 +53,26 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         $costTypes = CostDefintion::getVisibleCostInvoiceTypes();
 
+        if ($supplierCollection = $this->getSupplierHelper()->getSupplierCollection()) {
+            $suppliers = $this->createCollectionSelectConnector()
+            ->configure(
+                $supplierCollection,
+                'supplier_id',
+                'supplier_name'
+            )->getElementData();
+
+        }
+
         $elements = $builder->build([
             [
                 'name' => 'cost_date',
                 'labelName' => 'Invoice Date *',
                 'class' => 'js-date-picker',
-                'rowIdentifier' => 'invoice_date',
+                'rowIdentifier' => 'invoice_date_supplier',
                 'type' => 'Input\Text',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
                 'value' => $this->getDateHelper()->currentDateShortLocalOutput(),
                 'attributes' => [
@@ -74,12 +84,24 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Invoice Type',
                 'formGroup' => true,
                 'type' => 'Select',
-                'rowIdentifier' => 'invoice_date',
+                'rowIdentifier' => 'invoice_date_supplier',
                 'data' => [
                     'select_options' => $costTypes,
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'supplier_id',
+                'labelName' => 'Supplier',
+                'formGroup' => true,
+                'type' => 'Select',
+                'rowIdentifier' => 'invoice_date_supplier',
+                'data' => [
+                    'select_options' => $suppliers,
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'cost_number',
