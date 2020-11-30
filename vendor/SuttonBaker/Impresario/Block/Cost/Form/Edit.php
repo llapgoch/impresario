@@ -51,7 +51,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
         $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
 
-        $costTypes = CostDefintion::getVisibleCostInvoiceTypes();
+        $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefintion::getCostInvoiceTypes(true))->getElementData();
 
         if ($supplierCollection = $this->getSupplierHelper()->getSupplierCollection()) {
             $suppliers = $this->createCollectionSelectConnector()
@@ -86,7 +86,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'rowIdentifier' => 'invoice_date_supplier',
                 'data' => [
-                    'select_options' => $costTypes,
+                    'select_options' => $costInvoiceTypes,
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'

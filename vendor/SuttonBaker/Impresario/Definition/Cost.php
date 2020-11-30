@@ -7,10 +7,6 @@ namespace SuttonBaker\Impresario\Definition;
  */
 class Cost
 {
-    const COST_NAME = 'name';
-    const COST_VALUE = 'value';
-    const COST_VISIBLE = 'visible';
-
     const API_ENDPOINT_UPDATE_TABLE = 'cost/updatetable';
     const API_ENDPOINT_DELETE = 'cost/delete';
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
@@ -32,7 +28,9 @@ class Cost
         'cost_id' => 'ID',
         'cost_date' => 'Date',
         'cost_number' => 'Number',
-        'value' => 'Cost Amount'
+        'value' => 'Cost Amount',
+        'supplier_name' => 'Supplier Name',
+        'cost_invoice_type' => 'Type'
     ];
 
     /**
@@ -49,14 +47,20 @@ class Cost
      *
      * @return array
      */
-    public static function getVisibleCostInvoiceTypes()
+    public static function getCostInvoiceTypes($visibleOnly = false)
     {
-        return [
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_LABOUR, self::COST_NAME => 'Labour'],
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_PLANT, self::COST_NAME => 'Plant'],
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_MATERIAL, self::COST_NAME => 'Material'],
-            [self::COST_VALUE => self::COST_INVOICE_TYPE_SUBCONTRACTOR, self::COST_NAME => 'Sub-contractor'],
+        $items = [
+            self::COST_INVOICE_TYPE_LABOUR => 'Labour',
+            self::COST_INVOICE_TYPE_PLANT => 'Plant',
+            self::COST_INVOICE_TYPE_MATERIAL => 'Material',
+            self::COST_INVOICE_TYPE_SUBCONTRACTOR => 'Sub-contractor'
         ];
+
+        if($visibleOnly === false) {
+            $items[self::COST_INVOICE_TYPE_MIGRATION_INITIAL] = 'Migration';
+        }
+
+        return $items;
     }
 
 }
