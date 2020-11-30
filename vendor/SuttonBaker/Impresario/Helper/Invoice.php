@@ -134,7 +134,7 @@ class Invoice extends Base
      */
     public function getInvoiceTypeOutputProcessor()
     {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Invoice\Type');
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\InvoiceType::class);
     }
 
     /**

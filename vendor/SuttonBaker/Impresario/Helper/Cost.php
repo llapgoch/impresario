@@ -25,9 +25,16 @@ class Cost extends Base
         /** @var \SuttonBaker\Impresario\Model\Db\Cost\Collection $collection */
         $collection = $this->createAppObject(
             '\SuttonBaker\Impresario\Model\Db\Cost\Collection'
-        )->where('is_deleted=?', '0');
+        )->where('{{cost}}.is_deleted=?', '0');
         
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
+        $supplierTable = $this->getApp()->getHelper('Db')->getTableName('supplier');
+
+        $collection->joinLeft(
+            ['supplier' => $supplierTable],
+            "supplier.supplier_id={{cost}}.supplier_id",
+            ['supplier_name' => 'supplier_name']
+        );
 
         $collection->joinLeft(
             ['created_by_user'=> $userTable],
@@ -35,9 +42,19 @@ class Cost extends Base
             ['created_by_name' => 'display_name']
         )->order('{{cost}}.cost_id DESC');
 
-
         return $collection;
     }
+
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getCostInvoiceTypeName($status)
+    {
+        return $this->getDisplayName($status, CostDefinition::getCostInvoiceTypes());
+    }
+
 
     /**
      * @param $entityId
@@ -52,7 +69,6 @@ class Cost extends Base
             ->where('cost_type=?', $entityType)
             ->where('parent_id=?', $entityId);
     }
-
 
 
     /**
@@ -121,9 +137,9 @@ class Cost extends Base
      * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Type
      * @throws \DaveBaker\Core\Object\Exception
      */
-    public function getCostTypeOutputProcessor()
+    public function getCostInvoiceTypeOutputProcessor()
     {
-        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Type');
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\InvoiceType::class);
     }
 
     /**
