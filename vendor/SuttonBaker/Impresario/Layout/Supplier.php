@@ -11,7 +11,7 @@ class Supplier extends Base
 
     /** @var string  */
     protected $blockPrefix = 'supplier';
-    protected $headingName = 'Supplier';
+    protected $headingName = 'Suppliers';
     protected $icon = \SuttonBaker\Impresario\Definition\Supplier::ICON;
 
     /**
