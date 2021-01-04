@@ -3,6 +3,7 @@ namespace SuttonBaker\Impresario\Block\Structure;
 
 use SuttonBaker\Impresario\Definition\Archive;
 use SuttonBaker\Impresario\Definition\Client;
+use SuttonBaker\Impresario\Definition\Supplier;
 use SuttonBaker\Impresario\Definition\Enquiry;
 use \SuttonBaker\Impresario\Definition\Page as PageDefintion;
 use SuttonBaker\Impresario\Definition\Project;
@@ -51,6 +52,8 @@ class Nav extends \DaveBaker\Core\Block\Template
 
         /** @var \SuttonBaker\Impresario\Helper\Client $clientHelper */
         $clientHelper = $this->createAppObject(\SuttonBaker\Impresario\Helper\Client::class);
+        /** @var \SuttonBaker\Impresario\Helper\Supplier $supplierHelper */
+        $supplierHelper = $this->createAppObject(\SuttonBaker\Impresario\Helper\Supplier::class);
         /** @var \SuttonBaker\Impresario\Helper\Enquiry $enquiryHelper */
         $enquiryHelper = $this->createAppObject(\SuttonBaker\Impresario\Helper\Enquiry::class);
         /** @var \SuttonBaker\Impresario\Helper\Quote $quoteHelper */
@@ -102,6 +105,32 @@ class Nav extends \DaveBaker\Core\Block\Template
             }
 
             $navItems[] = $clientNavItem;
+        }
+
+        if($supplierHelper->currentUserCanView()) {
+            $supplierNavItem = [
+                'identifier' => 'suppliers',
+                'name' => 'Suppliers',
+                'link' => $this->getPageUrl(PageDefintion::SUPPLIER_LIST),
+                'icon' => Supplier::ICON,
+                'subs' => []
+            ];
+
+            $supplierNavItem['subs'][] = [
+                'name' => 'View Suppliers',
+                'icon' => 'fa-eye',
+                'link' => $this->getPageUrl(PageDefintion::SUPPLIER_LIST)
+            ];
+
+            if($clientHelper->currentUserCanEdit()){
+                $supplierNavItem['subs'][] = [
+                    'name' => 'Add Supplier',
+                    'icon' => 'fa-plus',
+                    'link' => $this->getPageUrl(PageDefintion::SUPPLIER_EDIT)
+                ];
+            }
+
+            $navItems[] = $supplierNavItem;
         }
 
         if($enquiryHelper->currentUserCanView()) {

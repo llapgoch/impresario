@@ -13,7 +13,7 @@ class Supplier
     const API_ENDPOINT_UPDATE_TABLE = 'supplier/updatetable';
     const API_ENDPOINT_RECORD_MONITOR = 'supplier/recordmonitor';
     const API_ENDPOINT_DELETE = 'supplier/delete';
-    const ICON = 'fa fa-address-book';
+    const ICON = 'fa fa-address-card-o';
 
     const RECORDS_PER_PAGE = 20;
 

@@ -12,7 +12,7 @@ class Cost
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
     const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Cost';
     const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Cost\Collection';
-    const ICON = 'fa fa-gbp';
+    const ICON = 'fa fa-tags';
 
     const COST_INVOICE_TYPE_LABOUR = 'labour';
     const COST_INVOICE_TYPE_PLANT = 'plant';
