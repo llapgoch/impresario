@@ -25,6 +25,10 @@ class CostConfigurator
         );
 
         $this->addRule(
+            $this->createRule('Required', 'supplier_id', 'Supplier')
+        );
+
+        $this->addRule(
             $this->createRule('Required', 'cost_number', 'Cost Number')
         );
 

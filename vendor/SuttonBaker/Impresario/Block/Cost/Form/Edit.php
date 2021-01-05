@@ -81,7 +81,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'cost_invoice_type',
-                'labelName' => 'Invoice Type',
+                'labelName' => 'Invoice Type *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'rowIdentifier' => 'invoice_date_supplier',
@@ -93,7 +93,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ]
             ], [
                 'name' => 'supplier_id',
-                'labelName' => 'Supplier',
+                'labelName' => 'Supplier *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'rowIdentifier' => 'invoice_date_supplier',
