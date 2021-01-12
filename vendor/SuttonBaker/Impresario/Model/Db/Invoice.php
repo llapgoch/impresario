@@ -28,6 +28,15 @@ class Invoice extends Base
     }
 
     /**
+     *
+     * @return void
+     */
+    protected function beforeSave()
+    {
+        $this->setValue(round($this->getValue(), 2));
+    }
+
+    /**
      * @throws \DaveBaker\Core\Event\Exception
      * @throws \DaveBaker\Core\Model\Db\Exception
      * @throws \DaveBaker\Core\Object\Exception

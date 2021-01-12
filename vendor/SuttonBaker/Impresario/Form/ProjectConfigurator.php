@@ -20,6 +20,7 @@ class ProjectConfigurator
     {
         $projectStarted = in_array($this->getValue('status'), [
             Project::STATUS_ON_SITE,
+            Project::STATUS_RECALL,
             Project::STATUS_ON_SITE_VRF_SUBMITTED,
             Project::STATUS_READY_TO_INVOICE,
             Project::STATUS_READY_TO_SHUTDOWN, 
