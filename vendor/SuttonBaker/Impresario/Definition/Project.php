@@ -29,6 +29,11 @@ class Project
     const STATUS_ON_HOLD = 'on_hold';
     const STATUS_ON_HOLD_VRF_SUBMITTED = 'on_hold_vrf_sub';
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
+    const STATUS_PRESTART_BOOKED = 'prestart_booked';
+    const STATUS_PRESTART_COMPLETED = 'prestart_completed';
+    const STATUS_ON_SITE_VRF_SUBMITTED = 'onsite_vrf_submit';
+    const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
+    const STATUS_READY_TO_SHUTDOWN = 'ready_to_shutdown';
 
     const RECORDS_PER_PAGE = 20;
 
@@ -166,12 +171,17 @@ class Project
     public static function getStatuses()
     {
         return [
-            self::STATUS_OPEN => 'Pre-start',
-            self::STATUS_ON_SITE => 'On Site',
+            self::STATUS_OPEN => 'Awaiting Pre-start',
+            self::STATUS_PRESTART_BOOKED => 'Pre-start Booked',
+            self::STATUS_PRESTART_COMPLETED => 'Pre-start Completed',
             self::STATUS_ON_HOLD => 'On Hold',
             self::STATUS_ON_HOLD_VRF_REQUIRED => 'On Hold - VRF Required',
             self::STATUS_ON_HOLD_VRF_SUBMITTED => 'On Hold - VRF Submitted',
-            self::STATUS_COMPLETE => "Complete",
+            self::STATUS_ON_SITE => 'On Site',
+            self::STATUS_ON_SITE_VRF_SUBMITTED => 'On Site - VRF Submitted',
+            self::STATUS_READY_TO_INVOICE => 'Works Finished - Ready To Invoice',
+            self::STATUS_READY_TO_SHUTDOWN => 'Works Finished - Ready To Shutdown',
+            self::STATUS_COMPLETE => 'Complete',
             self::STATUS_CANCELLED => 'Cancelled'
         ];
     }
@@ -183,7 +193,12 @@ class Project
     {
         return [
             self::STATUS_OPEN => 'info',
+            self::STATUS_PRESTART_BOOKED => 'info',
+            self::STATUS_PRESTART_COMPLETED => 'info',
             self::STATUS_ON_SITE => 'warning',
+            self::STATUS_ON_SITE_VRF_SUBMITTED => 'warning',
+            self::STATUS_READY_TO_INVOICE => 'warning',
+            self::STATUS_READY_TO_SHUTDOWN => 'warning',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'
         ];
