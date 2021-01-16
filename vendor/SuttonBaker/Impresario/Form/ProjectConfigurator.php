@@ -20,6 +20,7 @@ class ProjectConfigurator
     {
         $projectStarted = in_array($this->getValue('status'), [
             Project::STATUS_ON_SITE,
+            Project::STATUS_RECALL,
             Project::STATUS_ON_SITE_VRF_SUBMITTED,
             Project::STATUS_READY_TO_INVOICE,
             Project::STATUS_READY_TO_SHUTDOWN, 
@@ -78,12 +79,6 @@ class ProjectConfigurator
                 return true;
             }
         ));
-
-        if($this->getValue('actual_cost')){
-            $this->addRule(
-                $this->createRule('Numeric', 'actual_cost', 'Actual Cost')
-            );
-        }
 
         /** @var \SuttonBaker\Impresario\Model\Db\Project $modelInstance */
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');

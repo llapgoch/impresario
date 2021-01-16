@@ -119,8 +119,10 @@ class EditController
             $data['invoice_amount_remaining'] = $this->getLocaleHelper()->formatCurrency(
                 $this->modelInstance->getInvoiceAmountRemaining()
             );
+            $data['total_actual_cost'] = $this->getLocaleHelper()->formatCurrency(
+                $this->modelInstance->getTotalActualCost()
+            );
             $data['actual_profit'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getActualProfit());
-            $data['actual_cost'] = (float)$data['actual_cost'];
             $data['actual_margin'] = round((float)$data['actual_margin'], 2) . "%";
 
             if($this->modelInstance->getProfit()){

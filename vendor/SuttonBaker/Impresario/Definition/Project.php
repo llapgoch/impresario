@@ -26,6 +26,7 @@ class Project
     const STATUS_ON_SITE = 'onsite';
     const STATUS_COMPLETE = 'complete';
     const STATUS_CANCELLED = 'cancelled';
+    const STATUS_RECALL = 'recall';
     const STATUS_ON_HOLD = 'on_hold';
     const STATUS_ON_HOLD_VRF_SUBMITTED = 'on_hold_vrf_sub';
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
@@ -133,7 +134,7 @@ class Project
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
         'invoice_amount_remaining' => 'Invoice Amount Remaining',
-        'actual_cost' => 'Actual Cost',
+        'total_actual_cost' => 'Total Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
         'comments' => 'Comments',
@@ -182,6 +183,7 @@ class Project
             self::STATUS_READY_TO_INVOICE => 'Works Finished - Ready To Invoice',
             self::STATUS_READY_TO_SHUTDOWN => 'Works Finished - Ready To Shutdown',
             self::STATUS_COMPLETE => 'Complete',
+            self::STATUS_RECALL => 'Recall',
             self::STATUS_CANCELLED => 'Cancelled'
         ];
     }

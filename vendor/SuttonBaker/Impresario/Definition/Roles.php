@@ -16,6 +16,10 @@ class Roles
 
     const CAP_EDIT_CLIENT = 'edit_client';
     const CAP_VIEW_CLIENT = 'view_client';
+    
+    const CAP_EDIT_SUPPLIER = 'edit_supplier';
+    const CAP_VIEW_SUPPLIER = 'view_supplier';
+    
     const CAP_EDIT_ENQUIRY = 'edit_enquiry';
     const CAP_VIEW_ENQUIRY = 'view_enquiry';
     const CAP_EDIT_QUOTE = 'edit_quote';
@@ -28,6 +32,8 @@ class Roles
     const CAP_EDIT_VARIATION = 'edit_variation';
     const CAP_VIEW_INVOICE = 'view_invoice';
     const CAP_EDIT_INVOICE = 'edit_invoice';
+    const CAP_VIEW_COST = 'view_cost';
+    const CAP_EDIT_COST = 'edit_cost';
     const CAP_ALL = 'all';
 
     /**

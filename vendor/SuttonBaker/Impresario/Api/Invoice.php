@@ -16,7 +16,7 @@ class Invoice
     /** @var string */
     protected $blockPrefix = 'invoice';
     /** @var array */
-    protected $capabilities = [Roles::CAP_VIEW_VARIATION];
+    protected $capabilities = [Roles::CAP_VIEW_INVOICE];
 
     /**
      * @param $params
