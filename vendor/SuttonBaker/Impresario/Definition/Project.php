@@ -130,7 +130,7 @@ class Project
         'foreman_name' => 'Foreman',
         'client_project_manager' => 'Client Project Manager',
         'net_cost' => 'Net Cost',
-        'net_sell' => 'Net Sell',
+        'total_net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
         'invoice_amount_remaining' => 'Invoice Amount Remaining',
