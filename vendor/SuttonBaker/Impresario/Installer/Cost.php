@@ -38,6 +38,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
               `cost_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `cost_date` datetime DEFAULT NULL,
               `cost_number` varchar(255) DEFAULT NULL,
+              `sage_number` varchar(255) DEFAULT NULL,
               `value` decimal(10,4) DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
@@ -53,7 +54,8 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
 
-        $this->migrateCosts();
+        // This has been removed as migrations were run once.
+        // $this->migrateCosts();
     }
 
 

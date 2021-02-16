@@ -20,6 +20,7 @@ class Enquiry
 
     const STATUS_OPEN = 'open';
     const STATUS_ENGINEER_ASSIGNED = 'engineer_assigned';
+    const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
     const STATUS_COMPLETE = 'complete';
     const STATUS_INVOICED = 'invoiced';
     const STATUS_CANCELLED = 'cancelled';
@@ -135,6 +136,7 @@ class Enquiry
         return [
             self::STATUS_OPEN => 'Open',
             self::STATUS_ENGINEER_ASSIGNED => 'Engineer Assigned',
+            self::STATUS_READY_TO_INVOICE => 'Ready To Invoice',
             self::STATUS_INVOICED => 'Invoiced',
             self::STATUS_COMPLETE => 'Complete',
             self::STATUS_CANCELLED => 'Cancelled'
@@ -149,6 +151,7 @@ class Enquiry
         return [
             self::STATUS_OPEN => 'danger',
             self::STATUS_ENGINEER_ASSIGNED => 'warning',
+            self::STATUS_READY_TO_INVOICE => 'success',
             self::STATUS_INVOICED => 'bg-blue',
             self::STATUS_COMPLETE => 'success'
         ];
