@@ -55,12 +55,11 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         if ($supplierCollection = $this->getSupplierHelper()->getSupplierCollection()) {
             $suppliers = $this->createCollectionSelectConnector()
-            ->configure(
-                $supplierCollection,
-                'supplier_id',
-                'supplier_name'
-            )->getElementData();
-
+                ->configure(
+                    $supplierCollection,
+                    'supplier_id',
+                    'supplier_name'
+                )->getElementData();
         }
 
         $elements = $builder->build([
@@ -110,7 +109,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'value',
@@ -120,7 +119,16 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'class' => 'js-invoice-value',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ],
+            ], [
+                'name' => 'sage_number',
+                'labelName' => 'Sage Number',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ],
             ], [
                 'name' => 'submit',

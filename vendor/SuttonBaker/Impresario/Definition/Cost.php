@@ -28,6 +28,7 @@ class Cost
         'cost_id' => 'ID',
         'cost_date' => 'Date',
         'cost_number' => 'Number',
+        'sage_number' => 'Sage Number',
         'value' => 'Cost Amount',
         'supplier_name' => 'Supplier Name',
         'cost_invoice_type' => 'Type'
