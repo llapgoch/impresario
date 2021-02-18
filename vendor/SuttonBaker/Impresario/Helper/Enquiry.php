@@ -150,8 +150,10 @@ class Enquiry
      */
     public function getOpenEnquiries()
     {
-        return $collection = $this->getEnquiryCollection()->where('status NOT IN (?)', [
-            EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED
+        return $collection = $this->getEnquiryCollection()->where('status IN (?)', [
+            EnquiryDefinition::STATUS_OPEN, 
+            EnquiryDefinition::STATUS_ENGINEER_ASSIGNED,
+            EnquiryDefinition::STATUS_READY_TO_INVOICE
         ]);
     }
 
