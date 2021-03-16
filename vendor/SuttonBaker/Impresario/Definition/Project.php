@@ -32,6 +32,7 @@ class Project
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
     const STATUS_PRESTART_BOOKED = 'prestart_booked';
     const STATUS_PRESTART_COMPLETED = 'prestart_completed';
+    const STATUS_RAMS_REQUIRED = 'rams_required';
     const STATUS_ON_SITE_VRF_SUBMITTED = 'onsite_vrf_submit';
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
     const STATUS_READY_TO_SHUTDOWN = 'ready_to_shutdown';
@@ -172,12 +173,13 @@ class Project
     public static function getStatuses()
     {
         return [
+            self::STATUS_ON_HOLD_VRF_REQUIRED => 'On Hold - VRF Required',
+            self::STATUS_ON_HOLD_VRF_SUBMITTED => 'On Hold - VRF Submitted',
+            self::STATUS_ON_HOLD => 'On Hold',
             self::STATUS_OPEN => 'Awaiting Pre-start',
             self::STATUS_PRESTART_BOOKED => 'Pre-start Booked',
             self::STATUS_PRESTART_COMPLETED => 'Pre-start Completed',
-            self::STATUS_ON_HOLD => 'On Hold',
-            self::STATUS_ON_HOLD_VRF_REQUIRED => 'On Hold - VRF Required',
-            self::STATUS_ON_HOLD_VRF_SUBMITTED => 'On Hold - VRF Submitted',
+            self::STATUS_RAMS_REQUIRED => 'RAMS Required',
             self::STATUS_ON_SITE => 'On Site',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'On Site - VRF Submitted',
             self::STATUS_READY_TO_INVOICE => 'Works Finished - Ready To Invoice',
@@ -199,8 +201,8 @@ class Project
             self::STATUS_PRESTART_COMPLETED => 'info',
             self::STATUS_ON_SITE => 'warning',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'warning',
-            self::STATUS_READY_TO_INVOICE => 'warning',
-            self::STATUS_READY_TO_SHUTDOWN => 'warning',
+            self::STATUS_READY_TO_INVOICE => 'success',
+            self::STATUS_READY_TO_SHUTDOWN => 'success',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'
         ];
