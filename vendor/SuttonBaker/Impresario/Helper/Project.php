@@ -48,10 +48,10 @@ class Project extends Base
      */
     public function getActionVerb(\DaveBaker\Core\Model\Db\BaseInterface $instance, $includeView = true)
     {
-        if($includeView && $instance->getStatus() == ProjectDefinition::STATUS_COMPLETE){
+        if ($includeView && $instance->getStatus() == ProjectDefinition::STATUS_COMPLETE) {
             return 'View';
         }
-        return parent::getActionVerb($instance, $includeView); 
+        return parent::getActionVerb($instance, $includeView);
     }
 
     /**
@@ -89,7 +89,7 @@ class Project extends Base
         \SuttonBaker\Impresario\Model\Db\Project $project,
         $returnUrl = null
     ) {
-        if($project && $project->getId()){
+        if ($project && $project->getId()) {
             return $this->getUrlHelper()->getPageUrl(
                 Page::PROJECT_EDIT,
                 ['project_id' => $project->getId()],
@@ -101,6 +101,16 @@ class Project extends Base
     }
 
     /**
+     *
+     * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
+     */
+    public function getBaseProjectCollection()
+    {
+        return $this->createAppObject(
+            ProjectDefinition::DEFINITION_COLLECTION
+        );
+    }
+    /**
      * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
@@ -108,9 +118,7 @@ class Project extends Base
     public function getProjectCollection()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Project\Collection $collection */
-        $collection = $this->createAppObject(
-            ProjectDefinition::DEFINITION_COLLECTION
-        );
+        $collection = $this->getBaseProjectCollection();
 
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
         $collection->where('{{project}}.is_deleted=?', '0');
@@ -133,7 +141,8 @@ class Project extends Base
             ['client_name' => 'client_name']
         );
 
-        $collection->order(new \Zend_Db_Expr(sprintf(
+        $collection->order(new \Zend_Db_Expr(
+            sprintf(
                 "FIELD({{project}}.status,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 ProjectDefinition::STATUS_OPEN,
                 ProjectDefinition::STATUS_PRESTART_BOOKED,
@@ -145,7 +154,8 @@ class Project extends Base
                 ProjectDefinition::STATUS_READY_TO_SHUTDOWN,
                 ProjectDefinition::STATUS_RECALL,
                 ProjectDefinition::STATUS_COMPLETE,
-                ProjectDefinition::STATUS_CANCELLED)
+                ProjectDefinition::STATUS_CANCELLED
+            )
         ))->order('{{project}}.date_required');
 
         return $collection;
@@ -185,11 +195,11 @@ class Project extends Base
      */
     public function getProjectForQuote($quoteId)
     {
-        if(is_object($quoteId)){
+        if (is_object($quoteId)) {
             $quoteId = $quoteId->getId();
         }
 
-        if($quoteId) {
+        if ($quoteId) {
             $collection = $this->getProjectCollection();
             $collection->getSelect()->where('quote_id=?', $quoteId);
 
@@ -214,19 +224,19 @@ class Project extends Base
     {
         $quote = $this->getQuoteHelper()->getQuote($quoteId);
 
-        if(!$quote->getId()){
+        if (!$quote->getId()) {
             return null;
         }
 
         $project = $this->getProjectForQuote($quoteId);
 
-        if($project->getId()){
+        if ($project->getId()) {
             throw new \Exception("Project has already been created for quote {$quoteId}");
         }
 
         $project = $this->getProject();
 
-        foreach($this->quoteDataValues as $key){
+        foreach ($this->quoteDataValues as $key) {
             $project->setData($key, $quote->getData($key));
         }
 
@@ -241,7 +251,7 @@ class Project extends Base
             ->where('quote_id<>?', $quoteId)
             ->load();
 
-        foreach($quotes as $quote){
+        foreach ($quotes as $quote) {
             $quote->setTenderStatus(QuoteDefinition::TENDER_STATUS_CANCELLED)->save();
         }
 
@@ -267,7 +277,7 @@ class Project extends Base
     {
         $entity = $this->createAppObject(ProjectDefinition::DEFINITION_MODEL);
 
-        if($entityId){
+        if ($entityId) {
             $entity->load($entityId);
         }
 
@@ -289,8 +299,8 @@ class Project extends Base
 
         $isComplete = $modelInstance->isComplete();
 
-        foreach(ProjectDefinition::NON_USER_VALUES as $nonUserValue){
-            if(isset($data[$nonUserValue])){
+        foreach (ProjectDefinition::NON_USER_VALUES as $nonUserValue) {
+            if (isset($data[$nonUserValue])) {
                 unset($data[$nonUserValue]);
             }
         }
@@ -298,7 +308,7 @@ class Project extends Base
         $newSave = false;
 
         // Add created by user
-        if(!$modelInstance->getId()) {
+        if (!$modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $newSave = true;
         }
@@ -309,7 +319,7 @@ class Project extends Base
 
         $modelInstance->setData($data)->save();
 
-        if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
+        if ($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
             // Assign any uploads to the enquiry
             $this->getUploadHelper()->assignTemporaryUploadsToParent(
                 $temporaryId,
@@ -318,26 +328,30 @@ class Project extends Base
             );
         }
 
-        if($data['status'] == ProjectDefinition::STATUS_COMPLETE
-            || $data['status'] == ProjectDefinition::STATUS_CANCELLED){
+        if (
+            $data['status'] == ProjectDefinition::STATUS_COMPLETE
+            || $data['status'] == ProjectDefinition::STATUS_CANCELLED
+        ) {
 
             $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $modelInstance->getId(), 
+                $modelInstance->getId(),
                 TaskDefinition::TASK_TYPE_PROJECT,
                 TaskDefinition::STATUS_OPEN
             );
-    
-            foreach($openTasks->getItems() as $openTask){
+
+            foreach ($openTasks->getItems() as $openTask) {
                 $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
             }
         }
 
-        if(!$isComplete && $modelInstance->isComplete()){
+        if (!$isComplete && $modelInstance->isComplete()) {
             $returnValues['project_newly_completed'] = true;
         }
 
-        if($isComplete && in_array($modelInstance->getStatus(), 
-            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) == false) {
+        if ($isComplete && in_array(
+            $modelInstance->getStatus(),
+            [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]
+        ) == false) {
             $returnValues['reopened'] = true;
         }
 
@@ -364,5 +378,4 @@ class Project extends Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\Project\Status');
     }
-
 }

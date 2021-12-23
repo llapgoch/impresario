@@ -15,6 +15,8 @@ extends \DaveBaker\Core\Main\Base
 implements \DaveBaker\Core\Main\MainInterface
 {
 
+
+
     /**
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -31,8 +33,64 @@ implements \DaveBaker\Core\Main\MainInterface
         add_filter('wo_endpoints', [$this, 'wo_extend_resource_api'], 2);
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Project::class);
+    }
+
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Client
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCllientHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Client::class);
+    }
+
     function wo_extend_resource_api($methods)
     {
+        $methods['allprojects'] = array('func' => function () {
+            $projects = $this->getProjectHelper()->getBaseProjectCollection()->load();
+
+            $projectOutput = [];
+
+            foreach ($projects as $project) {
+                $projectOutput[] = [
+                    'projectName' => $project->getProjectName(),
+                    'clientId' => $project->getClientId(),
+                    'isDeleted' => $project->getIsDeleted(),
+                    'tandimoId' => $project->getId()
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($projectOutput);
+            $response->send();
+            exit;
+        });
+
+        $methods['allclients'] = array('func' => function () {
+            $clients = $this->getCllientHelper()->getBaseClientCollection()->load();
+            $clientOutput = [];
+
+            foreach ($clients as $client) {
+                $clientOutput[] = [
+                    'clientName' => $client->getClientName(),
+                    'tandimoId' => $client->getId(),
+                    'isDeleted' => $client->getIsDeleted()
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($clientOutput);
+            $response->send();
+            exit;
+        });
+
+
         // Get all users to be consumed by QHSE
         $methods['allusers'] = array('func' => function () {
             global $wpdb;
@@ -42,9 +100,6 @@ implements \DaveBaker\Core\Main\MainInterface
             $userMetaTable = $this->getUserHelper()->getUserMetaTableName();
             $users = $this->getUserHelper()->getUserCollection();
             $allRoles = $this->getOptionManager()->get($prefix . 'user_roles');
-
-
-
 
             // Join on the user meta table to get all roles for the user. These are roles, not capabilities
             $users->getSelect()->join(
