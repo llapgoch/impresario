@@ -69,8 +69,10 @@ implements \DaveBaker\Core\Main\MainInterface
                 }
 
                 $data[$user->getID()] = [
+                    'ID' => $user->getID(),
                     'user_login' => $user->getUserLogin(),
                     'user_email' => $user->getUserEmail(),
+                    'display_name' => $user->getDisplayName(),
                     'capabilities' => $userCapabilities
                 ];
             }
