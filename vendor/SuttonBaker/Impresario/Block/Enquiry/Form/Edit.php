@@ -63,7 +63,6 @@ class Edit
 
         $this->addClass('js-enquiry-form');
 
-
         // Clients
         $clients = $this->createCollectionSelectConnector()
             ->configure(

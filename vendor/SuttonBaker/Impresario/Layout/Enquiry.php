@@ -120,7 +120,7 @@ class Enquiry extends Base
 
         $mainTile->addChildBlock(
             $mainTile->createBlock(
-                '\SuttonBaker\Impresario\Block\Enquiry\EnquiryList',
+                \SuttonBaker\Impresario\Block\Enquiry\EnquiryList::class,
                 'enquiry.list',
                 'content'
             )

@@ -11,8 +11,8 @@ use SuttonBaker\Impresario\Definition\Roles;
  * @package SuttonBaker\Impresario
  */
 class Main
-    extends \DaveBaker\Core\Main\Base
-    implements \DaveBaker\Core\Main\MainInterface
+extends \DaveBaker\Core\Main\Base
+implements \DaveBaker\Core\Main\MainInterface
 {
 
     /**
@@ -23,6 +23,63 @@ class Main
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
         $this->createAppObject('\SuttonBaker\Impresario\Event\Upload');
         $this->createAppObject('\SuttonBaker\Impresario\Event\LoginEvents');
+
+
+
+        // Test OAuth
+
+        add_filter('wo_endpoints', [$this, 'wo_extend_resource_api'], 2);
+    }
+
+    function wo_extend_resource_api($methods)
+    {
+        // Get all users to be consumed by QHSE
+        $methods['allusers'] = array('func' => function () {
+            global $wpdb;
+            $prefix = $wpdb->prefix;
+
+            $userTable = $this->getUserHelper()->getUserTableName();
+            $userMetaTable = $this->getUserHelper()->getUserMetaTableName();
+            $users = $this->getUserHelper()->getUserCollection();
+            $allRoles = $this->getOptionManager()->get($prefix . 'user_roles');
+
+
+
+
+            // Join on the user meta table to get all roles for the user. These are roles, not capabilities
+            $users->getSelect()->join(
+                $this->getUserHelper()->getUserMetaTableName(),
+                "{$userMetaTable}.user_id={$userTable}.ID AND meta_key='{$prefix}capabilities'",
+                ['capabilities' => 'meta_value']
+            );
+
+            $userResults = $users->load();
+            $data = [];
+
+            foreach ($userResults as $user) {
+                // $data[$user->getID()]  = $user->getData();
+                $userCapabilities = [];
+                $userRoles = unserialize($user->getCapabilities());
+
+                // Get all of the capabilites for the role, look up the capabilities and merge them together
+                foreach ($userRoles as $key => $userRole) {
+                    if (isset($allRoles[$key]['capabilities'])) {
+                        $userCapabilities = array_merge($userCapabilities, $allRoles[$key]['capabilities']);
+                    }
+                }
+
+                $data[$user->getID()] = [
+                    'user_login' => $user->getUserLogin(),
+                    'user_email' => $user->getUserEmail(),
+                    'capabilities' => $userCapabilities
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($data);
+            $response->send();
+            exit;
+        });
+        return $methods;
     }
 
     /**
@@ -160,7 +217,5 @@ class Main
             '\SuttonBaker\Impresario\Layout\Archive',
             '\SuttonBaker\Impresario\Layout\Login'
         ]);
-        
     }
-
 }
