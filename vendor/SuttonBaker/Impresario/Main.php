@@ -11,9 +11,11 @@ use SuttonBaker\Impresario\Definition\Roles;
  * @package SuttonBaker\Impresario
  */
 class Main
-    extends \DaveBaker\Core\Main\Base
-    implements \DaveBaker\Core\Main\MainInterface
+extends \DaveBaker\Core\Main\Base
+implements \DaveBaker\Core\Main\MainInterface
 {
+
+
 
     /**
      * @throws \DaveBaker\Core\Object\Exception
@@ -23,6 +25,118 @@ class Main
         $this->createAppObject('\SuttonBaker\Impresario\Event\GlobalEvents');
         $this->createAppObject('\SuttonBaker\Impresario\Event\Upload');
         $this->createAppObject('\SuttonBaker\Impresario\Event\LoginEvents');
+
+
+
+        // Test OAuth
+
+        add_filter('wo_endpoints', [$this, 'wo_extend_resource_api'], 2);
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Project::class);
+    }
+
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Client
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCllientHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Client::class);
+    }
+
+    function wo_extend_resource_api($methods)
+    {
+        $methods['allprojects'] = array('func' => function () {
+            $projects = $this->getProjectHelper()->getBaseProjectCollection()->load();
+
+            $projectOutput = [];
+
+            foreach ($projects as $project) {
+                $projectOutput[] = [
+                    'projectName' => $project->getProjectName(),
+                    'clientId' => $project->getClientId(),
+                    'isDeleted' => $project->getIsDeleted(),
+                    'tandimoId' => $project->getId()
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($projectOutput);
+            $response->send();
+            exit;
+        });
+
+        $methods['allclients'] = array('func' => function () {
+            $clients = $this->getCllientHelper()->getBaseClientCollection()->load();
+            $clientOutput = [];
+
+            foreach ($clients as $client) {
+                $clientOutput[] = [
+                    'clientName' => $client->getClientName(),
+                    'tandimoId' => $client->getId(),
+                    'isDeleted' => $client->getIsDeleted()
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($clientOutput);
+            $response->send();
+            exit;
+        });
+
+
+        // Get all users to be consumed by QHSE
+        $methods['allusers'] = array('func' => function () {
+            global $wpdb;
+            $prefix = $wpdb->prefix;
+
+            $userTable = $this->getUserHelper()->getUserTableName();
+            $userMetaTable = $this->getUserHelper()->getUserMetaTableName();
+            $users = $this->getUserHelper()->getUserCollection();
+            $allRoles = $this->getOptionManager()->get($prefix . 'user_roles');
+
+            // Join on the user meta table to get all roles for the user. These are roles, not capabilities
+            $users->getSelect()->join(
+                $this->getUserHelper()->getUserMetaTableName(),
+                "{$userMetaTable}.user_id={$userTable}.ID AND meta_key='{$prefix}capabilities'",
+                ['capabilities' => 'meta_value']
+            );
+
+            $userResults = $users->load();
+            $data = [];
+
+            foreach ($userResults as $user) {
+                // $data[$user->getID()]  = $user->getData();
+                $userCapabilities = [];
+                $userRoles = unserialize($user->getCapabilities());
+
+                // Get all of the capabilites for the role, look up the capabilities and merge them together
+                foreach ($userRoles as $key => $userRole) {
+                    if (isset($allRoles[$key]['capabilities'])) {
+                        $userCapabilities = array_merge($userCapabilities, $allRoles[$key]['capabilities']);
+                    }
+                }
+
+                $data[$user->getID()] = [
+                    'ID' => $user->getID(),
+                    'user_login' => $user->getUserLogin(),
+                    'user_email' => $user->getUserEmail(),
+                    'display_name' => $user->getDisplayName(),
+                    'capabilities' => $userCapabilities
+                ];
+            }
+
+            $response = new \WPOAuth2\Response($data);
+            $response->send();
+            exit;
+        });
+        return $methods;
     }
 
     /**
@@ -160,7 +274,5 @@ class Main
             '\SuttonBaker\Impresario\Layout\Archive',
             '\SuttonBaker\Impresario\Layout\Login'
         ]);
-        
     }
-
 }

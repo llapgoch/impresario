@@ -93,5 +93,27 @@ class GlobalEvents extends \DaveBaker\Core\Base
             $this->getApp()->getHandleManager()->addHandle(Page::ARCHIVE_LIST);
         });
 
+        add_action( 'rest_api_init', function () {
+            register_rest_route( 'myplugin/v1', '/author/(?P<id>\d+)', array(
+                'methods'             => 'GET',
+                'callback'            => 'my_awesome_func',
+                'permission_callback' => function () {
+                    return current_user_can( 'manage_options' );
+                }
+            ) );
+        } );
+        
+        function my_awesome_func() {
+            $user_id = get_current_user_id();
+        
+            return array(
+                'status'  => true,
+                'message' => 'Congrats! You successfully made an authenticated request to a protected endpoint',
+                'user_id' => $user_id
+            );
+        }
+
+        
+
     }
 }

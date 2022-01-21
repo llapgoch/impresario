@@ -149,7 +149,6 @@ class EditController
                 $postParams['cost_date'] = $helper->localDateToDb($postParams['cost_date']);
             }
 
-
             /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
             $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\CostConfigurator');
 
@@ -171,7 +170,6 @@ class EditController
 
 
     }
-
 
     /**
      * @param $modelInstance
