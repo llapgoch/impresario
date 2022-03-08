@@ -229,6 +229,7 @@ implements \DaveBaker\Core\Main\MainInterface
             \SuttonBaker\Impresario\Definition\Page::COST_EDIT => '\SuttonBaker\Impresario\Controller\Cost\EditController',
             \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT => '\SuttonBaker\Impresario\Controller\Variation\EditController',
             \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Archive\ReportController',
+            \SuttonBaker\Impresario\Definition\Page::ARCHIVE_LIST => '\SuttonBaker\Impresario\Controller\Archive\ListController',
             \DaveBaker\Core\Layout\Handle\Manager::HANDLE_DEFAULT => '\SuttonBaker\Impresario\Controller\DefaultController'
         ]);
     }

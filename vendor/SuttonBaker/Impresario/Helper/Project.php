@@ -18,6 +18,11 @@ class Project extends Base
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT];
     /** @var array  */
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_PROJECT, Roles::CAP_VIEW_PROJECT];
+
+    // Note: EDIT_ARCHIVE isn't used at present - we just hide the menu item and listing page for users not with the view 
+    /** @var array */
+    protected $archiveViewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_ARCHIVE];
+
     /**
      * @var array
      *
@@ -40,6 +45,15 @@ class Project extends Base
         'profit',
         'gp'
     ];
+
+    /**
+     *
+     * @return array
+     */
+    public function getArchiveViewCapabilities()
+    {
+        return $this->archiveViewCapabilities;
+    }
 
     /**
      * @param \DaveBaker\Core\Model\Db\BaseInterface $instance
