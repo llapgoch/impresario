@@ -63,6 +63,7 @@ implements \DaveBaker\Core\Main\MainInterface
                 $projectOutput[] = [
                     'projectName' => $project->getProjectName(),
                     'clientId' => $project->getClientId(),
+                    'siteName' => $project->getSiteName(),
                     'isDeleted' => $project->getIsDeleted(),
                     'tandimoId' => $project->getId()
                 ];
