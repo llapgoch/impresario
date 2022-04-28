@@ -61,7 +61,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'endpointSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_SAVE),
             'idElementSelector' => '[name="project_id"]',
-            'idKey' => 'projct_id'
+            'idKey' => 'project_id'
         ]);
 
         if ($entityId = $this->getRequest()->getParam(self::ID_KEY)) {

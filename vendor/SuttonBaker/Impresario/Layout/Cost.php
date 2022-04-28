@@ -54,7 +54,7 @@ class Cost extends Base
 
         $mainTile->addChildBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Cost\Form\Edit',
+                \SuttonBaker\Impresario\Block\Cost\Form\Edit::class,
                 "{$this->getBlockPrefix()}.form.edit",
                 'content'
             )->setElementName('cost_edit_form')

@@ -7,6 +7,7 @@ use \SuttonBaker\Impresario\Definition\Cost as CostDefintion;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
+use SuttonBaker\Impresario\Block\Cost\Item\TableContainer;
 
 /**
  * Class Edit
@@ -18,12 +19,15 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     const ID_KEY = 'cost_id';
     const PREFIX_KEY = 'cost';
     const PREFIX_NAME = 'Cost';
-
+    
+    /** @var string */
+    protected $blockPrefix = 'cost';
     /** @var \SuttonBaker\Impresario\Model\Db\Cost */
     protected $modelInstance;
     /** @var \DaveBaker\Core\Model\Db\BaseInterface */
     protected $parentItem;
-
+    /** @var TableContainer */
+    protected $costItemBlock;
     /**
      * @return \DaveBaker\Core\Block\Template|void
      * @throws \DaveBaker\Core\App\Exception
@@ -39,6 +43,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
+        wp_enqueue_script('impresario_form_validator');
+
         $heading = "Create {$prefixName}";
         $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
         $this->parentItem =  $this->getApp()->getRegistry()->get('parent_item');
@@ -53,6 +59,13 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefintion::getCostInvoiceTypes(true))->getElementData();
 
+        $this->addClass('js-validate-form js-form-overlay');
+        $this->addJsDataItems([
+            'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(CostDefintion::API_ENDPOINT_VALIDATE_SAVE),
+            'idElementSelector' => '[name="cost_id"]',
+            'idKey' => 'cost_id'
+        ]);
+
         if ($supplierCollection = $this->getSupplierHelper()->getSupplierCollection()) {
             $suppliers = $this->createCollectionSelectConnector()
                 ->configure(
@@ -61,6 +74,12 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'supplier_name'
                 )->getElementData();
         }
+
+
+        $this->addChildBlock(
+            $this->createFormErrorBlock()
+                ->setOrder('before', '')
+        );
 
         $elements = $builder->build([
             [
@@ -173,13 +192,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
-            ], [
-                'name' => 'invoice_data',
-                'type' => 'Input\Hidden',
-                'value' => json_encode([
-                    'amountRemaining' => (float) $totalAmountRemaining
-                ]),
-                'class' => 'js-invoice-data'
             ]
         ]);
 
@@ -189,6 +201,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         );
 
         $this->addChildBlock(array_values($elements));
+
+        $this->createCostItemTableBlock();
 
         // Create the file uploader
         $this->addChildBlock(
@@ -207,6 +221,23 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         if ($this->getCostHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
+    }
+
+    protected function createCostItemTableBlock()
+    {
+        $prefixKey = self::PREFIX_KEY;
+        $this->costItemBlock = $this->createBlock(
+            \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
+            "{$this->blockPrefix}.cost.item.table"
+        )->setOrder('before', "{$prefixKey}.file.upload.container");
+
+        $this->costItemBlock->setInstanceCollection(
+            $this->getCostHelper()->getCostInvoiceItems(
+                $this->modelInstance->getId()
+            )
+        );
+
+        $this->addChildBlock($this->costItemBlock);
     }
 
     /**

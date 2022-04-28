@@ -2,19 +2,21 @@
 
 namespace SuttonBaker\Impresario\Block\Cost\Item;
 
+use Exception;
 use \SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+
 /**
  * Class TableContainer
  * @package SuttonBaker\Impresario\Block\Task
  */
 class TableContainer
-    extends \SuttonBaker\Impresario\Block\Table\Container\Base
-    implements \DaveBaker\Core\Block\BlockInterface
+extends \SuttonBaker\Impresario\Block\Table\Container\Base
+implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string  */
     protected $blockPrefix = 'cost_item_table';
-    
+
     /** @var \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $instanceCollection */
     protected $instanceCollection;
     /** @var string  */
@@ -33,7 +35,7 @@ class TableContainer
      * @return $this
      */
     public function setInstanceCollection(
-        \SuttonBaker\Impresario\Model\Db\Cost\Collection $instanceCollection
+        \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $instanceCollection
     ) {
         $this->instanceCollection = $instanceCollection;
         return $this;
@@ -50,9 +52,8 @@ class TableContainer
      */
     protected function _preDispatch()
     {
-
-        if(!$this->instanceCollection){
-            $this->instanceCollection = $this->getCostHelper()->getCostCollection();
+        if (!$this->instanceCollection) {
+            throw new Exception('Instance collection not defined');
         }
 
         $this->instanceCollection->addOutputProcessors([
@@ -66,41 +67,20 @@ class TableContainer
         $this->addChildBlock(
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
-                'cost.tile.block'
-            )->setHeading('<strong>Cost Invoices</strong>')
+                'cost.item.tile.block'
+            )->setHeading('<strong>PO Items</strong>')
         );
 
+        $tileBlock->setTileBodyClass('nopadding table-responsive');
 
-        if(count($instanceItems)) {
-            $tileBlock->setTileBodyClass('nopadding table-responsive');
-
-            $tileBlock->addChildBlock(
-                $tableBlock = $tileBlock->createBlock(
-                    '\SuttonBaker\Impresario\Block\Table\StatusLink',
-                    "cost.list.table",
-                    'content'
-                )->setHeaders(CostDefinition::TABLE_HEADERS)
-                    ->setRecords($this->instanceCollection)
-                    ->addClass('table-striped')
-            );
-
-            $tableBlock->setLinkCallback(
-                function ($headerKey, $record) {
-                    return $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
-                        ['cost_id' => $record->getId()],
-                        true
-                    );
-                }
-            );
-        }else{
-            $tileBlock->addChildBlock(
-                $tableBlock = $tileBlock->createBlock(
-                    '\DaveBaker\Core\Block\Html\Tag',
-                    "cost.list.no.records",
-                    'content'
-                )->setTagText('No costs have currently been created')
-            );
-        }
+        $tileBlock->addChildBlock(
+            $tableBlock = $tileBlock->createBlock(
+                \SuttonBaker\Impresario\Block\Table\StatusLink::class,
+                "cost.item.list.table",
+                'content'
+            )->setHeaders(CostDefinition::ITEM_TABLE_HEADERS)
+                ->setRecords($this->instanceCollection)
+                ->addClass('table-striped')
+        );
     }
 }

@@ -10,6 +10,8 @@ class Cost
     const API_ENDPOINT_UPDATE_TABLE = 'cost/updatetable';
     const API_ENDPOINT_DELETE = 'cost/delete';
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
+    const API_ENDPOINT_VALIDATE_SAVE = 'cost/validatesave';
+
     const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost::class;
     const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Collection::class;
 
@@ -36,6 +38,13 @@ class Cost
         'value' => 'Cost Amount',
         'supplier_name' => 'Supplier Name',
         'cost_invoice_type' => 'Type'
+    ];
+
+    const ITEM_TABLE_HEADERS = [
+        'description' => 'Description',
+        'qty' => 'Qty',
+        'unit_price' => 'Unit Price',
+        'total' => 'Total',
     ];
 
     /**

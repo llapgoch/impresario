@@ -295,6 +295,7 @@ class Enquiry
         $validator = $this->createAppObject(Validator::class)->setValues($formValues);
         $validator->configurate($configurator)->validate();
 
+        /** @var Main $errorBlock */
         $errorBlock = $blockManager->createBlock(Main::class, 'enquiry.edit.form.errors');
         $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
 
