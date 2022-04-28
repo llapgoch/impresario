@@ -1,13 +1,14 @@
 <?php
 
 namespace SuttonBaker\Impresario\Installer;
+
 /**
  * Class InvoiceVariation
  * @package SuttonBaker\Impresario\Installer
  */
 class InvoiceVariation
-    extends \DaveBaker\Core\Installer\Base
-    implements \DaveBaker\Core\Installer\InstallerInterface
+extends \DaveBaker\Core\Installer\Base
+implements \DaveBaker\Core\Installer\InstallerInterface
 {
     protected $installerCode = 'impresario_invoice_variation';
 
@@ -21,18 +22,21 @@ class InvoiceVariation
         $pageManager = $this->app->getPageManager();
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT, [
+            \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
+            [
                 "post_title" => "Edit Invoice"
             ]
         );
 
         $pageManager->createPage(
-            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT, [
+            \SuttonBaker\Impresario\Definition\Page::VARIATION_EDIT,
+            [
                 "post_title" => "Edit Variation"
             ]
         );
 
-        $this->deltaTable('invoice',
+        $this->deltaTable(
+            'invoice',
             "CREATE TABLE `{{tableName}}` (
               `invoice_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `invoice_date` datetime DEFAULT NULL,
@@ -50,7 +54,8 @@ class InvoiceVariation
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
 
-        $this->deltaTable('variation',
+        $this->deltaTable(
+            'variation',
             "CREATE TABLE `{{tableName}}` (
               `variation_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `project_id` int(11) DEFAULT NULL,
@@ -72,6 +77,6 @@ class InvoiceVariation
               KEY `status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
-    }
 
+    }
 }

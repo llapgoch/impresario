@@ -54,6 +54,25 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
 
+        $this->deltaTable(
+            'cost_po_item',
+            "CREATE TABLE `{{tableName}}` (
+            `po_item_id` int NOT NULL AUTO_INCREMENT,
+            `cost_id` int NOT NULL,
+            `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+            `qty` int NOT NULL,
+            `unit_price` decimal(10,4) NOT NULL,
+            `total` decimal(10,4) NOT NULL,
+            `created_by_id` int(11) DEFAULT NULL,
+            `last_edited_by_id` int(11) DEFAULT NULL,
+            `created_at` datetime DEFAULT NULL,
+            `updated_at` datetime DEFAULT NULL,
+            `is_deleted` int(1) DEFAULT '0',
+            PRIMARY KEY (`po_item_id`),
+            KEY `cost_id` (`cost_id`)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+        );
+
         // This has been removed as migrations were run once.
         // $this->migrateCosts();
     }

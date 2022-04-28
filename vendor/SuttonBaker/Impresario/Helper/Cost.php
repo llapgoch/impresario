@@ -26,7 +26,7 @@ class Cost extends Base
         $collection = $this->createAppObject(
             '\SuttonBaker\Impresario\Model\Db\Cost\Collection'
         )->where('{{cost}}.is_deleted=?', '0');
-        
+
         $userTable = $this->getApp()->getHelper('Db')->getTableName('users', false);
         $supplierTable = $this->getApp()->getHelper('Db')->getTableName('supplier');
 
@@ -37,10 +37,27 @@ class Cost extends Base
         );
 
         $collection->joinLeft(
-            ['created_by_user'=> $userTable],
+            ['created_by_user' => $userTable],
             "created_by_user.ID={{cost}}.created_by_id",
             ['created_by_name' => 'display_name']
         )->order('{{cost}}.cost_id DESC');
+
+        return $collection;
+    }
+
+    /**
+     * Get cost invoice po items for a cost invoice id
+     *
+     * @param int $costInvoiceId
+     * @return \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection
+     */
+    public function getCostInvoiceItems($costInvoiceId)
+    {
+        /** @var \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $collection */
+        $collection = $this->createAppObject(
+            \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection::class
+        )->where('{{cost_po_item}}.is_deleted=?', '0')
+            ->where('{{cost_po_item}}.cost_id=?', $costInvoiceId);
 
         return $collection;
     }
@@ -98,7 +115,7 @@ class Cost extends Base
     {
         $cost = $this->createAppObject(CostDefinition::DEFINITION_MODEL);
 
-        if($costId){
+        if ($costId) {
             $cost->load($costId);
         }
 
@@ -113,7 +130,7 @@ class Cost extends Base
     public function getParentForCost(
         \SuttonBaker\Impresario\Model\Db\Cost $cost
     ) {
-        if($cost->getCostType() == CostDefinition::COST_TYPE_PROJECT){
+        if ($cost->getCostType() == CostDefinition::COST_TYPE_PROJECT) {
             return $this->getProjectHelper()->getProject($cost->getParentId());
         }
 
@@ -126,7 +143,7 @@ class Cost extends Base
      */
     public function getCostTypeForParent($parentInstance)
     {
-        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
+        if ($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project) {
             return CostDefinition::COST_TYPE_PROJECT;
         }
 
@@ -150,11 +167,11 @@ class Cost extends Base
     public function determineCostTypeName(
         \SuttonBaker\Impresario\Model\Db\Cost $instance
     ) {
-        if($instance->getId()){
+        if ($instance->getId()) {
             return $this->getCostTypeDisplayName($instance->getCostType());
         }
 
-        if($type = $this->getRequest()->getParam('cost_type')) {
+        if ($type = $this->getRequest()->getParam('cost_type')) {
             return $this->getCostTypeDisplayName($type);
         }
 
@@ -168,12 +185,11 @@ class Cost extends Base
     public function deleteCost(
         \SuttonBaker\Impresario\Model\Db\Cost $cost
     ) {
-        if(!$cost->getId()){
+        if (!$cost->getId()) {
             return $this;
         }
 
         $cost->setIsDeleted(1)->save();
         return $this;
     }
-
 }

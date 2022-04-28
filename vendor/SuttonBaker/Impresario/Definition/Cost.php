@@ -10,8 +10,12 @@ class Cost
     const API_ENDPOINT_UPDATE_TABLE = 'cost/updatetable';
     const API_ENDPOINT_DELETE = 'cost/delete';
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
-    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Cost';
-    const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Cost\Collection';
+    const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost::class;
+    const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Collection::class;
+
+    const ITEM_DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost\Item::class;
+    const ITEM_DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection::class;
+
     const ICON = 'fa fa-tags';
 
     const COST_INVOICE_TYPE_LABOUR = 'labour';
