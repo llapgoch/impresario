@@ -12,6 +12,17 @@ class Cost
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
     const API_ENDPOINT_VALIDATE_SAVE = 'cost/validatesave';
 
+    const NON_USER_VALUES = [
+        'cost_id',
+        'created_by_id',
+        'last_edited_by_id',
+        'cost_type',
+        'parent_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
+
     const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost::class;
     const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Collection::class;
 

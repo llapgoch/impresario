@@ -23,8 +23,8 @@ class Cost extends Base
 
    
         // Convert dates to DB
-        if (isset($postParams['cost_date'])) {
-            $postParams['cost_date'] = $helper->localDateToDb($postParams['cost_date']);
+        if (isset($data['cost_date'])) {
+            $data['cost_date'] = $helper->localDateToDb($data['cost_date']);
         }
         
         return $data;

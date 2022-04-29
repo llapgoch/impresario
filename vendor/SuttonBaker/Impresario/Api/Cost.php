@@ -20,16 +20,7 @@ extends Base
     /** @var array */
     protected $capabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_COST];
 
-    protected $nonUserValues = [
-        'cost_id',
-        'created_by_id',
-        'last_edited_by_id',
-        'cost_type',
-        'parent_id',
-        'created_at',
-        'updated_at',
-        'is_deleted'
-    ];
+
 
     public function validatesaveAction(
         $params,
@@ -43,9 +34,10 @@ extends Base
         }
 
         $modelInstance = $helper->getCost();
-        $converter = $this->createAppObject(CostConverter::class);
         $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
-        $formValues = $params['formValues'];
+        /** @var CostConverter $converter */
+        $converter = $this->createAppObject(CostConverter::class);
+        $formValues = $converter->convert($params['formValues']);
 
 
         if (isset($formValues['cost_id']) && $formValues['cost_id']) {
@@ -58,24 +50,43 @@ extends Base
 
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
-        if($validateResult['hasErrors']){
+        if ($validateResult['hasErrors']) {
             return $validateResult;
         }
-        
-        exit;
 
+        // Save the cost item here & add messages
+        $saveValues = $this->saveCost(
+            $modelInstance,
+            $formValues,
+            $navigatingAway
+        );
 
+        return array_merge($validateResult, $saveValues);
+    }
 
+    protected function saveCost(
+        \SuttonBaker\Impresario\Model\Db\Cost $modelInstance,
+        $formValues,
+        $navigatingAway = false
+    ) {
+        $saveValues = $this->getCostHelper()->saveCost($modelInstance, $formValues);
+        $message = "The cost has been " . ($saveValues['new_save'] ? 'created' : 'updated');
 
-        if (!$validator->validate()) {
-            return $this->prepareFormErrors($validator);
+        if ($navigatingAway) {
+            $this->getApp()->getGeneralSession()->addMessage(
+                $message,
+                Messages::SUCCESS
+            );
+        } else {
+            $this->addReplacerBlock(
+                $this->getModalHelper()->createAutoOpenModal(
+                    'Success',
+                    $message
+                )
+            );
         }
 
-        $this->saveFormValues($postParams);
-
-        if (!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-            $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::PROJECT_LIST);
-        }
+        return $saveValues;
     }
 
     protected function validateValues(
@@ -91,7 +102,7 @@ extends Base
             ->setValues($formValues);
 
         $validator->configurate($configurator)->validate();
-            
+
         /** @var Main $errorBlock */
         $errorBlock = $blockManager->createBlock(Main::class, 'cost.edit.form.errors');
         $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
@@ -104,52 +115,6 @@ extends Base
         ];
     }
 
-    /**
-     * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function saveFormValues($data)
-    {
-        if (!$this->getApp()->getHelper('User')->isLoggedIn()) {
-            return;
-        }
-
-        foreach ($this->nonUserValues as $nonUserValue) {
-            if (isset($data[$nonUserValue])) {
-                unset($data[$nonUserValue]);
-            }
-        }
-
-        $newSave = false;
-
-        // Add created by user
-        if (!$this->modelInstance->getId()) {
-            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-            $data['cost_type'] = $this->costType;
-            $data['parent_id'] = $this->parentItem->getId();
-            $newSave = true;
-        }
-
-        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
-        $this->modelInstance->setData($data)->save();
-
-        if ($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))) {
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_COST,
-                $this->modelInstance->getId()
-            );
-        }
-
-        $this->addMessage(
-            "The cost has been " . ($newSave ? 'created' : 'updated'),
-            Messages::SUCCESS
-        );
-
-        return $this;
-    }
 
     /**
      * @param $params

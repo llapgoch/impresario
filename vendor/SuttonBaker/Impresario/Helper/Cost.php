@@ -179,6 +179,53 @@ class Cost extends Base
     }
 
     /**
+     *
+     * @param \SuttonBaker\Impresario\Model\Db\Cost $modelInstance
+     * @param array $data
+     * @return $array
+     */
+    public function saveCost(
+        \SuttonBaker\Impresario\Model\Db\Cost $modelInstance,
+        $data
+    ) {
+
+        $returnValues = [
+            'cost_id' => null,
+            'new_save' => false
+        ];
+
+        foreach (CostDefinition::NON_USER_VALUES as $nonUserValue) {
+            if (isset($data[$nonUserValue])) {
+                unset($data[$nonUserValue]);
+            }
+        }
+
+        // Add created by user
+        if (!$modelInstance->getId()) {
+            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+            $data['cost_type'] = $this->costType;
+            $data['parent_id'] = $this->parentItem->getId();
+            $returnValues['new_save'] = true;
+        }
+
+        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
+
+        $modelInstance->setData($data)->save();
+        $data['cost_id'] = $modelInstance->getId();
+
+        if ($returnValues['new_save'] && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+            // Assign any uploads to the enquiry
+            $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                $temporaryId,
+                \SuttonBaker\Impresario\Definition\Upload::TYPE_COST,
+                $modelInstance->getId()
+            );
+        }
+
+        return $returnValues;
+    }
+
+    /**
      * @param \SuttonBaker\Impresario\Model\Db\Cost $cost
      * @return $this
      */
