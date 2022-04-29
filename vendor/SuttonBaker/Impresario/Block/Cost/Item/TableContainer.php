@@ -56,12 +56,6 @@ implements \DaveBaker\Core\Block\BlockInterface
             throw new Exception('Instance collection not defined');
         }
 
-        $this->instanceCollection->addOutputProcessors([
-            'cost_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
-            'unit_price' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'total' => $this->getLocaleHelper()->getOutputProcessorCurrency()
-        ]);
-
         $instanceItems = $this->instanceCollection->load();
 
         $this->addChildBlock(
@@ -81,6 +75,7 @@ implements \DaveBaker\Core\Block\BlockInterface
             )->setHeaders(CostDefinition::ITEM_TABLE_HEADERS)
                 ->setRecords($this->instanceCollection)
                 ->addClass('table-striped')
+                ->setTemplate('html/table/cost/status-link-attribute-value.phtml')
         );
     }
 }

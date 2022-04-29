@@ -8,6 +8,8 @@ use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
 use SuttonBaker\Impresario\Block\Cost\Item\TableContainer;
+use SuttonBaker\Impresario\Model\Db\Cost\Item;
+use SuttonBaker\Impresario\Model\Db\Cost\Item\Collection;
 
 /**
  * Class Edit
@@ -19,7 +21,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     const ID_KEY = 'cost_id';
     const PREFIX_KEY = 'cost';
     const PREFIX_NAME = 'Cost';
-    
+
     /** @var string */
     protected $blockPrefix = 'cost';
     /** @var \SuttonBaker\Impresario\Model\Db\Cost */
@@ -39,6 +41,9 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     protected function _preDispatch()
     {
         parent::_preDispatch();
+
+        wp_register_script('impresario_cost_edit', get_template_directory_uri() . '/assets/js/cost/edit-controller.js', ['jquery']);
+        wp_enqueue_script('impresario_cost_edit');
 
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
@@ -231,11 +236,23 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             "{$this->blockPrefix}.cost.item.table"
         )->setOrder('before', "{$prefixKey}.file.upload.container");
 
-        $this->costItemBlock->setInstanceCollection(
-            $this->getCostHelper()->getCostInvoiceItems(
-                $this->modelInstance->getId()
-            )
-        );
+        if ($this->modelInstance->getId()) {
+            $this->costItemBlock->setInstanceCollection(
+                $this->getCostHelper()->getCostInvoiceItems(
+                    $this->modelInstance->getId()
+                )
+            );
+        } else {
+            // Create a new collection with a blank item
+            /** @var Collection $collection */
+            $collection = $this->createAppObject(Collection::class);
+            /** @var Item $instance */
+            $instance = $this->createAppObject(Item::class);
+
+            // Setting the items on a collection will prevent it from loading. Note: this requires changes in feature/p-sytem in core.
+            $collection->setItems([$instance]);
+            $this->costItemBlock->setInstanceCollection($collection);
+        }
 
         $this->addChildBlock($this->costItemBlock);
     }
