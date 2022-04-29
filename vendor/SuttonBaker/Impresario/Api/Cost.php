@@ -39,6 +39,8 @@ extends Base
         $converter = $this->createAppObject(CostConverter::class);
         $formValues = $converter->convert($params['formValues']);
 
+        var_dump($formValues['po_items']);exit;
+
 
         if (isset($formValues['cost_id']) && $formValues['cost_id']) {
             $modelInstance->load($formValues['cost_id']);

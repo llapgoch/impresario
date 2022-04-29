@@ -56,6 +56,7 @@ class Cost
         'qty' => 'Qty',
         'unit_price' => 'Unit Price',
         'total' => 'Total',
+        'remove' => ''
     ];
 
     /**

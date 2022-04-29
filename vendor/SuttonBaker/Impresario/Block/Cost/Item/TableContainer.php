@@ -74,7 +74,7 @@ implements \DaveBaker\Core\Block\BlockInterface
                 'content'
             )->setHeaders(CostDefinition::ITEM_TABLE_HEADERS)
                 ->setRecords($this->instanceCollection)
-                ->addClass('table-striped')
+                ->addClass('table-striped js-po-item-table')
                 ->setTemplate('html/table/cost/status-link-attribute-value.phtml')
         );
     }
