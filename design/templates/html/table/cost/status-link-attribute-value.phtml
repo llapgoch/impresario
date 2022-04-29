@@ -14,7 +14,7 @@
 
             <tbody>
             <?php foreach($block->getRecords() as $record): ?>
-                <tr class="<?php echo $block->getRowClass($record);?>">
+                <tr class="<?php echo $block->getRowClass($record);?>" data-value-id="<?php echo $record->getId(); ?>">
                     <?php foreach($block->getHeaderKeys() as $k => $header): ?>
                         <td <?php echo $block->getTdAttrs($k);?> data-value="<?php echo $block->escAttr($record->getOutputData($header), $header); ?>" data-code="<?php echo $header;?>" >
                             <?php // Create the cell contents in the js-controller. ?>
