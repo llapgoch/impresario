@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use Exception;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
@@ -208,6 +209,10 @@ class Cost extends Base
             $returnValues['new_save'] = true;
         }
 
+        if (isset($data['po_items'])) {
+            $this->saveCostItems($modelInstance, $data['po_items']);
+        }
+
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
         $modelInstance->setData($data)->save();
@@ -223,6 +228,50 @@ class Cost extends Base
         }
 
         return $returnValues;
+    }
+
+    /**
+     * @param int $id
+     * @param \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $costCollection
+     * @return \SuttonBaker\Impresario\Model\Db\Cost\Item|null
+     */
+    protected function getItemWithIdFromCollection(
+        $id,
+        \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $costCollection
+    ) {
+        foreach ($costCollection->getItems() as $costItem) {
+            if ((int) $costItem->getId() == (int) $id) {
+                return $costItem;
+            }
+        }
+
+        return null;
+    }
+
+
+
+    protected function saveCostItems(
+        \SuttonBaker\Impresario\Model\Db\Cost $modelInstance,
+        $items
+    ) {
+        $existingItems = $this->getCostInvoiceItems(
+            $modelInstance->getId()
+        );
+
+        foreach ($items as $item) {
+            // Update the item
+            if ((int) $item['id']) {
+
+                $savedItem = $this->getItemWithIdFromCollection(
+                    $item['id'],
+                    $existingItems
+                );
+
+                // var_dump($savedItem->getId());
+            } else {
+                // Create a new one
+            }
+        }
     }
 
     /**

@@ -58,5 +58,46 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
         $this->addRule(
             $this->createRule('Numeric', 'value', 'Cost Value')
         );
+
+
+        $itemRule = $this->createRule('Custom', 'po_items', 'Po Items')
+            ->setMainError('Please ensure all PO Items contain a description, qty, and unit price');
+
+        $this->addRule($itemRule->setValidationMethod(
+            function ($costItems, $ruleInstance) use ($itemRule) {
+                
+                if (!is_array($costItems)) {
+                    return $ruleInstance->createError();
+                }
+
+                $required = ['description', 'qty', 'unit_price', 'id', 'removed'];
+
+                foreach ($costItems as $costItem) {
+                    if (!is_array($costItem)) {
+                        return $ruleInstance->createError();
+                    }
+    
+                    foreach ($required as $requirement) {
+                        if (!array_key_exists($requirement, $costItem)) {
+                            return $ruleInstance->createError();
+                        }
+                    }
+
+                    if(!trim($costItem['description'])) {
+                        $itemRule->setMainError('Please ensure each PO Item has a description');
+                        return $ruleInstance->createError();
+                    }
+
+                    if (!is_numeric($costItem['qty'])
+                        || !is_numeric($costItem['unit_price'])
+                    ) {
+                        $itemRule->setMainError('Please ensure each PO Item has a valid quantity and unit price');
+                        return $ruleInstance->createError();
+                    }
+                }
+
+                return true;
+            }
+        ));
     }
 }
