@@ -236,14 +236,24 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             "{$this->blockPrefix}.item.table"
         )->setOrder('before', "{$prefixKey}.file.upload.container");
         
+        $hasItems = false;
 
         if ($this->modelInstance->getId()) {
+            $items = $this->getCostHelper()->getCostInvoiceItems(
+                $this->modelInstance->getId()
+            )->getItems();
+            
+
             $this->costItemBlock->setInstanceCollection(
                 $this->getCostHelper()->getCostInvoiceItems(
                     $this->modelInstance->getId()
                 )
             );
-        } else {
+
+            $hasItems = count($items) > 0;
+        } 
+        
+        if(!$hasItems) {
             // Create a new collection with a blank item
             /** @var Collection $collection */
             $collection = $this->createAppObject(Collection::class);

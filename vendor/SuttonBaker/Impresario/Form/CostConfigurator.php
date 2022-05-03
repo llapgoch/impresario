@@ -83,8 +83,7 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                         }
                     }
 
-                    
-                    if((bool) $costItem['deleted']) {
+                    if((bool) $costItem['removed']) {
                         continue;
                     }
 
