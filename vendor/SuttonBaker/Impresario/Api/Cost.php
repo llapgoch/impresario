@@ -47,6 +47,7 @@ extends Base
             }
         }
 
+        $isEditMode = $modelInstance->getId() ? true : false;
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if ($validateResult['hasErrors']) {
@@ -59,6 +60,28 @@ extends Base
             $formValues,
             $navigatingAway
         );
+
+        // Add the PO Item block to populate with IDs
+        /** @var \SuttonBaker\Impresario\Block\Cost\Item\TableContainer $costItemBlock */
+        $costItemBlock = $this->getApp()->getBlockManager()->createBlock(
+            \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
+            "{$this->blockPrefix}.item.table"
+        );
+
+        if ($isEditMode) {
+            $costItemBlock->setInstanceCollection(
+                $this->getCostHelper()->getCostInvoiceItems(
+                    $modelInstance->getId()
+                )
+            );
+        }
+
+        $costItemBlock->preDispatch();
+        
+        if($tableBlock = $this->getApp()->getBlockManager()->getBlock('cost.item.list.table')) {
+            $this->addReplacerBlock($tableBlock);
+        }
+        
 
         return array_merge($validateResult, $saveValues);
     }

@@ -233,8 +233,9 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $this->costItemBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
-            "{$this->blockPrefix}.cost.item.table"
+            "{$this->blockPrefix}.item.table"
         )->setOrder('before', "{$prefixKey}.file.upload.container");
+        
 
         if ($this->modelInstance->getId()) {
             $this->costItemBlock->setInstanceCollection(
