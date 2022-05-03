@@ -65,6 +65,15 @@ implements \DaveBaker\Core\Block\BlockInterface
             )->setHeading('<strong>PO Items</strong>')
         );
 
+        $addButton = $this->createBlock(
+            \DaveBaker\Form\Block\Button::class,
+            'create.cost.item.button',
+            'header_elements'
+        )->setButtonName('Add Item')
+            ->addAttribute(['type' =>  'button'])
+            ->addClass('btn btn-sm btn-primary js-po-item-create');
+
+        $tileBlock->addChildBlock($addButton);
         $tileBlock->setTileBodyClass('nopadding table-responsive');
 
         $tileBlock->addChildBlock(
