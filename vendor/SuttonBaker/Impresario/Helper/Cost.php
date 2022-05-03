@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Helper;
 use Exception;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
+use SuttonBaker\Impresario\Model\Db\Cost\Item;
 
 /**
  * Class Cost
@@ -254,23 +255,55 @@ class Cost extends Base
         \SuttonBaker\Impresario\Model\Db\Cost $modelInstance,
         $items
     ) {
+
+        if (!$modelInstance->getId()) {
+            throw new Exception("Model instance must be saved before saving items");
+        }
+
         $existingItems = $this->getCostInvoiceItems(
             $modelInstance->getId()
         );
 
         foreach ($items as $item) {
             // Update the item
-            if ((int) $item['id']) {
+            $itemId = (int) $item['id'];
+            $isDeleted = (int) $item['removed'];
 
-                $savedItem = $this->getItemWithIdFromCollection(
+            // Don't make a new item which has been removed 
+            if (!$itemId && $isDeleted) {
+                continue;
+            }
+
+            if ($itemId) {
+                $itemEntity = $this->getItemWithIdFromCollection(
                     $item['id'],
                     $existingItems
                 );
 
-                // var_dump($savedItem->getId());
+                if (!$itemEntity) {
+                    throw new \Exception("Saved item {$item['id']} not found for cost");
+                };
+
+                // If the item has previously been delted (by another user in another session) don't bother updating here
+                if ((bool) $itemEntity->getIsDeleted()) {
+                    continue;
+                }
             } else {
                 // Create a new one
+                $itemEntity = $this->createAppObject(Item::class);
+                $itemEntity->setCostId($modelInstance->getId());
             }
+
+            if ($isDeleted) {
+                $itemEntity->setIsDeleted(1);
+            } else {
+                $itemEntity->setDescription($item['description'])
+                    ->setUnitPrice($item['unit_price'])
+                    ->setQty($item['qty'])
+                    ->setIsDeleted(0);
+            }
+
+            $itemEntity->save();
         }
     }
 

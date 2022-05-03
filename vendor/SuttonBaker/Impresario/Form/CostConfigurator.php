@@ -83,6 +83,11 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                         }
                     }
 
+                    
+                    if((bool) $costItem['deleted']) {
+                        continue;
+                    }
+
                     if(!trim($costItem['description'])) {
                         $itemRule->setMainError('Please ensure each PO Item has a description');
                         return $ruleInstance->createError();
@@ -92,6 +97,11 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                         || !is_numeric($costItem['unit_price'])
                     ) {
                         $itemRule->setMainError('Please ensure each PO Item has a valid quantity and unit price');
+                        return $ruleInstance->createError();
+                    }
+
+                    if((float) $costItem['qty'] < 1) {
+                        $itemRule->setMainError('Please ensure each PO Item has a positive quantity');
                         return $ruleInstance->createError();
                     }
                 }
