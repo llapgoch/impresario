@@ -12,12 +12,13 @@ class Cost
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
     const API_ENDPOINT_VALIDATE_SAVE = 'cost/validatesave';
 
+    const COST_TYPE_PARAM = 'cost_type';
+    const PARENT_ID_PARAM = 'parent_id';
+    
     const NON_USER_VALUES = [
         'cost_id',
         'created_by_id',
         'last_edited_by_id',
-        'cost_type',
-        'parent_id',
         'created_at',
         'updated_at',
         'is_deleted'

@@ -17,8 +17,6 @@ class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-    const COST_TYPE_PARAM = 'cost_type';
-    const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'cost_id';
 
     /** @var array  */
@@ -44,8 +42,8 @@ class EditController
     {
 
         // Set instance values before the blocks are created
-        $costType = $this->getRequest()->getParam(self::COST_TYPE_PARAM);
-        $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+        $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
+        $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
         
         $this->setModelInstance($this->getCostHelper()->getCost());
@@ -177,8 +175,8 @@ class EditController
             $costType = $instance->getCostType();
             $parentId = $instance->getParentId();
         }else{
-            $costType = $this->getRequest()->getParam(self::COST_TYPE_PARAM);
-            $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+            $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
+            $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
         }
 
         if($costType == CostDefinition::COST_TYPE_PROJECT){

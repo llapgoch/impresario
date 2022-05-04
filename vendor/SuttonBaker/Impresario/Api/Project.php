@@ -177,12 +177,13 @@ extends Base
         $helper = $this->getProjectHelper();
         $saveResult = [];
 
-        /** @var QuoteConfigurator $configurator */
+        /** @var ProjectConfigurator $configurator */
         $configurator = $this->createAppObject(ProjectConfigurator::class);
         /** @var Validator $validator */
         $validator = $this->createAppObject(Validator::class)->setValues($formValues);
         $validator->configurate($configurator)->validate();
 
+        /** @var Main $errorBlock */
         $errorBlock = $blockManager->createBlock(Main::class, 'project.edit.form.errors');
         $errorBlock->addErrors($validator->getErrors())->setIsReplacerBlock(true);
 

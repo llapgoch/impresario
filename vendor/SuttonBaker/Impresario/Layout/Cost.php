@@ -17,7 +17,7 @@ class Cost extends Base
     /** @var string  */
     protected $icon = \SuttonBaker\Impresario\Definition\Cost::ICON;
     /** @var string  */
-    protected $headingName = 'Costs';
+    protected $headingName = 'Purchase Orders';
 
     /**
      * @throws \DaveBaker\Core\App\Exception
@@ -48,7 +48,7 @@ class Cost extends Base
                 '\SuttonBaker\Impresario\Block\Core\Tile\Black',
                 "{$this->getBlockPrefix()}.tile.main")
                 ->setHeading(
-                    $this->getCostHelper()->getActionVerb($entityInstance) . " <strong>Cost Invoice for " . $costTypeName . "</strong>")
+                    $this->getCostHelper()->getActionVerb($entityInstance) . " <strong>Purchase Order for " . $costTypeName . "</strong>")
                 ->setShortcode('body_content')
         );
 

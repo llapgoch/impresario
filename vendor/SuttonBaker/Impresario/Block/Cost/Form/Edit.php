@@ -3,7 +3,7 @@
 namespace SuttonBaker\Impresario\Block\Cost\Form;
 
 use DaveBaker\Core\Definitions\Api;
-use \SuttonBaker\Impresario\Definition\Cost as CostDefintion;
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
@@ -62,11 +62,11 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
         $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
 
-        $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefintion::getCostInvoiceTypes(true))->getElementData();
+        $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefinition::getCostInvoiceTypes(true))->getElementData();
 
         $this->addClass('js-validate-form js-form-overlay');
         $this->addJsDataItems([
-            'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(CostDefintion::API_ENDPOINT_VALIDATE_SAVE),
+            'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(CostDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'idElementSelector' => '[name="cost_id"]',
             'idKey' => 'cost_id'
         ]);
@@ -80,16 +80,25 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 )->getElementData();
         }
 
+        if ($editMode) {
+            $parentId = $this->modelInstance->getParentId();
+            $costType = $this->modelInstance->getCostType();
+        } else {
+            $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
+            $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
+        }
 
         $this->addChildBlock(
             $this->createFormErrorBlock()
                 ->setOrder('before', '')
         );
 
+        $returnUrl = $this->getRequest()->getReturnUrl();
+
         $elements = $builder->build([
             [
                 'name' => 'cost_date',
-                'labelName' => 'Invoice Date *',
+                'labelName' => 'Purchase Order Date *',
                 'class' => 'js-date-picker',
                 'rowIdentifier' => 'invoice_date_supplier',
                 'type' => 'Input\Text',
@@ -104,7 +113,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'cost_invoice_type',
-                'labelName' => 'Invoice Type *',
+                'labelName' => 'Type *',
                 'formGroup' => true,
                 'type' => 'Select',
                 'rowIdentifier' => 'invoice_date_supplier',
@@ -128,7 +137,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ]
             ], [
                 'name' => 'cost_number',
-                'labelName' => 'Invoice Number *',
+                'labelName' => 'Purchase Order Number *',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'invoice_number_val',
                 'formGroup' => true,
@@ -158,7 +167,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
-                    'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance, false) . " Invoice",
+                    'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance, false) . " Purchase Order",
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
                 ],
                 'class' => 'btn-block',
@@ -174,12 +183,12 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'attributes' => $disabledAttrs,
                 'data' => [
-                    'button_name' => 'Remove Invoice',
+                    'button_name' => 'Remove',
                     'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
                     'js_data_items' => [
-                        'type' => 'Cost Invoice',
+                        'type' => 'Purchase Order',
                         'endpoint' => $this->getUrlHelper()->getApiUrl(
-                            CostDefintion::API_ENDPOINT_DELETE,
+                            CostDefinition::API_ENDPOINT_DELETE,
                             ['id' => $this->modelInstance->getId()]
                         ),
                         'returnUrl' => $this->getUrlHelper()->getRefererUrl()
@@ -197,12 +206,24 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'name' => 'action',
                 'type' => 'Input\Hidden',
                 'value' => 'edit'
-            ]
+            ], [
+                'name' => 'parent_id',
+                'type' => 'Input\Hidden',
+                'value' => $parentId
+            ], [
+                'name' => 'cost_type',
+                'type' => 'Input\Hidden',
+                'value' => $costType
+            ], [
+                'name' => 'return_url',
+                'type' => 'Input\Hidden',
+                'value' => $returnUrl
+            ],
         ]);
 
         $this->addRecordMonitorBlock(
             $this->modelInstance,
-            $this->getUrlHelper()->getApiUrl(CostDefintion::API_ENDPOINT_RECORD_MONITOR)
+            $this->getUrlHelper()->getApiUrl(CostDefinition::API_ENDPOINT_RECORD_MONITOR)
         );
 
         $this->addChildBlock(array_values($elements));
@@ -235,14 +256,14 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
             "{$this->blockPrefix}.item.table"
         )->setOrder('before', "{$prefixKey}.file.upload.container");
-        
+
         $hasItems = false;
 
         if ($this->modelInstance->getId()) {
             $items = $this->getCostHelper()->getCostInvoiceItems(
                 $this->modelInstance->getId()
             )->getItems();
-            
+
 
             $this->costItemBlock->setInstanceCollection(
                 $this->getCostHelper()->getCostInvoiceItems(
@@ -251,9 +272,9 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             );
 
             $hasItems = count($items) > 0;
-        } 
-        
-        if(!$hasItems) {
+        }
+
+        if (!$hasItems) {
             // Create a new collection with a blank item
             /** @var Collection $collection */
             $collection = $this->createAppObject(Collection::class);

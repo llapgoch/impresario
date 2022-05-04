@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Api;
 
 use DaveBaker\Form\Block\Error\Main;
 use \DaveBaker\Core\Definitions\Messages;
+use Exception;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use SuttonBaker\Impresario\SaveConverter\Cost as CostConverter;
@@ -20,8 +21,6 @@ extends Base
     /** @var array */
     protected $capabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_COST];
 
-
-
     public function validatesaveAction(
         $params,
         \WP_REST_Request $request
@@ -33,11 +32,13 @@ extends Base
             throw new \Exception('No form values provided');
         }
 
-        $modelInstance = $helper->getCost();
-        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         /** @var CostConverter $converter */
         $converter = $this->createAppObject(CostConverter::class);
         $formValues = $converter->convert($params['formValues']);
+
+        $modelInstance = $helper->getCost();
+        $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
+
 
         if (isset($formValues['cost_id']) && $formValues['cost_id']) {
             $modelInstance->load($formValues['cost_id']);
@@ -48,6 +49,12 @@ extends Base
         }
 
         $isEditMode = $modelInstance->getId() ? true : false;
+
+        // if we're creating new, we have to have a return url for the project - always redirect on create as the form would need to reload to do anything
+        if (!$formValues['return_url'] && !$isEditMode) {
+            throw new \Exception("Return url not provided");
+        }
+
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
         if ($validateResult['hasErrors']) {
@@ -61,28 +68,6 @@ extends Base
             $navigatingAway
         );
 
-        // Add the PO Item block to populate with IDs
-        /** @var \SuttonBaker\Impresario\Block\Cost\Item\TableContainer $costItemBlock */
-        $costItemBlock = $this->getApp()->getBlockManager()->createBlock(
-            \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
-            "{$this->blockPrefix}.item.table"
-        );
-
-        if ($isEditMode) {
-            $costItemBlock->setInstanceCollection(
-                $this->getCostHelper()->getCostInvoiceItems(
-                    $modelInstance->getId()
-                )
-            );
-        }
-
-        $costItemBlock->preDispatch();
-        
-        if($tableBlock = $this->getApp()->getBlockManager()->getBlock('cost.item.list.table')) {
-            $this->addReplacerBlock($tableBlock);
-        }
-        
-
         return array_merge($validateResult, $saveValues);
     }
 
@@ -92,24 +77,64 @@ extends Base
         $navigatingAway = false
     ) {
         $saveValues = $this->getCostHelper()->saveCost($modelInstance, $formValues);
-        $message = "The cost has been " . ($saveValues['new_save'] ? 'created' : 'updated');
 
-        if ($navigatingAway) {
+        $message = "The purchase order has been " . ($saveValues['new_save'] ? 'created' : 'updated');
+
+        // Always redirect back to the project on creation - allow staing on the page in 
+        if ($saveValues['new_save']) {
+            // Redirect to the return url if we're saving new, or let the user navigate away
+            if (!$navigatingAway) {
+                // This has already been validated
+                $saveValues['redirect'] = $formValues['return_url'];
+            }
+
             $this->getApp()->getGeneralSession()->addMessage(
                 $message,
                 Messages::SUCCESS
             );
         } else {
-            $this->addReplacerBlock(
-                $this->getModalHelper()->createAutoOpenModal(
-                    'Success',
-                    $message
+            // If we're editing, allow the user to stay on the page, unless navigating away
+            if ($navigatingAway) {
+                $this->getApp()->getGeneralSession()->addMessage(
+                    $message,
+                    Messages::SUCCESS
+                );
+            } else {
+                $this->addReplacerBlock(
+                    $this->getModalHelper()->createAutoOpenModal(
+                        'Success',
+                        $message
+                    )
+                );
+            }
+        }
+
+        // Only render the block if we're staying on the page (edit mode only)
+        if ($saveValues['new_save'] == false) {
+            // Add the PO Item block to populate with IDs
+            /** @var \SuttonBaker\Impresario\Block\Cost\Item\TableContainer $costItemBlock */
+            $costItemBlock = $this->getApp()->getBlockManager()->createBlock(
+                \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
+                "{$this->blockPrefix}.item.table"
+            );
+
+            $costItemBlock->setInstanceCollection(
+                $this->getCostHelper()->getCostInvoiceItems(
+                    $modelInstance->getId()
                 )
             );
+
+            $costItemBlock->preDispatch();
+
+            if ($tableBlock = $this->getApp()->getBlockManager()->getBlock('cost.item.list.table')) {
+                $this->addReplacerBlock($tableBlock);
+            }
         }
 
         return $saveValues;
     }
+
+
 
     protected function validateValues(
         \SuttonBaker\Impresario\Model\Db\Cost $modelInstance,
@@ -138,6 +163,7 @@ extends Base
     }
 
 
+
     /**
      * @param $params
      * @param WP_REST_Request $request
@@ -163,11 +189,11 @@ extends Base
         )->load($params['id']);
 
         if (!$item->getId()) {
-            throw new \Exception('The invoice could not be found');
+            throw new \Exception('The purchase order could not be found');
         }
 
         $helper->deleteCost($item);
-        $this->addMessage('The cost invoice has been removed', Messages::SUCCESS);
+        $this->addMessage('The purchase order has been removed', Messages::SUCCESS);
 
         return true;
     }

@@ -48,7 +48,7 @@ class Cost extends Base
     }
 
     /**
-     * Get cost invoice po items for a cost invoice id
+     * Get cost invoice po items for a cost invoice (purchase order) id
      *
      * @param int $costInvoiceId
      * @return \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection
@@ -202,22 +202,32 @@ class Cost extends Base
             }
         }
 
-        // Add created by user
+        // Add created by user & set the parent for new saves
         if (!$modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-            $data['cost_type'] = $this->costType;
-            $data['parent_id'] = $this->parentItem->getId();
             $returnValues['new_save'] = true;
-        }
 
-        if (isset($data['po_items'])) {
-            $this->saveCostItems($modelInstance, $data['po_items']);
+            // Set the parent id for new items
+            $costType = isset($data['cost_type']) ? $data['cost_type'] : '';
+            $parentId = isset($data['parent_id']) ? $data['parent_id'] : '';
+
+            $parent = $this->getParentItem($costType, $parentId);
+
+            if (!$parent) {
+                throw new \Exception("Parent not found");
+            }
+        } else {
+            // Don't allow changing the parent / cost type if we're updating the record 
+            unset($data['parent_id']);
+            unset($data['cost_type']);
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
+        
         $modelInstance->setData($data)->save();
-        $data['cost_id'] = $modelInstance->getId();
+        if (isset($data['po_items'])) {
+            $this->saveCostItems($modelInstance, $data['po_items']);
+        }
 
         if ($returnValues['new_save'] && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
             // Assign any uploads to the enquiry
@@ -230,6 +240,26 @@ class Cost extends Base
 
         return $returnValues;
     }
+
+    /**
+     * @param string $costType
+     * @param int $parentId
+     * @return \SuttonBaker\Impresario\Model\Db\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getParentItem(
+        $costType,
+        $parentId
+    ) {
+        $parentId = null;
+
+        if ($costType !== CostDefinition::COST_TYPE_PROJECT) {
+            throw new \Exception("Cost type $costType not supported");
+        }
+
+        return $this->getProjectHelper()->getProject($parentId);
+    }
+
 
     /**
      * @param int $id

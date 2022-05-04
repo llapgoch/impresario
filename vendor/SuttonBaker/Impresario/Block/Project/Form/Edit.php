@@ -730,7 +730,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             if ($costTileBlock = $this->getBlockManager()->getBlock('cost.tile.block')) {
                 $costTileBlock->addChildBlock(
                     $this->createSmallButtonElement(
-                        'Create Cost Invoice',
+                        'Create Purchase Order',
                         $this->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
                             [
