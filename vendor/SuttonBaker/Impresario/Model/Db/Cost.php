@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Model\Db;
+
 /**
  * Class Cost
  * @package SuttonBaker\Impresario\Model\Db
@@ -34,6 +35,7 @@ class Cost extends Base
     protected function beforeSave()
     {
         $this->setValue(round($this->getValue(), 2));
+        $this->calculatePoItemTotal();
     }
 
     /**
@@ -43,9 +45,26 @@ class Cost extends Base
      */
     protected function afterSave()
     {
-        if($parent = $this->getParent()){
+        if ($parent = $this->getParent()) {
             $parent->save();
         }
     }
 
+    public function calculatePoItemTotal()
+    {
+        $total = 0;
+
+        if ($this->getId()) {
+            // Always load a fresh collection when saving
+            $items = $this->getCostHelper()->getCostInvoiceItems($this->getId(), true)->getItems();
+
+            foreach ($items as $item) {
+                $total += (float) $item->getTotal();
+            }
+        }
+
+        $this->setPoItemTotal($total);
+
+        return $this;
+    }
 }

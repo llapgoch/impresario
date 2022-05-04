@@ -77,7 +77,6 @@ extends Base
         $navigatingAway = false
     ) {
         $saveValues = $this->getCostHelper()->saveCost($modelInstance, $formValues);
-
         $message = "The purchase order has been " . ($saveValues['new_save'] ? 'created' : 'updated');
 
         // Always redirect back to the project on creation - allow staing on the page in 

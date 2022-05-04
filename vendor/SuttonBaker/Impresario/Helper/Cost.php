@@ -17,6 +17,7 @@ class Cost extends Base
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_COST];
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_COST, Roles::CAP_VIEW_COST];
 
+    protected $costInvoiceCache = [];
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Cost\Collection
      * @throws \DaveBaker\Core\Object\Exception
@@ -53,15 +54,19 @@ class Cost extends Base
      * @param int $costInvoiceId
      * @return \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection
      */
-    public function getCostInvoiceItems($costInvoiceId)
+    public function getCostInvoiceItems($costInvoiceId, $reload = false)
     {
-        /** @var \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $collection */
-        $collection = $this->createAppObject(
-            \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection::class
-        )->where('{{cost_po_item}}.is_deleted=?', '0')
-            ->where('{{cost_po_item}}.cost_id=?', $costInvoiceId);
+        if (!isset($this->costInvoiceCache[$costInvoiceId]) || $reload) {
+            /** @var \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection $collection */
+            $collection = $this->createAppObject(
+                \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection::class
+            )->where('{{cost_po_item}}.is_deleted=?', '0')
+                ->where('{{cost_po_item}}.cost_id=?', $costInvoiceId);
 
-        return $collection;
+            $this->costInvoiceCache[$costInvoiceId] = $collection;
+        }
+
+        return $this->costInvoiceCache[$costInvoiceId];
     }
 
 
@@ -223,11 +228,17 @@ class Cost extends Base
         }
 
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-        
+
+        // Save first to get the ID
         $modelInstance->setData($data)->save();
+
+        // Save each cost item, calculating their totals
         if (isset($data['po_items'])) {
             $this->saveCostItems($modelInstance, $data['po_items']);
         }
+
+        // Re-save the model instance to calculate the total after setting the items.
+        $modelInstance->save();
 
         if ($returnValues['new_save'] && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
             // Assign any uploads to the enquiry
