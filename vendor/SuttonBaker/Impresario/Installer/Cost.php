@@ -40,6 +40,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
               `cost_number` varchar(255) DEFAULT NULL,
               `sage_number` varchar(255) DEFAULT NULL,
               `value` decimal(10,4) DEFAULT NULL,
+              `po_item_total` decimal(10,4) DEFAULT NULL,
               `created_by_id` int(11) DEFAULT NULL,
               `last_edited_by_id` int(11) DEFAULT NULL,
               `supplier_id` int(11) DEFAULT NULL,
