@@ -70,39 +70,7 @@ class PrintController
      */
     public function execute()
     {
-        if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('cost.form.edit'))){
-            return;
-        }
-
-
-        /** @var \DaveBaker\Core\Helper\Date $helper */
-        $helper = $this->getApp()->getHelper('Date');
-
-        wp_enqueue_script('jquery-ui-datepicker');
-        wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-
-        /** @var \DaveBaker\Form\BlockApplicator $applicator */
-        $applicator = $this->createAppObject('\DaveBaker\Form\BlockApplicator');
-
-        // Apply the values to the form element
-        if($this->modelInstance->getId()) {
-            $data = $this->modelInstance->getData();
-
-            if($this->modelInstance->getCostDate()){
-                $data['cost_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getCostDate());
-            }
-
-            if($this->modelInstance->getValue()){
-                $data['value'] = (float) $this->modelInstance->getValue();
-            }
-
-            $applicator->configure(
-                $this->editForm,
-                $data
-            );
-        }
-
-
+       // All done in layout
     }
 
     /**
