@@ -120,12 +120,12 @@ class PrintPO extends \DaveBaker\Core\Block\Template
         }
 
         $addressParts = [
-            $supplier->getSupplierName(),
-            $supplier->getAddressLine1(),
-            $supplier->getAddressLine2(),
-            $supplier->getAddressLine3(),
-            $supplier->getCounty(),
-            $supplier->getPostcode(),
+            $this->escapeHtml($supplier->getSupplierName()),
+            $this->escapeHtml($supplier->getAddressLine1()),
+            $this->escapeHtml($supplier->getAddressLine2()),
+            $this->escapeHtml($supplier->getAddressLine3()),
+            $this->escapeHtml($supplier->getCounty()),
+            $this->escapeHtml($supplier->getPostcode()),
         ];
 
         return implode(",<br />", array_filter($addressParts));
