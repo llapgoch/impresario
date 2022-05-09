@@ -32,6 +32,13 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             ]
         );
 
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::COST_PRINT,
+            [
+                "post_title" => "Print Purchase Order"
+            ]
+        );
+
         $this->deltaTable(
             'cost',
             "CREATE TABLE `{{tableName}}` (

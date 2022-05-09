@@ -155,6 +155,17 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ],
             ], [
+                'name' => 'po_item_total',
+                'labelName' => 'PO Value',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'formGroup' => true,
+                'class' => 'js-po-total-value',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+            ], [
                 'name' => 'sage_number',
                 'labelName' => 'Sage Number',
                 'type' => 'Input\Text',

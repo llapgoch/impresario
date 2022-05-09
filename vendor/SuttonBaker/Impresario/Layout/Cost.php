@@ -22,6 +22,19 @@ class Cost extends Base
     /** @var string  */
     protected $headingName = 'Purchase Orders';
 
+    public function costPrintHandle() {
+        $entityInstance = $this->getApp()->getRegistry()->get('model_instance');
+
+        $this->addBlock(
+            /** @var \SuttonBaker\Impresario\Block\Cost\PrintPO $printBlock */
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Cost\PrintPO::class,
+                "cost.print.table"
+            )
+            ->setShortcode('body_content')
+            ->setCost($entityInstance)
+        );
+    }
     /**
      * @throws \DaveBaker\Core\App\Exception
      * @throws \DaveBaker\Core\Block\Exception
@@ -50,6 +63,8 @@ class Cost extends Base
             $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
         }
 
+        $costTypeName = $this->getCostHelper()->determineCostTypeName($entityInstance);
+
         $this->addBlock(
             /** @var \SuttonBaker\Impresario\Block\Core\Tile\Black $mainTile */
             $mainTile = $this->createBlock(
@@ -75,6 +90,7 @@ class Cost extends Base
                     Page::PROJECT_EDIT,
                     ['project_id' => $parentId]
                 );
+
                 // Create the tab block for the project link
                 $tabs = [
                     [
@@ -83,6 +99,19 @@ class Cost extends Base
                         'icon' => ProjectDefinition::ICON
                     ]
                 ];
+
+                if($entityInstance->getId()) {
+                    $printHref = $this->getUrlHelper()->getPageUrl(
+                        Page::COST_PRINT,
+                        ['cost_id' => $entityInstance->getId()]
+                    );
+
+                    $tabs[] = [
+                        'name' => 'Print PO',
+                        'href' => $printHref,
+                        'icon' => 'fa fa-print'
+                    ];
+                }
 
                 $tabBlock = $this->getApp()->getBlockManager()->createBlock(
                     \SuttonBaker\Impresario\Block\Core\Tile\Tabs::class,
@@ -104,4 +133,6 @@ class Cost extends Base
 
         );
     }
+
+    
 }
