@@ -44,6 +44,11 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
         );
 
         $this->addRule(
+            $this->createRule('Date', 'delivery_date', 'Delivery Date')
+        );
+
+
+        $this->addRule(
             $this->createRule('Required', 'cost_invoice_type', 'Invoice Type')
         );
 

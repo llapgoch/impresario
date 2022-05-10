@@ -46,8 +46,8 @@ $poItems = $block->getPOItems();
                 </tr>
 
                 <tr>
-                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Supplier Order Number:</th>
-                    <td><?= $block->escapeHtml($block->getCost()->getCostNumber()); ?></td>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Supplier Quote Number:</th>
+                    <td><?= $block->escapeHtml($block->getSupplierQuoteNumber()); ?></td>
                 </tr>
 
                 <tr>
@@ -73,6 +73,15 @@ $poItems = $block->getPOItems();
             <div class="border border-dark d-flex flex-column h-100">
                 <div class="bg-secondary text-white p-1">Site</div>
                 <div class="p-1"><?= $block->escapeHtml($block->getSiteName()); ?></div>
+
+                <div class="mt-auto">
+                    <table class="table table-sm table-bordered border-dark">
+                        <tr>
+                            <th class="bg-secondary text-white" style="background: #6c757d !important;">Delivery Date</th>
+                            <td class="w-50"><?= $block->escapeHtml($block->getDeliveryDate()); ?></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -109,7 +109,8 @@ class Cost extends Base
                     $tabs[] = [
                         'name' => 'Print PO',
                         'href' => $printHref,
-                        'icon' => 'fa fa-print'
+                        'icon' => 'fa fa-print',
+                        'new_window' => true
                     ];
                 }
 

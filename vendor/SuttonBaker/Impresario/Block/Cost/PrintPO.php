@@ -60,6 +60,19 @@ class PrintPO extends \DaveBaker\Core\Block\Template
 
     /**
      *
+     * @return string
+     */
+    public function getDeliveryDate()
+    {
+        if(!($deliveryDate = $this->getCost()->getDeliveryDate())) {
+            return '- -';
+        }
+
+        return $this->getDateHelper()->utcDbDateToShortLocalOutput($deliveryDate);
+    }
+
+    /**
+     *
      * @return Client
      */
     public function getClient()
@@ -116,6 +129,16 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     public function formatCurrency($value)
     {
         return $this->getLocaleHelper()->formatCurrency($value);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getSupplierQuoteNumber()
+    {
+        $quoteNumber = $this->getCost()->getSupplierQuoteNumber();
+        return $quoteNumber ? $quoteNumber : '- -';
     }
 
     /**

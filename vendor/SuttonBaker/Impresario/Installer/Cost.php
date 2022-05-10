@@ -44,6 +44,9 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             "CREATE TABLE `{{tableName}}` (
               `cost_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `cost_date` datetime DEFAULT NULL,
+              `delivery_date` datetime DEFAULT NULL,
+              `status` varchar(255) DEFAULT NULL,
+              `supplier_quote_number` varchar(255) DEFAULT NULL,
               `cost_number` varchar(255) DEFAULT NULL,
               `sage_number` varchar(255) DEFAULT NULL,
               `value` decimal(10,4) DEFAULT NULL,

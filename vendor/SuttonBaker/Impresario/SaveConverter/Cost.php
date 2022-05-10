@@ -1,4 +1,5 @@
 <?php
+
 namespace SuttonBaker\Impresario\SaveConverter;
 
 use DaveBaker\Core\Base;
@@ -21,12 +22,17 @@ class Cost extends Base
         /** @var \DaveBaker\Core\Helper\Date $helper */
         $helper = $this->getApp()->getHelper('Date');
 
-   
+
         // Convert dates to DB
         if (isset($data['cost_date'])) {
             $data['cost_date'] = $helper->localDateToDb($data['cost_date']);
         }
-        
+
+        // Convert dates to DB
+        if (isset($data['delivery_date'])) {
+            $data['delivery_date'] = $helper->localDateToDb($data['delivery_date']);
+        }
+
         return $data;
     }
 }

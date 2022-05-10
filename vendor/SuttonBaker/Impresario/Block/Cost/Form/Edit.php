@@ -145,6 +145,15 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ],
             ], [
+                'name' => 'supplier_quote_number',
+                'labelName' => 'Supplier Quote Number',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'invoice_number_val',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+            ], [
                 'name' => 'value',
                 'labelName' => 'Invoice Value *',
                 'type' => 'Input\Text',
@@ -173,6 +182,20 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
+                ],
+            ], [
+                'name' => 'delivery_date',
+                'labelName' => 'Delivery Date',
+                'class' => 'js-date-picker',
+                'rowIdentifier' => 'invoice_number_val',
+                'type' => 'Input\Text',
+                'formGroup' => true,
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+                'attributes' => [
+                    'autocomplete' => 'off',
+                    'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "+5Y"])
                 ],
             ], [
                 'name' => 'submit',

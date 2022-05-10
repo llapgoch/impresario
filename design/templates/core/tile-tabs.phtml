@@ -1,9 +1,12 @@
+<?php /** @var \SuttonBaker\Impresario\Block\Core\Tile\Tabs $block */ 
+
+?>
 <div class="transparent tile mb-0 noshadow">
     <div class="tile-widget color rounded-top-corners">
         <ul class="tile-navbar bg-transparent-black-3 clearfix">
             <li class="filters">
             <?php foreach($block->getTabs() as $tab): ?>
-                <a href="<?php echo isset($tab['href']) ? $tab['href'] : '';?>" class="<?php echo $block->getAnchorClass($tab);?>">
+                <a href="<?php echo isset($tab['href']) ? $tab['href'] : '';?>" <?= $block->getNewWindowAttr($tab);?> class="<?php echo $block->getAnchorClass($tab);?>">
                     <?php if(isset($tab['icon'])):?>
                         <i class="<?php echo $tab['icon'];?>"></i>
                     <?php endif; ?>

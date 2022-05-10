@@ -119,6 +119,10 @@ class EditController
                 $data['cost_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getCostDate());
             }
 
+            if($this->modelInstance->getDeliveryDate()){
+                $data['delivery_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDeliveryDate());
+            }
+
             if($this->modelInstance->getValue()){
                 $data['value'] = (float) $this->modelInstance->getValue();
             }
