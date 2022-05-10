@@ -55,7 +55,7 @@ class Cost
     const ITEM_TABLE_HEADERS = [
         'description' => 'Description',
         'qty' => 'Qty',
-        'unit_price' => 'Unit Price',
+        'unit_price' => 'Unit Price (&pound;)',
         'total' => 'Total',
         'remove' => ''
     ];

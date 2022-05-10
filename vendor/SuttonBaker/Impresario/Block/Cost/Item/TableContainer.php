@@ -41,6 +41,10 @@ implements \DaveBaker\Core\Block\BlockInterface
         return $this;
     }
 
+    public function formatTo2DP($value) {
+        return round((float) $value, 2);
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Block\Table\Container\Base|void
      * @throws \DaveBaker\Core\App\Exception
@@ -56,7 +60,11 @@ implements \DaveBaker\Core\Block\BlockInterface
             throw new Exception('Instance collection not defined');
         }
 
-        $instanceItems = $this->instanceCollection->load();
+        $this->instanceCollection->addOutputProcessors([
+            'unit_price' => $this->getCustomOutputProcessor()->setCallback([$this, 'formatTo2DP'])
+        ]);
+
+        $this->instanceCollection->load();
 
         $this->addChildBlock(
             $tileBlock = $this->createBlock(

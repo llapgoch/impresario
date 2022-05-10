@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Block\Cost;
 
 use DaveBaker\Core\Helper\Date;
 use Exception;
+use SuttonBaker\Impresario\Definition\Cost as DefinitionCost;
 use SuttonBaker\Impresario\Model\Db\Client;
 use SuttonBaker\Impresario\Model\Db\Cost;
 use SuttonBaker\Impresario\Model\Db\Project;
@@ -18,6 +19,10 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     protected $project;
     /** @var Client */
     protected $client;
+    /** @var User */
+    protected $projectManager;
+    /** @var array */
+    protected $poItems = [];
 
     /**
      * 
@@ -37,7 +42,7 @@ class PrintPO extends \DaveBaker\Core\Block\Template
      */
     public function getCost()
     {
-        if(!$this->cost) {
+        if (!$this->cost) {
             throw new Exception("Cost not set");
         }
         return $this->cost;
@@ -59,7 +64,7 @@ class PrintPO extends \DaveBaker\Core\Block\Template
      */
     public function getClient()
     {
-        if(!$this->client) {
+        if (!$this->client) {
             $this->client = $this->getClientHelper()->getClient($this->getProject()->getClientId());
         }
 
@@ -68,7 +73,7 @@ class PrintPO extends \DaveBaker\Core\Block\Template
 
     public function getProject()
     {
-        if(!$this->project) {
+        if (!$this->project) {
             $this->project = $this->getCostHelper()->getParentForCost($this->getCost());
         }
 
@@ -79,11 +84,49 @@ class PrintPO extends \DaveBaker\Core\Block\Template
      *
      * @return string
      */
+    public function getProjectManagerName()
+    {
+        if (!$this->projectManager) {
+            $this->projectManager = $this->getUserHelper()->getUser($this->getProject()->getProjectManagerId());
+        }
+
+        return $this->projectManager->getDisplayName();
+    }
+
+    /**
+     * This only applies to project types currently
+     * 
+     * @return array
+     */
+    public function getPOItems()
+    {
+        if (!$this->poItems) {
+            $result = $this->getCostHelper()->getCostInvoiceItems($this->getCost()->getId());
+            $this->poItems = $result->getItems();
+        }
+
+        return $this->poItems;
+    }
+
+    /**
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public function formatCurrency($value)
+    {
+        return $this->getLocaleHelper()->formatCurrency($value);
+    }
+
+    /**
+     *
+     * @return string
+     */
     public function getClientName()
     {
         $client = $this->getClient();
 
-        if(!$client->getId()) {
+        if (!$client->getId()) {
             return '- -';
         }
 
@@ -99,13 +142,13 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     {
         $project = $this->getProject();
 
-        if($siteName = $project->getSiteName()) {
+        if ($siteName = $project->getSiteName()) {
             return $siteName;
         }
 
         return '- -';
     }
-    
+
 
     /**
      *
@@ -115,7 +158,7 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     {
         $supplier = $this->getSupplierHelper()->getSupplier($this->getCost()->getSupplierId());
 
-        if(!$supplier->getId()) {
+        if (!$supplier->getId()) {
             return '- -';
         }
 
@@ -157,7 +200,7 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     {
         return $this->createAppObject(\SuttonBaker\Impresario\Helper\Project::class);
     }
-    
+
     /**
      * @return \SuttonBaker\Impresario\Helper\Client
      * @throws \DaveBaker\Core\Object\Exception
