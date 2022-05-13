@@ -20,6 +20,8 @@ class TableContainer
     protected $instanceCollection;
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
+    /** @var string */
+    protected $heading = 'Sales Invoices';
 
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Invoice\Collection
@@ -27,6 +29,17 @@ class TableContainer
     public function getInstanceCollection()
     {
         return $this->instanceCollection;
+    }
+
+    /**
+     *
+     * @param string $heading
+     * @return self
+     */
+    public function setHeading($heading)
+    {
+        $this->heading = $heading;
+        return $this;
     }
 
     /**
@@ -67,7 +80,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 'invoice.tile.block'
-            )->setHeading('<strong>Sales Invoices</strong>')
+            )->setHeading("<strong>{$this->heading}</strong>")
         );
 
 

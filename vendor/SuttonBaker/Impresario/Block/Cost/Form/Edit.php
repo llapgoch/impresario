@@ -306,7 +306,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->invoiceTableBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Invoice\TableContainer::class,
             "{$prefixKey}.invoice.table"
-        )->setOrder('after', "{$prefixKey}.item.table");
+        )->setOrder('after', "{$prefixKey}.item.table")
+        ->setHeading('Invoices');
 
         $this->invoiceTableBlock->setInstanceCollection(
             $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
