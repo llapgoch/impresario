@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Block\Cost\Form;
 
 use DaveBaker\Core\Definitions\Api;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
@@ -30,6 +31,9 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     protected $parentItem;
     /** @var TableContainer */
     protected $costItemBlock;
+    /** @var  \SuttonBaker\Impresario\Block\Invoice\TableContainer */
+    protected $invoiceTableBlock;
+
     /**
      * @return \DaveBaker\Core\Block\Template|void
      * @throws \DaveBaker\Core\App\Exception
@@ -263,6 +267,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock(array_values($elements));
 
         $this->createCostItemTableBlock();
+        $this->createInvoiceTableBlock();
 
         // Create the file uploader
         $this->addChildBlock(
@@ -283,9 +288,42 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         }
     }
 
+    /**
+     * @throws \DaveBaker\Core\App\Exception
+     * @throws \DaveBaker\Core\Block\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function createInvoiceTableBlock()
+    {
+        $prefixKey = $this->blockPrefix;
+
+        // Only allow invoice creation for saved costs
+        if (!$this->getInvoiceHelper()->currentUserCanView() || !($this->modelInstance->getId())) {
+            return;
+        }
+
+        $this->invoiceTableBlock = $this->createBlock(
+            \SuttonBaker\Impresario\Block\Invoice\TableContainer::class,
+            "{$prefixKey}.invoice.table"
+        )->setOrder('after', "{$prefixKey}.item.table");
+
+        $this->invoiceTableBlock->setInstanceCollection(
+            $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
+                $this->modelInstance->getId(),
+                InvoiceDefinition::INVOICE_TYPE_PO_INVOICE
+            )
+        )->setEditLinkParams([
+            \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
+        ]);
+
+       
+        $this->addChildBlock($this->invoiceTableBlock);
+    }
+
     protected function createCostItemTableBlock()
     {
-        $prefixKey = self::PREFIX_KEY;
+        $prefixKey = $this->blockPrefix;
         $this->costItemBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
             "{$this->blockPrefix}.item.table"
@@ -352,6 +390,26 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 )
             );
         }
+
+        if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
+            $invoiceTileBlock->addChildBlock(
+                $this->createSmallButtonElement(
+                    'Create Invoice',
+                    $this->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
+                        [
+                            'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PO_INVOICE,
+                            'parent_id' => $this->modelInstance->getId()
+                        ],
+                        true
+                    ),
+                    'create.invoice.button',
+                    'header_elements'
+                )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+            );
+        }
+
+
         return parent::_preRender();
     }
 }

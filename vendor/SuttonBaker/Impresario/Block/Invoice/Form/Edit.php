@@ -55,19 +55,23 @@ class Edit
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
         $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
-        $totalAmountRemaining = $this->parentItem->getTotalNetSell();
+        $totalAmountRemaining = $this->parentItem->getInvoiceAmountRemaining();
+
 
         // Get the invoice amount remaining, without this invoice amount
-        /*  Do it this way rather than using getTotalAmountRemaining and taking off the current invoice amount
+        /*  Do it this way rather than using getInvoiceAmountRemaining and taking off the current invoice amount
             in case the current invoice amount is greater than the amount remaining 
         */
-        foreach($this->parentItem->getInvoices()->load() as $invoice){
-            if($invoice->getId() == $this->modelInstance->getId()){
-                continue;
-            }
+        // foreach($this->parentItem->getInvoices()->load() as $invoice){
+        //     if($invoice->getId() == $this->modelInstance->getId()){
+        //         continue;
+        //     }
             
-            $totalAmountRemaining = max(0, $totalAmountRemaining - $invoice->getValue());
-        }
+        //     $totalAmountRemaining = max(0, $totalAmountRemaining - $invoice->getValue());
+        // }
+
+        // Note: This has been changed for a more generic version
+        $totalAmountRemaining = max(0, $totalAmountRemaining + (float) $this->modelInstance->getValue());
 
 
         $elements = $builder->build([

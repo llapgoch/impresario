@@ -206,12 +206,11 @@ class EditController
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Invoice $instance
-     * @return \SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project|\SuttonBaker\Impresario\Model\Db\Quote
+     * @return \SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project|\SuttonBaker\Impresario\Model\Db\Quote|SuttonBaker\Impresario\Model\Db\Quote
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function getParentItem(\SuttonBaker\Impresario\Model\Db\Invoice $instance)
     {
-        $taskType = null;
         $parentId = null;
 
         if($instance->getId()){
@@ -229,6 +228,11 @@ class EditController
         if($invoiceType == InvoiceDefinition::INVOICE_TYPE_PROJECT){
             return $this->getProjectHelper()->getProject($parentId);
         }
+
+        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE){
+            return $this->getCostHelper()->getCost($parentId);
+        }
+
 
         return null;
     }
