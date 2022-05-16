@@ -61,9 +61,8 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
         );
 
         $this->addRule(
-            $this->createRule('Numeric', 'value', 'Cost Value')
+            $this->createRule('Required', 'status', 'Status')
         );
-
 
         $itemRule = $this->createRule('Custom', 'po_items', 'Po Items')
             ->setMainError('Please ensure all PO Items contain a description, qty, and unit price');

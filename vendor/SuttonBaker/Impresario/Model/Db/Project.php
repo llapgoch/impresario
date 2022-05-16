@@ -232,7 +232,7 @@ class Project extends Base
         if ($costs = $this->getCosts()) {
             /** @var Invoice $invoice */
             foreach ($costs->load() as $cost) {
-                $totalCost += (float) $cost->getValue();
+                $totalCost += (float) $cost->getPOItemTotal();
             }
         }
 

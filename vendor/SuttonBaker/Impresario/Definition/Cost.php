@@ -24,6 +24,9 @@ class Cost
         'is_deleted'
     ];
 
+    const STATUS_OPEN = 'open';
+    const STATUS_CLOSED = 'closed';
+
     const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost::class;
     const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Collection::class;
 
@@ -70,6 +73,16 @@ class Cost
         ];
     }
 
+    /**
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_OPEN => 'Open',
+            self::STATUS_CLOSED => 'Closed'
+        ];
+    }
     /**
      *
      * @return array

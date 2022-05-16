@@ -54,12 +54,11 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         wp_enqueue_script('impresario_form_validator');
 
-        $heading = "Create {$prefixName}";
         $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
         $this->parentItem =  $this->getApp()->getRegistry()->get('parent_item');
 
         $editMode = $this->modelInstance->getId() ? true : false;
-        $costTypeName = $this->getCostHelper()->determineCostTypeName($this->modelInstance);
+        $statuses = $this->createArraySelectConnector()->configure(CostDefinition::getStatuses())->getElementData();
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -158,27 +157,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ],
             ], [
-                'name' => 'value',
-                'labelName' => 'Invoice Value *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number_val',
-                'formGroup' => true,
-                'class' => 'js-invoice-value',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ],
-            ], [
-                'name' => 'po_item_total',
-                'labelName' => 'PO Value',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number_val',
-                'formGroup' => true,
-                'class' => 'js-po-total-value',
-                'attributes' => ['disabled' => 'disabled'],
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ],
-            ], [
                 'name' => 'sage_number',
                 'labelName' => 'Sage Number',
                 'type' => 'Input\Text',
@@ -202,6 +180,55 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'data-date-settings' => json_encode(['minDate' => '-5Y', 'maxDate' => "+5Y"])
                 ],
             ], [
+                'name' => 'po_item_total',
+                'labelName' => 'PO Value',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'total_items',
+                'formGroup' => true,
+                'class' => 'js-po-total-value',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+            ], 
+            [
+                'name' => 'amount_invoiced',
+                'labelName' => 'Amount Invoiced',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'total_items',
+                'formGroup' => true,
+                'class' => 'js-amount-invoiced-value',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+            ], [
+                'name' => 'invoice_amount_remaining',
+                'labelName' => 'Amount Remaining',
+                'type' => 'Input\Text',
+                'rowIdentifier' => 'total_items',
+                'formGroup' => true,
+                'class' => 'js-amount-invoiced-value',
+                'attributes' => ['disabled' => 'disabled'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ],
+            ],  [
+                'name' => 'status',
+                'labelName' => 'Status *',
+                // 'rowIdentifier' => 'status',
+                'formGroup' => true,
+                'type' => 'Select',
+                'show_first_option' => false,
+                'class' => 'js-status',
+                'data' => [
+                    'select_options' => $statuses,
+                    'show_first_option' => false,
+                ],
+                // 'formGroupSettings' => [
+                //     'class' => 'col-md-4'
+                // ],
+            ],[
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
@@ -306,7 +333,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->invoiceTableBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Invoice\TableContainer::class,
             "{$prefixKey}.invoice.table"
-        )->setOrder('after', "{$prefixKey}.item.table")
+            )->setOrder('after', "{$prefixKey}.edit.total.items")
         ->setHeading('Invoices');
 
         $this->invoiceTableBlock->setInstanceCollection(
@@ -328,7 +355,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->costItemBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
             "{$this->blockPrefix}.item.table"
-        )->setOrder('before', "{$prefixKey}.file.upload.container");
+        )->setOrder('before', "{$prefixKey}.edit.total.items");
 
         $hasItems = false;
 
