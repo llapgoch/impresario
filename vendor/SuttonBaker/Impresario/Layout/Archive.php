@@ -93,7 +93,7 @@ class Archive extends Base
                 \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
                 "project.filter.set",
                 'controls'
-            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+            )->setCapabilities($this->getProjectHelper()->getArchiveViewCapabilities())
                 ->setSetName('project_filters')
                 ->addClass('js-project-filters')
                 ->addJsDataItems([

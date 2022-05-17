@@ -126,6 +126,7 @@ implements \DaveBaker\Core\Block\BlockInterface
         
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterBlock */
         $filterBlock = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.filter.set");
+        
         $this->tableBlock->preDispatch();
 
         if (($sessionData = $this->tableBlock->getSessionData())

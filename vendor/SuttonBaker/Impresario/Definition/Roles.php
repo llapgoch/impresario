@@ -26,6 +26,9 @@ class Roles
     const CAP_VIEW_QUOTE = 'view_quote';
     const CAP_VIEW_PROJECT = 'view_project';
     const CAP_EDIT_PROJECT = 'edit_project';
+
+    const CAP_VIEW_ARCHIVE = 'view_archive';
+
     const CAP_EDIT_TASK = 'edit_task';
     const CAP_VIEW_TASK = 'view_task';
     const CAP_VIEW_VARIATION = 'view_variation';

@@ -138,7 +138,7 @@ class Project extends Base
                 \SuttonBaker\Impresario\Block\Form\Filter\Set::class,
                 "{$this->getBlockPrefix()}.filter.set",
                 'controls'
-            )->setCapabilities($this->getEnquiryHelper()->getViewCapabilities())
+            )->setCapabilities($this->getProjectHelper()->getViewCapabilities())
                 ->setSetName('project_filters')
                 ->addClass('js-project-filters')
                 ->addJsDataItems([

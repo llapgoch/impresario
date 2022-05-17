@@ -196,8 +196,12 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 '\SuttonBaker\Impresario\Block\Upload\TableContainer',
                 "{$prefixKey}.file.upload.container"
             )->setOrder('before', "cost.edit.button.bar")
-                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_COST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setUploadType(
+                    $this->modelInstance->getId() ? Upload::TYPE_COST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY
+                )
+                ->setIdentifier(
+                    $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+                )
         );
 
         if ($this->getCostHelper()->currentUserCanEdit() == false) {

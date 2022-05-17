@@ -16,6 +16,16 @@ class Client extends Base
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_VIEW_CLIENT, Roles::CAP_EDIT_CLIENT];
 
     /**
+     *
+     * @return \SuttonBaker\Impresario\Model\Db\Client\Collection
+     */
+    public function getBaseClientCollection()
+    {
+        return $this->createAppObject(
+            \SuttonBaker\Impresario\Model\Db\Client\Collection::class
+        );
+    }
+    /**
      * @return mixed
      * @throws \DaveBaker\Core\Object\Exception
      *
@@ -24,9 +34,7 @@ class Client extends Base
     public function getClientCollection()
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Client\Collection $collection */
-        $collection = $this->createAppObject(
-            '\SuttonBaker\Impresario\Model\Db\Client\Collection'
-        );
+        $collection = $this->getBaseClientCollection();
 
         $collection->getSelect()->where('is_deleted=?', '0');
         $collection->getSelect()->order('client_name');
@@ -43,7 +51,7 @@ class Client extends Base
     {
         $client = $this->createAppObject(ClientDefinition::DEFINITION_MODEL);
 
-        if($clientId){
+        if ($clientId) {
             $client->load($clientId);
         }
 
@@ -57,7 +65,7 @@ class Client extends Base
     public function deleteClient(
         \SuttonBaker\Impresario\Model\Db\Client $client
     ) {
-        if(!$client->getId()){
+        if (!$client->getId()) {
             return $this;
         }
 

@@ -1,24 +1,25 @@
 <?php
 
-namespace SuttonBaker\Impresario\Controller\Enquiry;
-use DaveBaker\Core\Definitions\Messages;
+namespace SuttonBaker\Impresario\Controller\Archive;
 use SuttonBaker\Impresario\Definition\Roles;
 
 /**
- * Class EnquiryListController
- * @package SuttonBaker\Impresario\Controller\Enquiry
+ * Class ListController
+ * @package SuttonBaker\Impresario\Controller\Archive
  */
 class ListController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-
+    const DELETE_ACTION = 'delete';
     /** @var array  */
     protected $capabilities = [
-        Roles::CAP_EDIT_ENQUIRY,
-        Roles::CAP_VIEW_ENQUIRY,
+        Roles::CAP_VIEW_ARCHIVE,
         Roles::CAP_ALL
     ];
 
-    public function execute(){}
+
+    public function execute(){
+
+    }
 }

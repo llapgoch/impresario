@@ -1,4 +1,5 @@
 <?php
+
 namespace SuttonBaker\Impresario\Block\Structure;
 
 use SuttonBaker\Impresario\Definition\Archive;
@@ -72,7 +73,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             'icon' => 'fa-tachometer'
         ];
 
-        if($userHelper->hasCapability('edit_user', false)) {
+        if ($userHelper->hasCapability('edit_user', false)) {
             $navItems[] = [
                 'identifier' => 'users',
                 'name' => 'Users',
@@ -81,7 +82,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             ];
         }
 
-        if($clientHelper->currentUserCanView()) {
+        if ($clientHelper->currentUserCanView()) {
             $clientNavItem = [
                 'identifier' => 'clients',
                 'name' => 'Clients',
@@ -96,7 +97,7 @@ class Nav extends \DaveBaker\Core\Block\Template
                 'link' => $this->getPageUrl(PageDefintion::CLIENT_LIST)
             ];
 
-            if($clientHelper->currentUserCanEdit()){
+            if ($clientHelper->currentUserCanEdit()) {
                 $clientNavItem['subs'][] = [
                     'name' => 'Add Client',
                     'icon' => 'fa-plus',
@@ -107,7 +108,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = $clientNavItem;
         }
 
-        if($supplierHelper->currentUserCanView()) {
+        if ($supplierHelper->currentUserCanView()) {
             $supplierNavItem = [
                 'identifier' => 'suppliers',
                 'name' => 'Suppliers',
@@ -122,7 +123,7 @@ class Nav extends \DaveBaker\Core\Block\Template
                 'link' => $this->getPageUrl(PageDefintion::SUPPLIER_LIST)
             ];
 
-            if($clientHelper->currentUserCanEdit()){
+            if ($clientHelper->currentUserCanEdit()) {
                 $supplierNavItem['subs'][] = [
                     'name' => 'Add Supplier',
                     'icon' => 'fa-plus',
@@ -133,7 +134,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = $supplierNavItem;
         }
 
-        if($enquiryHelper->currentUserCanView()) {
+        if ($enquiryHelper->currentUserCanView()) {
             $enquiryNavItem = [
                 'identifier' => 'enquiries',
                 'name' => 'Enquiries',
@@ -149,7 +150,7 @@ class Nav extends \DaveBaker\Core\Block\Template
                 'link' => $this->getPageUrl(PageDefintion::ENQUIRY_LIST)
             ];
 
-            if($enquiryHelper->currentUserCanEdit()){
+            if ($enquiryHelper->currentUserCanEdit()) {
                 $enquiryNavItem['subs'][] = [
                     'name' => 'Create Enquiry',
                     'icon' => 'fa-plus',
@@ -160,7 +161,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             $navItems[] = $enquiryNavItem;
         }
 
-        if($userHelper->hasCapability($quoteHelper->getViewCapabilities())) {
+        if ($userHelper->hasCapability($quoteHelper->getViewCapabilities())) {
             $navItems[] = [
                 'identifier' => 'quotes',
                 'name' => 'Quotes',
@@ -170,7 +171,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             ];
         }
 
-        if($userHelper->hasCapability($taskHelper->getViewCapabilities())) {
+        if ($userHelper->hasCapability($taskHelper->getViewCapabilities())) {
             $navItems[] = [
                 'identifier' => 'tasks',
                 'name' => 'Tasks',
@@ -180,7 +181,7 @@ class Nav extends \DaveBaker\Core\Block\Template
             ];
         }
 
-        if($userHelper->hasCapability($projectHelper->getViewCapabilities())) {
+        if ($userHelper->hasCapability($projectHelper->getViewCapabilities())) {
             $navItems[] = [
                 'identifier' => 'projects',
                 'name' => 'Projects',
@@ -188,7 +189,9 @@ class Nav extends \DaveBaker\Core\Block\Template
                 'icon' => Project::ICON,
                 'badge' => count($projectHelper->getOpenProjects()->load())
             ];
+        }
 
+        if ($userHelper->hasCapability($projectHelper->getArchiveViewCapabilities())) {
             $navItems[] = [
                 'identifier' => 'archives',
                 'name' => 'Archive',
