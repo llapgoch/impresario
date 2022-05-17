@@ -68,7 +68,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefinition::getCostInvoiceTypes(true))->getElementData();
 
-        $this->addClass('js-validate-form js-form-overlay');
+        $this->addClass('js-validate-form js-form-overlay js-cost-form');
         $this->addJsDataItems([
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(CostDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'idElementSelector' => '[name="cost_id"]',
