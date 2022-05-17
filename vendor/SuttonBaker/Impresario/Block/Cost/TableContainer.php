@@ -59,7 +59,8 @@ class TableContainer
         $this->instanceCollection->addOutputProcessors([
             'cost_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'value' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'cost_invoice_type' => $this->getCostHelper()->getCostInvoiceTypeOutputProcessor()
+            'cost_invoice_type' => $this->getCostHelper()->getCostInvoiceTypeOutputProcessor(),
+            'status' => $this->getCostHelper()->getCostStatusOutputProcessor()
         ]);
 
         $instanceItems = $this->instanceCollection->load();

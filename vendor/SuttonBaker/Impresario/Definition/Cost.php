@@ -48,6 +48,7 @@ class Cost
     const TABLE_HEADERS = [
         'cost_id' => 'ID',
         'cost_date' => 'Date',
+        'status' => 'Status',
         'cost_number' => 'Number',
         'sage_number' => 'Sage Number',
         'value' => 'Cost Amount',

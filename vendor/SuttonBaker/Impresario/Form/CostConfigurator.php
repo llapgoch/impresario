@@ -2,6 +2,8 @@
 
 namespace SuttonBaker\Impresario\Form;
 
+use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+
 /**
  * Class CostConfigurator
  * @package SuttonBaker\Impresario\Form\Rules
@@ -64,12 +66,48 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
             $this->createRule('Required', 'status', 'Status')
         );
 
+        // Calculate the new PO Item total
+        $items = $this->getValue('po_items');
+        $poItemTotal = 0;
+
+        if (is_array($items)) {
+            foreach ($items as $item) {
+                if(isset($item['removed']) && (bool) $item['removed'] === false) {
+                    if (isset($item['qty']) && isset($item['unit_price'])) {
+                        $poItemTotal += (float) $item['qty'] * (float) $item['unit_price'];
+                    }
+                }
+            }
+        }
+
+        $modelInstance = $this->getModel();
+
+        if ($this->getValue('status') === CostDefinition::STATUS_CLOSED) {
+            $statusClosedRule = $this->createRule('Custom', 'status', 'Status')
+                ->setMainError('A Purchase Order can only be closed when the amount remaining is zero');
+
+
+            $this->addRule(
+                $statusClosedRule->setValidationMethod(
+                    function ($value, $ruleInstance) use ($modelInstance, $poItemTotal) {
+                        $modelInstance->updateTotals();
+
+                        if (($poItemTotal - (float) $modelInstance->getAmountInvoiced())  !=  0) {
+                            return $ruleInstance->createError();
+                        }
+
+                        return true;
+                    }
+                )
+            );
+        }
+
         $itemRule = $this->createRule('Custom', 'po_items', 'Po Items')
             ->setMainError('Please ensure all PO Items contain a description, qty, and unit price');
 
         $this->addRule($itemRule->setValidationMethod(
             function ($costItems, $ruleInstance) use ($itemRule) {
-                
+
                 if (!is_array($costItems)) {
                     return $ruleInstance->createError();
                 }
@@ -80,30 +118,31 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                     if (!is_array($costItem)) {
                         return $ruleInstance->createError();
                     }
-    
+
                     foreach ($required as $requirement) {
                         if (!array_key_exists($requirement, $costItem)) {
                             return $ruleInstance->createError();
                         }
                     }
 
-                    if((bool) $costItem['removed']) {
+                    if ((bool) $costItem['removed']) {
                         continue;
                     }
 
-                    if(!trim($costItem['description'])) {
+                    if (!trim($costItem['description'])) {
                         $itemRule->setMainError('Please ensure each PO Item has a description');
                         return $ruleInstance->createError();
                     }
 
-                    if (!is_numeric($costItem['qty'])
+                    if (
+                        !is_numeric($costItem['qty'])
                         || !is_numeric($costItem['unit_price'])
                     ) {
                         $itemRule->setMainError('Please ensure each PO Item has a valid quantity and unit price');
                         return $ruleInstance->createError();
                     }
 
-                    if((float) $costItem['qty'] < 1) {
+                    if ((float) $costItem['qty'] < 1) {
                         $itemRule->setMainError('Please ensure each PO Item has a positive quantity');
                         return $ruleInstance->createError();
                     }

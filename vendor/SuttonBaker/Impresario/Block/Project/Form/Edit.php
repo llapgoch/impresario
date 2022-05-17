@@ -580,7 +580,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $this->costTableBlock = $this->createBlock(
-            '\SuttonBaker\Impresario\Block\Cost\TableContainer',
+            \SuttonBaker\Impresario\Block\Cost\TableContainer::class,
             "{$this->blockPrefix}.cost.table"
         )->setOrder('before', 'project.variation.table');
 

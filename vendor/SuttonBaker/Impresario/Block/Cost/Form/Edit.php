@@ -57,6 +57,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->modelInstance = $this->getApp()->getRegistry()->get('model_instance');
         $this->parentItem =  $this->getApp()->getRegistry()->get('parent_item');
 
+
         $editMode = $this->modelInstance->getId() ? true : false;
         $statuses = $this->createArraySelectConnector()->configure(CostDefinition::getStatuses())->getElementData();
 
@@ -90,6 +91,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
             $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
         }
+
+        $amountInvoiced = (float) $this->modelInstance->getAmountInvoiced();
 
         $this->addChildBlock(
             $this->createFormErrorBlock()
@@ -190,15 +193,19 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ],
-            ], 
+            ],
             [
-                'name' => 'amount_invoiced',
+                'name' => 'amount_invoiced_total', // Use a different name to the DB column as we want to set the value and not be overridden
                 'labelName' => 'Amount Invoiced',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'total_items',
                 'formGroup' => true,
                 'class' => 'js-amount-invoiced-value',
-                'attributes' => ['disabled' => 'disabled'],
+                'value' => $this->getLocaleHelper()->formatCurrency($amountInvoiced),
+                'attributes' => [
+                    'disabled' => 'disabled',
+                    'data-actual-value' => $amountInvoiced
+                ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ],
@@ -208,7 +215,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'total_items',
                 'formGroup' => true,
-                'class' => 'js-amount-invoiced-value',
+                'value' => 0,
+                'class' => 'js-amount-remaining-value',
                 'attributes' => ['disabled' => 'disabled'],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -216,7 +224,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             ],  [
                 'name' => 'status',
                 'labelName' => 'Status *',
-                // 'rowIdentifier' => 'status',
                 'formGroup' => true,
                 'type' => 'Select',
                 'show_first_option' => false,
@@ -228,7 +235,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 // 'formGroupSettings' => [
                 //     'class' => 'col-md-4'
                 // ],
-            ],[
+            ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
@@ -333,8 +340,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->invoiceTableBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Invoice\TableContainer::class,
             "{$prefixKey}.invoice.table"
-            )->setOrder('after', "{$prefixKey}.edit.total.items")
-        ->setHeading('Invoices');
+        )->setOrder('after', "{$prefixKey}.edit.total.items")
+            ->setHeading('Invoices');
 
         $this->invoiceTableBlock->setInstanceCollection(
             $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
@@ -345,7 +352,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);
 
-       
+
         $this->addChildBlock($this->invoiceTableBlock);
     }
 

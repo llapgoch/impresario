@@ -35,6 +35,14 @@ class Cost extends Base
     }
 
     /**
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return $this->getStatus() == \SuttonBaker\Impresario\Definition\Cost::STATUS_CLOSED;
+    }
+
+    /**
      * @param $reload
      * @return null|Invoice\Collection
      * @throws \DaveBaker\Core\Object\Exception
@@ -76,7 +84,20 @@ class Cost extends Base
         return $totalInvoiced;
     }
 
+    /**
+     *
+     * @return self
+     */
+    public function updateTotals()
+    {
+        $this->setValue(round($this->getValue(), 2));
 
+        $this->setData('po_item_total', $this->calculatePoItemTotal())
+            ->setData('amount_invoiced', $this->calculateAmountInvoiced())
+            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining());
+
+        return $this;
+    }
 
     /**
      *
@@ -84,11 +105,7 @@ class Cost extends Base
      */
     protected function beforeSave()
     {
-        $this->setValue(round($this->getValue(), 2));
-
-        $this->setData('po_item_total', $this->calculatePoItemTotal())
-            ->setData('amount_invoiced', $this->calculateAmountInvoiced())
-            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining());
+        $this->updateTotals();
     }
 
     /**
@@ -112,7 +129,7 @@ class Cost extends Base
      */
     protected function calculateInvoiceAmountRemaining()
     {
-        return max(0, $this->calculatePoItemTotal() - $this->calculateAmountInvoiced());
+        return $this->calculatePoItemTotal() - $this->calculateAmountInvoiced();
     }
 
     public function calculatePoItemTotal()

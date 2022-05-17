@@ -158,12 +158,30 @@ class Cost extends Base
     }
 
     /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusDisplayName($status)
+    {
+        return $this->getDisplayName($status, CostDefinition::getStatuses());
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Type
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getCostInvoiceTypeOutputProcessor()
     {
         return $this->createAppObject(\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\InvoiceType::class);
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Status
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getCostStatusOutputProcessor()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\OutputProcessor\Cost\Status::class);
     }
 
     /**
