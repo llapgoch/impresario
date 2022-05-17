@@ -20,7 +20,7 @@ class Installer extends \DaveBaker\Core\Config\Installer
             'impresario_project' => '0.0.20',
             'impresario_cost' => '0.0.23',
             'impresario_invoice_variation' => '0.0.10',
-            'impresario_general' => '0.0.99',
+            'impresario_general' => '0.0.991',
             'impresario_archive' => '0.0.3',
             'impresario_supplier' => '0.0.1'
         ]);
