@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Installer;
 
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use SuttonBaker\Impresario\Definition\Invoice;
 
 /**
  * Class InvoiceVariation
@@ -88,6 +89,10 @@ implements \DaveBaker\Core\Installer\InstallerInterface
 
         // This has been removed as migrations were run once.
         // $this->migrateCosts();
+
+
+        // This uses the data migration system to stop it running multiple times
+        $this->migratePoItems();
     }
 
 
@@ -100,9 +105,101 @@ implements \DaveBaker\Core\Installer\InstallerInterface
         return $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Project\Collection::class);
     }
 
+    /**
+     * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCostCollection()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Cost\Collection::class);
+    }
+
+    public function migratePoItems()
+    {
+        $migrationCode = 'costs_to_po_items_1192001';
+        $migrationHelper = $this->getMigrationHelper();
+
+
+        // Ensure this runs once only
+        if (!$migrationHelper->migrationHasRun($migrationCode)) {
+            $migration = $migrationHelper->getMigrationByCode($migrationCode);
+            $migration->setCode($migrationCode);
+
+            // Do a batch every run. THIS SHOULD BE DONE VIA CLI, BUT PAAAAH.
+            $this->migrateCostsToPoItemBatch($migration);
+        }
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Migration
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getMigrationHelper()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\Migration::class);
+    }
+
+    public function migrateCostsToPoItemBatch($migration)
+    {
+        // Use status = CLOSED to get unprocessed records as needs to run multiple times to not run out of memory
+        $collection = $this->getCostCollection()
+            ->where('is_deleted = 0')
+            ->where('status IS NULL');
+
+        $collection->getSelect()->limit(200);
+
+        $costs = $collection->load();
+
+        /** @var \SuttonBaker\Impresario\Model\Db\Cost $costItem */
+        foreach ($costs as $costItem) {
+            $poItem = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Cost\Item::class);
+
+            $costItemValue = $costItem->getValue();
+
+            $poItem->setCreatedById(1)
+                ->setLastEditedById(1)
+                ->setDescription('MIGRATION')
+                ->setUnitPrice($costItemValue)
+                ->setQty(1)
+                ->setTotal($costItemValue)
+                ->setCostId($costItem->getId());
+
+            $poItem->save();
+
+            $invoice = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Invoice::class);
+
+            $invoice->setInvoiceType(Invoice::INVOICE_TYPE_PO_INVOICE)
+                ->setInvoiceNumber('MIGRATION')
+                ->setValue($costItemValue)
+                ->setCreatedById(1)
+                ->setLastEditedById(1)
+                ->setParentId($costItem->getId());
+
+            $invoice->save();
+
+            $costItem->setValue(0)
+                ->setStatus(CostDefinition::STATUS_CLOSED)
+                ->save();
+
+            // exit;
+        }
+
+        // Check if we're complete - if there are no un-closed (migrated items) then mark the data migration as complete
+        $collection = $this->getCostCollection()
+            ->where('is_deleted = 0')
+            ->where('status IS NULL');
+
+        if (count($collection->load()) == 0) {
+            $migration->setHasRun(1)
+                ->save();
+        }
+    }
+
 
     public function migrateCosts()
     {
+        // NOTE: THIS IS THE VERY OLD COST MIGRATOR - NOW DEFUNCT
+
         // Make sure the project installer has created the actual cost total column before migrating.
 
         /** @var \SuttonBaker\Impresario\Installer\Project $projectInstaller */
@@ -114,7 +211,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
 
         $projectsWithActualCost = $collection->load();
 
-        
+
         /** @var \SuttonBaker\Impresario\Model\Db\Project $project */
         foreach ($projectsWithActualCost as $project) {
             $costItem = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Cost::class);
@@ -127,7 +224,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
                 ->setCostDate($this->getDateHelper()->utcTimestampToDb())
                 ->setCostInvoiceType(CostDefinition::COST_INVOICE_TYPE_MIGRATION_INITIAL);
             $costItem->save();
-            
+
             // The actual cost column will no longer be used
             $project->setActualCost(0)
                 ->save();

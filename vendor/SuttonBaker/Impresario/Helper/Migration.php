@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use SuttonBaker\Impresario\Definition\Migration as DefinitionMigration;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Model\Db\Migration\Collection;
 
@@ -11,12 +12,30 @@ use SuttonBaker\Impresario\Model\Db\Migration\Collection;
  */
 class Migration extends Base
 {
+    /**
+     *
+     * @param string $code
+     * @return bool
+     */
     public function migrationHasRun($code)
     {
-        $collection = $this->createAppObject(
-            Collection::class
-        );
+        $migration = $this->getMigrationByCode($code);
+        return (bool) $migration->getHasRun();
+    }
 
-        $collection->where('has_run')
+    /**
+     * @param $code
+     * @return \SuttonBaker\Impresario\Model\Db\Migration
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getMigrationByCode($code = null)
+    {
+        $migration = $this->createAppObject(DefinitionMigration::DEFINITION_MODEL);
+
+        if ($migration) {
+            $migration->load($code, 'code');
+        }
+
+        return $migration;
     }
 }
