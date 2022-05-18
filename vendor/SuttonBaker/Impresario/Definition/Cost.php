@@ -51,7 +51,7 @@ class Cost
         'status' => 'Status',
         'cost_number' => 'Number',
         'sage_number' => 'Sage Number',
-        'value' => 'Cost Amount',
+        'po_item_total' => 'PO Total',
         'supplier_name' => 'Supplier Name',
         'cost_invoice_type' => 'Type'
     ];
