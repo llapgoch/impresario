@@ -94,7 +94,7 @@ class Invoice extends Base
 
     /**
      * @param \SuttonBaker\Impresario\Model\Db\Invoice $invoice
-     * @return null|\SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project
+     * @return null|\SuttonBaker\Impresario\Model\Db\Enquiry|\SuttonBaker\Impresario\Model\Db\Project|\SuttonBaker\Impresario\Model\Db\Cost
      * @throws \DaveBaker\Core\Object\Exception
      */
     public function getParentForInvoice(
@@ -106,6 +106,10 @@ class Invoice extends Base
 
         if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PROJECT){
             return $this->getProjectHelper()->getProject($invoice->getParentId());
+        }
+
+        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE){
+            return $this->getCostHelper()->getCost($invoice->getParentId());
         }
 
         return null;
@@ -123,6 +127,10 @@ class Invoice extends Base
 
         if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
             return InvoiceDefinition::INVOICE_TYPE_PROJECT;
+        }
+
+        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Cost){
+            return InvoiceDefinition::INVOICE_TYPE_PO_INVOICE;
         }
 
         return null;

@@ -1,0 +1,28 @@
+<?php
+/** @var SuttonBaker\Impresario\Block\Table\StatusLink $block */
+?>
+<?php if($this->getRecords() || $block->getShowEmptyTable()): ?>
+    <table <?php echo $block->getAttrs(); ?>>
+        <?php if($this->getHeaders()): ?>
+            <thead>
+            <tr>
+                <?php foreach($block->getHeaders() as $k => $header): ?>
+                    <th <?php echo $block->getThAttrs($k);?>><?php echo $block->escapeHtml($header); ?></th>
+                <?php endforeach;?>
+            </tr>
+            </thead>
+
+            <tbody>
+            <?php foreach($block->getRecords() as $record): ?>
+                <tr class="<?php echo $block->getRowClass($record);?>" data-value-id="<?php echo $record->getId(); ?>">
+                    <?php foreach($block->getHeaderKeys() as $k => $header): ?>
+                        <td <?php echo $block->getTdAttrs($k);?> data-value="<?php echo $block->escAttr($record->getOutputData($header), $header); ?>" data-code="<?php echo $header;?>" >
+                            <?php // Create the cell contents in the js-controller. ?>
+                        </td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        <?php endif; ?>
+    </table>
+<?php endif; ?>

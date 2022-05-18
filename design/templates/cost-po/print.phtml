@@ -1,0 +1,131 @@
+<?php
+
+/** @var \SuttonBaker\Impresario\Block\Cost\PrintPO $block **/
+
+$poItems = $block->getPOItems();
+?>
+
+<div class="container bg-white p-4">
+    <div class="row pb-4">
+        <!-- Left column start -->
+        <div class="col-md">
+            <!-- Logo and address -->
+            <div class="pb-2">
+                <div class="w-50">
+                    <img src="<?php echo $block->getLogo(); ?>" class="img-fluid" />
+                </div>
+
+                <address class="h5 pl-2">
+                    Camp Farm Barn,<br />
+                    Knowle Hill,<br />
+                    Hurley,<br />
+                    CV9 2JF
+                </address>
+            </div>
+
+        </div>
+        <!-- Left column end -->
+
+        <!-- Right column start - bootstrap resets print table backgrounds, hence they're inlined here -->
+        <div class="col-md">
+            <h5 class="uppercase text-center">Purchase Order</h5>
+            <table class="table table-sm table-bordered border-dark">
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Date:</th>
+                    <td><?= $block->escapeHtml($block->getCostDate()); ?></td>
+                </tr>
+
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Project No:</th>
+                    <td><?= $block->escapeHtml($block->getCost()->getParentId()); ?></td>
+                </tr>
+
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Client:</th>
+                    <td><?= $block->escapeHtml($block->getClientName()); ?></td>
+                </tr>
+
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Supplier Quote Number:</th>
+                    <td><?= $block->escapeHtml($block->getSupplierQuoteNumber()); ?></td>
+                </tr>
+
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">PO Number:</th>
+                    <td><?= $block->escapeHtml($block->getCost()->getId()) ?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="row flex d-flex h-100 pb-4">
+        <div class="col-md">
+            <div class="border border-dark d-flex flex-column h-100">
+                <div class="bg-secondary text-white p-1">Supplier</div>
+                <!--This is already escaped by the block -->
+                <div class="p-1"><?= $block->getSupplierAddress(); ?></div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="border border-dark d-flex flex-column h-100">
+                <div class="bg-secondary text-white p-1">Site</div>
+                <div class="p-1"><?= $block->escapeHtml($block->getSiteName()); ?></div>
+
+                <div class="mt-auto">
+                    <table class="table table-sm table-bordered border-dark">
+                        <tr>
+                            <th class="bg-secondary text-white" style="background: #6c757d !important;">Delivery Date</th>
+                            <td class="w-50"><?= $block->escapeHtml($block->getDeliveryDate()); ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pb-4">
+        <div class="col">
+            <table class="table table-sm table-bordered border-dark">
+                <tr>
+                    <th class="bg-secondary text-white" style="background: #6c757d !important;">Requested By (PM):</th>
+                    <td class="w-50"><?= $block->escapeHtml($block->getProjectManagerName()); ?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <?php if (count($poItems)) : ?>
+        <div class="row pb-4">
+            <div class="col">
+                <table class="table table-sm table-bordered border-dark text-center">
+                    <thead>
+                        <th class="bg-secondary text-white" style="background: #6c757d !important;">Description</th>
+                        <th class="bg-secondary text-white" style="background: #6c757d !important;">Qty</th>
+                        <th class="bg-secondary text-white" style="background: #6c757d !important;">Unit Price</th>
+                        <th class="bg-secondary text-white" style="background: #6c757d !important;">Total</th>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($poItems as $poItem) : ?>
+                            <tr>
+                                <td><?= $block->escapeHtml($poItem->getDescription()); ?></td>
+                                <td><?= $block->escapeHtml((int) $poItem->getQty()); ?></td>
+                                <td><?= $block->escapeHtml($this->formatCurrency($poItem->getUnitPrice())); ?></td>
+                                <td><?= $block->escapeHtml($this->formatCurrency($poItem->getTotal())); ?></td>
+                            <tr>
+                            <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="" colspan="2">&nbsp;</td>
+                            <td class="bg-secondary text-white text-right font-weight-bold" style="background: #6c757d !important;">Total</td>
+                            <td class="bg-secondary text-white font-weight-bold" style="background: #6c757d !important;"><?= $block->escapeHtml($this->formatCurrency($block->getCost()->getPoItemTotal())); ?></td>
+                        <tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

@@ -10,8 +10,29 @@ class Cost
     const API_ENDPOINT_UPDATE_TABLE = 'cost/updatetable';
     const API_ENDPOINT_DELETE = 'cost/delete';
     const API_ENDPOINT_RECORD_MONITOR = 'cost/recordmonitor';
-    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Cost';
-    const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Cost\Collection';
+    const API_ENDPOINT_VALIDATE_SAVE = 'cost/validatesave';
+
+    const COST_TYPE_PARAM = 'cost_type';
+    const PARENT_ID_PARAM = 'parent_id';
+    
+    const NON_USER_VALUES = [
+        'cost_id',
+        'created_by_id',
+        'last_edited_by_id',
+        'created_at',
+        'updated_at',
+        'is_deleted'
+    ];
+
+    const STATUS_OPEN = 'open';
+    const STATUS_CLOSED = 'closed';
+
+    const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost::class;
+    const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Collection::class;
+
+    const ITEM_DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Cost\Item::class;
+    const ITEM_DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Cost\Item\Collection::class;
+
     const ICON = 'fa fa-tags';
 
     const COST_INVOICE_TYPE_LABOUR = 'labour';
@@ -27,11 +48,20 @@ class Cost
     const TABLE_HEADERS = [
         'cost_id' => 'ID',
         'cost_date' => 'Date',
+        'status' => 'Status',
         'cost_number' => 'Number',
         'sage_number' => 'Sage Number',
         'value' => 'Cost Amount',
         'supplier_name' => 'Supplier Name',
         'cost_invoice_type' => 'Type'
+    ];
+
+    const ITEM_TABLE_HEADERS = [
+        'description' => 'Description',
+        'qty' => 'Qty',
+        'unit_price' => 'Unit Price (&pound;)',
+        'total' => 'Total',
+        'remove' => ''
     ];
 
     /**
@@ -44,6 +74,16 @@ class Cost
         ];
     }
 
+    /**
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_OPEN => 'Open',
+            self::STATUS_CLOSED => 'Closed'
+        ];
+    }
     /**
      *
      * @return array

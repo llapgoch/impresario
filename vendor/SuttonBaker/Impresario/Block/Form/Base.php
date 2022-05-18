@@ -16,11 +16,17 @@ abstract class Base extends \DaveBaker\Form\Block\Form
     protected function _preDispatch()
     {
         parent::_preDispatch();
+        
+        wp_register_script(
+            'impresario_serialize_object',
+            get_template_directory_uri() . '/assets/js/jquery.serialize-object.min.js',
+            ['jquery']
+        );
 
         wp_register_script(
             'impresario_form_validator',
             get_template_directory_uri() . '/assets/js/form.validator.widget.js',
-            ['jquery', 'jquery-ui-widget']
+            ['jquery', 'jquery-ui-widget', 'impresario_serialize_object']
         );
 
         wp_enqueue_script('impresario_deleter');

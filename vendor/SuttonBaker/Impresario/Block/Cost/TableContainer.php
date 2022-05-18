@@ -59,7 +59,8 @@ class TableContainer
         $this->instanceCollection->addOutputProcessors([
             'cost_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'value' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
-            'cost_invoice_type' => $this->getCostHelper()->getCostInvoiceTypeOutputProcessor()
+            'cost_invoice_type' => $this->getCostHelper()->getCostInvoiceTypeOutputProcessor(),
+            'status' => $this->getCostHelper()->getCostStatusOutputProcessor()
         ]);
 
         $instanceItems = $this->instanceCollection->load();
@@ -68,7 +69,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 'cost.tile.block'
-            )->setHeading('<strong>Cost Invoices</strong>')
+            )->setHeading('<strong>Purchase Orders</strong>')
         );
 
 
@@ -100,7 +101,7 @@ class TableContainer
                     '\DaveBaker\Core\Block\Html\Tag',
                     "cost.list.no.records",
                     'content'
-                )->setTagText('No costs have currently been created')
+                )->setTagText('No purchase orders have currently been created')
             );
         }
     }

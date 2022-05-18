@@ -17,8 +17,6 @@ class EditController
     extends \SuttonBaker\Impresario\Controller\Base
     implements \DaveBaker\Core\Controller\ControllerInterface
 {
-    const COST_TYPE_PARAM = 'cost_type';
-    const PARENT_ID_PARAM = 'parent_id';
     const ENTITY_ID_PARAM = 'cost_id';
 
     /** @var array  */
@@ -34,16 +32,7 @@ class EditController
     protected $costType;
     protected $modelInstance;
 
-    protected $nonUserValues = [
-        'cost_id',
-        'created_by_id',
-        'last_edited_by_id',
-        'cost_type',
-        'parent_id',
-        'created_at',
-        'updated_at',
-        'is_deleted'
-    ];
+
 
     /**
      * @return \DaveBaker\Core\App\Response|object|\SuttonBaker\Impresario\Controller\Base
@@ -53,8 +42,8 @@ class EditController
     {
 
         // Set instance values before the blocks are created
-        $costType = $this->getRequest()->getParam(self::COST_TYPE_PARAM);
-        $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+        $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
+        $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
         $instanceId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
         
         $this->setModelInstance($this->getCostHelper()->getCost());
@@ -130,6 +119,10 @@ class EditController
                 $data['cost_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getCostDate());
             }
 
+            if($this->modelInstance->getDeliveryDate()){
+                $data['delivery_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getDeliveryDate());
+            }
+
             if($this->modelInstance->getValue()){
                 $data['value'] = (float) $this->modelInstance->getValue();
             }
@@ -138,34 +131,6 @@ class EditController
                 $this->editForm,
                 $data
             );
-        }
-
-        // Form submission
-        if($this->getRequest()->getPostParam('action')){
-            $postParams = $this->getRequest()->getPostParams();
-
-            // Convert dates to DB
-            if (isset($postParams['cost_date'])){
-                $postParams['cost_date'] = $helper->localDateToDb($postParams['cost_date']);
-            }
-
-            /** @var \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface $configurator */
-            $configurator = $this->createAppObject('\SuttonBaker\Impresario\Form\CostConfigurator');
-
-            /** @var \DaveBaker\Form\Validation\Validator $validator */
-            $validator = $this->createAppObject('\DaveBaker\Form\Validation\Validator')
-                ->setValues($postParams)
-                ->configurate($configurator);
-
-            if(!$validator->validate()){
-                return $this->prepareFormErrors($validator);
-            }
-
-            $this->saveFormValues($postParams);
-
-            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
-                $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::PROJECT_LIST);
-            }
         }
 
 
@@ -214,8 +179,8 @@ class EditController
             $costType = $instance->getCostType();
             $parentId = $instance->getParentId();
         }else{
-            $costType = $this->getRequest()->getParam(self::COST_TYPE_PARAM);
-            $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
+            $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
+            $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
         }
 
         if($costType == CostDefinition::COST_TYPE_PROJECT){
@@ -223,53 +188,6 @@ class EditController
         }
 
         return null;
-    }
-
-    /**
-     * @throws \DaveBaker\Core\Helper\Exception
-     * @throws \DaveBaker\Core\Object\Exception
-     */
-    protected function saveFormValues($data)
-    {
-        if(!$this->getApp()->getHelper('User')->isLoggedIn()){
-            return;
-        }
-
-        foreach($this->nonUserValues as $nonUserValue){
-            if(isset($data[$nonUserValue])){
-                unset($data[$nonUserValue]);
-            }
-        }
-
-        $newSave = false;
-
-        // Add created by user
-        if(!$this->modelInstance->getId()) {
-            $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-            $data['cost_type'] = $this->costType;
-            $data['parent_id'] = $this->parentItem->getId();
-            $newSave = true;
-        }
-
-        $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
-
-        $this->modelInstance->setData($data)->save();
-
-        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_COST,
-                $this->modelInstance->getId()
-            );
-        }
-
-        $this->addMessage(
-            "The cost has been " . ($newSave ? 'created' : 'updated'),
-            Messages::SUCCESS
-        );
-
-        return $this;
     }
 
     /**
@@ -290,7 +208,7 @@ class EditController
         $errorBlock = $this->getApp()->getBlockManager()->createBlock(
             '\DaveBaker\Form\Block\Error\Main',
             'cost.edit.form.errors'
-        )->setOrder('before', '')->addErrors($validator->getErrors());
+        )->addErrors($validator->getErrors());
 
         $this->editForm->addChildBlock($errorBlock);
 

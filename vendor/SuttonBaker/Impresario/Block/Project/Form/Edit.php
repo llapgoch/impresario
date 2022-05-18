@@ -61,7 +61,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'endpointSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_SAVE),
             'idElementSelector' => '[name="project_id"]',
-            'idKey' => 'projct_id'
+            'idKey' => 'project_id'
         ]);
 
         if ($entityId = $this->getRequest()->getParam(self::ID_KEY)) {
@@ -580,7 +580,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $this->costTableBlock = $this->createBlock(
-            '\SuttonBaker\Impresario\Block\Cost\TableContainer',
+            \SuttonBaker\Impresario\Block\Cost\TableContainer::class,
             "{$this->blockPrefix}.cost.table"
         )->setOrder('before', 'project.variation.table');
 
@@ -730,7 +730,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             if ($costTileBlock = $this->getBlockManager()->getBlock('cost.tile.block')) {
                 $costTileBlock->addChildBlock(
                     $this->createSmallButtonElement(
-                        'Create Cost Invoice',
+                        'Create Purchase Order',
                         $this->getPageUrl(
                             \SuttonBaker\Impresario\Definition\Page::COST_EDIT,
                             [
