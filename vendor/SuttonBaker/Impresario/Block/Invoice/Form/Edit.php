@@ -71,7 +71,7 @@ class Edit
         // }
 
         // Note: This has been changed for a more generic version
-        $totalAmountRemaining = max(0, $totalAmountRemaining + (float) $this->modelInstance->getValue());
+        $totalAmountRemaining += (float) $this->modelInstance->getValue();
 
 
         $elements = $builder->build([
