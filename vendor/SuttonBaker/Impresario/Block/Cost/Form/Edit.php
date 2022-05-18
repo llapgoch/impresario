@@ -184,7 +184,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
             ], [
                 'name' => 'po_item_total',
-                'labelName' => 'PO Value',
+                'labelName' => 'PO Total',
                 'type' => 'Input\Text',
                 'rowIdentifier' => 'total_items',
                 'formGroup' => true,
