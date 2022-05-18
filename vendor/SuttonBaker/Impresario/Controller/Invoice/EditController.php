@@ -94,6 +94,15 @@ class EditController
             $this->addMessage('Invalid parent type');
             return $this->getResponse()->redirectReferer();
         }
+
+
+        // Specifics for POs - invoices can't be edited if a PO is closed
+        if($this->invoiceType === InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
+            if($this->parentItem->isClosed()) {
+                $this->addMessage('Invoices for closed purchase orders cannot be edited');
+                return $this->getResponse()->redirectReferer();
+            }
+        }
     }
 
     /**

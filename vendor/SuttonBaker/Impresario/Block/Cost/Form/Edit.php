@@ -441,6 +441,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'create.invoice.button',
                     'header_elements'
                 )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+                ->addClass('js-invoice-create-button')
             );
         }
 
