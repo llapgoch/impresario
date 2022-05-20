@@ -95,7 +95,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
         // This uses the data migration system to stop it running multiple times
         // $this->migratePoItems();
 
-        $this->fixDuplicatPoItems();
+        // $this->fixDuplicatPoItems();
     }
 
     protected function fixDuplicatPoItems()
