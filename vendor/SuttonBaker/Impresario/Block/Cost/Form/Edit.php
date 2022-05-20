@@ -142,15 +142,6 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ]
             ], [
-                'name' => 'cost_number',
-                'labelName' => 'Purchase Order Number *',
-                'type' => 'Input\Text',
-                'rowIdentifier' => 'invoice_number_val',
-                'formGroup' => true,
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ],
-            ], [
                 'name' => 'supplier_quote_number',
                 'labelName' => 'Supplier Quote Number',
                 'type' => 'Input\Text',

@@ -58,9 +58,9 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
             $this->createRule('Required', 'supplier_id', 'Supplier')
         );
 
-        $this->addRule(
-            $this->createRule('Required', 'cost_number', 'Cost Number')
-        );
+        // $this->addRule(
+        //     $this->createRule('Required', 'cost_number', 'Cost Number')
+        // );
 
         $this->addRule(
             $this->createRule('Required', 'status', 'Status')

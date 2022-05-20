@@ -169,7 +169,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             $invoice = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Invoice::class);
 
             $invoice->setInvoiceType(Invoice::INVOICE_TYPE_PO_INVOICE)
-                ->setInvoiceNumber('MIGRATION')
+                ->setInvoiceNumber($costItem->getCostNumber())
                 ->setValue($costItemValue)
                 ->setCreatedById(1)
                 ->setLastEditedById(1)
