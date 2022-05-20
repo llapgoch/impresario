@@ -56,7 +56,7 @@ class Project extends Base
 
         $mainTile->addChildBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Project\Form\Edit',
+                \SuttonBaker\Impresario\Block\Project\Form\Edit::class,
                 "{$this->getBlockPrefix()}.form.edit",
                 'content'
             )->setElementName('project_edit_form')

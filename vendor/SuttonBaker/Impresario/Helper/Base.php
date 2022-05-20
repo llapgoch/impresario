@@ -1,6 +1,7 @@
 <?php
 
 namespace SuttonBaker\Impresario\Helper;
+
 use DaveBaker\Core\Block\Template;
 use SuttonBaker\Impresario\Definition\Flow;
 
@@ -36,11 +37,11 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     ) {
         $tabs = Flow::getTabs();
 
-        foreach($tabs as $type => $tab){
+        foreach ($tabs as $type => $tab) {
             $item = null;
             $url = false;
 
-            if($type == $for){
+            if ($type == $for) {
                 $tabs[$type]['disabled'] = true;
                 $tabs[$type]['active'] = true;
                 $tabs[$type]['href'] = 'javascript:;';
@@ -48,7 +49,7 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
                 continue;
             }
 
-            switch($type){
+            switch ($type) {
                 case 'enquiry':
                     $item = $enquiry;
                     $url = $this->getEnquiryHelper()->getUrlForEnquiry($enquiry);
@@ -63,10 +64,10 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
                     break;
             }
 
-            if(!$url){
+            if (!$url) {
                 $tabs[$type]['disabled'] = true;
                 $tabs[$type]['href'] = 'javascript:;';
-            }else{
+            } else {
                 $tabs[$type]['href'] = $url;
             }
         }
@@ -91,11 +92,11 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         \DaveBaker\Core\Model\Db\BaseInterface $instance,
         $includeView = true
     ) {
-        if(!$this->getUserHelper()->hasCapability($this->getEditCapabilities()) && $includeView){
+        if (!$this->getUserHelper()->hasCapability($this->getEditCapabilities()) && $includeView) {
             return 'View';
         }
 
-        if(!$instance->getId()){
+        if (!$instance->getId()) {
             return 'Create';
         }
 
@@ -109,10 +110,10 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
      */
     public function getPercentage($amount, $total)
     {
-        if($total == 0){
+        if ($total == 0) {
             return 0;
         }
-        
+
         return round(($amount / $total) * 100);
     }
 
@@ -121,8 +122,9 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
      * @param array $items
      * @return mixed|string
      */
-    protected function getDisplayName($key, $items = []){
-        if(isset($items[$key])){
+    protected function getDisplayName($key, $items = [])
+    {
+        if (isset($items[$key])) {
             return $items[$key];
         }
 
@@ -213,6 +215,15 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     protected function getProjectHelper()
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Cost
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCostHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Cost');
     }
 
     /**

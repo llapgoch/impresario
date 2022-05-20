@@ -230,9 +230,11 @@ class Project extends Base
         $totalCost = 0;
 
         if ($costs = $this->getCosts()) {
-            /** @var Invoice $invoice */
+            /** @var Cost $cost */
             foreach ($costs->load() as $cost) {
-                $totalCost += (float) $cost->getValue();
+                if ($cost->isClosed()) {
+                    $totalCost += (float) $cost->getPoItemTotal();
+                }
             }
         }
 

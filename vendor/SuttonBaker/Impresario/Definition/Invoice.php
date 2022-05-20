@@ -16,6 +16,7 @@ class Invoice
 
     const INVOICE_TYPE_ENQUIRY = 'enquiry';
     const INVOICE_TYPE_PROJECT = 'project';
+    const INVOICE_TYPE_PO_INVOICE = 'po_invoice';
 
     const RECORDS_PER_PAGE = 20;
 
@@ -33,7 +34,8 @@ class Invoice
     {
         return [
             self::INVOICE_TYPE_ENQUIRY => 'Enquiry',
-            self::INVOICE_TYPE_PROJECT => 'Project'
+            self::INVOICE_TYPE_PROJECT => 'Project',
+            self::INVOICE_TYPE_PO_INVOICE => 'Purchase Order'
         ];
     }
 

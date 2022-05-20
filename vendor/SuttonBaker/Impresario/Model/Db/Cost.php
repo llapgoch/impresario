@@ -1,12 +1,19 @@
 <?php
 
 namespace SuttonBaker\Impresario\Model\Db;
+
+use SuttonBaker\Impresario\Definition\Invoice;
+use SuttonBaker\Impresario\Model\Db\Invoice as DbInvoice;
+
 /**
  * Class Cost
  * @package SuttonBaker\Impresario\Model\Db
  */
 class Cost extends Base
 {
+    /** @var array */
+    protected $invoices;
+
     /**
      * @return $this
      */
@@ -28,12 +35,77 @@ class Cost extends Base
     }
 
     /**
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return $this->getStatus() == \SuttonBaker\Impresario\Definition\Cost::STATUS_CLOSED;
+    }
+
+    /**
+     * @param $reload
+     * @return null|Invoice\Collection
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    public function getInvoices($reload = false)
+    {
+        if (!$this->getId()) {
+            return null;
+        }
+
+        if (!$this->invoices || $reload) {
+            $this->invoices = $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
+                $this->getId(),
+                Invoice::INVOICE_TYPE_PO_INVOICE
+            );
+        }
+
+        return $this->invoices;
+    }
+
+    /**
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function calculateAmountInvoiced()
+    {
+        $totalInvoiced = 0;
+
+        if ($invoices = $this->getInvoices()) {
+            /** @var DbInvoice $invoice */
+            foreach ($invoices->load() as $invoice) {
+                $totalInvoiced += (float) $invoice->getValue();
+            }
+        }
+
+        return $totalInvoiced;
+    }
+
+    /**
+     *
+     * @return self
+     */
+    public function updateTotals()
+    {
+        $this->setValue(round($this->getValue(), 2));
+
+        $this->setData('po_item_total', $this->calculatePoItemTotal())
+            ->setData('amount_invoiced', $this->calculateAmountInvoiced())
+            ->setData('invoice_amount_remaining', $this->calculateInvoiceAmountRemaining());
+
+        return $this;
+    }
+
+    /**
      *
      * @return void
      */
     protected function beforeSave()
     {
-        $this->setValue(round($this->getValue(), 2));
+        $this->updateTotals();
     }
 
     /**
@@ -43,9 +115,36 @@ class Cost extends Base
      */
     protected function afterSave()
     {
-        if($parent = $this->getParent()){
+        if ($parent = $this->getParent()) {
             $parent->save();
         }
     }
 
+    /**
+     * @return mixed
+     * @throws \DaveBaker\Core\Db\Exception
+     * @throws \DaveBaker\Core\Event\Exception
+     * @throws \DaveBaker\Core\Object\Exception
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    protected function calculateInvoiceAmountRemaining()
+    {
+        return $this->calculatePoItemTotal() - $this->calculateAmountInvoiced();
+    }
+
+    public function calculatePoItemTotal()
+    {
+        $total = 0;
+
+        if ($this->getId()) {
+            // Always load a fresh collection when saving
+            $items = $this->getCostHelper()->getCostInvoiceItems($this->getId(), true)->getItems();
+
+            foreach ($items as $item) {
+                $total += (float) $item->getTotal();
+            }
+        }
+
+        return $total;
+    }
 }

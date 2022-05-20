@@ -33,6 +33,7 @@ class Page
     const VARIATION_EDIT = 'variation_edit';
     const INVOICE_EDIT = 'invoice_edit';
     const COST_EDIT = 'cost_edit';
+    const COST_PRINT = 'cost_print';
 
     const ARCHIVE_LIST = 'archive_list';
     const ARCHIVE_REPORT_DOWNLOAD = 'archive_report_download';

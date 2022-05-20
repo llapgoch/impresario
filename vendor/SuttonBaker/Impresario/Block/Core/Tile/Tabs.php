@@ -53,4 +53,18 @@ class Tabs
         return implode(" ", $classes);
     }
 
+    /**
+     *
+     * @param array $tab
+     * @return string
+     */
+    public function getNewWindowAttr($tab)
+    {
+        if(isset($tab['new_window']) && (bool) $tab['new_window']) {
+            return 'target="_blank"';
+        }
+
+        return '';
+    }
+
 }

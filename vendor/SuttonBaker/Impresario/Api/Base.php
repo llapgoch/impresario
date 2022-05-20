@@ -10,7 +10,7 @@ use DaveBaker\Core\Installer\Exception;
  * @package SuttonBaker\Impresario\Api
  */
 abstract class Base
-    extends \DaveBaker\Core\Api\Base
+extends \DaveBaker\Core\Api\Base
 {
     /** @var bool  */
     protected $requiresLogin = true;
@@ -28,22 +28,22 @@ abstract class Base
         $params,
         $object
     ) {
-        if(!isset($params['timestamp'])){
+        if (!isset($params['timestamp'])) {
             throw new Exception('Timestamp not set');
         }
 
-        if(!$object->getId() || $object->getIsDeleted()){
+        if (!$object->getId() || $object->getIsDeleted()) {
             throw new Exception("Record not found");
         }
 
         $updated = false;
-    
-        if((int) $object->getLastEditedById() !== (int) $this->getUserHelper()->getCurrentUserId()){
-            if((int) $params['timestamp'] < strtotime($object->getUpdatedAt())){
+
+        if ((int) $object->getLastEditedById() !== (int) $this->getUserHelper()->getCurrentUserId()) {
+            if ((int) $params['timestamp'] < strtotime($object->getUpdatedAt())) {
                 $updated = true;
             }
         }
-        
+
         return [
             'updated' => $updated
         ];
@@ -67,7 +67,7 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Quote');
     }
 
-     /**
+    /**
      * @return \SuttonBaker\Impresario\Helper\Task
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -76,7 +76,7 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
     }
 
-     /**
+    /**
      * @return \SuttonBaker\Impresario\Helper\Variation
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -103,7 +103,7 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Supplier');
     }
 
-     /**
+    /**
      * @return \SuttonBaker\Impresario\Helper\Invoice
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -112,7 +112,7 @@ abstract class Base
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
     }
 
-     /**
+    /**
      * @return \SuttonBaker\Impresario\Helper\Cost
      * @throws \DaveBaker\Core\Object\Exception
      */
@@ -131,12 +131,21 @@ abstract class Base
     }
 
     /**
+     * @return \SuttonBaker\Impresario\Helper\Project
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getProjectHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Project');
+    }
+
+    /**
      * @return mixed|TableUpdater
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function getTableUpdaterSession()
     {
-        if(!$this->tableUpdaterSession){
+        if (!$this->tableUpdaterSession) {
             $this->tableUpdaterSession = $this->createAppObject(TableUpdater::class);
         }
 

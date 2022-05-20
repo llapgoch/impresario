@@ -53,6 +53,12 @@ implements \DaveBaker\Core\Controller\ControllerInterface
             ['jquery', 'jquery-ui-widget']
         );
 
+        // wp_register_script(
+        //     'form2js',
+        //     get_template_directory_uri() . '/assets/js/form2js/form2js.js',
+        //     ['jquery']
+        // );
+
         wp_register_script(
             'impresario_record_monitor',
             get_template_directory_uri() . '/assets/js/record.monitor.widget.js',
@@ -64,6 +70,8 @@ implements \DaveBaker\Core\Controller\ControllerInterface
             get_template_directory_uri() . '/assets/js/jquery.serialize-object.min.js',
             ['jquery']
         );
+
+
 
         parent::preDispatch();
     }
