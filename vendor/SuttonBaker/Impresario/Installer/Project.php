@@ -80,6 +80,7 @@ class Project
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`project_id`),
               KEY `status` (`status`)
+              KEY `quote_id` (`quote_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
     }

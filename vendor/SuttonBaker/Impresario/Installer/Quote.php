@@ -74,7 +74,8 @@ class Quote
               PRIMARY KEY (`quote_id`),
               KEY `status` (`status`),
               KEY `tender_status` (`tender_status`),
-              KEY `status_tender_status` (`status`, `tender_status`)
+              KEY `status_tender_status` (`status`, `tender_status`),
+              KEY `enquiry_id` (`enquiry_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
     }

@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Installer;
 
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use \SuttonBaker\Impresario\Definition\Invoice as InvoiceDefinition;
 use SuttonBaker\Impresario\Definition\Invoice;
 
 /**
@@ -92,7 +93,50 @@ implements \DaveBaker\Core\Installer\InstallerInterface
 
 
         // This uses the data migration system to stop it running multiple times
-        $this->migratePoItems();
+        // $this->migratePoItems();
+
+        // $this->fixDuplicatPoItems();
+    }
+
+    protected function fixDuplicatPoItems()
+    {
+        $collection = $this->getCostCollection()
+            ->where('is_deleted = 0');
+
+        $collection->getSelect()->limit(5000);
+
+        $costs = $collection->load();
+
+        foreach ($costs as $cost) {
+            $items = $this->getCostHelper()->getCostInvoiceItems($cost->getId())->load();
+            $invoices = $this->getInvoiceHelper()->getInvoiceCollectionForEntity($cost->getId(), InvoiceDefinition::INVOICE_TYPE_PO_INVOICE)->load();
+
+            // Correct
+            if (count($items) === 1) {
+                continue;
+            }
+
+            array_shift($items);
+            array_shift($invoices);
+
+
+            var_dump($cost->getId());
+            // var_dump(count($items));
+            // var_dump(count($invoices));exit;
+
+
+            foreach ($items as $item) {
+                $item->setIsDeleted(1)
+                    ->save();
+            }
+
+            foreach ($invoices as $invoice) {
+                $invoice->setIsDeleted(1)
+                    ->save();
+            }
+
+            // exit;
+        }
     }
 
 
@@ -103,6 +147,15 @@ implements \DaveBaker\Core\Installer\InstallerInterface
     protected function getProjectCollection()
     {
         return $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Project\Collection::class);
+    }
+
+        /**
+     * @return \SuttonBaker\Impresario\Helper\Invoice
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getInvoiceHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Invoice');
     }
 
     /**
@@ -128,6 +181,16 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             // Do a batch every run. THIS SHOULD BE DONE VIA CLI, BUT PAAAAH.
             $this->migrateCostsToPoItemBatch($migration);
         }
+    }
+
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\Cost
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    protected function getCostHelper()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\Cost');
     }
 
     /**
@@ -169,7 +232,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             $invoice = $this->createAppObject(\SuttonBaker\Impresario\Model\Db\Invoice::class);
 
             $invoice->setInvoiceType(Invoice::INVOICE_TYPE_PO_INVOICE)
-                ->setInvoiceNumber('MIGRATION')
+                ->setInvoiceNumber($costItem->getCostNumber())
                 ->setValue($costItemValue)
                 ->setCreatedById(1)
                 ->setLastEditedById(1)
