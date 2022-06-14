@@ -49,7 +49,6 @@ implements \DaveBaker\Core\Block\BlockInterface
                 'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
             ]);
 
-
         $mainTile->addChildBlock(
             /** @var Paginator $paginator */
             $this->paginator = $this->createBlock(
