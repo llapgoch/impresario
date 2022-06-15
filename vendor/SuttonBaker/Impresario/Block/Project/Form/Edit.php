@@ -210,7 +210,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'mi_number',
@@ -220,7 +220,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'nm_mw_number',
@@ -230,17 +230,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
-                ]
-            ], [
-                'name' => 'po_mi_number',
-                'labelName' => 'PO/MI Number',
-                'formGroup' => true,
-                'type' => 'Input\Text',
-                'attributes' => ['autocomplete' => 'off'],
-                'rowIdentifier' => 'po_mi_mw_numbers',
-                'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'project_manager_id',
