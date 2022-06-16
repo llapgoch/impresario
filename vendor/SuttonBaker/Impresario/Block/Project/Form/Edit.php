@@ -317,7 +317,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'invoice_amount_remaining',
@@ -327,7 +327,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'open_po_remaining',
+                'formGroup' => true,
+                'rowIdentifier' => 'cost_values_secondary',
+                'labelName' => 'Open PO Remaining',
+                'type' => 'Input\Text',
+                'value' =>  $this->getLocaleHelper()->formatCurrency($this->modelInstance->getOpenPOInvoiceAmountRemaining()),
+                'attributes' => ['readonly' => 'readonly'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ],  [
                 'name' => 'total_actual_cost',
@@ -379,7 +390,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        [ 'maxDate' => "+5Y"]
+                        ['maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
@@ -579,10 +590,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         )->setOrder('before', 'project.variation.table');
 
         $this->costTableBlock->setInstanceCollection(
-            $this->getCostHelper()->getCostCollectionForEntity(
-                $this->modelInstance->getId(),
-                CostDefinition::COST_TYPE_PROJECT
-            )
+            $this->modelInstance->getCosts()
         )->setEditLinkParams([
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);
