@@ -8,6 +8,7 @@ use DaveBaker\Core\Definitions\Messages;
 use DaveBaker\Form\Block\Error\Main;
 use DaveBaker\Form\Validation\Validator;
 use SuttonBaker\Impresario\Block\Table\StatusLink;
+use SuttonBaker\Impresario\Definition\Cost;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
@@ -86,10 +87,18 @@ extends Base
             }
         }
 
+        // The project is being closed from a non-closed status
         if (
             $modelInstance->isComplete() == false
             && $formValues['status'] == ProjectDefinition::STATUS_COMPLETE
         ) {
+
+            // Check whether the project has any open cost invoice
+            $costItems = $this->getCostHelper()->getCostCollectionForEntity($modelInstance->getId(), Cost::COST_TYPE_PROJECT);
+
+            if(!count($costItems->getItems())) {
+                $confirmMessages[] = 'NOTE: This project has no purchase orders.';
+            }
 
             $confirmMessages[] = 'This will complete and archive the project.';
         }
