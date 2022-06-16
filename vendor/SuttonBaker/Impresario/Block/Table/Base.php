@@ -32,7 +32,7 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     {
         $this->addSessionKeyItem($this->getName());
         $this->addSessionKeyItem($this->getUrlHelper()->getCurrentUrl());
-        
+
         parent::_preDispatch();
     }
 
@@ -58,11 +58,11 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     public function unpackSession()
     {
         $data = $this->getSessionData();
-        
-        if(isset($data['filters'])){
+
+        if (isset($data['filters'])) {
             $this->setFilters($data['filters'], false);
         }
-        
+
         // Check the column still exists before setting it!
         if (is_array($data) && isset($data['orderColumn']) && $data['orderColumn']) {
             $this->orderColumn = $data['orderColumn'];
@@ -85,7 +85,7 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     protected function unpackSessionPaginatorValues()
     {
         $data = $this->getSessionData();
-        
+
         if (is_array($data)) {
             if (isset($data['pageNumber']) && $this->paginator) {
                 $this->paginator->setPage($data['pageNumber']);
@@ -128,7 +128,7 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
     {
         parent::setColumnOrder($column, $dir);
 
-        if($updateSession){
+        if ($updateSession) {
             $this->updateSession();
         }
         return $this;
@@ -183,12 +183,12 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
      */
     protected function updateSession()
     {
-        
+
         $data = [
             'orderColumn' => $this->orderColumn,
             'orderDir' => $this->orderDir
         ];
-        
+
         if ($this->paginator) {
             $data['pageNumber'] = $this->paginator->getPage();
         }
@@ -199,14 +199,23 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
             $this->getSession()->createKey($this->sessionKeyItems),
             $data
         );
-        
+
 
         return $this;
     }
 
+    /**
+     *
+     * @return string
+     */
+    public function getSessionKey()
+    {
+        return $this->getSession()->createKey($this->sessionKeyItems);
+    }
+
 
     protected function _preRender()
-    {           
+    {
         $this->unpackSessionPaginatorValues();
         parent::_preRender();
     }
@@ -222,12 +231,12 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
         $this->filters = $filters;
 
         // $this->getCollection()->getSelect()->reset(\Zend_Db_Select::WHERE);
-        
+
         foreach ($this->filters as $name => $item) {
             $this->applyFilter($name, $item);
         }
 
-        if($updateSession){
+        if ($updateSession) {
             $this->updateSession();
         }
 
@@ -285,15 +294,36 @@ extends \DaveBaker\Core\Block\Html\Table\Collection
             $compareType = $schema[FilterDefinition::COMPARE_TYPE];
         }
 
+        // When Map/Column is false, no query is generated in this method 
         if (isset($schema[FilterDefinition::MAP])) {
             $column = $schema[FilterDefinition::MAP];
+        }
+
+        // Map Where allows a custom query to be used instead of generating via filters. See 
+        if (isset($schema[FilterDefinition::MAP_WHERE])) {
+            // Disable auto-generated query
+            $column = false;
+
+            if (
+                !isset($schema[FilterDefinition::MAP_WHERE][FilterDefinition::MAP_WHERE_CLASS])
+                || !isset($schema[FilterDefinition::MAP_WHERE][FilterDefinition::MAP_WHERE_METHOD])
+            ) {
+                throw new \Exception("Class or method not defined for map where");
+            }
+
+            $mapWhereClass = $schema[FilterDefinition::MAP_WHERE][FilterDefinition::MAP_WHERE_CLASS];
+            $mapWhereMethod = $schema[FilterDefinition::MAP_WHERE][FilterDefinition::MAP_WHERE_METHOD];
+
+            // Apply the custom where to the collection
+            $converter = $this->createAppObject($mapWhereClass);
+            $converter->{$mapWhereMethod}($collection, $filter);
         }
 
         if (isset($schema[FilterDefinition::FIELD_TYPE])) {
             $fieldType = $schema[FilterDefinition::FIELD_TYPE];
         }
 
-        if ($filter) {
+        if ($filter && $column) {
             if ($fieldType == FilterDefinition::FIELD_TYPE_RANGE) {
                 if (
                     isset($filter[FilterDefinition::RANGE_LOW]) &&

@@ -90,7 +90,18 @@ class Project
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{project}}.status"
-        ]
+        ],
+        'show_cancelled' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            // Set map to false - we're not using a generated filter query
+            FilterDefinition::MAP => false,
+            // Create a custom query based on the filter here
+            FilterDefinition::MAP_WHERE => [
+                FilterDefinition::MAP_WHERE_CLASS => \SuttonBaker\Impresario\Helper\Project::class,
+                FilterDefinition::MAP_WHERE_METHOD => 'filterCancelledWhereMap'
+            ]
+        ],
     ];
 
     const TABLE_HEADERS = [
