@@ -26,6 +26,7 @@ class Roles
     const CAP_VIEW_QUOTE = 'view_quote';
     const CAP_VIEW_PROJECT = 'view_project';
     const CAP_EDIT_PROJECT = 'edit_project';
+    const CAP_EDIT_PROJECT_CLIENT = 'edit_project_client';
 
     const CAP_VIEW_ARCHIVE = 'view_archive';
 
@@ -82,6 +83,7 @@ class Roles
             self::CAP_VIEW_QUOTE,
             self::CAP_VIEW_PROJECT,
             self::CAP_EDIT_PROJECT,
+            self::CAP_EDIT_PROJECT_CLIENT,
             self::CAP_EDIT_VARIATION,
             self::CAP_VIEW_VARIATION,
             self::CAP_EDIT_INVOICE,
