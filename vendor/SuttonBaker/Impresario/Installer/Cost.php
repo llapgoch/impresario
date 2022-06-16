@@ -61,6 +61,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
               `cost_type` varchar(20) DEFAULT NULL,
               `parent_id` int(11) DEFAULT NULL,
               `cost_invoice_type` varchar(30) DEFAULT NULL,
+              `special_instructions` text,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
@@ -119,12 +120,6 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             array_shift($items);
             array_shift($invoices);
 
-
-            var_dump($cost->getId());
-            // var_dump(count($items));
-            // var_dump(count($invoices));exit;
-
-
             foreach ($items as $item) {
                 $item->setIsDeleted(1)
                     ->save();
@@ -134,8 +129,6 @@ implements \DaveBaker\Core\Installer\InstallerInterface
                 $invoice->setIsDeleted(1)
                     ->save();
             }
-
-            // exit;
         }
     }
 
