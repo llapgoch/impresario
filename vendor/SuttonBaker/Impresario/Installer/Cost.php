@@ -66,7 +66,11 @@ implements \DaveBaker\Core\Installer\InstallerInterface
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`cost_id`),
-              KEY `cost_number` (`cost_number`)
+              KEY `cost_number` (`cost_number`),
+              KEY `cost_type` (`cost_type`),
+              KEY `parent_id` (`parent_id`),
+              KEY `cost_type_parent_id` (`cost_type`, `parent_id`)
+              KEY `status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
 
@@ -85,7 +89,7 @@ implements \DaveBaker\Core\Installer\InstallerInterface
             `updated_at` datetime DEFAULT NULL,
             `is_deleted` int(1) DEFAULT '0',
             PRIMARY KEY (`po_item_id`),
-            KEY `cost_id` (`cost_id`)
+            KEY `cost_id` (`cost_id`),
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
         );
 

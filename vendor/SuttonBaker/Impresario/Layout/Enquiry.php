@@ -170,6 +170,12 @@ class Enquiry extends Base
                 ->setFormName('client_id')
                 ->setSelectOptions($clients)
         );
+        
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Site Name')
+                ->setFormName('site_name')
+        );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
@@ -177,11 +183,6 @@ class Enquiry extends Base
                 ->setFormName('client_reference')
         );
 
-        $filterSet->addFilter(
-            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-                ->setLabelName('Site')
-                ->setFormName('site_name')
-        );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)

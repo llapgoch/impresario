@@ -32,9 +32,11 @@ class Project
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
     const STATUS_PRESTART_BOOKED = 'prestart_booked';
     const STATUS_PRESTART_COMPLETED = 'prestart_completed';
+    const STATUS_RAMS_SENT = 'rams_sent';
     const STATUS_RAMS_REQUIRED = 'rams_required';
     const STATUS_ON_SITE_VRF_SUBMITTED = 'onsite_vrf_submit';
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
+    const STATUS_NOT_READY_TO_INVOICE = 'not_ready_to_invoice';
     const STATUS_READY_TO_SHUTDOWN = 'ready_to_shutdown';
 
     const RECORDS_PER_PAGE = 20;
@@ -180,8 +182,10 @@ class Project
             self::STATUS_PRESTART_BOOKED => 'Pre-start Booked',
             self::STATUS_PRESTART_COMPLETED => 'Pre-start Completed',
             self::STATUS_RAMS_REQUIRED => 'RAMS Required',
+            self::STATUS_RAMS_SENT => 'RAMS Sent',
             self::STATUS_ON_SITE => 'On Site',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'On Site - VRF Submitted',
+            self::STATUS_NOT_READY_TO_INVOICE => 'Works Finished - Not Ready To Invoice',
             self::STATUS_READY_TO_INVOICE => 'Works Finished - Ready To Invoice',
             self::STATUS_READY_TO_SHUTDOWN => 'Works Finished - Ready To Shutdown',
             self::STATUS_COMPLETE => 'Complete',
@@ -202,6 +206,7 @@ class Project
             self::STATUS_ON_SITE => 'warning',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'warning',
             self::STATUS_READY_TO_INVOICE => 'success',
+            self::STATUS_NOT_READY_TO_INVOICE => 'success',
             self::STATUS_READY_TO_SHUTDOWN => 'success',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'
