@@ -109,8 +109,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $ignoreLockValue = true;
         }
 
-        $clientLocked = $this->getUserHelper()->hasCapability(DefinitionRoles::CAP_EDIT_PROJECT_CLIENT) == false;
-        
+        $clienProjectLocked = $this->getUserHelper()->hasCapability(DefinitionRoles::CAP_EDIT_PROJECT_CLIENT) == false;
+        $projectNameReadonly = $clienProjectLocked ? ['readonly' => $clienProjectLocked] : [];
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
@@ -142,9 +142,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'project_name',
                 'formGroup' => true,
+                'data' => [
+                    'locked' => $clienProjectLocked,
+                ],
                 'labelName' => 'Project Name *',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly']
+                'attributes' => $projectNameReadonly
             ], [
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
@@ -181,7 +184,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'client_reference_row',
                 'data' => [
                     'select_options' => $clients,
-                    'locked' => $clientLocked
+                    'locked' => $clienProjectLocked
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
