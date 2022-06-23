@@ -37,6 +37,12 @@ class Project
                 "post_title" => "Project Report Downloader"
             ]
         );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_SALES_INVOICE_DOWNLOAD, [
+                "post_title" => "Project Sales Invoice Downloader"
+            ]
+        );
         
 
         $this->deltaTable('project',

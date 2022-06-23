@@ -385,7 +385,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => [
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
-                        [ 'maxDate' => "+5Y"]
+                        ['maxDate' => "+5Y"]
                     )
                 ],
                 'formGroupSettings' => [
@@ -550,7 +550,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $this->invoiceTableBlock = $this->createBlock(
-            '\SuttonBaker\Impresario\Block\Invoice\TableContainer',
+            \SuttonBaker\Impresario\Block\Invoice\TableContainer::class,
             "{$this->blockPrefix}.invoice.table"
         )->setOrder('before', 'project.variation.table');
 
@@ -710,7 +710,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             }
 
             if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
-                $invoiceTileBlock->addChildBlock(
+                $buttonContainer = $invoiceTileBlock->createBlock(
+                    \DaveBaker\Core\Block\Block::class,
+                    "{$this->getBlockPrefix()}.button.container",
+                    'header_elements'
+                );
+                $buttonContainer->addChildBlock(
                     $this->createSmallButtonElement(
                         'Create Sales Invoice',
                         $this->getPageUrl(
@@ -722,9 +727,36 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                             true
                         ),
                         'create.invoice.button',
-                        'header_elements'
                     )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
                 );
+
+                $buttonContainer->addChildBlock(
+                    $this->createSmallButtonElement(
+                        '<span class="fa fa-download" aria-hidden="true"></span>',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::PROJECT_SALES_INVOICE_DOWNLOAD,
+                            [
+                                'project_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'download.invoice.button',
+                    )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+                );
+
+                $invoiceTileBlock->addChildBlock($buttonContainer);
+
+                // Add download button
+                // $buttonContainer->createBlock(
+                //     '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                //     "report.{$this->getBlockPrefix()}.download.link"
+                // )
+                //     ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
+                //     ->addAttribute(
+                //         ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                //             \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD
+                //         )]
+                //     )->setCapabilities($this->getProjectHelper()->getViewCapabilities());
             }
 
             if ($costTileBlock = $this->getBlockManager()->getBlock('cost.tile.block')) {

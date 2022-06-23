@@ -142,6 +142,13 @@ class Project
         'status' => 'Status'
     ];
 
+    const INVOICE_REPORT_SINGLE_HEADERS = [
+        'invoice_id' => 'ID',
+        'parent_id' => 'Project ID',
+        'invoice_number' => 'Number',
+        'value' => 'Invoice Amount',
+    ];
+
     const VARIATION_REPORT_HEADERS = [
         'status' => 'Status',
         'value' => 'Value',
