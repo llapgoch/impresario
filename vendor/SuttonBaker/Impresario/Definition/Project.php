@@ -165,9 +165,22 @@ class Project
         'special_instructions' => 'Special Instructions',
     ];
 
+    const VARIATION_REPORT_SINGLE_HEADERS = [
+        'variation_id' => 'ID',
+        'status' => 'Status',
+        'created_at' => 'Date Raised',
+        'date_approved' => 'Date Approved',
+        'net_cost' => 'Net Cost',
+        'value' => 'Variation Sell',
+        'profit' => 'Profit',
+        'gp' => 'GP',
+        'po_number' => 'PO Number',
+        'description' => 'Description'
+    ];
+
     const VARIATION_REPORT_HEADERS = [
         'status' => 'Status',
-        'value' => 'Value',
+        'value' => 'Variation Sell',
         'net_cost' => 'Net Cost',
         'po_number' => 'PO Number',
         'description' => 'Description'

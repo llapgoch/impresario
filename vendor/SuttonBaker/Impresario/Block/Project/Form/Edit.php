@@ -693,7 +693,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             }
 
             if ($variationTileBlock = $this->getBlockManager()->getBlock('variation.tile.block')) {
-                $variationTileBlock->addChildBlock(
+                $buttonContainer = $variationTileBlock->createBlock(
+                    \DaveBaker\Core\Block\Block::class,
+                    "{$this->getBlockPrefix()}.variation.button.container",
+                    'header_elements'
+                );
+
+                $buttonContainer->addChildBlock(
                     $this->createSmallButtonElement(
                         'Create Variation',
                         $this->getPageUrl(
@@ -704,9 +710,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                             true
                         ),
                         'create.variation.button',
-                        'header_elements'
                     )->setCapabilities($this->getVariationHelper()->getEditCapabilities())
                 );
+
+
+                $buttonContainer->addChildBlock(
+                    $this->createSmallButtonElement(
+                        '<span class="fa fa-download" aria-hidden="true"></span>',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::PROJECT_VARIATION_INVOICE_DOWNLOAD,
+                            [
+                                'project_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'download.variation.button',
+                    )->setCapabilities($this->getVariationHelper()->getEditCapabilities())
+                );
+
+                $variationTileBlock->addChildBlock($buttonContainer);
             }
 
             if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {

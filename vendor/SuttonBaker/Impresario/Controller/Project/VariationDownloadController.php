@@ -20,7 +20,7 @@ extends DownloadController
     protected function getFileName()
     {
         $projectId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-        return "sales-invoices-project-$projectId.csv";
+        return "variations-project-$projectId.csv";
     }
 
     protected function outputFileContent()
@@ -41,12 +41,15 @@ extends DownloadController
             );
         }
 
-        $instanceCollection = $this->getCostHelper()->getCostCollectionForEntity(
-            $modelInstance->getId(),
-            Cost::COST_TYPE_PROJECT
-        );
+        $instanceCollection = $this->getVariationHelper()->getVariationCollectionForProject(
+            $modelInstance->getId()
+        )->addOutputProcessors([
+            'created_at' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'date_approved' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'status' => $this->getVariationHelper()->getStatusOutputProcessor(),
+        ]);
 
-        $headers = ProjectDefinition::INVOICE_REPORT_SINGLE_HEADERS;
+        $headers = ProjectDefinition::VARIATION_REPORT_SINGLE_HEADERS;
         $output = fopen("php://output", "w");
 
         fputcsv($output, $headers);
@@ -54,8 +57,7 @@ extends DownloadController
         $instanceItems = $instanceCollection->getItems();
 
         if (!count($instanceItems)) {
-
-            $this->addMessage('No sales invoices have been created for the project');
+            $this->addMessage('No variations have been created for the project');
 
             return $this->getResponse()->redirectReferer(
                 $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST)
