@@ -33,7 +33,7 @@ class Variation extends Base
      */
     public function getProfit()
     {
-        if($this->getValue() && $this->hasNetSell()){
+        if($this->getValue() && $this->hasNetCost()){
             return max(0, $this->getValue() - $this->getNetCost());
         }
 
@@ -45,8 +45,8 @@ class Variation extends Base
      */
     public function getGp()
     {
-        if($this->getProfit()){
-            return $this->getProfit() / $this->getNetCost();
+        if($this->getProfit() && $this->getValue()){
+            return round(($this->getProfit() / $this->getValue()) * 100, 2);
         }
 
         return 0;
