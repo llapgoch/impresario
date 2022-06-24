@@ -151,8 +151,9 @@ class Project
 
     const COST_INVOICE_REPORT_SINGLE_HEADERS = [
         'cost_id' => 'ID',
-        'cost_date' => 'Purchase Order Date',
+        'cost_date' => 'Date',
         'status' => 'Status',
+        'cost_number' => 'Number',
         'cost_invoice_type' => 'Type',
         'supplier_name' => 'Supplier',
         'supplier_quote_number' => 'Supplier Quote Number',
