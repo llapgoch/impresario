@@ -52,6 +52,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
         wp_enqueue_script('impresario_calculator');
+        
+        wp_register_script('impresario_project_edit_controller', get_template_directory_uri() . '/assets/js/project/edit-controller.js', ['jquery']);
+        wp_enqueue_script('impresario_project_edit_controller');
 
         wp_enqueue_script('impresario_form_validator');
         $this->addClass('js-validate-form js-form-overlay');
@@ -387,6 +390,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'select_options' => $yesNoSelectOptions
                 ],
                 'type' => 'Select',
+                'class' => 'js-rebate-control',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'
                 ]
@@ -397,7 +401,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Rebate %',
                 'type' => 'Input\Text',
                 'attributes' => $rebateAttrs,
-                'class' => 'js-actual-margin',
+                'class' => 'js-rebate-percentage',
                 'formGroupSettings' => [
                     'class' => 'col-md-3'
                 ]
