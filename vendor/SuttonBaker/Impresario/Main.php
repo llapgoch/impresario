@@ -227,6 +227,8 @@ implements \DaveBaker\Core\Main\MainInterface
             \SuttonBaker\Impresario\Definition\Page::PROJECT_LIST => '\SuttonBaker\Impresario\Controller\Project\ListController',
             \SuttonBaker\Impresario\Definition\Page::PROJECT_REPORT_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\ReportController',
             \SuttonBaker\Impresario\Definition\Page::PROJECT_SALES_INVOICE_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\SalesInvoiceDownloadController',
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_COST_INVOICE_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\CostInvoiceDownloadController',
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_VARIATION_INVOICE_DOWNLOAD => '\SuttonBaker\Impresario\Controller\Project\VariationDownloadController',
             \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT => '\SuttonBaker\Impresario\Controller\Invoice\EditController',
             \SuttonBaker\Impresario\Definition\Page::COST_EDIT => '\SuttonBaker\Impresario\Controller\Cost\EditController',
             \SuttonBaker\Impresario\Definition\Page::COST_PRINT => '\SuttonBaker\Impresario\Controller\Cost\PrintController',
