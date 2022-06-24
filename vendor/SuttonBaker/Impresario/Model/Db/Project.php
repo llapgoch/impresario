@@ -155,6 +155,12 @@ class Project extends Base
             }
         }
 
+        if((bool) $this->getHasRebate()) {
+            $rebatePercentage = ((float) $this->getRebatePercentage()) / 100;
+            $rebateAddition = round($netSell * $rebatePercentage, 2, PHP_ROUND_HALF_UP);
+            $netSell += $rebateAddition;
+        }
+
         return $netSell;
     }
 
@@ -236,6 +242,12 @@ class Project extends Base
                     $totalCost += (float) $cost->getPoItemTotal();
                 }
             }
+        }
+
+        if((bool) $this->getHasRebate()) {
+            $rebatePercentage = ((float) $this->getRebatePercentage()) / 100;
+            $rebateAddition = round($totalCost * $rebatePercentage, 2, PHP_ROUND_HALF_UP);
+            $totalCost += $rebateAddition;
         }
 
         return $totalCost;
