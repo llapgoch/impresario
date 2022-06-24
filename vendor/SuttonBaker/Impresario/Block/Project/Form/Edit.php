@@ -12,6 +12,7 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
+use SuttonBaker\Impresario\Definition\Roles as DefinitionRoles;
 
 /**
  * Class Edit
@@ -108,6 +109,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $ignoreLockValue = true;
         }
 
+        $clienProjectLocked = $this->getUserHelper()->hasCapability(DefinitionRoles::CAP_EDIT_PROJECT_CLIENT) == false;
+        $projectNameReadonly = $clienProjectLocked ? ['readonly' => $clienProjectLocked] : [];
+
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$this->blockPrefix}_edit")->setGroupTemplate('form/group-vertical.phtml');
@@ -138,9 +142,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'project_name',
                 'formGroup' => true,
+                'data' => [
+                    'locked' => $clienProjectLocked,
+                ],
                 'labelName' => 'Project Name *',
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly']
+                'attributes' => $projectNameReadonly
             ], [
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
@@ -177,7 +184,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'client_reference_row',
                 'data' => [
                     'select_options' => $clients,
-                    'locked' => true
+                    'locked' => $clienProjectLocked
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -210,7 +217,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'mi_number',
@@ -220,7 +227,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'nm_mw_number',
@@ -230,17 +237,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'attributes' => ['autocomplete' => 'off'],
                 'rowIdentifier' => 'po_mi_mw_numbers',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
-                ]
-            ], [
-                'name' => 'po_mi_number',
-                'labelName' => 'PO/MI Number',
-                'formGroup' => true,
-                'type' => 'Input\Text',
-                'attributes' => ['autocomplete' => 'off'],
-                'rowIdentifier' => 'po_mi_mw_numbers',
-                'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'project_manager_id',
@@ -323,7 +320,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'invoice_amount_remaining',
@@ -333,7 +330,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['readonly' => 'readonly'],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'open_po_remaining',
+                'formGroup' => true,
+                'rowIdentifier' => 'cost_values_secondary',
+                'labelName' => 'Open PO Remaining',
+                'type' => 'Input\Text',
+                'value' =>  $this->getLocaleHelper()->formatCurrency($this->modelInstance->getOpenPOInvoiceAmountRemaining()),
+                'attributes' => ['readonly' => 'readonly'],
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ],  [
                 'name' => 'total_actual_cost',
@@ -585,10 +593,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         )->setOrder('before', 'project.variation.table');
 
         $this->costTableBlock->setInstanceCollection(
-            $this->getCostHelper()->getCostCollectionForEntity(
-                $this->modelInstance->getId(),
-                CostDefinition::COST_TYPE_PROJECT
-            )
+            $this->modelInstance->getCosts()
         )->setEditLinkParams([
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);
