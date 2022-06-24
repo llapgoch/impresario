@@ -144,7 +144,7 @@ class Project
 
     const INVOICE_REPORT_SINGLE_HEADERS = [
         'invoice_id' => 'ID',
-        'parent_id' => 'Project ID',
+        'invoice_date' => 'Date',
         'invoice_number' => 'Number',
         'value' => 'Invoice Amount',
     ];

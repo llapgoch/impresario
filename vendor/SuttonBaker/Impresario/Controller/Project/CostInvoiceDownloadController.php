@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Project;
 
 use \SuttonBaker\Impresario\Controller\DownloadController;
+use SuttonBaker\Impresario\Definition\Cost;
 use SuttonBaker\Impresario\Definition\Invoice;
 use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
@@ -11,11 +12,11 @@ use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
  * Class SalesInvoiceDownloadController
  * @package SuttonBaker\Impresario\Controller\Project
  */
-class SalesInvoiceDownloadController
+class CostInvoiceDownloadController
 extends DownloadController
 {
     const ENTITY_ID_PARAM = 'project_id';
-    
+
     protected function getFileName()
     {
         $projectId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
@@ -40,12 +41,10 @@ extends DownloadController
             );
         }
 
-        $instanceCollection = $this->getInvoiceHelper()->getInvoiceCollectionForEntity(
+        $instanceCollection = $this->getCostHelper()->getCostCollectionForEntity(
             $modelInstance->getId(),
-            Invoice::INVOICE_TYPE_PROJECT
-        )->addOutputProcessors([
-            'invoice_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
-        ]);
+            Cost::COST_TYPE_PROJECT
+        );
 
         $headers = ProjectDefinition::INVOICE_REPORT_SINGLE_HEADERS;
         $output = fopen("php://output", "w");
