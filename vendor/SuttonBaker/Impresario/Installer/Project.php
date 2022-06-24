@@ -75,6 +75,8 @@ class Project
               `nm_mw_number` varchar(255) DEFAULT NULL,
               `status` varchar(20) DEFAULT NULL,
               `comments` text,
+              `has_rebate` int(1) DEFAULT '0',
+              `rebate_percentage` decimal(5,2) DEFAULT 0,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',

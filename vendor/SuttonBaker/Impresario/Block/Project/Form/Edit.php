@@ -56,6 +56,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         wp_enqueue_script('impresario_form_validator');
         $this->addClass('js-validate-form js-form-overlay');
         $editMode = false;
+        $yesNoSelectOptions = $this->getYesNoSelectOptions();
 
         $this->addJsDataItems([
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
@@ -114,6 +115,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $disabledAttrs = $this->modelInstance->getId() && !$this->modelInstance->isComplete() ? [] : ['disabled' => 'disabled'];
         $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $hasRebate = (bool) $this->modelInstance->getHasRebate();
+        $rebateAttrs = $hasRebate ? [] : ['readonly' => 'readonly'];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() : $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
@@ -376,6 +379,29 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-4'
                 ]
             ], [
+                'name' => 'has_rebate',
+                'rowIdentifier' => 'project_dates',
+                'formGroup' => true,
+                'labelName' => 'Has Rebate',
+                'data' => [
+                    'select_options' => $yesNoSelectOptions
+                ],
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ], [
+                'name' => 'rebate_percentage',
+                'formGroup' => true,
+                'rowIdentifier' => 'project_dates',
+                'labelName' => 'Rebate %',
+                'type' => 'Input\Text',
+                'attributes' => $rebateAttrs,
+                'class' => 'js-actual-margin',
+                'formGroupSettings' => [
+                    'class' => 'col-md-3'
+                ]
+            ],[
                 'name' => 'project_start_date',
                 'formGroup' => true,
                 'labelName' => 'Project Start Date *',
@@ -389,7 +415,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'project_end_date',
@@ -405,7 +431,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-3'
                 ]
             ], [
                 'name' => 'status',

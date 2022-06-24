@@ -35,6 +35,10 @@ class ProjectConfigurator
             $this->createRule('Date', 'date_required', 'Required By Date')
         );
 
+        $this->addRule(
+            $this->createRule('Numeric', 'rebate_percentage', 'Rebate %')
+        );
+
         if ($projectStarted){
             $this->addRule(
                 $this->createRule('Date', 'project_start_date', 'Project Start Date')

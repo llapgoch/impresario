@@ -32,6 +32,18 @@ abstract class Base extends \DaveBaker\Form\Block\Form
         wp_enqueue_script('impresario_deleter');
     }
 
+    /**
+     *
+     * @return array
+     */
+    protected function getYesNoSelectOptions()
+    {
+        return [
+            ['name' => 'No', 'value' => 0],
+            ['name' => 'Yes', 'value' => 1]
+        ];
+    }
+
   /**
      * @return \DaveBaker\Core\Block\BaseInterface
      * @throws \DaveBaker\Core\App\Exception
