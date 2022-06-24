@@ -20,7 +20,7 @@ extends DownloadController
     protected function getFileName()
     {
         $projectId = $this->getRequest()->getParam(self::ENTITY_ID_PARAM);
-        return "sales-invoices-project-$projectId.csv";
+        return "purchase-orders-project-$projectId.csv";
     }
 
     protected function outputFileContent()
@@ -44,9 +44,14 @@ extends DownloadController
         $instanceCollection = $this->getCostHelper()->getCostCollectionForEntity(
             $modelInstance->getId(),
             Cost::COST_TYPE_PROJECT
-        );
+        )->addOutputProcessors([
+            'cost_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'delivery_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+            'status' => $this->getCostHelper()->getCostStatusOutputProcessor(),
+            'cost_invoice_type' => $this->getCostHelper()->getCostInvoiceTypeOutputProcessor(),
+        ]);
 
-        $headers = ProjectDefinition::INVOICE_REPORT_SINGLE_HEADERS;
+        $headers = ProjectDefinition::COST_INVOICE_REPORT_SINGLE_HEADERS;
         $output = fopen("php://output", "w");
 
         fputcsv($output, $headers);
@@ -55,7 +60,7 @@ extends DownloadController
 
         if (!count($instanceItems)) {
 
-            $this->addMessage('No sales invoices have been created for the project');
+            $this->addMessage('No purchase orders have been created for the project');
 
             return $this->getResponse()->redirectReferer(
                 $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST)

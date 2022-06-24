@@ -712,7 +712,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
                 $buttonContainer = $invoiceTileBlock->createBlock(
                     \DaveBaker\Core\Block\Block::class,
-                    "{$this->getBlockPrefix()}.button.container",
+                    "{$this->getBlockPrefix()}.invoice.button.container",
                     'header_elements'
                 );
                 $buttonContainer->addChildBlock(
@@ -745,22 +745,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 );
 
                 $invoiceTileBlock->addChildBlock($buttonContainer);
-
-                // Add download button
-                // $buttonContainer->createBlock(
-                //     '\DaveBaker\Core\Block\Html\ButtonAnchor',
-                //     "report.{$this->getBlockPrefix()}.download.link"
-                // )
-                //     ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
-                //     ->addAttribute(
-                //         ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
-                //             \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD
-                //         )]
-                //     )->setCapabilities($this->getProjectHelper()->getViewCapabilities());
             }
 
             if ($costTileBlock = $this->getBlockManager()->getBlock('cost.tile.block')) {
-                $costTileBlock->addChildBlock(
+                $buttonContainer = $costTileBlock->createBlock(
+                    \DaveBaker\Core\Block\Block::class,
+                    "{$this->getBlockPrefix()}.cost.button.container",
+                    'header_elements'
+                );
+
+                $buttonContainer->addChildBlock(
                     $this->createSmallButtonElement(
                         'Create Purchase Order',
                         $this->getPageUrl(
@@ -772,9 +766,25 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                             true
                         ),
                         'create.cost.button',
-                        'header_elements'
                     )->setCapabilities($this->getCostHelper()->getEditCapabilities())
                 );
+
+                $buttonContainer->addChildBlock(
+                    $this->createSmallButtonElement(
+                        '<span class="fa fa-download" aria-hidden="true"></span>',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::PROJECT_COST_INVOICE_DOWNLOAD,
+                            [
+                                'project_id' => $entityId
+                            ],
+                            true
+                        ),
+                        'download.cost.button',
+                    )->setCapabilities($this->getCostHelper()->getEditCapabilities())
+                );
+
+                $costTileBlock->addChildBlock($buttonContainer);
+
             }
         }
 

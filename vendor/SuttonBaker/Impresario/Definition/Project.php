@@ -149,6 +149,21 @@ class Project
         'value' => 'Invoice Amount',
     ];
 
+    const COST_INVOICE_REPORT_SINGLE_HEADERS = [
+        'cost_id' => 'ID',
+        'cost_date' => 'Purchase Order Date',
+        'status' => 'Status',
+        'cost_invoice_type' => 'Type',
+        'supplier_name' => 'Supplier',
+        'supplier_quote_number' => 'Supplier Quote Number',
+        'sage_number' => 'Sage Number',
+        'delivery_date' => 'Delivery Date',
+        'po_item_total' => 'PO Total',
+        'amount_invoiced' => 'Amount Invoiced',
+        'invoice_amount_remaining' => 'Amount Remaining',
+        'special_instructions' => 'Special Instructions',
+    ];
+
     const VARIATION_REPORT_HEADERS = [
         'status' => 'Status',
         'value' => 'Value',
