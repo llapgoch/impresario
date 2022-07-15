@@ -80,7 +80,7 @@ class Project extends Base
     }
 
     /**
-     * @param $reload
+     * @param bool $reload
      * @return null|Cost\Collection
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
@@ -99,6 +99,21 @@ class Project extends Base
         }
 
         return $this->costs;
+    }
+
+    public function getOpenPOInvoiceAmountRemaining()
+    {
+        $total = 0;
+        /** @var Cost */
+        if($costs = $this->getCosts()) {
+            foreach($costs->getItems() as $cost) {
+                if(!$cost->isClosed()) {
+                    $total += $cost->getInvoiceAmountRemaining();
+                }
+            }
+        }
+
+        return $total;
     }
 
     /**
@@ -231,7 +246,7 @@ class Project extends Base
 
         if ($costs = $this->getCosts()) {
             /** @var Cost $cost */
-            foreach ($costs->load() as $cost) {
+            foreach ($costs->getItems() as $cost) {
                 if ($cost->isClosed()) {
                     $totalCost += (float) $cost->getPoItemTotal();
                 }
