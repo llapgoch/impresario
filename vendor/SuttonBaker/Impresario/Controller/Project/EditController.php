@@ -116,6 +116,8 @@ class EditController
             $data['total_net_sell'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetSell());
             $data['total_net_cost'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getTotalNetCost());
             $data['amount_invoiced'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getAmountInvoiced());
+            $data['rebate_amount'] = $this->getLocaleHelper()->formatCurrency($this->modelInstance->getRebateAmount());
+
             $data['invoice_amount_remaining'] = $this->getLocaleHelper()->formatCurrency(
                 $this->modelInstance->getInvoiceAmountRemaining()
             );
