@@ -55,7 +55,7 @@ class Archive extends Base
                 '\DaveBaker\Core\Block\Html\ButtonAnchor',
                 "report.{$this->getBlockPrefix()}.download.link"
             )
-                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span>')
+                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span> Projects')
                 ->addAttribute(
                     ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
                         \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_DOWNLOAD
@@ -63,6 +63,18 @@ class Archive extends Base
                 )->setCapabilities($this->getProjectHelper()->getViewCapabilities())
         );
 
+        $buttonContainer->addChildBlock(
+            $buttonContainer->createBlock(
+                '\DaveBaker\Core\Block\Html\ButtonAnchor',
+                "report.{$this->getBlockPrefix()}.quote.download.link"
+            )
+                ->setTagText('<span class="fa fa-download" aria-hidden="true"></span> Quotes')
+                ->addAttribute(
+                    ['href' => $this->getRequest()->getUrlHelper()->getPageUrl(
+                        \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_QUOTE_DOWNLOAD
+                    )]
+                )->setCapabilities($this->getProjectHelper()->getViewCapabilities())
+        );
 
         $mainTile->addChildBlock(
             $mainTile->createBlock(

@@ -37,4 +37,5 @@ class Page
 
     const ARCHIVE_LIST = 'archive_list';
     const ARCHIVE_REPORT_DOWNLOAD = 'archive_report_download';
+    const ARCHIVE_REPORT_QUOTE_DOWNLOAD = 'archive_report_quote_download';
 }
