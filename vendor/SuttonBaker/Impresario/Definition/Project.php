@@ -155,9 +155,45 @@ class Project
         'status' => 'Status'
     ];
 
+    const INVOICE_REPORT_SINGLE_HEADERS = [
+        'invoice_id' => 'ID',
+        'invoice_date' => 'Date',
+        'invoice_number' => 'Number',
+        'value' => 'Invoice Amount',
+    ];
+
+    const COST_INVOICE_REPORT_SINGLE_HEADERS = [
+        'cost_id' => 'ID',
+        'cost_date' => 'Date',
+        'status' => 'Status',
+        'cost_number' => 'Number',
+        'cost_invoice_type' => 'Type',
+        'supplier_name' => 'Supplier',
+        'supplier_quote_number' => 'Supplier Quote Number',
+        'sage_number' => 'Sage Number',
+        'delivery_date' => 'Delivery Date',
+        'po_item_total' => 'PO Total',
+        'amount_invoiced' => 'Amount Invoiced',
+        'invoice_amount_remaining' => 'Amount Remaining',
+        'special_instructions' => 'Special Instructions',
+    ];
+
+    const VARIATION_REPORT_SINGLE_HEADERS = [
+        'variation_id' => 'ID',
+        'status' => 'Status',
+        'created_at' => 'Date Raised',
+        'date_approved' => 'Date Approved',
+        'net_cost' => 'Net Cost',
+        'value' => 'Variation Sell',
+        'profit' => 'Profit',
+        'gp' => 'GP',
+        'po_number' => 'PO Number',
+        'description' => 'Description'
+    ];
+
     const VARIATION_REPORT_HEADERS = [
         'status' => 'Status',
-        'value' => 'Value',
+        'value' => 'Variation Sell',
         'net_cost' => 'Net Cost',
         'po_number' => 'PO Number',
         'description' => 'Description'
