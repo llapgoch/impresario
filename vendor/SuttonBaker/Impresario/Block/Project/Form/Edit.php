@@ -12,6 +12,7 @@ use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Roles;
+use SuttonBaker\Impresario\Definition\Roles as DefinitionRoles;
 
 /**
  * Class Edit
@@ -108,6 +109,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $ignoreLockValue = true;
         }
 
+        $clientLocked = $this->getUserHelper()->hasCapability(DefinitionRoles::CAP_EDIT_PROJECT_CLIENT) == false;
+        
+
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$this->blockPrefix}_edit")->setGroupTemplate('form/group-vertical.phtml');
@@ -177,7 +181,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'client_reference_row',
                 'data' => [
                     'select_options' => $clients,
-                    'locked' => true
+                    'locked' => $clientLocked
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'

@@ -227,6 +227,11 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 //     'class' => 'col-md-4'
                 // ],
             ], [
+                'name' => 'special_instructions',
+                'formGroup' => true,
+                'labelName' => 'Special Instructions',
+                'type' => 'Textarea',
+            ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'data' => [
