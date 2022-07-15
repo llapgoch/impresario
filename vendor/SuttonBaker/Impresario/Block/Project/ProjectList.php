@@ -123,20 +123,33 @@ implements \DaveBaker\Core\Block\BlockInterface
                 );
             }
         );
-        
+
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Set $filterBlock */
         $filterBlock = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.filter.set");
-        
+
         $this->tableBlock->preDispatch();
 
-        if (($sessionData = $this->tableBlock->getSessionData())
-            && isset($sessionData['filters'])
-        ) {
-            foreach ($sessionData['filters'] as $filterKey => $filterValue) {
-                $filterBlock->setFilterValue($filterKey, $filterValue);
-            }
+        $sessionData = $this->tableBlock->getSessionData();
+
+        // Always create filters as we have a custom default (show_cancelled)
+        if (!isset($sessionData['filters'])) {
+            $sessionData['filters'] = [];
         }
-        
+
+        // Default the show cancelled filter to 0
+        if (!isset($sessionData['filters']['show_cancelled'])) {
+            $sessionData['filters']['show_cancelled'] = 0;
+            
+            $this->tableBlock->getSession()->set(
+                $this->tableBlock->getSessionKey(),
+                $sessionData
+            );
+        }
+
+        foreach ($sessionData['filters'] as $filterKey => $filterValue) {
+            $filterBlock->setFilterValue($filterKey, $filterValue);
+        }
+
     }
 
     protected function _preRender()
@@ -145,7 +158,7 @@ implements \DaveBaker\Core\Block\BlockInterface
         $hiddenClass = $this->getElementConfig()->getConfigValue('hiddenClass');
         $this->tableBlock->setRecords($this->instanceCollection);
         $this->applyRecordCountToPaginator();
-        
+
         $this->addChildBlock(
             $noItemsBlock = $this->getNoItemsBlock("{$this->getBlockPrefix()}.list.table.noitems")
         );

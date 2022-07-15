@@ -221,6 +221,17 @@ class Project extends Base
                 ->setSelectOptions($statuses)
         );
 
+        $cancelledFilter = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Show Cancelled')
+                ->setFormName('show_cancelled')
+                ->setSelectOptions([['name' => 'No', 'value' => 0], ['name' => 'Yes', 'value' => 1]]);
+        
+        $cancelledFilter->getMainElement()->setShowFirstOption(false);
+
+        $filterSet->addFilter(
+            $cancelledFilter
+        );
+
         return $this;
     }
 
