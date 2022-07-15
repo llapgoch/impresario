@@ -77,6 +77,7 @@ class Project
               `comments` text,
               `has_rebate` int(1) DEFAULT '0',
               `rebate_percentage` decimal(5,2) DEFAULT 0,
+              `rebate_amount` decimal(10,4) DEFAULT 0,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',

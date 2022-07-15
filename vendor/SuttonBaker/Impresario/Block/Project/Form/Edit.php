@@ -134,6 +134,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setOrder('before', '')
         );
 
+        
+
         $elements = $builder->build([
             [
                 'name' => 'site_name',
@@ -350,7 +352,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => [
                     'placeholder' => '£',
-                    'readonly' => 'readonly'
+                    'readonly' => 'readonly',
+                    'data-item-total' => $this->modelInstance->calculateCostItemTotal()
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -383,7 +386,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ]
             ], [
                 'name' => 'has_rebate',
-                'rowIdentifier' => 'project_dates',
+                'rowIdentifier' => 'rebate_items',
                 'formGroup' => true,
                 'labelName' => 'Has Rebate',
                 'data' => [
@@ -392,20 +395,31 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Select',
                 'class' => 'js-rebate-control',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'rebate_percentage',
                 'formGroup' => true,
-                'rowIdentifier' => 'project_dates',
+                'rowIdentifier' => 'rebate_items',
                 'labelName' => 'Rebate %',
                 'type' => 'Input\Text',
                 'attributes' => $rebateAttrs,
                 'class' => 'js-rebate-percentage',
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-4'
                 ]
-            ],[
+            ], [
+                'name' => 'rebate_amount',
+                'formGroup' => true,
+                'rowIdentifier' => 'rebate_items',
+                'labelName' => 'Rebate Amount',
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly'],
+                'class' => 'js-rebate-amount',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
                 'name' => 'project_start_date',
                 'formGroup' => true,
                 'labelName' => 'Project Start Date *',
@@ -419,7 +433,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-6'
                 ]
             ], [
                 'name' => 'project_end_date',
@@ -435,7 +449,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )
                 ],
                 'formGroupSettings' => [
-                    'class' => 'col-md-3'
+                    'class' => 'col-md-6'
                 ]
             ], [
                 'name' => 'status',

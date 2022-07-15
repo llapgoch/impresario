@@ -39,6 +39,24 @@ class ProjectConfigurator
             $this->createRule('Numeric', 'rebate_percentage', 'Rebate %')
         );
 
+        if((bool)$this->getValue('has_rebate')) {
+            $rebateRule = $this->createRule('Custom', 'rebate_percentage', 'Rebate Percentage')
+            ->setMainError('\'{{niceName}}\' must be between 0 - 100')
+            ->setInputError('This must be between 0 - 100');
+
+            $rebateRule->setValidationMethod(function($value, $ruleInstance) {
+                $value = (float) $value;
+
+                if($value < 0 || $value > 100){
+                    return $ruleInstance->createError();
+                }
+
+                return true;
+            });
+
+            $this->addRule($rebateRule);
+        }
+
         if ($projectStarted){
             $this->addRule(
                 $this->createRule('Date', 'project_start_date', 'Project Start Date')
