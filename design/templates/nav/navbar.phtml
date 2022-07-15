@@ -1,8 +1,10 @@
-<?php /** @var \SuttonBaker\Impresario\Block\Structure\Nav $block */?>
+<?php
+
+/** @var \SuttonBaker\Impresario\Block\Structure\Nav $block */ ?>
 <div class="navbar-container navbar-opaque fixed-top">
-<nav class="navbar navbar-dark navbar-expand-sm">
+    <nav class="navbar navbar-dark navbar-expand-sm">
         <a class="navbar-brand" href="/">
-            <img src="<?php echo $block->getLogo();?>" />
+            <img src="<?php echo $block->getLogo(); ?>" />
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -10,41 +12,45 @@
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav navbar-main">
+                <li class="nav-item navbar-item-qhse">
+                    <a href="https://qhse.tandimo.com/" class="nav-link qhse-brand" target="_blank">
+                        <span>QHSE</span>
+                    </a>
+                </li>
 
-                <?php foreach($block->getNavItems() as $navItem):?>
+                <?php foreach ($block->getNavItems() as $navItem) : ?>
                     <?php $hasSubs = isset($navItem['subs']); ?>
-                    <li class="nav-item divided <?php echo $hasSubs ? 'dropdown' : '';?> navbar-item-<?php echo $navItem['identifier'];?>" data-dropdown-target="#navbar-sub-<?php echo $navItem['identifier']; ?>">
-                        <a href="<?php echo $block->escAttr($navItem['link']);?>" class="nav-link <?php echo $hasSubs ? 'dropdown-toggle' : '';?>" id="navbar-<?php echo $navItem['identifier'];?>" data-dropdown-target="#navbar-sub-<?php echo $navItem['identifier']; ?>">
-                            <?php if(isset($navItem['icon'])):?>
-                                <i class="fa <?php echo $navItem['icon'];?>"></i>
+                    <li class="nav-item divided <?php echo $hasSubs ? 'dropdown' : ''; ?> navbar-item-<?php echo $navItem['identifier']; ?>" data-dropdown-target="#navbar-sub-<?php echo $navItem['identifier']; ?>">
+                        <a href="<?php echo $block->escAttr($navItem['link']); ?>" class="nav-link <?php echo $hasSubs ? 'dropdown-toggle' : ''; ?>" id="navbar-<?php echo $navItem['identifier']; ?>" data-dropdown-target="#navbar-sub-<?php echo $navItem['identifier']; ?>">
+                            <?php if (isset($navItem['icon'])) : ?>
+                                <i class="fa <?php echo $navItem['icon']; ?>"></i>
                             <?php endif; ?>
                             <span class="navbar-label"><?php echo $block->_($navItem['name']); ?></span>
-                            <?php if(isset($navItem['badge']) && $navItem['badge']):?>
-                             <span class="label label-redbrown"><?php echo $block->escapeHtml($navItem['badge']);?></span>
+                            <?php if (isset($navItem['badge']) && $navItem['badge']) : ?>
+                                <span class="label label-redbrown"><?php echo $block->escapeHtml($navItem['badge']); ?></span>
                             <?php endif; ?>
                         </a>
-                        <?php if($hasSubs):?>
-                        <ul class="dropdown-menu" aria-labelledby="navbar-<?php echo $navItem['identifier'];?>"
-                             data-db-toggler-active-class="show"
-                             id="navbar-sub-<?php echo $navItem['identifier']; ?>">
+                        <?php if ($hasSubs) : ?>
+                            <ul class="dropdown-menu" aria-labelledby="navbar-<?php echo $navItem['identifier']; ?>" data-db-toggler-active-class="show" id="navbar-sub-<?php echo $navItem['identifier']; ?>">
 
-                            <?php foreach($navItem['subs'] as $sub): ?>
-                                <li>
-                                <a class="dropdown-item" href="<?php echo $sub['link'];?>">
-                                    <?php if(isset($sub['icon'])): ?>
-                                        <i class="fa <?php echo $sub['icon'];?>"></i>
-                                    <?php endif; ?>
-                                    <?php echo $block->_($sub['name']); ?>
-                                </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                                <?php foreach ($navItem['subs'] as $sub) : ?>
+                                    <li>
+                                        <a class="dropdown-item" href="<?php echo $sub['link']; ?>">
+                                            <?php if (isset($sub['icon'])) : ?>
+                                                <i class="fa <?php echo $sub['icon']; ?>"></i>
+                                            <?php endif; ?>
+                                            <?php echo $block->_($sub['name']); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
                         <?php endif;  ?>
                     </li>
                 <?php endforeach; ?>
+
             </ul>
         </div>
 
         <?php echo $this->getChildHtml('quickActions'); ?>
-</nav>
+    </nav>
 </div>
