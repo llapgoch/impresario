@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Model\Db;
 
 use \SuttonBaker\Impresario\Definition\Variation as VariationDefinition;
+
 /**
  * Class Variation
  * @package SuttonBaker\Impresario\Model\Db
@@ -33,11 +34,7 @@ class Variation extends Base
      */
     public function getProfit()
     {
-        if($this->getValue() && $this->hasNetSell()){
-            return max(0, $this->getValue() - $this->getNetCost());
-        }
-
-        return 0;
+        return (float) $this->getValue() - (float) $this->getNetCost();
     }
 
     /**
@@ -45,8 +42,8 @@ class Variation extends Base
      */
     public function getGp()
     {
-        if($this->getProfit()){
-            return $this->getProfit() / $this->getNetCost();
+        if ($this->getValue() !== 0) {
+            return round(($this->getProfit() / $this->getValue()) * 100, 2);
         }
 
         return 0;
@@ -58,7 +55,7 @@ class Variation extends Base
      */
     public function getProject()
     {
-        if(!$this->getId()){
+        if (!$this->getId()) {
             return null;
         }
 
@@ -73,7 +70,7 @@ class Variation extends Base
     protected function afterSave()
     {
         // Update the project's values
-        if($project = $this->getProject()){
+        if ($project = $this->getProject()) {
             $project->save();
         }
     }

@@ -29,6 +29,9 @@ class Page
     const PROJECT_LIST = 'project_list';
     const PROJECT_EDIT = 'project_edit';
     const PROJECT_REPORT_DOWNLOAD = 'project_report_download';
+    const PROJECT_SALES_INVOICE_DOWNLOAD = 'project_sales_invoice_download';
+    const PROJECT_COST_INVOICE_DOWNLOAD = 'project_cost_invoice_download';
+    const PROJECT_VARIATION_INVOICE_DOWNLOAD = 'project_variation_invoice_download';
 
     const VARIATION_EDIT = 'variation_edit';
     const INVOICE_EDIT = 'invoice_edit';

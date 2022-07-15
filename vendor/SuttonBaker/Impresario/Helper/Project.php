@@ -8,6 +8,7 @@ use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Helper
@@ -173,6 +174,23 @@ class Project extends Base
         ))->order('{{project}}.date_required');
 
         return $collection;
+    }
+
+    /**
+     * Apply a custom filter to the collection to hide or show cancelled items
+     *
+     * @param \SuttonBaker\Impresario\Model\Db\Project\Collection $instanceCollection
+     * @param int $filter
+     * @return void
+     */
+    public function filterCancelledWhereMap(
+        $instanceCollection, 
+        $filterValue
+    ) {
+        if(!(int) $filterValue) {
+            $instanceCollection->where('status <> ?', ProjectDefinition::STATUS_CANCELLED);
+        }
+        
     }
 
     /**
