@@ -92,7 +92,7 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                     function ($value, $ruleInstance) use ($modelInstance, $poItemTotal) {
                         $modelInstance->updateTotals();
 
-                        if (($poItemTotal - (float) $modelInstance->getAmountInvoiced())  !=  0) {
+                        if (round($poItemTotal - (float) $modelInstance->getAmountInvoiced(), 2)  !=  0) {
                             return $ruleInstance->createError();
                         }
 

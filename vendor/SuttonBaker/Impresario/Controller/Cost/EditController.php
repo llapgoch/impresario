@@ -5,6 +5,7 @@ namespace SuttonBaker\Impresario\Controller\Cost;
 use DaveBaker\Core\Definitions\Messages;
 use DaveBaker\Core\Definitions\Upload;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Helper\Cost;
 
@@ -40,7 +41,7 @@ class EditController
      */
     public function _preDispatch()
     {
-
+        
         // Set instance values before the blocks are created
         $costType = $this->getRequest()->getParam(CostDefinition::COST_TYPE_PARAM);
         $parentId = $this->getRequest()->getParam(CostDefinition::PARENT_ID_PARAM);
@@ -56,12 +57,16 @@ class EditController
 
 
         if($instanceId){
+            
             // We're loading, fellas!
             $this->modelInstance->load($instanceId);
-
+            
             if(!$this->modelInstance->getId()){
                 $this->addMessage('The cost could not be found', Messages::ERROR);
-                return $this->getResponse()->redirectReferer();
+                
+                return $this->getResponse()->redirectReferer(
+                    $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST)
+                );
             }
 
         }else {
