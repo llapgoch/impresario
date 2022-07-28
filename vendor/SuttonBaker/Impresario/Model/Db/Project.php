@@ -80,7 +80,7 @@ class Project extends Base
     }
 
     /**
-     * @param $reload
+     * @param bool $reload
      * @return null|Cost\Collection
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
@@ -99,6 +99,21 @@ class Project extends Base
         }
 
         return $this->costs;
+    }
+
+    public function getOpenPOInvoiceAmountRemaining()
+    {
+        $total = 0;
+        /** @var Cost */
+        if($costs = $this->getCosts()) {
+            foreach($costs->getItems() as $cost) {
+                if(!$cost->isClosed()) {
+                    $total += $cost->getInvoiceAmountRemaining();
+                }
+            }
+        }
+
+        return $total;
     }
 
     /**
@@ -221,17 +236,16 @@ class Project extends Base
         return $netSell - $actualCost;
     }
 
-
     /**
      * @return null|float
      */
-    protected function calculateTotalActualCost()
+    public function calculateCostItemTotal()
     {
         $totalCost = 0;
 
         if ($costs = $this->getCosts()) {
             /** @var Cost $cost */
-            foreach ($costs->load() as $cost) {
+            foreach ($costs->getItems() as $cost) {
                 if ($cost->isClosed()) {
                     $totalCost += (float) $cost->getPoItemTotal();
                 }
@@ -239,6 +253,51 @@ class Project extends Base
         }
 
         return $totalCost;
+    }
+
+
+    /**
+     * @return null|float
+     */
+    protected function calculateTotalActualCost()
+    {
+        return $this->calculateCostItemTotal() + $this->calculateRebate();
+    }
+
+    /**
+     * A hacky function to always round up for decimal places (precision) so 1821.7711 becomes 1821.78
+     *
+     * @param float $value
+     * @param integer $precision
+     * @return float
+     */
+    public function calculateCeiling($value, $precision = 0)
+    {
+        $offset = 0.5;
+
+        if ($precision !== 0) {
+            $offset /= pow(10, $precision);
+        }
+
+        $final = round($value + $offset, $precision, PHP_ROUND_HALF_DOWN);
+        return ($final == -0 ? 0 : $final);
+    }
+
+    /**
+     *
+     * @return float
+     */
+    protected function calculateRebate()
+    {
+        $rebate = 0;
+
+        if ((bool) $this->getHasRebate()) {
+            $rebatePercentage = ((float) $this->getRebatePercentage()) / 100;
+            $rebateAddition = $this->calculateCeiling($this->calculateTotalNetSell() * $rebatePercentage, 2);
+            $rebate += $rebateAddition;
+        }
+
+        return $rebate;
     }
 
     /**
@@ -259,6 +318,7 @@ class Project extends Base
     {
         $this->setData('gp', $this->calculateGp())
             ->setData('total_actual_cost', $this->calculateTotalActualCost())
+            ->setData('rebate_amount', $this->calculateRebate())
             ->setData('profit', $this->calculateProfit())
             ->setData('total_net_cost', $this->calculateTotalNetCost())
             ->setData('total_net_sell', $this->calculateTotalNetSell())

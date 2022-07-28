@@ -37,6 +37,24 @@ class Project
                 "post_title" => "Project Report Downloader"
             ]
         );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_SALES_INVOICE_DOWNLOAD, [
+                "post_title" => "Project Sales Invoice Downloader"
+            ]
+        );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_COST_INVOICE_DOWNLOAD, [
+                "post_title" => "Project Cost Invoice Downloader"
+            ]
+        );
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::PROJECT_VARIATION_INVOICE_DOWNLOAD, [
+                "post_title" => "Project Variation Downloader"
+            ]
+        );
         
 
         $this->deltaTable('project',
@@ -75,6 +93,9 @@ class Project
               `nm_mw_number` varchar(255) DEFAULT NULL,
               `status` varchar(20) DEFAULT NULL,
               `comments` text,
+              `has_rebate` int(1) DEFAULT '0',
+              `rebate_percentage` decimal(5,2) DEFAULT 0,
+              `rebate_amount` decimal(10,4) DEFAULT 0,
               `created_at` datetime DEFAULT NULL,
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT '0',

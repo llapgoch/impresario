@@ -8,6 +8,7 @@ use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
 
+
 /**
  * Class Project
  * @package SuttonBaker\Impresario\Helper
@@ -176,6 +177,23 @@ class Project extends Base
     }
 
     /**
+     * Apply a custom filter to the collection to hide or show cancelled items
+     *
+     * @param \SuttonBaker\Impresario\Model\Db\Project\Collection $instanceCollection
+     * @param int $filter
+     * @return void
+     */
+    public function filterCancelledWhereMap(
+        $instanceCollection, 
+        $filterValue
+    ) {
+        if(!(int) $filterValue) {
+            $instanceCollection->where('status <> ?', ProjectDefinition::STATUS_CANCELLED);
+        }
+        
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
@@ -327,6 +345,10 @@ class Project extends Base
             $newSave = true;
         }
 
+        if(!isset($data['has_rebate']) || !((bool) $data['has_rebate'])) {
+            $data['rebate_percentage'] = 0;
+        }
+        
         $returnValues['new_save'] = $newSave;
         $returnValues['project_id'] = $modelInstance->getId();
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();

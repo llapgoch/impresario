@@ -198,6 +198,19 @@ class PrintPO extends \DaveBaker\Core\Block\Template
     }
 
     /**
+     *
+     * @return string
+     */
+    public function getSpecialInstructions()
+    {
+        if($instructions = trim($this->getCost()->getSpecialInstructions())) {
+            return $instructions;
+        }
+
+        return '- -';        
+    }
+
+    /**
      * @return \SuttonBaker\Impresario\Helper\Cost
      * @throws \DaveBaker\Core\Object\Exception
      */
