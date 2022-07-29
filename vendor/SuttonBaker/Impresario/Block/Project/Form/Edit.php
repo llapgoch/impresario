@@ -635,6 +635,18 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
+        // Create the file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+                "{$this->blockPrefix}.file.upload.completion.certificate.container"
+            )->setOrder('before', "project.edit.button.bar")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setBlockPrefix('completion.certificate')
+                ->setHeading('<strong>Completion</strong> Certificates')
+        );
+
         if (
             in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
             $this->getProjectHelper()->currentUserCanEdit() == false
@@ -767,6 +779,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $completionUploadTable = $this->getBlockManager()->getBlock('completion.certificate.tile.block');
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
@@ -778,6 +791,26 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
                     "{$this->blockPrefix}.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
+                        Api::ENDPOINT_FILE_UPLOAD,
+                        $uploadParams
+                    )]
+                )
+            );
+        }
+
+        $uploadCompletionParams = [
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+        ];
+
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+            $completionUploadTable->addChildBlock(
+                $completionUploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$this->blockPrefix}.completion.certificate.file.uploader",
                     'header_elements'
                 )->addJsDataItems(
                     ['endpoint' => $this->getUrlHelper()->getApiUrl(

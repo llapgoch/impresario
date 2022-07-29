@@ -17,6 +17,8 @@ class TableContainer
 {
     /** @var string */
     protected $blockPrefix = 'upload';
+    /** @var string */
+    protected $heading = '<strong>File</strong> Attachments';
     /** @var \DaveBaker\Core\Model\Db\Core\Upload\Collection $instanceCollection */
     protected $instanceCollection;
     /** @var string */
@@ -27,6 +29,26 @@ class TableContainer
     protected $identifier;
     /** @var int */
     protected $recordsPerPage = UploadDefinition::RECORDS_PER_PAGE;
+
+    /**
+     *
+     * @param string $heading
+     * @return $this
+     */
+    public function setHeading($heading) 
+    {
+        $this->heading = $heading;
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getHeading()
+    {
+        return $this->heading;
+    }
 
      /**
      * @return int
@@ -146,7 +168,7 @@ class TableContainer
             $tileBlock = $this->createBlock(
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
-            )->setHeading('<strong>File</strong> Attachments')
+            )->setHeading($this->getHeading())
             ->addClass('js-file-upload-container')
             ->setTileBodyClass('nopadding table-responsive')
         );

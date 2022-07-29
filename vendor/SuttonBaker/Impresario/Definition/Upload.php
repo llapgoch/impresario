@@ -12,6 +12,7 @@ class Upload
     const TYPE_ENQUIRY = 'enquiry';
     const TYPE_QUOTE = 'quote';
     const TYPE_PROJECT = 'project';
+    const TYPE_PROJECT_COMPLETION_CERTIFICATE = 'project_completion_certificate';
     const TYPE_TASK = 'task';
     const TYPE_VARIATION = 'variation';
     const TYPE_INVOICE = 'invoice';
