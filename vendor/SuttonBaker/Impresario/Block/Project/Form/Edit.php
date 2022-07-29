@@ -58,6 +58,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addClass('js-validate-form js-form-overlay');
         $editMode = false;
 
+        // Select options for checklist items
+        $yesNo = [
+            ['value' => 1, 'name' => 'Yes'],
+            ['value' => 0, 'name' => 'No'],
+        ];
+
+        $yesNoNa = array_merge($yesNo, [['value' => 3, 'name' => 'N/A']]);
+
         $this->addJsDataItems([
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'endpointSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_SAVE),
@@ -435,16 +443,122 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroup' => true,
                 'labelName' => 'All Plant Off Hired',
                 'rowIdentifier' => 'completion_checklist',
-                'type' => '\Suttonbaker\Impresario\Block\Form\Input\FixedCheckbox',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
                 'data' => [
-                    'fixed_value' => 1 // Sets the 'value' attribute always to be this (regardless of the )
+                    'select_options' => $yesNo,
                 ],
+                'class' => 'js-checklist-item',
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ], 
-            
-            
+            ],
+            [
+                'name' => 'checklist_cost_invoice_received_logged',
+                'formGroup' => true,
+                'labelName' => 'All expected cost invoices received and logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_rams_qhse_filing',
+                'formGroup' => true,
+                'labelName' => 'Completed RAMS sent to QHSE for filing',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_customer_satisfaction_survey_logged',
+                'formGroup' => true,
+                'labelName' => 'Customer satisfaction survey logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_completion_photos_logged',
+                'formGroup' => true,
+                'labelName' => 'Completion photos logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_warranty_guarantee_certificate_filed',
+                'formGroup' => true,
+                'labelName' => 'Any warranty / guarantee certification filed',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_client_advised_operational_maintenance',
+                'formGroup' => true,
+                'labelName' => 'Client advised on any operational & maintenance requirements',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_client_crm_updated',
+                'formGroup' => true,
+                'labelName' => 'Client CRM system updated',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+
             [
                 'name' => 'submit',
                 'formGroup' => true,
@@ -826,7 +940,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 );
 
                 $costTileBlock->addChildBlock($buttonContainer);
-
             }
         }
 
