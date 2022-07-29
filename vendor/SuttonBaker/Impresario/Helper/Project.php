@@ -184,13 +184,12 @@ class Project extends Base
      * @return void
      */
     public function filterCancelledWhereMap(
-        $instanceCollection, 
+        $instanceCollection,
         $filterValue
     ) {
-        if(!(int) $filterValue) {
+        if (!(int) $filterValue) {
             $instanceCollection->where('status <> ?', ProjectDefinition::STATUS_CANCELLED);
         }
-        
     }
 
     /**
@@ -320,6 +319,21 @@ class Project extends Base
         \SuttonBaker\Impresario\Model\Db\Project $modelInstance,
         $data
     ) {
+
+        $defaultChecklistItems = [
+            'checklist_plant_off_hired' => 0
+        ];
+
+        // This is a cheapo way to deal with checkboxes which by default aren't submitted with the form (because unchecked), but should be 
+        // set back to 0 when not checked.
+        $data = array_merge($defaultChecklistItems, $data);
+
+        // Set to 1 regardless of form value if positive - stops user being able to change value in HTML
+        foreach ($defaultChecklistItems as $checklistKey => $defaultChecklistItem) {
+            if ((int) $data[$checklistKey]) {
+                $data[$checklistKey] = 1;
+            }
+        }
 
         $returnValues = [
             'project_id' => null,

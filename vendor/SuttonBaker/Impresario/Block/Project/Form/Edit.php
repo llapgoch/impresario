@@ -431,6 +431,21 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Comments',
                 'type' => 'Textarea',
             ], [
+                'name' => 'checklist_plant_off_hired',
+                'formGroup' => true,
+                'labelName' => 'All Plant Off Hired',
+                'rowIdentifier' => 'completion_checklist',
+                'type' => '\Suttonbaker\Impresario\Block\Form\Input\FixedCheckbox',
+                'data' => [
+                    'fixed_value' => 1 // Sets the 'value' attribute always to be this (regardless of the )
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], 
+            
+            
+            [
                 'name' => 'submit',
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',

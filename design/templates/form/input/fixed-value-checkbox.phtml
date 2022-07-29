@@ -1,0 +1,11 @@
+<?php
+/** @var \DaveBaker\Form\Block\Input\Input $block */
+?>
+<input
+    type="<?php echo $block->escAttr($this->getElementType());?>"
+    name="<?php echo $block->escAttr($this->getElementName());?>"
+    value="<?php echo $block->escAttr($this->getFixedValue());?>"
+    <?php echo $block->getAttrs();?>
+>
+<?php echo $this->getLabelHtml(); ?>
+<?php echo $block->getChildHtml('');?>
