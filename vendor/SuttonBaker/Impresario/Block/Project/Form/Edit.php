@@ -815,7 +815,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 )->addJsDataItems(
                     ['endpoint' => $this->getUrlHelper()->getApiUrl(
                         Api::ENDPOINT_FILE_UPLOAD,
-                        $uploadParams
+                        $uploadCompletionParams
                     )]
                 )
             );
