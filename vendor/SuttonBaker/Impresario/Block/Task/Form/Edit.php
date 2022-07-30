@@ -37,7 +37,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         parent::_preDispatch();
         $this->addClass('js-loader');
-        
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -48,7 +48,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $parentItem = $this->getApp()->getRegistry()->get('parent_item');
         $taskType = $this->getApp()->getRegistry()->get('task_type');
 
-        if($this->modelInstance->getId()){
+        if ($this->modelInstance->getId()) {
             $editMode = true;
         }
 
@@ -131,7 +131,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'show_first_option' => false
                 ],
 
-            ],[
+            ], [
                 'name' => 'status',
                 'rowIdentifier' => 'priority_status',
                 'labelName' => 'Status *',
@@ -208,7 +208,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        if($this->getTaskHelper()->currentUserCanEdit() == false){
+        if ($this->getTaskHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }
@@ -223,12 +223,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
+
         $uploadParams = [
-            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_TASK: CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_TASK : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $uploadIdentifier
         ];
 
-        if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
+        if ($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -239,10 +241,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         Api::ENDPOINT_FILE_UPLOAD,
                         $uploadParams
                     )]
-                )
+                )->setIdentifier($uploadIdentifier)
+                    ->setActualType(Upload::TYPE_TASK)
             );
         }
         return parent::_preRender();
     }
-
 }

@@ -185,7 +185,7 @@ class TableContainer
                     ->removeClass('pagination-xl')->addClass('pagination-xs')
             );
 
-        // Use the blockPrefix when naming children for multiple uploaders on the same page
+        // Use the blockPrefix when naming children for multiple uploaders on the same page 
         $jsDataItems = [
             Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                 $this->getUrlHelper()->getApiUrl(

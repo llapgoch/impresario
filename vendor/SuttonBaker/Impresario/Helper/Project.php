@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use DaveBaker\Core\Definitions\Upload;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
@@ -365,13 +366,14 @@ class Project extends Base
 
         $modelInstance->setData($data)->save();
 
-        if ($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
-                $modelInstance->getId()
-            );
+        if ($newSave && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $modelInstance->getId()
+                );
+            }
         }
 
         if (

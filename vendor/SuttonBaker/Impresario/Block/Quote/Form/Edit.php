@@ -557,10 +557,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_QUOTE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $uploadIdentifier
         ];
 
         if(!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
@@ -574,7 +575,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         Api::ENDPOINT_FILE_UPLOAD,
                         $uploadParams
                     )]
-                )
+                )->setActualType(Upload::TYPE_QUOTE)
+                ->setIdentifier($uploadIdentifier)
             );
         }
 

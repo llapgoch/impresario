@@ -206,9 +206,11 @@ class Edit
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
+
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_INVOICE: CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $uploadIdentifier
         ];
 
         if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
@@ -223,6 +225,8 @@ class Edit
                         $uploadParams
                     )]
                 )
+                ->setActualType(Upload::TYPE_INVOICE)
+                    ->setIdentifier($uploadIdentifier)
             );
         }
         return parent::_preRender();

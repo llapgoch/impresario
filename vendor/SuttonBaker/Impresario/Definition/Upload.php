@@ -10,6 +10,7 @@ class Upload
 {
     const API_ENDPOINT_UPDATE_TABLE = 'upload/updatetable';
     const TYPE_ENQUIRY = 'enquiry';
+    const TYPE_ENQUIRY_TEST = 'enquiry_test';
     const TYPE_QUOTE = 'quote';
     const TYPE_PROJECT = 'project';
     const TYPE_PROJECT_COMPLETION_CERTIFICATE = 'project_comp_cert';

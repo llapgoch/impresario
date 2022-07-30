@@ -21,6 +21,8 @@ use SuttonBaker\Impresario\Definition\Roles as DefinitionRoles;
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'project_id';
+    const COMPLETION_TEMPORARY_PREFIX = 'proj_comp_tmp';
+
     protected $prefixName = 'Project';
     protected $blockPrefix = 'project';
 
@@ -635,7 +637,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
         );
 
-        // Create the file uploader
+        // Create the completion certificate file uploader
         $this->addChildBlock(
             $this->createBlock(
                 \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
@@ -781,10 +783,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $completionPrefix = 'completion.certificate';
         $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $uploadIdentifier
         ];
 
         if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
@@ -799,12 +802,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         $uploadParams
                     )]
                 )
+                ->setActualType(Upload::TYPE_PROJECT)
+                    ->setIdentifier($uploadIdentifier)
             );
         }
 
+        /** Note: the temporary route for projects should never be required (All projects have IDs), here for completeness */
+        $completionIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(self::COMPLETION_TEMPORARY_PREFIX);
         $uploadCompletionParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $completionIdentifier
         ];
 
         if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
@@ -822,6 +829,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         'blockPrefix' => $completionPrefix
                     ]
                 )
+                ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)
+                    ->setIdentifier($completionIdentifier)
             );
         }
 

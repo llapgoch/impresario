@@ -17,7 +17,7 @@ use \SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
  * @package SuttonBaker\Impresario\Helper
  */
 class Enquiry
-    extends Base
+extends Base
 {
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_ENQUIRY];
@@ -59,7 +59,7 @@ class Enquiry
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry,
         $returnUrl = null
     ) {
-        if($enquiry && $enquiry->getId()){
+        if ($enquiry && $enquiry->getId()) {
             return $this->getUrlHelper()->getPageUrl(
                 Page::ENQUIRY_EDIT,
                 ['enquiry_id' => $enquiry->getId()],
@@ -82,7 +82,7 @@ class Enquiry
             '\SuttonBaker\Impresario\Model\Db\Enquiry\Collection'
         );
 
-        if($deletedFlag) {
+        if ($deletedFlag) {
             $collection->where('{{enquiry}}.is_deleted=?', '0');
         }
 
@@ -106,14 +106,16 @@ class Enquiry
             ['engineer_name' => 'display_name']
         );
 
-        $collection->order(new \Zend_Db_Expr(sprintf(
+        $collection->order(new \Zend_Db_Expr(
+            sprintf(
                 "FIELD({{enquiry}}.status,'%s', '%s', '%s', '%s', '%s', '%s')",
                 EnquiryDefinition::STATUS_OPEN,
                 EnquiryDefinition::STATUS_ENGINEER_ASSIGNED,
                 EnquiryDefinition::STATUS_READY_TO_INVOICE,
                 EnquiryDefinition::STATUS_INVOICED,
                 EnquiryDefinition::STATUS_COMPLETE,
-                EnquiryDefinition::STATUS_CANCELLED)
+                EnquiryDefinition::STATUS_CANCELLED
+            )
         ))->order('{{enquiry}}.target_date');
 
         return $collection;
@@ -126,19 +128,19 @@ class Enquiry
     public function getDisplayEnquiries($deletedFlag = true)
     {
         $collection = $this->getEnquiryCollection($deletedFlag)
-        ->joinLeft(
-            ['q' => '{{quote}}'],
-            '{{enquiry}}.enquiry_id=q.enquiry_id 
+            ->joinLeft(
+                ['q' => '{{quote}}'],
+                '{{enquiry}}.enquiry_id=q.enquiry_id 
                 AND q.is_deleted=0 
                 AND q.is_master=1',
-            []
-        )->joinLeft(
-            ['p' => '{{project}}'],
-            'q.quote_id=p.quote_id 
+                []
+            )->joinLeft(
+                ['p' => '{{project}}'],
+                'q.quote_id=p.quote_id 
                 AND p.is_deleted=0',
-            []
-        )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
-    
+                []
+            )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
+
 
         return $collection;
     }
@@ -151,7 +153,7 @@ class Enquiry
     public function getOpenEnquiries()
     {
         return $collection = $this->getEnquiryCollection()->where('status IN (?)', [
-            EnquiryDefinition::STATUS_OPEN, 
+            EnquiryDefinition::STATUS_OPEN,
             EnquiryDefinition::STATUS_ENGINEER_ASSIGNED,
             EnquiryDefinition::STATUS_READY_TO_INVOICE
         ]);
@@ -175,7 +177,7 @@ class Enquiry
     {
         $enquiry = $this->createAppObject(EnquiryDefinition::DEFINITION_MODEL);
 
-        if($enquiryId){
+        if ($enquiryId) {
             $enquiry->load($enquiryId);
         }
 
@@ -189,11 +191,11 @@ class Enquiry
      */
     public function getEnquiryForQuote($quote)
     {
-        if(!is_object($quote)){
+        if (!is_object($quote)) {
             $quote = $this->getQuoteHelper()->getQuote($quote);
         }
 
-       return $this->getEnquiry($quote->getEnquiryId());
+        return $this->getEnquiry($quote->getEnquiryId());
     }
 
     /**
@@ -206,7 +208,7 @@ class Enquiry
     public function deleteEnquiry(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
     ) {
-        if(!$enquiry->getId()){
+        if (!$enquiry->getId()) {
             return;
         }
 
@@ -215,7 +217,7 @@ class Enquiry
             TaskDefinition::TASK_TYPE_ENQUIRY
         )->load();
 
-        foreach($tasks as $task){
+        foreach ($tasks as $task) {
             $task->setIsDeleted(1)->save();
         }
 
@@ -244,8 +246,8 @@ class Enquiry
             'reopened' => false
         ];
 
-        foreach(EnquiryDefinition::NON_USER_VALUES as $nonUserValue){
-            if(isset($data[$nonUserValue])){
+        foreach (EnquiryDefinition::NON_USER_VALUES as $nonUserValue) {
+            if (isset($data[$nonUserValue])) {
                 unset($data[$nonUserValue]);
             }
         }
@@ -253,7 +255,7 @@ class Enquiry
         $newSave = false;
 
         // Add created by user
-        if(!$modelInstance->getId()) {
+        if (!$modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $newSave = true;
         }
@@ -261,7 +263,7 @@ class Enquiry
         $returnValues['new_save'] = $newSave;
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
 
-        if($modelInstance->isComplete() && $data['status'] !== EnquiryDefinition::STATUS_COMPLETE){
+        if ($modelInstance->isComplete() && $data['status'] !== EnquiryDefinition::STATUS_COMPLETE) {
             $data['date_completed'] = null;
             $returnValues['reopened'] = true;
         }
@@ -269,20 +271,22 @@ class Enquiry
         $modelInstance->setData($data)->save();
         $returnValues['enquiry_id'] = $modelInstance->getId();
 
-        if($newSave && ($temporaryId = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_ENQUIRY,
-                $modelInstance->getId()
-            );
+        if ($newSave && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $modelInstance->getId()
+                );
+            }
         }
 
         // Create a quote if enquiry is complete
-        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE){
+        if ($data['status'] == EnquiryDefinition::STATUS_COMPLETE) {
             $quote = $this->getQuoteHelper()->getQuoteForEnquiry($modelInstance->getId());
 
-            if(!$quote->getId()) {
+            if (!$quote->getId()) {
                 $quote = $this->getQuoteHelper()->createQuoteFromEnquiry($modelInstance->getId());
                 $returnValues['quote_created'] = true;
                 $returnValues['quote_id'] = $quote->getId();
@@ -291,16 +295,18 @@ class Enquiry
         }
 
         // Close open tasks if enquiry is cancelled or complete
-        if($data['status'] == EnquiryDefinition::STATUS_COMPLETE 
-            || $data['status'] == EnquiryDefinition::STATUS_CANCELLED){
-              // Save all open Tasks
+        if (
+            $data['status'] == EnquiryDefinition::STATUS_COMPLETE
+            || $data['status'] == EnquiryDefinition::STATUS_CANCELLED
+        ) {
+            // Save all open Tasks
             $openTasks = $this->getTaskHelper()->getTaskCollectionForEntity(
-                $modelInstance->getId(), 
-                TaskDefinition::TASK_TYPE_ENQUIRY, 
+                $modelInstance->getId(),
+                TaskDefinition::TASK_TYPE_ENQUIRY,
                 TaskDefinition::STATUS_OPEN
             );
 
-            foreach($openTasks->getItems() as $openTask){
+            foreach ($openTasks->getItems() as $openTask) {
                 $openTask->setStatus(TaskDefinition::STATUS_COMPLETE)->save();
             }
         }
