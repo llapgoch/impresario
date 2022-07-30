@@ -32,25 +32,27 @@ class Upload
      */
     public function updatetableAction($params, \WP_REST_Request $request)
     {
+
         $uploadType = isset($params['upload_type']) ? $params['upload_type'] : null;
         $parentId = isset($params['parent_id']) ? $params['parent_id'] : null;
+        // The block prefix is now configurable for multiple elements on a page - see how projects with completion certificates is done
+        // Default to 'upload' so that existing uploaders don't need the new block_prefix parameter
+        $blockPrefix = isset($params['block_prefix']) ? $params['block_prefix'] : $this->blockPrefix;
 
         $blockManager = $this->getApp()->getBlockManager();
         $block = $blockManager->createBlock(
             \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
             'file.upload.container'
         )->setIdentifier($parentId)
-            ->setUploadType($uploadType);
+            ->setUploadType($uploadType)
+            ->setBlockPrefix($blockPrefix);
 
         $block->preDispatch();
 
-        $listBlock = $blockManager->getBlock("{$this->blockPrefix}.list.table");
-
-        $taskHelper = $this->createAppObject('\SuttonBaker\Impresario\Helper\Task');
-
+        $listBlock = $blockManager->getBlock("{$blockPrefix}.list.table");
 
         /** @var Paginator $paginatorBlock */
-        $paginatorBlock = $blockManager->getBlock("{$this->blockPrefix}.list.paginator");
+        $paginatorBlock = $blockManager->getBlock("{$blockPrefix}.list.paginator");
 
         if(isset($params['pageNumber'])){
             $paginatorBlock->setPage($params['pageNumber']);

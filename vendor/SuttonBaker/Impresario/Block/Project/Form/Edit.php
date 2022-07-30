@@ -779,7 +779,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
-        $completionUploadTable = $this->getBlockManager()->getBlock('completion.certificate.tile.block');
+        $completionPrefix = 'completion.certificate';
+        $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
@@ -813,10 +814,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     "{$this->blockPrefix}.completion.certificate.file.uploader",
                     'header_elements'
                 )->addJsDataItems(
-                    ['endpoint' => $this->getUrlHelper()->getApiUrl(
-                        Api::ENDPOINT_FILE_UPLOAD,
-                        $uploadCompletionParams
-                    )]
+                    [
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            Api::ENDPOINT_FILE_UPLOAD,
+                            $uploadCompletionParams,
+                        ),
+                        'blockPrefix' => $completionPrefix
+                    ]
                 )
             );
         }
