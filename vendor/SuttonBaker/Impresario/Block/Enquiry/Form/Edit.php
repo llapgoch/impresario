@@ -386,7 +386,10 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "enquiry.edit.button.bar")
                 ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_ENQUIRY
+                ))
         );
 
         /**** TEST UPLOAD BLOCK ******/
@@ -397,7 +400,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         //         "{$this->blockPrefix}.file.upload.completion.certificate.container"
         //     )->setOrder('before', "enquiry.edit.button.bar")
         //         ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY_TEST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-        //         ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test"))
+        //         ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test", Upload::TYPE_ENQUIRY_TEST))
         //         ->setBlockPrefix('enquiry.test')
         //         ->setHeading('<strong>Test</strong> Upload')
         // );
@@ -419,7 +422,10 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
-        $uploadIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
+        $uploadIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_ENQUIRY
+        );
 
         $uploadParams = [
             'upload_type' => $modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
@@ -446,7 +452,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         // $completionPrefix = 'enquiry.test';
         // $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
-        // $testIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test");
+        // $testIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test", Upload::TYPE_ENQUIRY_TEST);
 
         // $uploadCompletionParams = [
         //     'upload_type' => $modelInstance->getId() ? Upload::TYPE_ENQUIRY_TEST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,

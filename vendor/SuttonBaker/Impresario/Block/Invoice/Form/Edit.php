@@ -188,7 +188,10 @@ class Edit
                 "{$prefixKey}.file.upload.container"
             )->setOrder('before', "invoice.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_INVOICE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_INVOICE
+                ))
         );
 
         if($this->getInvoiceHelper()->currentUserCanEdit() == false) {
@@ -206,7 +209,10 @@ class Edit
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
-        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_INVOICE
+        );
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_INVOICE: CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,

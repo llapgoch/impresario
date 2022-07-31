@@ -634,7 +634,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "project.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT
+                ))
         );
 
         // Create the completion certificate file uploader
@@ -644,7 +647,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 "{$this->blockPrefix}.file.upload.completion.certificate.container"
             )->setOrder('before', "project.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    self::COMPLETION_TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE
+                ))
                 ->setBlockPrefix('completion.certificate')
                 ->setHeading('<strong>Completion</strong> Certificates')
         );
@@ -783,7 +789,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $completionPrefix = 'completion.certificate';
         $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
-        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession();
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_PROJECT
+        );
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
@@ -802,13 +811,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         $uploadParams
                     )]
                 )
-                ->setActualType(Upload::TYPE_PROJECT)
+                    ->setActualType(Upload::TYPE_PROJECT)
                     ->setIdentifier($uploadIdentifier)
             );
         }
 
         /** Note: the temporary route for projects should never be required (All projects have IDs), here for completeness */
-        $completionIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(self::COMPLETION_TEMPORARY_PREFIX);
+        $completionIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            self::COMPLETION_TEMPORARY_PREFIX,
+            Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE
+        );
+        
         $uploadCompletionParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
             'identifier' => $completionIdentifier
@@ -829,7 +842,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         'blockPrefix' => $completionPrefix
                     ]
                 )
-                ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)
+                    ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)
                     ->setIdentifier($completionIdentifier)
             );
         }
