@@ -287,7 +287,7 @@ class Project extends Base
      *
      * @return float
      */
-    protected function calculateRebate()
+    public function calculateRebate()
     {
         $rebate = 0;
 

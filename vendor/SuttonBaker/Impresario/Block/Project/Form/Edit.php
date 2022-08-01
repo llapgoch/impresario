@@ -21,6 +21,8 @@ use SuttonBaker\Impresario\Definition\Roles as DefinitionRoles;
 class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'project_id';
+    const COMPLETION_TEMPORARY_PREFIX = 'proj_comp_tmp';
+
     protected $prefixName = 'Project';
     protected $blockPrefix = 'project';
 
@@ -61,6 +63,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addClass('js-validate-form js-form-overlay');
         $editMode = false;
         $yesNoSelectOptions = $this->getYesNoSelectOptions();
+
+        // Select options for checklist items
+        $yesNo = [
+            ['value' => 1, 'name' => 'Yes'],
+            ['value' => 0, 'name' => 'No'],
+        ];
+
+        $yesNoNa = array_merge($yesNo, [['value' => 3, 'name' => 'N/A']]);
 
         $this->addJsDataItems([
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(ProjectDefinition::API_ENDPOINT_VALIDATE_SAVE),
@@ -475,6 +485,136 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Comments',
                 'type' => 'Textarea',
             ], [
+                'name' => 'checklist_plant_off_hired',
+                'formGroup' => true,
+                'labelName' => 'All Plant Off Hired',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_cost_invoice_received_logged',
+                'formGroup' => true,
+                'labelName' => 'All expected cost invoices received and logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_rams_qhse_filing',
+                'formGroup' => true,
+                'labelName' => 'Completed RAMS sent to QHSE for filing',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_customer_satisfaction_survey_logged',
+                'formGroup' => true,
+                'labelName' => 'Customer satisfaction survey logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_completion_photos_logged',
+                'formGroup' => true,
+                'labelName' => 'Completion photos logged',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNo,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_warranty_guarantee_certificate_filed',
+                'formGroup' => true,
+                'labelName' => 'Any warranty / guarantee certification filed',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_client_advised_operational_maintenance',
+                'formGroup' => true,
+                'labelName' => 'Client advised on any operational & maintenance requirements',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'checklist_client_crm_updated',
+                'formGroup' => true,
+                'labelName' => 'Client CRM system updated',
+                'rowIdentifier' => 'completion_checklist',
+                // Because checkboxes don't work too well in the base system, here's one which works!
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $yesNoNa,
+                ],
+                'class' => 'js-checklist-item',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'project_manager_closing_feedback',
+                'rowIdentifier' => 'completion_project_manager_comments',
+                'formGroup' => true,
+                'labelName' => 'Project Manager Closing Feedback',
+                'type' => 'Textarea',
+                'formGroupSettings' => [
+                    'class' => 'col-md-12'
+                ]
+            ],
+            [
                 'name' => 'submit',
                 'formGroup' => true,
                 'rowIdentifier' => 'button_bar',
@@ -540,22 +680,55 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
-        // Create the file uploader
-        $this->addChildBlock(
-            $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Upload\TableContainer',
-                "{$this->blockPrefix}.file.upload.container"
-            )->setOrder('before', "project.edit.button.bar")
-                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
-        );
-
         if (
             in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
             $this->getProjectHelper()->currentUserCanEdit() == false
         ) {
             $this->lock();
         }
+
+         $headingTag = $this->createBlock(
+            \DaveBaker\Core\Block\Html\Tag::class,
+            "{$this->blockPrefix}.completion.heading",
+            'content'
+        )->setTagText('<strong>Completion</strong> Checklist')
+        ->setTag('h5')
+        ->setOrder('before', "{$this->blockPrefix}.edit.completion.checklist");
+
+        $this->addChildBlock($headingTag);
+
+        // Create the file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+                "{$this->blockPrefix}.file.upload.container"
+            )->setOrder('before',  "{$this->blockPrefix}.completion.heading")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT
+                ))
+                ->setShowDelete(!$this->isLocked())
+        );
+
+
+        // Create the completion certificate file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+                "{$this->blockPrefix}.file.upload.completion.certificate.container"
+            )->setOrder('before', "{$this->blockPrefix}.edit.button.bar")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    self::COMPLETION_TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE
+                ))
+                ->setBlockPrefix('completion.certificate')
+                ->setHeading('<strong>Completion</strong> Certificates')
+                ->setShowDelete(!$this->isLocked())
+        );
+
+
     }
 
     /**
@@ -682,10 +855,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $completionPrefix = 'completion.certificate';
+        $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_PROJECT
+        );
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $uploadIdentifier
         ];
 
         if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
@@ -700,6 +879,39 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         $uploadParams
                     )]
                 )
+                    ->setActualType(Upload::TYPE_PROJECT)
+                    ->setIdentifier($uploadIdentifier)
+            );
+        }
+
+        /** Note: the temporary route for projects should never be required (All projects have IDs), here for completeness */
+        $completionIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            self::COMPLETION_TEMPORARY_PREFIX,
+            Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE
+        );
+        
+        $uploadCompletionParams = [
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $completionIdentifier,
+        ];
+
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+            $completionUploadTable->addChildBlock(
+                $completionUploadTable->createBlock(
+                    '\DaveBaker\Core\Block\Components\FileUploader',
+                    "{$this->blockPrefix}.completion.certificate.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    [
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            Api::ENDPOINT_FILE_UPLOAD,
+                            $uploadCompletionParams,
+                        ),
+                        'blockPrefix' => $completionPrefix,
+                    ]
+                )
+                    ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)
+                    ->setIdentifier($completionIdentifier)
             );
         }
 
@@ -855,7 +1067,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 );
 
                 $costTileBlock->addChildBlock($buttonContainer);
-
             }
         }
 

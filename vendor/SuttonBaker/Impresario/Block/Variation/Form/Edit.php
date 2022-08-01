@@ -214,7 +214,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 "{$prefixKey}.file.upload.container"
             )->setOrder('before', "variation.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_VARIATION
+                ))
         );
     }
 
@@ -242,9 +245,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         if(!$this->isLocked()) {
             $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+            $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                CoreUploadDefinition::TEMPORARY_PREFIX,
+                Upload::TYPE_VARIATION
+            );
+
             $uploadParams = [
                 'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_VARIATION : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-                'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+                'identifier' => $uploadIdentifier
             ];
 
             if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
@@ -259,6 +267,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                             $uploadParams
                         )]
                     )
+                    ->setActualType(Upload::TYPE_VARIATION)
+                    ->setIdentifier($uploadIdentifier)
                 );
             }
         }

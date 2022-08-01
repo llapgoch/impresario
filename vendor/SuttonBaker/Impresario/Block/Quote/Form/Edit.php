@@ -69,7 +69,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
 
         // Estimators
-        if($estimators = $this->getRoleHelper()->getEstimators()) {
+        if ($estimators = $this->getRoleHelper()->getEstimators()) {
             $estimators = $this->createCollectionSelectConnector()
                 ->configure(
                     $estimators,
@@ -105,9 +105,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $ignoreLockValue = false;
 
-        if(($this->getQuoteHelper()->currentUserCanEdit()
-            && !$this->modelInstance->getIsDeleted()) && $finalQuoteNotCurrent == false
-        ){
+        if (($this->getQuoteHelper()->currentUserCanEdit()
+                && !$this->modelInstance->getIsDeleted()) && $finalQuoteNotCurrent == false
+        ) {
             $ignoreLockValue = true;
         }
 
@@ -453,8 +453,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $isLocked = $this->modelInstance->getTenderStatus() !== QuoteDefinition::TENDER_STATUS_OPEN ||
             $this->modelInstance->getIsDeleted();
 
-        if($isLocked){
-            if($this->modelInstance->getIsDeleted()){
+        if ($isLocked) {
+            if ($this->modelInstance->getIsDeleted()) {
                 $message = 'has been removed';
             } else {
                 $message = 'is locked';
@@ -479,11 +479,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "quote.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_QUOTE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_QUOTE
+                ))
         );
 
 
-        if($isLocked || $this->getQuoteHelper()->currentUserCanEdit() == false){
+        if ($isLocked || $this->getQuoteHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }
@@ -497,7 +500,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createTaskTable()
     {
-        if(!$this->modelInstance->getId()){
+        if (!$this->modelInstance->getId()) {
             return;
         }
 
@@ -509,7 +512,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
 
         $this->taskTableBlock->setInstanceCollection(
-           $this->getQuoteHelper()->getTasksForQuote($this->modelInstance)
+            $this->getQuoteHelper()->getTasksForQuote($this->modelInstance)
         )->setEditLinkParams([
             \DaveBaker\Core\App\Request::RETURN_URL_PARAM => $this->getApp()->getRequest()->createReturnUrlParam()
         ]);
@@ -517,7 +520,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->addChildBlock($this->taskTableBlock);
         return $this;
     }
-    
+
     /**
      * @return $this
      * @throws \DaveBaker\Core\App\Exception
@@ -528,7 +531,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function createRevisionsTable()
     {
-        if(!$this->modelInstance->getId()){
+        if (!$this->modelInstance->getId()) {
             return $this;
         }
 
@@ -557,13 +560,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_QUOTE
+        );
 
         $uploadParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_QUOTE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'identifier' => $uploadIdentifier
         ];
 
-        if(!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -574,30 +581,30 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                         Api::ENDPOINT_FILE_UPLOAD,
                         $uploadParams
                     )]
-                )
+                )->setActualType(Upload::TYPE_QUOTE)
+                    ->setIdentifier($uploadIdentifier)
             );
         }
 
-        if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')){
+        if ($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
             $tableBlock->removeHeader(['task_id', 'task_type'])
                 ->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                        $this->getUrlHelper()->getApiUrl(
-                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                            [
-                                'type' => TaskDefinition::TASK_TYPE_QUOTE,
-                                'parent_id' => $this->modelInstance->getId()
-                            ]
-                        )
+                    $this->getUrlHelper()->getApiUrl(
+                        TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                        [
+                            'type' => TaskDefinition::TASK_TYPE_QUOTE,
+                            'parent_id' => $this->modelInstance->getId()
+                        ]
+                    )
                 ]);
-
         }
 
         $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
             ->setRecordsPerPage(TaskDefinition::RECORDS_PER_PAGE_INLINE)
             ->removeClass('pagination-xl')->addClass('pagination-xs');
 
-        if(($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) && !$this->isLocked()) {
+        if (($tileBlock = $this->getBlockManager()->getBlock('task.table.tile.block')) && !$this->isLocked()) {
             $addButton = $tileBlock->createBlock(
                 '\DaveBaker\Core\Block\Html\Tag',
                 'create.task.button',
@@ -615,11 +622,9 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->addClass('btn btn-sm btn-primary')
                 ->setCapabilities($this->getTaskHelper()->getEditCapabilities());
 
-                $tileBlock->addChildBlock($addButton);
+            $tileBlock->addChildBlock($addButton);
         }
 
         return parent::_preRender();
     }
-
-
 }

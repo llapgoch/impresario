@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use DaveBaker\Core\Definitions\Upload;
 use SuttonBaker\Impresario\Definition\Page;
 use SuttonBaker\Impresario\Definition\Project as ProjectDefinition;
 use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
@@ -184,13 +185,12 @@ class Project extends Base
      * @return void
      */
     public function filterCancelledWhereMap(
-        $instanceCollection, 
+        $instanceCollection,
         $filterValue
     ) {
-        if(!(int) $filterValue) {
+        if (!(int) $filterValue) {
             $instanceCollection->where('status <> ?', ProjectDefinition::STATUS_CANCELLED);
         }
-        
     }
 
     /**
@@ -321,6 +321,21 @@ class Project extends Base
         $data
     ) {
 
+        $defaultChecklistItems = [
+            'checklist_plant_off_hired' => 0
+        ];
+
+        // This is a cheapo way to deal with checkboxes which by default aren't submitted with the form (because unchecked), but should be 
+        // set back to 0 when not checked.
+        $data = array_merge($defaultChecklistItems, $data);
+
+        // Set to 1 regardless of form value if positive - stops user being able to change value in HTML
+        foreach ($defaultChecklistItems as $checklistKey => $defaultChecklistItem) {
+            if ((int) $data[$checklistKey]) {
+                $data[$checklistKey] = 1;
+            }
+        }
+
         $returnValues = [
             'project_id' => null,
             'project_closed' => false,
@@ -355,13 +370,14 @@ class Project extends Base
 
         $modelInstance->setData($data)->save();
 
-        if ($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
-                $modelInstance->getId()
-            );
+        if ($newSave && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $modelInstance->getId()
+                );
+            }
         }
 
         if (

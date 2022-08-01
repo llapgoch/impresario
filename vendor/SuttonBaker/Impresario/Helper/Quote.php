@@ -615,13 +615,15 @@ class Quote extends Base
             }
         }
 
-        if($newSave && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_QUOTE,
-                $modelInstance->getId()
-            );
+        // Copy temporary images over - this doesn't fire currently as all quotes will have an ID
+        if ($newSave && ($temporaryItems = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $modelInstance->getId()
+                );
+            }
         }
 
         $this->updateMasterFlagsForQuote($modelInstance);
