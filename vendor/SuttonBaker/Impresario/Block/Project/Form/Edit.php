@@ -604,7 +604,16 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     'class' => 'col-md-6'
                 ]
             ],
-
+            [
+                'name' => 'project_manager_closing_feedback',
+                'rowIdentifier' => 'completion_project_manager_comments',
+                'formGroup' => true,
+                'labelName' => 'Project Manager Closing Feedback',
+                'type' => 'Textarea',
+                'formGroupSettings' => [
+                    'class' => 'col-md-12'
+                ]
+            ],
             [
                 'name' => 'submit',
                 'formGroup' => true,
