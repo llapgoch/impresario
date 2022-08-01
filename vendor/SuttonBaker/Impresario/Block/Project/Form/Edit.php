@@ -55,10 +55,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
         wp_enqueue_script('impresario_calculator');
+        
+        wp_register_script('impresario_project_edit_controller', get_template_directory_uri() . '/assets/js/project/edit-controller.js', ['jquery']);
+        wp_enqueue_script('impresario_project_edit_controller');
 
         wp_enqueue_script('impresario_form_validator');
         $this->addClass('js-validate-form js-form-overlay');
         $editMode = false;
+        $yesNoSelectOptions = $this->getYesNoSelectOptions();
 
         // Select options for checklist items
         $yesNo = [
@@ -128,6 +132,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $disabledAttrs = $this->modelInstance->getId() && !$this->modelInstance->isComplete() ? [] : ['disabled' => 'disabled'];
         $updateAttrs = $this->modelInstance->getIsDeleted() ? ['disabled' => 'disabled'] : [];
+        $hasRebate = (bool) $this->modelInstance->getHasRebate();
+        $rebateAttrs = $hasRebate ? [] : ['readonly' => 'readonly'];
 
         $returnUrl = $this->getRequest()->getReturnUrl() ?
             $this->getRequest()->getReturnUrl() : $this->getUrlHelper()->getPageUrl(Page::PROJECT_LIST);
@@ -141,6 +147,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createFormErrorBlock()
                 ->setOrder('before', '')
         );
+
+        
 
         $elements = $builder->build([
             [
@@ -362,7 +370,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => [
                     'placeholder' => '£',
-                    'readonly' => 'readonly'
+                    'readonly' => 'readonly',
+                    'data-item-total' => $this->modelInstance->calculateCostItemTotal()
                 ],
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
@@ -390,6 +399,41 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type' => 'Input\Text',
                 'attributes' => ['placeholder' => "£", 'readonly' => 'readonly'],
                 'class' => 'js-actual-margin',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'has_rebate',
+                'rowIdentifier' => 'rebate_items',
+                'formGroup' => true,
+                'labelName' => 'Has Rebate',
+                'data' => [
+                    'select_options' => $yesNoSelectOptions
+                ],
+                'type' => 'Select',
+                'class' => 'js-rebate-control',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'rebate_percentage',
+                'formGroup' => true,
+                'rowIdentifier' => 'rebate_items',
+                'labelName' => 'Rebate %',
+                'type' => 'Input\Text',
+                'attributes' => $rebateAttrs,
+                'class' => 'js-rebate-percentage',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
+                ]
+            ], [
+                'name' => 'rebate_amount',
+                'formGroup' => true,
+                'rowIdentifier' => 'rebate_items',
+                'labelName' => 'Rebate Amount',
+                'type' => 'Input\Text',
+                'attributes' => ['readonly' => 'readonly'],
+                'class' => 'js-rebate-amount',
                 'formGroupSettings' => [
                     'class' => 'col-md-4'
                 ]

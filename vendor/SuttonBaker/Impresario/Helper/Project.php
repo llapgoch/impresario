@@ -360,6 +360,10 @@ class Project extends Base
             $newSave = true;
         }
 
+        if(!isset($data['has_rebate']) || !((bool) $data['has_rebate'])) {
+            $data['rebate_percentage'] = 0;
+        }
+        
         $returnValues['new_save'] = $newSave;
         $returnValues['project_id'] = $modelInstance->getId();
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
