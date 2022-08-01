@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Form;
 
 use SuttonBaker\Impresario\Definition\Project;
+use SuttonBaker\Impresario\Definition\Upload;
 
 /**
  * Class ProjectConfigurator
@@ -41,6 +42,14 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 
         $this->addRule(
             $this->createRule('DateCompare\Past', 'date_received', 'Date Received')
+        );
+
+        $this->addRule(
+            $this->createRule('Required', 'project_name', 'Project Name')
+        );
+
+        $this->addRule(
+            $this->createRule('\SuttonBaker\Impresario\Form\Rule\Client', 'client_id', 'Client')
         );
 
         $this->addRule(
@@ -96,6 +105,8 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
 
         if ($this->getValue('status') == Project::STATUS_COMPLETE) {
+
+
             $this->addRule(
                 $this->createRule('Custom', 'status', 'Status')
                     ->setMainError('This Project can\'t be marked as complete as there is still an amount remaining to be invoiced')
@@ -114,6 +125,27 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
                 foreach ($checklistItems as $checkListKey => $checklistItem) {
                     $this->addRule(
                         $this->createRule('Required', $checkListKey, $checklistItem)
+                    );
+                }
+
+                // A project should always have an ID, so we can check completion files exist without having to monkey about with temporary IDs.
+                if ($modelInstance->getId()) {
+                    $this->addRule(
+                        $this->createRule('Custom', 'status', 'Status')
+                            ->setMainError('This Project can\'t be marked as complete until a completion certificate has been added')
+                            ->setInputError('This can\' be marked as complete yet')
+                            ->setValidationMethod(function ($value, $ruleInstance) use ($modelInstance) {
+                                $completionCerts = $this->getUploadHelper()->getUploadCollection(
+                                    Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE,
+                                    $modelInstance->getId()
+                                );
+
+                                if (count($completionCerts->load()) <= 0) {
+                                    return $ruleInstance->createError();
+                                }
+
+                                return true;
+                            })
                     );
                 }
             }
