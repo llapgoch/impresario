@@ -634,12 +634,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->lock();
         }
 
+         $headingTag = $this->createBlock(
+            \DaveBaker\Core\Block\Html\Tag::class,
+            "{$this->blockPrefix}.completion.heading",
+            'content'
+        )->setTagText('<strong>Completion</strong> Checklist')
+        ->setTag('h5')
+        ->setOrder('before', "{$this->blockPrefix}.edit.completion.checklist");
+
+        $this->addChildBlock($headingTag);
+
         // Create the file uploader
         $this->addChildBlock(
             $this->createBlock(
                 \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
                 "{$this->blockPrefix}.file.upload.container"
-            )->setOrder('before', "project.edit.button.bar")
+            )->setOrder('before',  "{$this->blockPrefix}.completion.heading")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
                     CoreUploadDefinition::TEMPORARY_PREFIX,
@@ -648,12 +658,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setShowDelete(!$this->isLocked())
         );
 
+
         // Create the completion certificate file uploader
         $this->addChildBlock(
             $this->createBlock(
                 \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
                 "{$this->blockPrefix}.file.upload.completion.certificate.container"
-            )->setOrder('before', "project.edit.button.bar")
+            )->setOrder('before', "{$this->blockPrefix}.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
                     self::COMPLETION_TEMPORARY_PREFIX,
