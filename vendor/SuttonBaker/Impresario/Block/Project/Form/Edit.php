@@ -853,11 +853,12 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
      */
     protected function _preRender()
     {
+        $isTemporary = $this->modelInstance->getId() ? false : true;
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $completionPrefix = 'completion.certificate';
         $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
-        $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+        $uploadIdentifier = $this->modelInstance->getId() ?  $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
             CoreUploadDefinition::TEMPORARY_PREFIX,
             Upload::TYPE_PROJECT
         );
@@ -881,6 +882,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 )
                     ->setActualType(Upload::TYPE_PROJECT)
                     ->setIdentifier($uploadIdentifier)
+                    ->setIsTemporary($isTemporary)
             );
         }
 
@@ -912,6 +914,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 )
                     ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)
                     ->setIdentifier($completionIdentifier)
+                    ->setIsTemporary($isTemporary)
             );
         }
 

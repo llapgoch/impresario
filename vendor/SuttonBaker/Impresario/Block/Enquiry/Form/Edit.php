@@ -421,6 +421,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
     protected function _preRender()
     {
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $isTemporary = $modelInstance->getId() ? false : true;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $uploadIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
             CoreUploadDefinition::TEMPORARY_PREFIX,
@@ -445,6 +446,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                     )]
                 )->setActualType(Upload::TYPE_ENQUIRY)
                     ->setIdentifier($uploadIdentifier)
+                    ->setIsTemporary($isTemporary)
             );
         }
 

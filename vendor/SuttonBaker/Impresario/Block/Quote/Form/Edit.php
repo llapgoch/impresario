@@ -560,6 +560,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
     {
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $isTemporary = $this->modelInstance->getId() ? false : true;
         $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
             CoreUploadDefinition::TEMPORARY_PREFIX,
             Upload::TYPE_QUOTE
@@ -583,6 +584,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )]
                 )->setActualType(Upload::TYPE_QUOTE)
                     ->setIdentifier($uploadIdentifier)
+                    ->setIsTemporary($isTemporary)
             );
         }
 

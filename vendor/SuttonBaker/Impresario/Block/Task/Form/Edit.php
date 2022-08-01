@@ -226,6 +226,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $isTemporary = $this->modelInstance->getId() ? false : true;
         $uploadIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
             CoreUploadDefinition::TEMPORARY_PREFIX,
             Upload::TYPE_TASK
@@ -249,6 +250,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     )]
                 )->setIdentifier($uploadIdentifier)
                     ->setActualType(Upload::TYPE_TASK)
+                    ->setIsTemporary($isTemporary)
             );
         }
         return parent::_preRender();
