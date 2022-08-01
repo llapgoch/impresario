@@ -30,5 +30,12 @@ class Archive
                 "post_title" => "Archive Report Downloader"
             ]
         );
+
+
+        $pageManager->createPage(
+            \SuttonBaker\Impresario\Definition\Page::ARCHIVE_REPORT_QUOTE_DOWNLOAD, [
+                "post_title" => "Archive Report Quote Downloader"
+            ]
+        );
     }
 }
