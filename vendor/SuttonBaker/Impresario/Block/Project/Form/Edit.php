@@ -661,7 +661,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ))
                 ->setBlockPrefix('completion.certificate')
                 ->setHeading('<strong>Completion</strong> Certificates')
-                ->setShowDelete($this->isLocked())
+                ->setShowDelete(!$this->isLocked())
         );
 
 
@@ -828,7 +828,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         
         $uploadCompletionParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $completionIdentifier
+            'identifier' => $completionIdentifier,
         ];
 
         if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
@@ -843,7 +843,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                             Api::ENDPOINT_FILE_UPLOAD,
                             $uploadCompletionParams,
                         ),
-                        'blockPrefix' => $completionPrefix
+                        'blockPrefix' => $completionPrefix,
                     ]
                 )
                     ->setActualType(Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE)

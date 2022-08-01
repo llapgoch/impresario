@@ -216,7 +216,8 @@ implements \DaveBaker\Core\Block\BlockInterface
                 [
                     'upload_type' => $this->getUploadType(),
                     'parent_id' => $this->getIdentifier(),
-                    'block_prefix' => $this->getBlockPrefix()
+                    'block_prefix' => $this->getBlockPrefix(),
+                    'show_delete' => $this->getShowDelete() ? "1" : "0"
                 ]
             )
         ];
