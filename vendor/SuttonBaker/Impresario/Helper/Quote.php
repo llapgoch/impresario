@@ -84,7 +84,7 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getQuoteCollection($deletedFlag = true)
+    public function getQuoteCollection($deletedFlag = true, $addOrder = true)
     {
         /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
         $collection = $this->createAppObject(
@@ -119,19 +119,20 @@ class Quote extends Base
             "CONCAT({{quote}}.status, ':', {{quote}}.tender_status) as aggregate_status"
         );
 
-        $collection->order(new \Zend_Db_Expr(sprintf(
-                "FIELD({{quote}}.tender_status,'%s', '%s', '%s', '%s')",
-                QuoteDefinition::TENDER_STATUS_OPEN,
-                QuoteDefinition::TENDER_STATUS_WON,
-                QuoteDefinition::TENDER_STATUS_CANCELLED,
-                QuoteDefinition::TENDER_STATUS_CLOSED_OUT)
-        ))->order(new \Zend_Db_Expr(sprintf(
-            "FIELD({{quote}}.status,'%s', '%s', '%s')",
-            QuoteDefinition::STATUS_OPEN,
-            QuoteDefinition::STATUS_IN_QUERY,
-            QuoteDefinition::STATUS_QUOTED)
-        ))->order('{{quote}}.date_required');
-
+        if($addOrder){
+            $collection->order(new \Zend_Db_Expr(sprintf(
+                    "FIELD({{quote}}.tender_status,'%s', '%s', '%s', '%s')",
+                    QuoteDefinition::TENDER_STATUS_OPEN,
+                    QuoteDefinition::TENDER_STATUS_WON,
+                    QuoteDefinition::TENDER_STATUS_CANCELLED,
+                    QuoteDefinition::TENDER_STATUS_CLOSED_OUT)
+            ))->order(new \Zend_Db_Expr(sprintf(
+                "FIELD({{quote}}.status,'%s', '%s', '%s')",
+                QuoteDefinition::STATUS_OPEN,
+                QuoteDefinition::STATUS_IN_QUERY,
+                QuoteDefinition::STATUS_QUOTED)
+            ))->order('{{quote}}.date_required');
+        }
         return $collection;
     }
 
@@ -192,9 +193,30 @@ class Quote extends Base
                 '{{quote}}.quote_id=p.quote_id 
                     AND p.is_deleted=0',
                 []
-            )->where('p.status IS NULL or p.status<>?', ProjectDefinition::STATUS_COMPLETE);
+            )->where('p.status IS NULL OR p.status<>?', ProjectDefinition::STATUS_COMPLETE);
         }
         
+        
+        return $collection;
+    }
+
+    /**
+     * Get quotes which are attached to an archived project
+     * 
+     * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
+     */
+    public function getArchivedQuoteCollection()
+    {
+        // Don't add the ordering to the quote collection download
+        $collection = $this->getMasterQuotes(true, false);
+        $collection->order('quote_id ASC');
+
+        $collection->join(
+            ['p' => '{{project}}'],
+            '{{quote}}.quote_id=p.quote_id 
+                AND p.is_deleted=0',
+            []
+        )->where('p.status=?', ProjectDefinition::STATUS_COMPLETE);
         
         return $collection;
     }
@@ -205,9 +227,9 @@ class Quote extends Base
      * @throws \DaveBaker\Core\Object\Exception
      * @throws \Zend_Db_Adapter_Exception
      */
-    public function getMasterQuotes($deletedFlag = true)
+    public function getMasterQuotes($deletedFlag = true, $addOrder = true)
     {
-        return $this->getQuoteCollection($deletedFlag)
+        return $this->getQuoteCollection($deletedFlag, $addOrder)
             ->where('is_master', 1);
     }
 
