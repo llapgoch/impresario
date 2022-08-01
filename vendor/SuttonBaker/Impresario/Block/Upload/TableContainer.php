@@ -12,8 +12,8 @@ use SuttonBaker\Impresario\Helper\OutputProcessor\Upload\Remove as RemoveLink;
  * @package SuttonBaker\Impresario\Block\Variation
  */
 class TableContainer
-    extends \SuttonBaker\Impresario\Block\Table\Container\Base
-    implements \DaveBaker\Core\Block\BlockInterface
+extends \SuttonBaker\Impresario\Block\Table\Container\Base
+implements \DaveBaker\Core\Block\BlockInterface
 {
     /** @var string */
     protected $blockPrefix = 'upload';
@@ -29,13 +29,15 @@ class TableContainer
     protected $identifier;
     /** @var int */
     protected $recordsPerPage = UploadDefinition::RECORDS_PER_PAGE;
+    /** @var bool */
+    protected $showDelete = true;
 
     /**
      *
      * @param string $heading
      * @return $this
      */
-    public function setHeading($heading) 
+    public function setHeading($heading)
     {
         $this->heading = $heading;
         return $this;
@@ -50,7 +52,27 @@ class TableContainer
         return $this->heading;
     }
 
-     /**
+    /**
+     *
+     * @param bool $heading
+     * @return $this
+     */
+    public function setShowDelete($showDelete)
+    {
+        $this->showDelete = (bool) $showDelete;
+        return $this;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function getShowDelete()
+    {
+        return $this->showDelete;
+    }
+
+    /**
      * @return int
      */
     public function getRecordsPerPage()
@@ -146,16 +168,17 @@ class TableContainer
         wp_enqueue_script('impresario_file_upload_helper');
 
         $instanceItems = [];
-        if(!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()){
+        if (!$this->instanceCollection && $this->getUploadType() && $this->getIdentifier()) {
             $this->instanceCollection = $this->getUploadHelper()->getUploadCollection(
-                $this->getUploadType(), $this->getIdentifier()
+                $this->getUploadType(),
+                $this->getIdentifier()
             );
 
             $instanceItems = $this->instanceCollection->load();
         }
 
         /* TODO: Remove after testing API */
-        if(!$this->instanceCollection){
+        if (!$this->instanceCollection) {
             $this->instanceCollection = $this->getUploadHelper()->getUploadCollection();
         }
 
@@ -169,41 +192,49 @@ class TableContainer
                 $this->getTileDefinitionClass(),
                 "{$this->getBlockPrefix()}.tile.block"
             )->setHeading($this->getHeading())
-            ->addClass('js-file-upload-container')
-            ->setTileBodyClass('nopadding table-responsive')
+                ->addClass('js-file-upload-container')
+                ->setTileBodyClass('nopadding table-responsive')
         );
 
         $tileBlock->addChildBlock(
             /** @var Paginator $paginator */
-                $paginator = $this->createBlock(
-                    '\DaveBaker\Core\Block\Components\Paginator',
-                    "{$this->getBlockPrefix()}.list.paginator",
-                    'footer'
-                )->setRecordsPerPage($this->getRecordsPerPage())
-                    ->setTotalRecords(count($instanceItems))
-                    ->setIsReplacerBlock(true)
-                    ->removeClass('pagination-xl')->addClass('pagination-xs')
-            );
+            $paginator = $this->createBlock(
+                '\DaveBaker\Core\Block\Components\Paginator',
+                "{$this->getBlockPrefix()}.list.paginator",
+                'footer'
+            )->setRecordsPerPage($this->getRecordsPerPage())
+                ->setTotalRecords(count($instanceItems))
+                ->setIsReplacerBlock(true)
+                ->removeClass('pagination-xl')->addClass('pagination-xs')
+        );
 
         // Use the blockPrefix when naming children for multiple uploaders on the same page 
         $jsDataItems = [
             Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                $this->getUrlHelper()->getApiUrl(
-                    UploadDefinition::API_ENDPOINT_UPDATE_TABLE, [
-                        'upload_type' => $this->getUploadType(),
-                        'parent_id' => $this->getIdentifier(),
-                        'block_prefix' => $this->getBlockPrefix()
-                    ]
-                )
+            $this->getUrlHelper()->getApiUrl(
+                UploadDefinition::API_ENDPOINT_UPDATE_TABLE,
+                [
+                    'upload_type' => $this->getUploadType(),
+                    'parent_id' => $this->getIdentifier(),
+                    'block_prefix' => $this->getBlockPrefix()
+                ]
+            )
         ];
 
-        if(count($instanceItems)) {
+        $headers = UploadDefinition::TABLE_HEADERS;
+
+        // A cheapo way to remove the delete option when required
+        if (!$this->getShowDelete()) {
+            unset($headers['remove']);
+        }
+
+        if (count($instanceItems)) {
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(
                     '\SuttonBaker\Impresario\Block\Table\StatusLink',
                     "{$this->getBlockPrefix()}.list.table",
                     'content'
-                )->setHeaders(UploadDefinition::TABLE_HEADERS)
+                )->setHeaders($headers)
                     ->setRecords($this->instanceCollection)
                     ->addClass('table-striped js-table-updater-file')
                     ->setNewWindowLink(true)
@@ -219,7 +250,7 @@ class TableContainer
                     return $record->getUrl();
                 }
             );
-        }else{
+        } else {
             // Add the jsDataItems as though this were a table so we can update it later
             $tileBlock->addChildBlock(
                 $tableBlock = $tileBlock->createBlock(

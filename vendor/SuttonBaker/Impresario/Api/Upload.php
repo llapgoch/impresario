@@ -38,6 +38,7 @@ class Upload
         // The block prefix is now configurable for multiple elements on a page - see how projects with completion certificates is done
         // Default to 'upload' so that existing uploaders don't need the new block_prefix parameter
         $blockPrefix = isset($params['block_prefix']) ? $params['block_prefix'] : $this->blockPrefix;
+        $showDelete = isset($params['show_delete']) ? (bool) $params['show_delete'] : true;
 
         $blockManager = $this->getApp()->getBlockManager();
         $block = $blockManager->createBlock(
@@ -45,7 +46,8 @@ class Upload
             'file.upload.container'
         )->setIdentifier($parentId)
             ->setUploadType($uploadType)
-            ->setBlockPrefix($blockPrefix);
+            ->setBlockPrefix($blockPrefix)
+            ->setShowDelete($showDelete);
 
         $block->preDispatch();
 

@@ -627,10 +627,17 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
+        if (
+            in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
+            $this->getProjectHelper()->currentUserCanEdit() == false
+        ) {
+            $this->lock();
+        }
+
         // Create the file uploader
         $this->addChildBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
                 "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "project.edit.button.bar")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
@@ -638,6 +645,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     CoreUploadDefinition::TEMPORARY_PREFIX,
                     Upload::TYPE_PROJECT
                 ))
+                ->setShowDelete(!$this->isLocked())
         );
 
         // Create the completion certificate file uploader
@@ -653,14 +661,10 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ))
                 ->setBlockPrefix('completion.certificate')
                 ->setHeading('<strong>Completion</strong> Certificates')
+                ->setShowDelete($this->isLocked())
         );
 
-        if (
-            in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
-            $this->getProjectHelper()->currentUserCanEdit() == false
-        ) {
-            $this->lock();
-        }
+
     }
 
     /**
