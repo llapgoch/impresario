@@ -32,9 +32,11 @@ class Project
     const STATUS_ON_HOLD_VRF_REQUIRED = 'on_hold_vrd_req';
     const STATUS_PRESTART_BOOKED = 'prestart_booked';
     const STATUS_PRESTART_COMPLETED = 'prestart_completed';
+    const STATUS_RAMS_SENT = 'rams_sent';
     const STATUS_RAMS_REQUIRED = 'rams_required';
     const STATUS_ON_SITE_VRF_SUBMITTED = 'onsite_vrf_submit';
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
+    const STATUS_NOT_READY_TO_INVOICE = 'not_ready_to_invoice';
     const STATUS_READY_TO_SHUTDOWN = 'ready_to_shutdown';
 
     const RECORDS_PER_PAGE = 20;
@@ -88,7 +90,18 @@ class Project
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{project}}.status"
-        ]
+        ],
+        'show_cancelled' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            // Set map to false - we're not using a generated filter query
+            FilterDefinition::MAP => false,
+            // Create a custom query based on the filter here
+            FilterDefinition::MAP_WHERE => [
+                FilterDefinition::MAP_WHERE_CLASS => \SuttonBaker\Impresario\Helper\Project::class,
+                FilterDefinition::MAP_WHERE_METHOD => 'filterCancelledWhereMap'
+            ]
+        ],
     ];
 
     const TABLE_HEADERS = [
@@ -142,9 +155,45 @@ class Project
         'status' => 'Status'
     ];
 
+    const INVOICE_REPORT_SINGLE_HEADERS = [
+        'invoice_id' => 'ID',
+        'invoice_date' => 'Date',
+        'invoice_number' => 'Number',
+        'value' => 'Invoice Amount',
+    ];
+
+    const COST_INVOICE_REPORT_SINGLE_HEADERS = [
+        'cost_id' => 'ID',
+        'cost_date' => 'Date',
+        'status' => 'Status',
+        'cost_number' => 'Number',
+        'cost_invoice_type' => 'Type',
+        'supplier_name' => 'Supplier',
+        'supplier_quote_number' => 'Supplier Quote Number',
+        'sage_number' => 'Sage Number',
+        'delivery_date' => 'Delivery Date',
+        'po_item_total' => 'PO Total',
+        'amount_invoiced' => 'Amount Invoiced',
+        'invoice_amount_remaining' => 'Amount Remaining',
+        'special_instructions' => 'Special Instructions',
+    ];
+
+    const VARIATION_REPORT_SINGLE_HEADERS = [
+        'variation_id' => 'ID',
+        'status' => 'Status',
+        'created_at' => 'Date Raised',
+        'date_approved' => 'Date Approved',
+        'net_cost' => 'Net Cost',
+        'value' => 'Variation Sell',
+        'profit' => 'Profit',
+        'gp' => 'GP',
+        'po_number' => 'PO Number',
+        'description' => 'Description'
+    ];
+
     const VARIATION_REPORT_HEADERS = [
         'status' => 'Status',
-        'value' => 'Value',
+        'value' => 'Variation Sell',
         'net_cost' => 'Net Cost',
         'po_number' => 'PO Number',
         'description' => 'Description'
@@ -152,15 +201,12 @@ class Project
 
     const NON_USER_VALUES = [
         'project_id',
-        'client_id',
         'client_requested_by',
         'client_reference',
-        'project_name',
         'created_by_id',
         'last_edited_by_id',
         'net_cost',
         'net_sell',
-        'client_id',
         'quote_id',
         'created_at',
         'updated_at',
@@ -180,8 +226,10 @@ class Project
             self::STATUS_PRESTART_BOOKED => 'Pre-start Booked',
             self::STATUS_PRESTART_COMPLETED => 'Pre-start Completed',
             self::STATUS_RAMS_REQUIRED => 'RAMS Required',
+            self::STATUS_RAMS_SENT => 'RAMS Sent',
             self::STATUS_ON_SITE => 'On Site',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'On Site - VRF Submitted',
+            self::STATUS_NOT_READY_TO_INVOICE => 'Works Finished - Not Ready To Invoice',
             self::STATUS_READY_TO_INVOICE => 'Works Finished - Ready To Invoice',
             self::STATUS_READY_TO_SHUTDOWN => 'Works Finished - Ready To Shutdown',
             self::STATUS_COMPLETE => 'Complete',
@@ -202,6 +250,7 @@ class Project
             self::STATUS_ON_SITE => 'warning',
             self::STATUS_ON_SITE_VRF_SUBMITTED => 'warning',
             self::STATUS_READY_TO_INVOICE => 'success',
+            self::STATUS_NOT_READY_TO_INVOICE => 'success',
             self::STATUS_READY_TO_SHUTDOWN => 'success',
             self::STATUS_COMPLETE => 'success',
             self::STATUS_CANCELLED => 'bg-dark'

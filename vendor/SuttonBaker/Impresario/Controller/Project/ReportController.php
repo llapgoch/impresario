@@ -32,7 +32,6 @@ extends DownloadController
             ]);
 
         $headers = ProjectDefinition::REPORT_HEADERS;
-        $variationHeaders = ProjectDefinition::VARIATION_REPORT_HEADERS;
         $variationsAmount = 0;
 
         // Get the number of variations for all projects

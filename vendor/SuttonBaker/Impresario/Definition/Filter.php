@@ -6,6 +6,12 @@ class Filter
 {
     const COMPARE_TYPE = 'compare_type';
     const MAP = 'map';
+
+    // Allows us to provide a callback to create a where clause
+    const MAP_WHERE = 'map_where';
+    const MAP_WHERE_CLASS = 'class';
+    const MAP_WHERE_METHOD = 'method';
+
     const FIELD_TYPE = 'field_type';
     const DATA_CONVERTER = 'data_converter';
 

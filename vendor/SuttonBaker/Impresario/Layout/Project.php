@@ -166,18 +166,19 @@ class Project extends Base
                 ->setFormName('client_id')
                 ->setSelectOptions($clients)
         );
-
+        
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
+                ->setLabelName('Site Name')
+                ->setFormName('site_name')
+        );
+        
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
                 ->setLabelName('Client Ref')
                 ->setFormName('client_reference')
         );
 
-        $filterSet->addFilter(
-            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-                ->setLabelName('Site')
-                ->setFormName('site_name')
-        );
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
@@ -218,6 +219,17 @@ class Project extends Base
                 ->setLabelName('Status')
                 ->setFormName('status')
                 ->setSelectOptions($statuses)
+        );
+
+        $cancelledFilter = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Show Cancelled')
+                ->setFormName('show_cancelled')
+                ->setSelectOptions([['name' => 'No', 'value' => 0], ['name' => 'Yes', 'value' => 1]]);
+        
+        $cancelledFilter->getMainElement()->setShowFirstOption(false);
+
+        $filterSet->addFilter(
+            $cancelledFilter
         );
 
         return $this;

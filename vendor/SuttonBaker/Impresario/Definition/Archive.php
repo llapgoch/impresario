@@ -44,16 +44,17 @@ class Archive
         'foreman_name' => 'Foreman',
         'client_project_manager' => 'Client Project Manager',
         'net_cost' => 'Net Cost',
-        'net_sell' => 'Net Sell',
+        'total_net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
         'invoice_amount_remaining' => 'Invoice Amount Remaining',
         'total_actual_cost' => 'Total Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
-        'notes' => 'Notes',
+        'comments' => 'Comments',
         'status' => 'Status'
     ];
+
 
     const REPORT_HEADERS_QUOTE = [
         'quote_id' => 'ID',
@@ -77,5 +78,13 @@ class Archive
         'date_completed' => 'Completion Date',
         'completed_by_name' => 'Completed By',
         'tender_status' => 'Tender Status'
+    ];
+
+    const VARIATION_REPORT_HEADERS = [
+        'status' => 'Status',
+        'value' => 'Value',
+        'net_cost' => 'Net Cost',
+        'po_number' => 'PO Number',
+        'description' => 'Description'
     ];
 }
