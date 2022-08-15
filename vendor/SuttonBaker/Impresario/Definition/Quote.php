@@ -142,7 +142,6 @@ class Quote
         'status' => 'Quote Status',
         'date_returned' => 'Date Returned',
         'comments' => 'Comments',
-        
         'date_completed' => 'Completion Date',
         'completed_by_name' => 'Completed By',
         'tender_status' => 'Tender Status'

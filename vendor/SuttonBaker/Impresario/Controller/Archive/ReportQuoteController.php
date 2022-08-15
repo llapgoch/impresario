@@ -3,6 +3,7 @@
 namespace SuttonBaker\Impresario\Controller\Archive;
 
 use \SuttonBaker\Impresario\Controller\DownloadController;
+use SuttonBaker\Impresario\Definition\Archive;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 /**
  * Class ReportController
@@ -32,12 +33,14 @@ extends DownloadController
 
 
         $output = fopen("php://output", "w");
+        $reportHeaders = Archive::REPORT_HEADERS_QUOTE;
 
-        fputcsv($output, QuoteDefinition::REPORT_HEADERS);
-        
+        fputcsv($output, $reportHeaders);
+
         foreach($instanceCollection->getItems() as $item){
             $fields = [];
-            foreach(QuoteDefinition::REPORT_HEADERS as $key => $header){
+
+            foreach($reportHeaders as $key => $header){
                 $fields[] = $item->getOutputData($key);
             }
             fputcsv($output, $fields);

@@ -215,7 +215,7 @@ class Quote extends Base
             ['p' => '{{project}}'],
             '{{quote}}.quote_id=p.quote_id 
                 AND p.is_deleted=0',
-            []
+            ['project_id' => 'project_id']
         )->where('p.status=?', ProjectDefinition::STATUS_COMPLETE);
         
         return $collection;
