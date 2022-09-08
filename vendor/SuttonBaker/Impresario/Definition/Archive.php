@@ -43,7 +43,7 @@ class Archive
         'project_manager_name' => 'Contracts Manager',
         'foreman_name' => 'Foreman',
         'client_project_manager' => 'Client Project Manager',
-        'net_cost' => 'Net Cost',
+        'total_net_cost' => 'Net Cost',
         'total_net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
