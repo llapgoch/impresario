@@ -43,7 +43,7 @@ class Archive
         'project_manager_name' => 'Contracts Manager',
         'foreman_name' => 'Foreman',
         'client_project_manager' => 'Client Project Manager',
-        'net_cost' => 'Net Cost',
+        'total_net_cost' => 'Net Cost',
         'total_net_sell' => 'Net Sell',
         'profit' => 'Profit',
         'amount_invoiced' => 'Amount Invoiced',
@@ -51,8 +51,37 @@ class Archive
         'total_actual_cost' => 'Total Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
+        'has_rebate' => 'Has Rebate',
+        'rebate_percentage' => 'Rebate Percentage',
+        'rebate_amount' => 'Rebate Amount',
+        'project_manager_closing_feedback' => 'Project Manager Closing Feedback',
         'comments' => 'Comments',
         'status' => 'Status'
+    ];
+
+
+    const REPORT_HEADERS_QUOTE = [
+        'quote_id' => 'ID',
+        'project_id' => 'Project ID',
+        'site_name' => 'Site',
+        'project_name' => 'Project',
+        'date_received' => 'Date Received',
+        'client_name' => 'Client',
+        'client_reference' => 'Client Reference',
+        'client_requested_by' => 'Client Requested By',
+        'po_number' => 'PO Number',
+        'estimator_name' => 'Estimator',
+        'revision_number' => 'Revison',
+        'net_cost' => 'Net Cost',
+        'net_sell' => 'Net Sell',
+        'profit' => 'Profit',
+        'gp' => 'GP',
+        'status' => 'Quote Status',
+        'date_returned' => 'Date Returned',
+        'comments' => 'Comments',
+        'date_completed' => 'Completion Date',
+        'completed_by_name' => 'Completed By',
+        'tender_status' => 'Tender Status'
     ];
 
     const VARIATION_REPORT_HEADERS = [

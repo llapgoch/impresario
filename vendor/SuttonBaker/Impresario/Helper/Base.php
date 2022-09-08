@@ -243,4 +243,13 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
     {
         return $this->createAppObject('\SuttonBaker\Impresario\Helper\Variation');
     }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\YesNo
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getYesNoOutputProcessor()
+    {
+        return $this->createAppObject('\SuttonBaker\Impresario\Helper\OutputProcessor\YesNo');
+    }
 }
