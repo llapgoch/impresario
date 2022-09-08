@@ -101,6 +101,18 @@ extends Base
             }
 
             $confirmMessages[] = 'This will complete and archive the project.';
+
+            if(isset($formValues['rebate_percentage']) && ($rebate = (float) $formValues['rebate_percentage'])) {
+                $modelInstance->setHasRebate(true)
+                    ->setRebatePercentage(min(100, max(0, $rebate)));
+                
+                    
+                $rebateAmount = $this->getLocaleHelper()->formatCurrency($modelInstance->calculateRebate());
+
+                if($rebate) {
+                    $confirmMessages[] = "The rebate amount has been set to {$rebate}% ({$rebateAmount})";
+                }
+            } 
         }
 
         if ($modelInstance->isComplete() && in_array(

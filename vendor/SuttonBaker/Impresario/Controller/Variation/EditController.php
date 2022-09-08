@@ -197,13 +197,15 @@ class EditController
 
         $this->modelInstance->setData($data)->save();
 
-        if($newSave && ($temporaryId = $this->getRequest()->getPostParam(Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME))){
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_VARIATION,
-                $this->modelInstance->getId()
-            );
+        if ($newSave && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $this->modelInstance->getId()
+                );
+            }
         }
 
         $this->addMessage(

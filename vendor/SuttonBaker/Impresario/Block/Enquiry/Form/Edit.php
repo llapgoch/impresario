@@ -17,7 +17,7 @@ use DaveBaker\Core\Definitions\Roles;
  * @package SuttonBaker\Impresario\Block\Client\Form
  */
 class Edit
-    extends \SuttonBaker\Impresario\Block\Form\Base
+extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'enquiry_id';
     /** @var string  */
@@ -46,7 +46,7 @@ class Edit
         parent::_preDispatch();
 
         wp_enqueue_script('impresario_form_validator');
-        
+
         $this->addClass('js-validate-form js-form-overlay');
 
         $this->addJsDataItems(
@@ -75,7 +75,7 @@ class Edit
         // PMs
         $assignedToUsers = [];
 
-        if($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
+        if ($csUsers = $this->getRoleHelper()->getCustomerServiceUsers()) {
             $assignedToUsers = $this->createCollectionSelectConnector()
                 ->configure(
                     $csUsers,
@@ -85,7 +85,7 @@ class Edit
         }
 
         // Engineers
-        if($engineers = $this->getRoleHelper()->getEngineers()) {
+        if ($engineers = $this->getRoleHelper()->getEngineers()) {
             $engineers = $this->createCollectionSelectConnector()
                 ->configure(
                     $engineers,
@@ -100,7 +100,7 @@ class Edit
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
         $ignoreLockValue = false;
 
-        if($this->getEnquiryHelper()->currentUserCanEdit() && !$modelInstance->getIsDeleted()){
+        if ($this->getEnquiryHelper()->currentUserCanEdit() && !$modelInstance->getIsDeleted()) {
             $ignoreLockValue = true;
         }
 
@@ -126,7 +126,7 @@ class Edit
 
         $this->addChildBlock(
             $this->createFormErrorBlock()
-            ->setOrder('before', '')
+                ->setOrder('before', '')
         );
 
         $elements = $builder->build([
@@ -251,7 +251,7 @@ class Edit
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
                 'name' => 'notes',
                 'labelName' => 'Notes',
                 'formGroup' => true,
@@ -289,7 +289,8 @@ class Edit
                     'autocomplete' => 'off',
                     'data-date-settings' => json_encode(
                         ['minDate' => '', 'maxDate' => "0"]
-                    )]
+                    )
+                ]
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
@@ -339,7 +340,7 @@ class Edit
         ]);
 
 
-        if($modelInstance->getId()) {
+        if ($modelInstance->getId()) {
             $this->taskTableBlock = $this->createBlock(
                 '\SuttonBaker\Impresario\Block\Task\TableContainer',
                 "{$this->blockPrefix}.task.table"
@@ -360,16 +361,18 @@ class Edit
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        $enquiryIsClosed = in_array($modelInstance->getStatus(),
-            [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]);
+        $enquiryIsClosed = in_array(
+            $modelInstance->getStatus(),
+            [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]
+        );
 
-        if($enquiryIsClosed || $modelInstance->getIsDeleted()){
+        if ($enquiryIsClosed || $modelInstance->getIsDeleted()) {
             $this->addChildBlock(
                 $this->createBlock(
                     '\SuttonBaker\Impresario\Block\Form\LargeMessage',
                     "{$this->blockPrefix}.warning.message"
                 )->setMessage("This {$this->prefixName} " . ($modelInstance->getIsDeleted() ? "has been removed" : "is locked"))
-                ->setMessageType($modelInstance->getIsDeleted() ? 'danger' : 'warning')
+                    ->setMessageType($modelInstance->getIsDeleted() ? 'danger' : 'warning')
             );
         }
 
@@ -379,14 +382,32 @@ class Edit
 
         $this->addChildBlock(
             $this->createBlock(
-            '\SuttonBaker\Impresario\Block\Upload\TableContainer',
-            "{$this->blockPrefix}.file.upload.container"
+                '\SuttonBaker\Impresario\Block\Upload\TableContainer',
+                "{$this->blockPrefix}.file.upload.container"
             )->setOrder('before', "enquiry.edit.button.bar")
-            ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
-            ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession())
+                ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    CoreUploadDefinition::TEMPORARY_PREFIX,
+                    Upload::TYPE_ENQUIRY
+                ))
         );
 
-        if($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false){
+        /**** TEST UPLOAD BLOCK ******/
+        // Create the completion certificate file uploader
+        // $this->addChildBlock(
+        //     $this->createBlock(
+        //         \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+        //         "{$this->blockPrefix}.file.upload.completion.certificate.container"
+        //     )->setOrder('before', "enquiry.edit.button.bar")
+        //         ->setUploadType($modelInstance->getId() ? Upload::TYPE_ENQUIRY_TEST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+        //         ->setIdentifier($modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test", Upload::TYPE_ENQUIRY_TEST))
+        //         ->setBlockPrefix('enquiry.test')
+        //         ->setHeading('<strong>Test</strong> Upload')
+        // );
+
+        /** END TEST UPLOAD BLOCK */
+
+        if ($enquiryIsClosed || $this->getEnquiryHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }
@@ -400,14 +421,19 @@ class Edit
     protected function _preRender()
     {
         $modelInstance = $this->getApp()->getRegistry()->get('model_instance');
+        $isTemporary = $modelInstance->getId() ? false : true;
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
+        $uploadIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            CoreUploadDefinition::TEMPORARY_PREFIX,
+            Upload::TYPE_ENQUIRY
+        );
 
         $uploadParams = [
-            'upload_type' => $modelInstance ->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
-            'identifier' => $modelInstance ->getId() ? $modelInstance ->getId() : $this->getUploadHelper()->getTemporaryIdForSession()
+            'upload_type' => $modelInstance->getId() ? Upload::TYPE_ENQUIRY : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $uploadIdentifier
         ];
 
-        if(!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -418,23 +444,57 @@ class Edit
                         Api::ENDPOINT_FILE_UPLOAD,
                         $uploadParams
                     )]
-                )
+                )->setActualType(Upload::TYPE_ENQUIRY)
+                    ->setIdentifier($uploadIdentifier)
+                    ->setIsTemporary($isTemporary)
             );
         }
 
-        if($modelInstance ->getId()) {
-            if($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
+        /********** TEST UPLOADER - EXAMPLE OF UPLOADER WITH TEMPORARY ID */
+
+        // $completionPrefix = 'enquiry.test';
+        // $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
+        // $testIdentifier = $modelInstance->getId() ? $modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession("enquiry_tmp_test", Upload::TYPE_ENQUIRY_TEST);
+
+        // $uploadCompletionParams = [
+        //     'upload_type' => $modelInstance->getId() ? Upload::TYPE_ENQUIRY_TEST : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+        //     'identifier' => $testIdentifier
+        // ];
+
+
+        // $completionUploadTable->addChildBlock(
+        //     $completionUploadTable->createBlock(
+        //         '\DaveBaker\Core\Block\Components\FileUploader',
+        //         "{$this->blockPrefix}.completion.certificate.file.uploader",
+        //         'header_elements'
+        //     )->addJsDataItems(
+        //         [
+        //             'endpoint' => $this->getUrlHelper()->getApiUrl(
+        //                 Api::ENDPOINT_FILE_UPLOAD,
+        //                 $uploadCompletionParams,
+        //             ),
+        //             'blockPrefix' => $completionPrefix
+        //         ]
+        //     )->setActualType(Upload::TYPE_ENQUIRY_TEST)
+        //         ->setIdentifier($testIdentifier)
+
+        // );
+
+        /*********** END TEST UPLOADER */
+
+        if ($modelInstance->getId()) {
+            if ($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
                 $tableBlock->removeHeader(['task_id', 'task_type'])
-                ->addJsDataItems([
-                    Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
-                    $this->getUrlHelper()->getApiUrl(
-                        TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
-                        [
-                            'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
-                            'parent_id' => $modelInstance ->getId()
-                        ]
-                    )
-                ]);
+                    ->addJsDataItems([
+                        Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
+                        $this->getUrlHelper()->getApiUrl(
+                            TaskDefinition::API_ENDPOINT_UPDATE_TABLE,
+                            [
+                                'type' => TaskDefinition::TASK_TYPE_ENQUIRY,
+                                'parent_id' => $modelInstance->getId()
+                            ]
+                        )
+                    ]);
             }
 
             $paginator = $this->getBlockManager()->getBlock('task.table.list.paginator')
@@ -442,21 +502,22 @@ class Edit
 
             // Apply API settings to the Upload Table
 
-            if($uploadTable = $this->getBlockManager()->getBlock('upload.list.table')){
+            if ($uploadTable = $this->getBlockManager()->getBlock('upload.list.table')) {
                 $uploadTable->addJsDataItems([
                     Table::ELEMENT_JS_DATA_KEY_TABLE_UPDATER_ENDPOINT =>
                     $this->getUrlHelper()->getApiUrl(
                         Upload::API_ENDPOINT_UPDATE_TABLE,
                         [
                             'upload_type' => Upload::TYPE_ENQUIRY,
-                            'parent_id' => $modelInstance ->getId()
+                            'parent_id' => $modelInstance->getId()
                         ]
                     )
                 ]);
             }
 
 
-            if($this->isLocked() == false) {
+
+            if ($this->isLocked() == false) {
                 $addButton = $this->createBlock(
                     '\DaveBaker\Core\Block\Html\Tag',
                     'create.task.button',
