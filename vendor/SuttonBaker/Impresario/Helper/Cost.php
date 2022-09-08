@@ -2,6 +2,7 @@
 
 namespace SuttonBaker\Impresario\Helper;
 
+use DaveBaker\Core\Definitions\Upload;
 use Exception;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
 use SuttonBaker\Impresario\Definition\Roles;
@@ -258,13 +259,14 @@ class Cost extends Base
         // Re-save the model instance to calculate the total after setting the items.
         $modelInstance->save();
 
-        if ($returnValues['new_save'] && ($temporaryId = $data[\DaveBaker\Core\Definitions\Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
-            // Assign any uploads to the enquiry
-            $this->getUploadHelper()->assignTemporaryUploadsToParent(
-                $temporaryId,
-                \SuttonBaker\Impresario\Definition\Upload::TYPE_COST,
-                $modelInstance->getId()
-            );
+        if ($returnValues['new_save'] && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
+            foreach ($temporaryItems as $temporaryId => $actualKey) {
+                $this->getUploadHelper()->assignTemporaryUploadsToParent(
+                    $temporaryId,
+                    $actualKey,
+                    $modelInstance->getId()
+                );
+            }
         }
 
         return $returnValues;

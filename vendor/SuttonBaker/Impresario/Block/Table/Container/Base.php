@@ -137,4 +137,15 @@ abstract class Base
         return $this->idParam;
     }
 
+    /**
+     *
+     * @param string $blockPrefix
+     * @return $this
+     */
+    public function setBlockPrefix($blockPrefix) 
+    {
+        $this->blockPrefix = $blockPrefix;
+        return $this;
+    }
+
 }

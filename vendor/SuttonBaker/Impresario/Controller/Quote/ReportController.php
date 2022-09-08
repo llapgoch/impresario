@@ -2,8 +2,6 @@
 
 namespace SuttonBaker\Impresario\Controller\Quote;
 
-use DaveBaker\Core\Definitions\Messages;
-use SuttonBaker\Impresario\Definition\Roles;
 use \SuttonBaker\Impresario\Controller\DownloadController;
 use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 
