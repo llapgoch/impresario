@@ -51,6 +51,10 @@ class Archive
         'total_actual_cost' => 'Total Actual Cost',
         'actual_profit' => 'Actual Profit',
         'actual_margin' => 'Actual Margin',
+        'has_rebate' => 'Has Rebate',
+        'rebate_percentage' => 'Rebate Percentage',
+        'rebate_amount' => 'Rebate Amount',
+        'project_manager_closing_feedback' => 'Project Manager Closing Feedback',
         'comments' => 'Comments',
         'status' => 'Status'
     ];
