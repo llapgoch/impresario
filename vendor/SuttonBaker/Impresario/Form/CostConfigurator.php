@@ -72,9 +72,10 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 
         if (is_array($items)) {
             foreach ($items as $item) {
-                if(isset($item['removed']) && (bool) $item['removed'] === false) {
+                if (isset($item['removed']) && (bool) $item['removed'] === false) {
                     if (isset($item['qty']) && isset($item['unit_price'])) {
-                        $poItemTotal += (float) $item['qty'] * (float) $item['unit_price'];
+                        // Avoid floating point issues with PHP floating point representations, E.g. 11.25+5.99. Other option to use bcadd and cast to a float
+                        $poItemTotal = round($poItemTotal + ((float) $item['qty'] * (float) $item['unit_price']), 2);
                     }
                 }
             }
