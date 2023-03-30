@@ -156,7 +156,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Site Name *',
                 'formGroup' => true,
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly']
             ], [
                 'name' => 'project_name',
                 'formGroup' => true,
