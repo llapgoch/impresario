@@ -177,7 +177,7 @@ class Nav extends \DaveBaker\Core\Block\Template
                 'name' => 'Tasks',
                 'link' => $this->getPageUrl(PageDefintion::TASK_LIST),
                 'icon' => Task::ICON,
-                'badge' => count($taskHelper->getOpenTasks()->load())
+                // 'badge' => count($taskHelper->getOpenTasks()->load())
             ];
         }
 
