@@ -134,6 +134,7 @@ class Project
     const REPORT_HEADERS = [
         'project_id' => 'ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'client_name' => 'Client',
         'client_reference' => 'Client Reference',
