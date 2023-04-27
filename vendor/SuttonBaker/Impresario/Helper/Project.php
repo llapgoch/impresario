@@ -35,6 +35,7 @@ class Project extends Base
         'date_received',
         'client_id',
         'site_name',
+        'type_id',
         'project_name',
         'client_requested_by',
         'client_reference',
