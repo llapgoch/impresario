@@ -79,6 +79,14 @@ class Quote extends Base
         return false;
     }
 
+    public function getQuoteProjectTypeCollection()
+    {
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
+        return $this->createAppObject(
+            QuoteDefinition::DEFINITION_QUOTE_PROJECT_TYPE_COLLECTION
+        );
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception

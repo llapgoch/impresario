@@ -27,6 +27,10 @@ class QuoteConfigurator
         );
 
         $this->addRule(
+            $this->createRule('Required', 'type_id', 'Category Type')
+        );
+
+        $this->addRule(
             $this->createRule('Required', 'client_requested_by', 'Client Requested By')
         );
 
