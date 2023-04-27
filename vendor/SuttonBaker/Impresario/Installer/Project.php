@@ -65,6 +65,7 @@ class Project
               `last_edited_by_id` int(11) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
               `quote_id` int(11) DEFAULT NULL,
+              `type_id` int(11) DEFAULT NULL,
               `project_name` varchar(255) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
               `client_project_manager` varchar(255) DEFAULT NULL,
@@ -110,7 +111,8 @@ class Project
               `is_deleted` int(1) DEFAULT '0',
               PRIMARY KEY (`project_id`),
               KEY `status` (`status`),
-              KEY `quote_id` (`quote_id`)
+              KEY `quote_id` (`quote_id`),
+              KEY `type_id` (`type_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
     }
