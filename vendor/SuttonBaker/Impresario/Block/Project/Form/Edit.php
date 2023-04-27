@@ -55,7 +55,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         wp_register_script('impresario_calculator', get_template_directory_uri() . '/assets/js/profit-calculator.js', ['jquery']);
         wp_enqueue_script('impresario_calculator');
-        
+
         wp_register_script('impresario_project_edit_controller', get_template_directory_uri() . '/assets/js/project/edit-controller.js', ['jquery']);
         wp_enqueue_script('impresario_project_edit_controller');
 
@@ -83,6 +83,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->modelInstance = $this->getProjectHelper()->getProject($entityId);
             $editMode = true;
         }
+
+        $quoteProjectTypeCollection = $this->getQuoteHelper()->getQuoteProjectTypeCollection();
+        $quoteProjectTypes = $this->createCollectionSelectConnector()
+            ->configure(
+                $quoteProjectTypeCollection,
+                'type_id',
+                'name'
+            )->getElementData();
 
         // Clients
         $clients = $this->createCollectionSelectConnector()
@@ -148,14 +156,32 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setOrder('before', '')
         );
 
-        
-
         $elements = $builder->build([
             [
                 'name' => 'site_name',
                 'labelName' => 'Site Name *',
                 'formGroup' => true,
                 'type' => 'Input\Text',
+                'rowIdentifier' => 'site_name_type',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'type_id',
+                'formGroup' => true,
+                'rowIdentifier' => 'site_name_type',
+                'labelName' => 'Category Type',
+                'data' => [
+                    'select_options' => $quoteProjectTypes,
+                    'locked' => true
+                ],
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ],
+                'attributes' => [
+                    'readonly' => 'readonly'
+                ]
             ], [
                 'name' => 'project_name',
                 'formGroup' => true,
@@ -686,13 +712,13 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->lock();
         }
 
-         $headingTag = $this->createBlock(
+        $headingTag = $this->createBlock(
             \DaveBaker\Core\Block\Html\Tag::class,
             "{$this->blockPrefix}.completion.heading",
             'content'
         )->setTagText('<strong>Completion</strong> Checklist')
-        ->setTag('h5')
-        ->setOrder('before', "{$this->blockPrefix}.edit.completion.checklist");
+            ->setTag('h5')
+            ->setOrder('before', "{$this->blockPrefix}.edit.completion.checklist");
 
         $this->addChildBlock($headingTag);
 
@@ -726,8 +752,6 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setHeading('<strong>Completion</strong> Certificates')
                 ->setShowDelete(!$this->isLocked())
         );
-
-
     }
 
     /**
@@ -890,7 +914,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             self::COMPLETION_TEMPORARY_PREFIX,
             Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE
         );
-        
+
         $uploadCompletionParams = [
             'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_COMPLETION_CERTIFICATE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
             'identifier' => $completionIdentifier,

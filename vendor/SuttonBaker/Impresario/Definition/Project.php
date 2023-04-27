@@ -134,6 +134,7 @@ class Project
     const REPORT_HEADERS = [
         'project_id' => 'ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'client_name' => 'Client',
         'client_reference' => 'Client Reference',
@@ -205,6 +206,7 @@ class Project
 
     const NON_USER_VALUES = [
         'project_id',
+        'type_id',
         'client_requested_by',
         'client_reference',
         'created_by_id',

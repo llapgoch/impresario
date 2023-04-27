@@ -34,6 +34,7 @@ class Archive
     const REPORT_HEADERS = [
         'project_id' => 'ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'client_name' => 'Client',
         'client_reference' => 'Client Reference',
@@ -64,6 +65,7 @@ class Archive
         'quote_id' => 'ID',
         'project_id' => 'Project ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'date_received' => 'Date Received',
         'client_name' => 'Client',

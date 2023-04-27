@@ -57,7 +57,7 @@ class Quote extends Base
 
         $mainTile->addChildBlock(
             $this->createBlock(
-                '\SuttonBaker\Impresario\Block\Quote\Form\Edit',
+                \SuttonBaker\Impresario\Block\Quote\Form\Edit::class,
                 "{$this->getBlockPrefix()}.form.edit",
                 'content'
             )->setElementName('enquiry_edit_form')
