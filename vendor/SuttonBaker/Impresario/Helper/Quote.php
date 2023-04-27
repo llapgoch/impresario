@@ -121,6 +121,10 @@ class Quote extends Base
             "{{client}}",
             "{{client}}.client_id={{quote}}.client_id",
             ['client_name' => 'client_name']
+        )->joinLeft(
+            "{{quote_project_type}}",
+            "{{quote_project_type}}.type_id={{quote}}.type_id",
+            ['type_name' => 'name']
         );
 
         $collection->columns(

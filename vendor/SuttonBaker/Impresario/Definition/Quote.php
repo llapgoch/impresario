@@ -128,6 +128,7 @@ class Quote
     const REPORT_HEADERS = [
         'quote_id' => 'ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'date_received' => 'Date Received',
         'client_name' => 'Client',
