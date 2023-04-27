@@ -205,6 +205,7 @@ class Project
 
     const NON_USER_VALUES = [
         'project_id',
+        'type_id',
         'client_requested_by',
         'client_reference',
         'created_by_id',
