@@ -49,6 +49,9 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         wp_register_script('impresario_cost_edit', get_template_directory_uri() . '/assets/js/cost/edit-controller.js', ['jquery']);
         wp_enqueue_script('impresario_cost_edit');
 
+        wp_register_script('impresario_action_switcher', get_template_directory_uri() . '/assets/js/action.switcher.widget.js');
+        wp_enqueue_script('impresario_action_switcher');
+
         $prefixKey = self::PREFIX_KEY;
         $prefixName = self::PREFIX_NAME;
 
@@ -68,7 +71,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefinition::getCostInvoiceTypes(true))->getElementData();
 
-        $this->addClass('js-validate-form js-form-overlay js-cost-form');
+        $this->addClass('js-validate-form js-action-form js-form-overlay js-cost-form');
         $this->addJsDataItems([
             'endpointValidateSave' => $this->getUrlHelper()->getApiUrl(CostDefinition::API_ENDPOINT_VALIDATE_SAVE),
             'idElementSelector' => '[name="cost_id"]',
@@ -242,7 +245,24 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'formGroup' => true,
                 'formGroupSettings' => [
-                    'class' => 'col-md-8'
+                    'class' => 'col-md-6'
+                ]
+            ], [
+                'name' => 'direct_to_invoice',
+                'rowIdentifier' => 'button_bar',
+                'type' => '\DaveBaker\Form\Block\Button',
+                'formGroup' => true,
+                'attributes' => $editMode ? ['disabled' => 'disabled'] : [],
+                'data' => [
+                    'button_name' => 'Direct To Invoice',
+                    'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
+                    'js_data_items' => [
+                        'action' => 'direct_to_invoice'
+                    ]
+                ],
+                'class' => 'btn-block btn-success js-action-switcher',
+                'formGroupSettings' => [
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'delete_button',
@@ -264,7 +284,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'btn-block btn-danger js-delete-confirm',
                 'formGroupSettings' => [
-                    'class' => 'col-md-4'
+                    'class' => 'col-md-2'
                 ]
             ], [
                 'name' => 'cost_id',
