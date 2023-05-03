@@ -7,6 +7,7 @@ use \DaveBaker\Core\Definitions\Messages;
 use Exception;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use SuttonBaker\Impresario\Helper\Cost as HelperCost;
 use SuttonBaker\Impresario\SaveConverter\Cost as CostConverter;
 
 /**
@@ -39,6 +40,11 @@ extends Base
         $modelInstance = $helper->getCost();
         $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
 
+        // Set the status as open if we're going direct to invoice to avoid validation on setting a PO to closed without an invoice.
+        // The invoice will be auto-created and the status will then be set to closed.
+        if (isset($formValues['action']) && $formValues['action'] === HelperCost::ACTION_DIRECT_TO_INVOICE) {
+            $formValues['status'] = CostDefinition::STATUS_OPEN;
+        }
 
         if (isset($formValues['cost_id']) && $formValues['cost_id']) {
             $modelInstance->load($formValues['cost_id']);
@@ -85,6 +91,10 @@ extends Base
             if (!$navigatingAway) {
                 // This has already been validated
                 $saveValues['redirect'] = $formValues['return_url'];
+            }
+
+            if ($saveValues['direct_to_invoice']) {
+                $message .= ". An invoice has been created for this item, and it has been marked as closed.";
             }
 
             $this->getApp()->getGeneralSession()->addMessage(
