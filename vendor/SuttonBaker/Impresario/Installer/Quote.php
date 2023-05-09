@@ -46,6 +46,7 @@ class Quote
               `last_edited_by_id` int(11) DEFAULT NULL,
               `client_id` int(11) DEFAULT NULL,
               `enquiry_id` int(11) DEFAULT NULL,
+              `type_id` int(11) DEFAULT NULL,
               `parent_id` int(11) DEFAULT NULL,
               `project_name` varchar(255) DEFAULT NULL,
               `site_name` varchar(255) DEFAULT NULL,
@@ -75,7 +76,18 @@ class Quote
               KEY `status` (`status`),
               KEY `tender_status` (`tender_status`),
               KEY `status_tender_status` (`status`, `tender_status`),
-              KEY `enquiry_id` (`enquiry_id`)
+              KEY `enquiry_id` (`enquiry_id`),
+              KEY `type_id` (`type_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        );
+
+        $this->deltaTable('quote_project_type',
+            "CREATE TABLE `{{tableName}}` (
+            `type_id` int NOT NULL AUTO_INCREMENT,
+            `name` varchar(255) NOT NULL,
+            `code` varchar(30) DEFAULT NULL,
+            PRIMARY KEY (`type_id`),
+            KEY `code` (`code`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
         );
     }

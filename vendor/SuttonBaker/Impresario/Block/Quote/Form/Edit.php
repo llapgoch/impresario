@@ -67,6 +67,14 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         // This logic should show whether the current quote has made the quote group's project
         $finalQuoteNotCurrent = ($groupQuoteEntity->getId() !== $this->modelInstance->getId()) && $groupProjectEntity->getId();
 
+        $quoteProjectTypeCollection = $this->getQuoteHelper()->getQuoteProjectTypeCollection();
+        $quoteProjectTypes = $this->createCollectionSelectConnector()
+            ->configure(
+                $quoteProjectTypeCollection,
+                'type_id',
+                'name'
+            )->getElementData();
+            
 
         // Estimators
         if ($estimators = $this->getRoleHelper()->getEstimators()) {
@@ -149,8 +157,24 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Site Name *',
                 'formGroup' => true,
                 'type' => 'Input\Text',
-                'attributes' => ['readonly' => 'readonly']
+                'attributes' => ['readonly' => 'readonly'],
+                'rowIdentifier' => 'site_name_type',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
             ], [
+                'name' => 'type_id',
+                'formGroup' => true,
+                'rowIdentifier' => 'site_name_type',
+                'labelName' => 'Category Type',
+                'data' => [
+                    'select_options' => $quoteProjectTypes
+                ],
+                'type' => 'Select',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],[
                 'name' => 'project_name',
                 'formGroup' => true,
                 'labelName' => 'Project Name *',

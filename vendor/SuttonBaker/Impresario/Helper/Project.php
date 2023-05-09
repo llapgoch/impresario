@@ -35,6 +35,7 @@ class Project extends Base
         'date_received',
         'client_id',
         'site_name',
+        'type_id',
         'project_name',
         'client_requested_by',
         'client_reference',
@@ -155,6 +156,11 @@ class Project extends Base
             "{{client}}",
             "{{client}}.client_id={{project}}.client_id",
             ['client_name' => 'client_name']
+        )
+        ->joinLeft(
+            "{{quote_project_type}}",
+            "{{quote_project_type}}.type_id={{project}}.type_id",
+            ['type_name' => 'name']
         );
 
         $collection->order(new \Zend_Db_Expr(

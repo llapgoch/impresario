@@ -79,6 +79,14 @@ class Quote extends Base
         return false;
     }
 
+    public function getQuoteProjectTypeCollection()
+    {
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote\Collection $collection */
+        return $this->createAppObject(
+            QuoteDefinition::DEFINITION_QUOTE_PROJECT_TYPE_COLLECTION
+        );
+    }
+
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Quote\Collection
      * @throws \DaveBaker\Core\Object\Exception
@@ -113,6 +121,10 @@ class Quote extends Base
             "{{client}}",
             "{{client}}.client_id={{quote}}.client_id",
             ['client_name' => 'client_name']
+        )->joinLeft(
+            "{{quote_project_type}}",
+            "{{quote_project_type}}.type_id={{quote}}.type_id",
+            ['type_name' => 'name']
         );
 
         $collection->columns(

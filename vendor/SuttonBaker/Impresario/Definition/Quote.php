@@ -20,8 +20,9 @@ class Quote
 
     const ICON = 'fa fa-calculator';
 
-    const DEFINITION_MODEL = '\SuttonBaker\Impresario\Model\Db\Quote';
-    const DEFINITION_COLLECTION = '\SuttonBaker\Impresario\Model\Db\Quote\Collection';
+    const DEFINITION_MODEL = \SuttonBaker\Impresario\Model\Db\Quote::class;
+    const DEFINITION_COLLECTION = \SuttonBaker\Impresario\Model\Db\Quote\Collection::class;
+    const DEFINITION_QUOTE_PROJECT_TYPE_COLLECTION = \SuttonBaker\Impresario\Model\Db\QuoteProjectType\Collection::class;
 
     const TENDER_STATUS_OPEN = 'open';
     const TENDER_STATUS_WON = 'won';
@@ -127,6 +128,7 @@ class Quote
     const REPORT_HEADERS = [
         'quote_id' => 'ID',
         'site_name' => 'Site',
+        'type_name' => 'Type Category',
         'project_name' => 'Project',
         'date_received' => 'Date Received',
         'client_name' => 'Client',
