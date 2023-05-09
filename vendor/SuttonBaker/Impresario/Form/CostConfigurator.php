@@ -83,6 +83,28 @@ implements \DaveBaker\Form\Validation\Rule\Configurator\ConfiguratorInterface
 
         $modelInstance = $this->getModel();
 
+        // Added this because auto-creating invoices would fail if the max value is above this value, because of column definitions of 10,4. 
+        // Suggest we migrate to larger 13,4 for decimal values when migrating to Symfony
+        $tooLargeError = $this->createRule('Custom', 'status', 'Status')
+            ->setMainError('A Purchase Order\'s total value must be below below £999999.99');
+
+
+        $this->addRule(
+            $tooLargeError->setValidationMethod(
+                function ($value, $ruleInstance) use ($modelInstance, $poItemTotal) {
+                    $modelInstance->updateTotals();
+
+                    if ($poItemTotal > 999999.99) {
+                        return $ruleInstance->createError();
+                    }
+
+                    return true;
+                }
+            )
+        );
+
+
+
         if ($this->getValue('status') === CostDefinition::STATUS_CLOSED) {
             $statusClosedRule = $this->createRule('Custom', 'status', 'Status')
                 ->setMainError('A Purchase Order can only be closed when the amount remaining is zero');

@@ -5,8 +5,10 @@ namespace SuttonBaker\Impresario\Helper;
 use DaveBaker\Core\Definitions\Upload;
 use Exception;
 use \SuttonBaker\Impresario\Definition\Cost as CostDefinition;
+use SuttonBaker\Impresario\Definition\Invoice as DefinitionInvoice;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Model\Db\Cost\Item;
+use SuttonBaker\Impresario\Model\Db\Invoice;
 
 /**
  * Class Cost
@@ -14,8 +16,11 @@ use SuttonBaker\Impresario\Model\Db\Cost\Item;
  */
 class Cost extends Base
 {
+    /** @var string */
+    const ACTION_DIRECT_TO_INVOICE = 'direct_to_invoice';
     /** @var array  */
     protected $editCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_COST];
+    /** @var array  */
     protected $viewCapabilities = [Roles::CAP_ALL, Roles::CAP_EDIT_COST, Roles::CAP_VIEW_COST];
 
     protected $costInvoiceCache = [];
@@ -217,8 +222,11 @@ class Cost extends Base
 
         $returnValues = [
             'cost_id' => null,
-            'new_save' => false
+            'new_save' => false,
+            'direct_to_invoice' => false
         ];
+
+        $directToInvoice = isset($data['action']) && $data['action'] == self::ACTION_DIRECT_TO_INVOICE;
 
         foreach (CostDefinition::NON_USER_VALUES as $nonUserValue) {
             if (isset($data[$nonUserValue])) {
@@ -258,6 +266,24 @@ class Cost extends Base
 
         // Re-save the model instance to calculate the total after setting the items.
         $modelInstance->save();
+
+        // Create an invoice for the PO value automatically, only for new saves
+        if ($returnValues['new_save'] && $directToInvoice) {
+            $invoiceEntity = $this->createAppObject(Invoice::class)
+                ->setInvoiceDate($modelInstance->getCostDate())
+                ->setInvoiceNumber("AUTO-INVOICE-PO-#{$modelInstance->getId()}")
+                ->setValue($modelInstance->calculatePoItemTotal())
+                ->setInvoiceType(DefinitionInvoice::INVOICE_TYPE_PO_INVOICE)
+                ->setParentId($modelInstance->getId());
+
+            $invoiceEntity->save();
+
+            // Close the PO item
+            $modelInstance->setStatus(CostDefinition::STATUS_CLOSED)
+                ->save();
+
+            $returnValues['direct_to_invoice'] = true;
+        }
 
         if ($returnValues['new_save'] && ($temporaryItems = $data[Upload::TEMPORARY_IDENTIFIER_ELEMENT_NAME])) {
             foreach ($temporaryItems as $temporaryId => $actualKey) {
