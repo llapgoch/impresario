@@ -86,6 +86,7 @@ class Quote
             `type_id` int NOT NULL AUTO_INCREMENT,
             `name` varchar(255) NOT NULL,
             `code` varchar(30) DEFAULT NULL,
+            `sort_order` int NULL,
             PRIMARY KEY (`type_id`),
             KEY `code` (`code`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
