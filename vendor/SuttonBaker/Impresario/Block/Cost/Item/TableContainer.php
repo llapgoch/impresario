@@ -22,12 +22,25 @@ implements \DaveBaker\Core\Block\BlockInterface
     /** @var string  */
     protected $tileDefinitionClass = '\SuttonBaker\Impresario\Block\Core\Tile\White';
 
+    protected bool $locked = true;
+
     /**
      * @return \SuttonBaker\Impresario\Model\Db\Cost\Collection
      */
     public function getInstanceCollection()
     {
         return $this->instanceCollection;
+    }
+
+    public function setLocked(bool $locked): self
+    {
+        $this->locked = $locked;
+        return $this;
+    }
+
+    public function getLocked(): bool
+    {
+        return $this->locked;
     }
 
     /**
@@ -41,7 +54,8 @@ implements \DaveBaker\Core\Block\BlockInterface
         return $this;
     }
 
-    public function formatTo2DP($value) {
+    public function formatTo2DP($value)
+    {
         return round((float) $value, 2);
     }
 
@@ -73,15 +87,18 @@ implements \DaveBaker\Core\Block\BlockInterface
             )->setHeading('<strong>PO Items</strong>')
         );
 
-        $addButton = $this->createBlock(
-            \DaveBaker\Form\Block\Button::class,
-            'create.cost.item.button',
-            'header_elements'
-        )->setButtonName('Add Item')
-            ->addAttribute(['type' =>  'button'])
-            ->addClass('btn btn-sm btn-primary js-po-item-create');
+        if (!$this->getLocked()) {
+            $addButton = $this->createBlock(
+                \DaveBaker\Form\Block\Button::class,
+                'create.cost.item.button',
+                'header_elements'
+            )->setButtonName('Add Item')
+                ->addAttribute(['type' =>  'button'])
+                ->addClass('btn btn-sm btn-primary js-po-item-create');
 
-        $tileBlock->addChildBlock($addButton);
+            $tileBlock->addChildBlock($addButton);
+        }
+
         $tileBlock->setTileBodyClass('nopadding table-responsive');
 
         $tileBlock->addChildBlock(
@@ -93,6 +110,9 @@ implements \DaveBaker\Core\Block\BlockInterface
                 ->setRecords($this->instanceCollection)
                 ->addClass('table-striped js-po-item-table')
                 ->setTemplate('html/table/cost/status-link-attribute-value.phtml')
+                // We can't use addJsDataItems without setting jsUpdater to false, but we need jsItems for the cost js
+                ->addJsDataItems(['locked' => $this->getLocked()])
+                ->setJsUpdater(false)
         );
     }
 }

@@ -9,6 +9,7 @@ use SuttonBaker\Impresario\Definition\Invoice as DefinitionInvoice;
 use SuttonBaker\Impresario\Definition\Roles;
 use SuttonBaker\Impresario\Model\Db\Cost\Item;
 use SuttonBaker\Impresario\Model\Db\Invoice;
+use SuttonBaker\Impresario\Model\Db\Project;
 
 /**
  * Class Cost
@@ -208,6 +209,23 @@ class Cost extends Base
 
         return '';
     }
+
+    public function isCostLocked(
+        \SuttonBaker\Impresario\Model\Db\Cost $instance
+    ): bool {
+        if (!$instance->getId()) {
+            return false;
+        }
+
+        $parent = $this->getParentForCost($instance);
+
+        if ($parent instanceof Project) {
+            return $this->getProjectHelper()->isProjectLocked($parent);
+        }
+
+        return false;
+    }
+
 
     /**
      *

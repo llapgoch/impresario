@@ -224,6 +224,19 @@ extends Base
         $enquiry->setIsDeleted(1)->save();
     }
 
+    public function isEnquiryLocked(
+        \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
+    ): bool {
+        if (!$enquiry->getId()) {
+            return false;
+        }
+
+        return in_array(
+            $enquiry->getStatus(),
+            [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]
+        );
+    }
+
     /**
      * @param array $data
      * @return $this|array
