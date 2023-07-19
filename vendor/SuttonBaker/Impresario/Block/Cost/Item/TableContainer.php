@@ -32,13 +32,13 @@ implements \DaveBaker\Core\Block\BlockInterface
         return $this->instanceCollection;
     }
 
-    public function setLocked(bool $locked): self
+    public function setLocked(bool $locked)
     {
         $this->locked = $locked;
         return $this;
     }
 
-    public function getLocked(): bool
+    public function getLocked()
     {
         return $this->locked;
     }
