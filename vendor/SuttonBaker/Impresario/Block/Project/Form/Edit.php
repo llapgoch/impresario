@@ -705,10 +705,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 
         $this->addChildBlock(array_values($elements));
 
-        if (
-            in_array($this->modelInstance->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
-            $this->getProjectHelper()->currentUserCanEdit() == false
-        ) {
+        if ($this->getProjectHelper()->isProjectLocked($this->modelInstance)) {
             $this->lock();
         }
 
