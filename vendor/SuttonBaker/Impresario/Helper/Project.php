@@ -118,7 +118,7 @@ class Project extends Base
     }
 
     public function isProjectLocked(
-        \SuttonBaker\Impresario\Model\Db\Project $project,
+        \SuttonBaker\Impresario\Model\Db\Project $project
     ) {
         return in_array($project->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
             $this->getProjectHelper()->currentUserCanEdit() == false;
