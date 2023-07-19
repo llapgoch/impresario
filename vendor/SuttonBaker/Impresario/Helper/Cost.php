@@ -212,7 +212,7 @@ class Cost extends Base
 
     public function isCostLocked(
         \SuttonBaker\Impresario\Model\Db\Cost $instance
-    ): bool {
+    ) {
         if (!$instance->getId()) {
             return false;
         }

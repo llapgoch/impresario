@@ -56,7 +56,7 @@ class Invoice extends Base
             ->where('parent_id=?', $entityId);
     }
 
-    public function isInvoiceLocked(\SuttonBaker\Impresario\Model\Db\Invoice $instance): bool
+    public function isInvoiceLocked(\SuttonBaker\Impresario\Model\Db\Invoice $instance)
     {
         if (!$instance->getId()) {
             return false;

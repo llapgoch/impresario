@@ -226,7 +226,7 @@ extends Base
 
     public function isEnquiryLocked(
         \SuttonBaker\Impresario\Model\Db\Enquiry $enquiry
-    ): bool {
+    ) {
         if (!$enquiry->getId()) {
             return false;
         }
