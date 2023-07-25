@@ -744,8 +744,16 @@ class Quote extends Base
         }
 
         $quoteCollection = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
+        $quoteIds = $quoteCollection->getAllIds();
+        
+        // If the main quote has been deleted, the quote collection will contain no Ids. We now check if the 
+        // parent ID is in the array and always add it.
+        if(!in_array($quote->getId(), $quoteIds)) {
+            $quoteIds[] = $quote->getId();
+        }
+
         $taskCollection = $this->getTaskHelper()->getTaskCollection()
-            ->where('parent_id IN(?)', $quoteCollection->getAllIds())
+            ->where('parent_id IN(?)', $quoteIds)
             ->where('task_type=?', TaskDefinition::TASK_TYPE_QUOTE);
 
         if ($status) {
