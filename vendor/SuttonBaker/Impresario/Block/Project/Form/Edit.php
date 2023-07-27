@@ -22,6 +22,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'project_id';
     const COMPLETION_TEMPORARY_PREFIX = 'proj_comp_tmp';
+    const CLIENT_PO_TEMPORARY_PREFIX = 'client_po_tmp';
 
     protected $prefixName = 'Project';
     protected $blockPrefix = 'project';
@@ -749,6 +750,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setHeading('<strong>Completion</strong> Certificates')
                 ->setShowDelete(!$this->isLocked())
         );
+
+        // Create the client purchase orders file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+                "{$this->blockPrefix}.file.upload.client.pos.container"
+            )->setOrder('before', "{$this->blockPrefix}.invoice.table")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_CLIENT_POS : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    self::CLIENT_PO_TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT_CLIENT_POS
+                ))
+                ->setBlockPrefix('client.pos')
+                ->setHeading('<strong>Client</strong> Purchase Orders')
+                ->setShowDelete(!$this->isLocked())
+        );
     }
 
     /**
@@ -877,7 +894,11 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $entityId = $this->getRequest()->getParam(self::ID_KEY);
         $uploadTable = $this->getBlockManager()->getBlock('upload.tile.block');
         $completionPrefix = 'completion.certificate';
+        $clientPosPrefix = 'client.pos';
         $completionUploadTable = $this->getBlockManager()->getBlock($completionPrefix . '.tile.block');
+        $clientPosUploadTable = $this->getBlockManager()->getBlock($clientPosPrefix . '.tile.block');
+
+        
         $uploadIdentifier = $this->modelInstance->getId() ?  $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
             CoreUploadDefinition::TEMPORARY_PREFIX,
             Upload::TYPE_PROJECT
@@ -937,6 +958,38 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                     ->setIsTemporary($isTemporary)
             );
         }
+
+        $clientPosIdentifier = $this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+            self::CLIENT_PO_TEMPORARY_PREFIX,
+            Upload::TYPE_PROJECT_CLIENT_POS
+        );
+
+        $uploadClientPosParams = [
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_PROJECT_CLIENT_POS : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'identifier' => $clientPosIdentifier,
+        ];
+
+        if (!$this->isLocked() && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+            $clientPosUploadTable->addChildBlock(
+                $clientPosUploadTable->createBlock(
+                    \DaveBaker\Core\Block\Components\FileUploader::class,
+                    "{$this->blockPrefix}.client.pos.file.uploader",
+                    'header_elements'
+                )->addJsDataItems(
+                    [
+                        'endpoint' => $this->getUrlHelper()->getApiUrl(
+                            Api::ENDPOINT_FILE_UPLOAD,
+                            $uploadClientPosParams,
+                        ),
+                        'blockPrefix' => $clientPosPrefix,
+                    ]
+                )
+                    ->setActualType(Upload::TYPE_PROJECT_CLIENT_POS)
+                    ->setIdentifier($clientPosIdentifier)
+                    ->setIsTemporary($isTemporary)
+            );
+        }
+
 
         if ($tableBlock = $this->getBlockManager()->getBlock('task.table.list.table')) {
             $tableBlock->removeHeader(['task_id', 'task_type'])

@@ -13,6 +13,7 @@ class Upload
     const TYPE_ENQUIRY_TEST = 'enquiry_test';
     const TYPE_QUOTE = 'quote';
     const TYPE_PROJECT = 'project';
+    const TYPE_PROJECT_CLIENT_POS = 'project_client_pos';
     const TYPE_PROJECT_COMPLETION_CERTIFICATE = 'project_comp_cert';
     const TYPE_TASK = 'task';
     const TYPE_VARIATION = 'variation';
