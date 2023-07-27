@@ -749,6 +749,22 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ->setHeading('<strong>Completion</strong> Certificates')
                 ->setShowDelete(!$this->isLocked())
         );
+
+        // Create the client purchase orders file uploader
+        $this->addChildBlock(
+            $this->createBlock(
+                \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
+                "{$this->blockPrefix}.file.upload.client.pos.container"
+            )->setOrder('before', "{$this->blockPrefix}.edit.button.bar")
+                ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_CLIENT_POS : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
+                ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
+                    self::COMPLETION_TEMPORARY_PREFIX,
+                    Upload::TYPE_PROJECT_CLIENT_POS
+                ))
+                ->setBlockPrefix('client.pos')
+                ->setHeading('<strong>Client</strong> Purchase Orders')
+                ->setShowDelete(!$this->isLocked())
+        );
     }
 
     /**
