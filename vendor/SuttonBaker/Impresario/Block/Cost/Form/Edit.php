@@ -63,11 +63,12 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         $editMode = $this->modelInstance->getId() ? true : false;
         $statuses = $this->createArraySelectConnector()->configure(CostDefinition::getStatuses())->getElementData();
+        $isLocked = $this->getCostHelper()->isCostLocked($this->modelInstance);
 
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
-        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $disabledAttrs = $this->modelInstance->getId() && !$isLocked  ? [] : ['disabled' => 'disabled'];
 
         $costInvoiceTypes = $this->createArraySelectConnector()->configure(CostDefinition::getCostInvoiceTypes(true))->getElementData();
 
@@ -96,6 +97,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         $amountInvoiced = (float) $this->modelInstance->getAmountInvoiced();
+
 
         $this->addChildBlock(
             $this->createFormErrorBlock()
@@ -237,6 +239,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             ], [
                 'name' => 'submit',
                 'type' => '\DaveBaker\Form\Block\Button',
+                'attributes' => $isLocked ? ['disabled' => 'disabled'] : [],
                 'data' => [
                     'button_name' => $this->getInvoiceHelper()->getActionVerb($this->modelInstance, false) . " Purchase Order",
                     'capabilities' => $this->getVariationHelper()->getEditCapabilities()
@@ -252,7 +255,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
                 'formGroup' => true,
-                'attributes' => $editMode ? ['disabled' => 'disabled'] : [],
+                'attributes' => $editMode || $isLocked ? ['disabled' => 'disabled'] : [],
                 'data' => [
                     'button_name' => 'Direct To Invoice',
                     'capabilities' => $this->getInvoiceHelper()->getEditCapabilities(),
@@ -334,9 +337,10 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                         Upload::TYPE_COST
                     )
                 )
+                ->setShowDelete(!$this->getCostHelper()->isCostLocked($this->modelInstance))
         );
 
-        if ($this->getCostHelper()->currentUserCanEdit() == false) {
+        if ($this->getCostHelper()->isCostLocked($this->modelInstance) || $this->getCostHelper()->currentUserCanEdit() == false) {
             $this->lock();
         }
     }
@@ -381,7 +385,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         $this->costItemBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Cost\Item\TableContainer::class,
             "{$this->blockPrefix}.item.table"
-        )->setOrder('before', "{$prefixKey}.edit.total.items");
+        )->setOrder('before', "{$prefixKey}.edit.total.items")
+            ->setLocked($this->getCostHelper()->isCostLocked($this->modelInstance));
 
         $hasItems = false;
 
@@ -436,7 +441,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             'identifier' => $uploadIdentifier
         ];
 
-        if ($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
+        if (!$this->getCostHelper()->isCostLocked($this->modelInstance) && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -455,22 +460,24 @@ extends \SuttonBaker\Impresario\Block\Form\Base
         }
 
         if ($invoiceTileBlock = $this->getBlockManager()->getBlock('invoice.tile.block')) {
-            $invoiceTileBlock->addChildBlock(
-                $this->createSmallButtonElement(
-                    'Create Invoice',
-                    $this->getPageUrl(
-                        \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
-                        [
-                            'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PO_INVOICE,
-                            'parent_id' => $this->modelInstance->getId()
-                        ],
-                        true
-                    ),
-                    'create.invoice.button',
-                    'header_elements'
-                )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
-                    ->addClass('js-invoice-create-button')
-            );
+            if (!$this->getCostHelper()->isCostLocked($this->modelInstance)) {
+                $invoiceTileBlock->addChildBlock(
+                    $this->createSmallButtonElement(
+                        'Create Invoice',
+                        $this->getPageUrl(
+                            \SuttonBaker\Impresario\Definition\Page::INVOICE_EDIT,
+                            [
+                                'invoice_type' => InvoiceDefinition::INVOICE_TYPE_PO_INVOICE,
+                                'parent_id' => $this->modelInstance->getId()
+                            ],
+                            true
+                        ),
+                        'create.invoice.button',
+                        'header_elements'
+                    )->setCapabilities($this->getInvoiceHelper()->getEditCapabilities())
+                        ->addClass('js-invoice-create-button')
+                );
+            }
         }
 
 

@@ -13,7 +13,7 @@ use DaveBaker\Core\Definitions\Roles;
  * @package SuttonBaker\Impresario\Block\Invoice\Form
  */
 class Edit
-    extends \SuttonBaker\Impresario\Block\Form\Base
+extends \SuttonBaker\Impresario\Block\Form\Base
 {
     const ID_KEY = 'invoice_id';
     const PREFIX_KEY = 'invoice';
@@ -54,7 +54,8 @@ class Edit
         /** @var \DaveBaker\Form\Builder $builder */
         $builder = $this->createAppObject('\DaveBaker\Form\Builder')
             ->setFormName("{$prefixKey}_edit")->setGroupTemplate('form/group-vertical.phtml');
-        $disabledAttrs = $this->modelInstance->getId() ? [] : ['disabled' => 'disabled'];
+        $disabledAttrs = $this->modelInstance->getId() && !$this->getInvoiceHelper()->isInvoiceLocked($this->modelInstance) ? [] : ['disabled' => 'disabled'];
+        $editAttrs = $this->getInvoiceHelper()->isInvoiceLocked($this->modelInstance) ? ['disabled' => 'disabled'] : [];
         $totalAmountRemaining = $this->parentItem->getInvoiceAmountRemaining();
 
 
@@ -66,7 +67,7 @@ class Edit
         //     if($invoice->getId() == $this->modelInstance->getId()){
         //         continue;
         //     }
-            
+
         //     $totalAmountRemaining = max(0, $totalAmountRemaining - $invoice->getValue());
         // }
 
@@ -130,6 +131,7 @@ class Edit
                 ],
                 'class' => 'btn-block',
                 'rowIdentifier' => 'button_bar',
+                'attributes' => $editAttrs,
                 'formGroup' => true,
                 'formGroupSettings' => [
                     'class' => 'col-md-8'
@@ -181,6 +183,11 @@ class Edit
 
         $this->addChildBlock(array_values($elements));
 
+
+        if ($this->getInvoiceHelper()->isInvoiceLocked($this->modelInstance)) {
+            $this->lock();
+        }
+
         // Create the file uploader
         $this->addChildBlock(
             $this->createBlock(
@@ -191,12 +198,8 @@ class Edit
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
                     CoreUploadDefinition::TEMPORARY_PREFIX,
                     Upload::TYPE_INVOICE
-                ))
+                ))->setShowDelete(!$this->getInvoiceHelper()->isInvoiceLocked($this->modelInstance))
         );
-
-        if($this->getInvoiceHelper()->currentUserCanEdit() == false) {
-            $this->lock();
-        }
     }
 
     /**
@@ -216,11 +219,11 @@ class Edit
         );
 
         $uploadParams = [
-            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_INVOICE: CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
+            'upload_type' => $this->modelInstance->getId() ? Upload::TYPE_INVOICE : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY,
             'identifier' => $uploadIdentifier
         ];
 
-        if($this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)){
+        if (!$this->getInvoiceHelper()->isInvoiceLocked($this->modelInstance) && $this->getUserHelper()->hasCapability(Roles::CAP_UPLOAD_FILE_ADD)) {
             $uploadTable->addChildBlock(
                 $uploadTable->createBlock(
                     '\DaveBaker\Core\Block\Components\FileUploader',
@@ -232,12 +235,11 @@ class Edit
                         $uploadParams
                     )]
                 )
-                ->setActualType(Upload::TYPE_INVOICE)
+                    ->setActualType(Upload::TYPE_INVOICE)
                     ->setIdentifier($uploadIdentifier)
                     ->setIsTemporary($isTemporary)
             );
         }
         return parent::_preRender();
     }
-
 }
