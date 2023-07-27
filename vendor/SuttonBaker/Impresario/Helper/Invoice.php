@@ -33,7 +33,7 @@ class Invoice extends Base
 
 
         $collection->joinLeft(
-            ['created_by_user'=> $userTable],
+            ['created_by_user' => $userTable],
             "created_by_user.ID={{invoice}}.created_by_id",
             ['created_by_name' => 'display_name']
         )->order('{{invoice}}.invoice_id DESC');
@@ -54,6 +54,43 @@ class Invoice extends Base
         return $this->getInvoiceCollection()
             ->where('invoice_type=?', $entityType)
             ->where('parent_id=?', $entityId);
+    }
+
+    public function isInvoiceLocked(\SuttonBaker\Impresario\Model\Db\Invoice $instance)
+    {
+        if (!$instance->getId()) {
+            return false;
+        }
+
+        if (!$this->currentUserCanEdit()) {
+            return true;
+        }
+
+        $invoiceType = $instance->getInvoiceType();
+        $parentId = $instance->getParentId();
+
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_ENQUIRY) {
+            return $this->getEnquiryHelper()->isEnquiryLocked(
+                $this->getEnquiryHelper()->getEnquiry($parentId)
+            );
+        }
+
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_PROJECT) {
+            return $this->getProjectHelper()->isProjectLocked(
+                $this->getProjectHelper()->getProject($parentId)
+            );
+        }
+
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
+            $cost = $this->getCostHelper()->getCost($parentId);
+
+            if ($cost->isClosed()) {
+                return true;
+            }
+            return $this->getCostHelper()->isCostLocked($cost);
+        }
+
+        return false;
     }
 
 
@@ -85,7 +122,7 @@ class Invoice extends Base
     {
         $invoice = $this->createAppObject(InvoiceDefinition::DEFINITION_MODEL);
 
-        if($invoiceId){
+        if ($invoiceId) {
             $invoice->load($invoiceId);
         }
 
@@ -100,15 +137,15 @@ class Invoice extends Base
     public function getParentForInvoice(
         \SuttonBaker\Impresario\Model\Db\Invoice $invoice
     ) {
-        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_ENQUIRY){
+        if ($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_ENQUIRY) {
             return $this->getEnquiryHelper()->getEnquiry($invoice->getParentId());
         }
 
-        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PROJECT){
+        if ($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PROJECT) {
             return $this->getProjectHelper()->getProject($invoice->getParentId());
         }
 
-        if($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE){
+        if ($invoice->getInvoiceType() == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
             return $this->getCostHelper()->getCost($invoice->getParentId());
         }
 
@@ -121,15 +158,15 @@ class Invoice extends Base
      */
     public function getInvoiceTypeForParent($parentInstance)
     {
-        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Enquiry){
+        if ($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Enquiry) {
             return InvoiceDefinition::INVOICE_TYPE_ENQUIRY;
         }
 
-        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project){
+        if ($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Project) {
             return InvoiceDefinition::INVOICE_TYPE_PROJECT;
         }
 
-        if($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Cost){
+        if ($parentInstance instanceof \SuttonBaker\Impresario\Model\Db\Cost) {
             return InvoiceDefinition::INVOICE_TYPE_PO_INVOICE;
         }
 
@@ -153,11 +190,11 @@ class Invoice extends Base
     public function determineInvoiceTypeName(
         \SuttonBaker\Impresario\Model\Db\Invoice $instance
     ) {
-        if($instance->getId()){
+        if ($instance->getId()) {
             return $this->getInvoiceTypeDisplayName($instance->getInvoiceType());
         }
 
-        if($type = $this->getRequest()->getParam('invoice_type')) {
+        if ($type = $this->getRequest()->getParam('invoice_type')) {
             return $typeName = $this->getInvoiceTypeDisplayName($type);
         }
 
@@ -171,12 +208,11 @@ class Invoice extends Base
     public function deleteInvoice(
         \SuttonBaker\Impresario\Model\Db\Invoice $invoice
     ) {
-        if(!$invoice->getId()){
+        if (!$invoice->getId()) {
             return $this;
         }
 
         $invoice->setIsDeleted(1)->save();
         return $this;
     }
-
 }

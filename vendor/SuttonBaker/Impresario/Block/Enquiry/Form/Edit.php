@@ -361,10 +361,7 @@ extends \SuttonBaker\Impresario\Block\Form\Base
             $this->addChildBlock($this->taskTableBlock);
         }
 
-        $enquiryIsClosed = in_array(
-            $modelInstance->getStatus(),
-            [EnquiryDefinition::STATUS_COMPLETE, EnquiryDefinition::STATUS_CANCELLED]
-        );
+        $enquiryIsClosed = $this->getEnquiryHelper()->isEnquiryLocked($modelInstance);
 
         if ($enquiryIsClosed || $modelInstance->getIsDeleted()) {
             $this->addChildBlock(

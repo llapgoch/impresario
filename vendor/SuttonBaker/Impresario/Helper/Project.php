@@ -117,6 +117,13 @@ class Project extends Base
         return false;
     }
 
+    public function isProjectLocked(
+        \SuttonBaker\Impresario\Model\Db\Project $project
+    ) {
+        return in_array($project->getStatus(), [ProjectDefinition::STATUS_COMPLETE, ProjectDefinition::STATUS_CANCELLED]) ||
+            $this->getProjectHelper()->currentUserCanEdit() == false;
+    }
+
     /**
      *
      * @return \SuttonBaker\Impresario\Model\Db\Project\Collection
@@ -157,11 +164,11 @@ class Project extends Base
             "{{client}}.client_id={{project}}.client_id",
             ['client_name' => 'client_name']
         )
-        ->joinLeft(
-            "{{quote_project_type}}",
-            "{{quote_project_type}}.type_id={{project}}.type_id",
-            ['type_name' => 'name']
-        );
+            ->joinLeft(
+                "{{quote_project_type}}",
+                "{{quote_project_type}}.type_id={{project}}.type_id",
+                ['type_name' => 'name']
+            );
 
         $collection->order(new \Zend_Db_Expr(
             sprintf(
@@ -366,10 +373,10 @@ class Project extends Base
             $newSave = true;
         }
 
-        if(!isset($data['has_rebate']) || !((bool) $data['has_rebate'])) {
+        if (!isset($data['has_rebate']) || !((bool) $data['has_rebate'])) {
             $data['rebate_percentage'] = 0;
         }
-        
+
         $returnValues['new_save'] = $newSave;
         $returnValues['project_id'] = $modelInstance->getId();
         $data['last_edited_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();

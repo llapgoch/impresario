@@ -14,8 +14,8 @@ use SuttonBaker\Impresario\Helper\Invoice;
  * @package SuttonBaker\Impresario\Controller\Task
  */
 class EditController
-    extends \SuttonBaker\Impresario\Controller\Base
-    implements \DaveBaker\Core\Controller\ControllerInterface
+extends \SuttonBaker\Impresario\Controller\Base
+implements \DaveBaker\Core\Controller\ControllerInterface
 {
     const INVOICE_TYPE_PARAM = 'invoice_type';
     const PARENT_ID_PARAM = 'parent_id';
@@ -59,23 +59,22 @@ class EditController
 
         $this->setModelInstance($this->getInvoiceHelper()->getInvoice());
 
-        if(!$instanceId){
+        if (!$instanceId) {
             $this->modelInstance->setTaskType($this->invoiceType);
             $this->modelInstance->setParentId($parentId);
         }
 
 
 
-        if($instanceId){
+        if ($instanceId) {
             // We're loading, fellas!
             $this->modelInstance->load($instanceId);
 
-            if(!$this->modelInstance->getId()){
+            if (!$this->modelInstance->getId()) {
                 $this->addMessage('The invoice could not be found', Messages::ERROR);
                 return $this->getResponse()->redirectReferer();
             }
-
-        }else {
+        } else {
             if (!$this->getInvoiceHelper()->isValidInvoiceType($invoiceType)) {
                 $this->addMessage('Invalid Invoice Type');
                 $this->getResponse()->redirectReferer();
@@ -85,24 +84,24 @@ class EditController
         $this->setParentItem($this->getParentItem($this->modelInstance));
         $this->setInvoiceType($this->getInvoiceHelper()->getInvoiceTypeForParent($this->parentItem));
 
-        if(!$this->parentItem || !$this->parentItem->getId()){
+        if (!$this->parentItem || !$this->parentItem->getId()) {
             $this->addMessage('The parent item of the invoice could not be found');
             return $this->getResponse()->redirectReferer();
         }
 
-        if(!$this->invoiceType){
+        if (!$this->invoiceType) {
             $this->addMessage('Invalid parent type');
             return $this->getResponse()->redirectReferer();
         }
 
 
         // Specifics for POs - invoices can't be edited if a PO is closed
-        if($this->invoiceType === InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
-            if($this->parentItem->isClosed()) {
-                $this->addMessage('Invoices for closed purchase orders cannot be edited');
-                return $this->getResponse()->redirectReferer();
-            }
-        }
+        // if($this->invoiceType === InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
+        // if($this->parentItem->isClosed()) {
+        // $this->addMessage('Invoices for closed purchase orders cannot be edited');
+        // return $this->getResponse()->redirectReferer();
+        // } 
+        // }
     }
 
     /**
@@ -117,7 +116,7 @@ class EditController
      */
     public function execute()
     {
-        if(!($this->editForm = $this->getApp()->getBlockManager()->getBlock('invoice.form.edit'))){
+        if (!($this->editForm = $this->getApp()->getBlockManager()->getBlock('invoice.form.edit'))) {
             return;
         }
 
@@ -133,14 +132,14 @@ class EditController
 
 
         // Apply the values to the form element
-        if($this->modelInstance->getId()) {
+        if ($this->modelInstance->getId()) {
             $data = $this->modelInstance->getData();
 
-            if($this->modelInstance->getInvoiceDate()){
+            if ($this->modelInstance->getInvoiceDate()) {
                 $data['invoice_date'] = $helper->utcDbDateToShortLocalOutput($this->modelInstance->getInvoiceDate());
             }
 
-            if($this->modelInstance->getValue()){
+            if ($this->modelInstance->getValue()) {
                 $data['value'] = (float) $this->modelInstance->getValue();
             }
 
@@ -151,11 +150,11 @@ class EditController
         }
 
         // Form submission
-        if($this->getRequest()->getPostParam('action')){
+        if ($this->getRequest()->getPostParam('action')) {
             $postParams = $this->getRequest()->getPostParams();
 
             // Convert dates to DB
-            if (isset($postParams['invoice_date'])){
+            if (isset($postParams['invoice_date'])) {
                 $postParams['invoice_date'] = $helper->localDateToDb($postParams['invoice_date']);
             }
 
@@ -168,18 +167,16 @@ class EditController
                 ->setValues($postParams)
                 ->configurate($configurator);
 
-            if(!$validator->validate()){
+            if (!$validator->validate()) {
                 return $this->prepareFormErrors($validator);
             }
 
             $this->saveFormValues($postParams);
 
-            if(!$this->getApp()->getResponse()->redirectToReturnUrl()) {
+            if (!$this->getApp()->getResponse()->redirectToReturnUrl()) {
                 $this->redirectToPage(\SuttonBaker\Impresario\Definition\Page::PROJECT_LIST);
             }
         }
-
-
     }
 
 
@@ -204,7 +201,7 @@ class EditController
     }
 
     /**
-     * @param string $taskType
+     * @param string $invoiceType
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function setInvoiceType($invoiceType)
@@ -222,23 +219,23 @@ class EditController
     {
         $parentId = null;
 
-        if($instance->getId()){
+        if ($instance->getId()) {
             $invoiceType = $instance->getInvoiceType();
             $parentId = $instance->getParentId();
-        }else{
+        } else {
             $invoiceType = $this->getRequest()->getParam(self::INVOICE_TYPE_PARAM);
             $parentId = $this->getRequest()->getParam(self::PARENT_ID_PARAM);
         }
 
-        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_ENQUIRY){
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_ENQUIRY) {
             return $this->getEnquiryHelper()->getEnquiry($parentId);
         }
 
-        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_PROJECT){
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_PROJECT) {
             return $this->getProjectHelper()->getProject($parentId);
         }
 
-        if($invoiceType == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE){
+        if ($invoiceType == InvoiceDefinition::INVOICE_TYPE_PO_INVOICE) {
             return $this->getCostHelper()->getCost($parentId);
         }
 
@@ -246,18 +243,21 @@ class EditController
         return null;
     }
 
+
+
+
     /**
      * @throws \DaveBaker\Core\Helper\Exception
      * @throws \DaveBaker\Core\Object\Exception
      */
     protected function saveFormValues($data)
     {
-        if(!$this->getApp()->getHelper('User')->isLoggedIn()){
+        if (!$this->getApp()->getHelper('User')->isLoggedIn()) {
             return;
         }
 
-        foreach($this->nonUserValues as $nonUserValue){
-            if(isset($data[$nonUserValue])){
+        foreach ($this->nonUserValues as $nonUserValue) {
+            if (isset($data[$nonUserValue])) {
                 unset($data[$nonUserValue]);
             }
         }
@@ -265,7 +265,7 @@ class EditController
         $newSave = false;
 
         // Add created by user
-        if(!$this->modelInstance->getId()) {
+        if (!$this->modelInstance->getId()) {
             $data['created_by_id'] = $this->getApp()->getHelper('User')->getCurrentUserId();
             $data['invoice_type'] = $this->invoiceType;
             $data['parent_id'] = $this->parentItem->getId();
