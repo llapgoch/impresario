@@ -756,7 +756,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
             $this->createBlock(
                 \SuttonBaker\Impresario\Block\Upload\TableContainer::class,
                 "{$this->blockPrefix}.file.upload.client.pos.container"
-            )->setOrder('before', "{$this->blockPrefix}.edit.button.bar")
+            )->setOrder('before', "{$this->blockPrefix}.invoice.table")
                 ->setUploadType($this->modelInstance->getId() ? Upload::TYPE_PROJECT_CLIENT_POS : CoreUploadDefinition::UPLOAD_TYPE_TEMPORARY)
                 ->setIdentifier($this->modelInstance->getId() ? $this->modelInstance->getId() : $this->getUploadHelper()->getTemporaryIdForSession(
                     self::CLIENT_PO_TEMPORARY_PREFIX,
