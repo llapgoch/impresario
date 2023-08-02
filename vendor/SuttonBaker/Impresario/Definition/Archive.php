@@ -67,6 +67,7 @@ class Archive
         'site_name' => 'Site',
         'type_name' => 'Type Category',
         'project_name' => 'Project',
+        'priority' => 'Priority',
         'date_received' => 'Date Received',
         'client_name' => 'Client',
         'client_reference' => 'Client Reference',
