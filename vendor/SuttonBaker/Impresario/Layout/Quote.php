@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
+use SuttonBaker\Impresario\Definition\Priority as PriorityDefinition;
 
 /**
  * Class Quote
@@ -200,11 +201,19 @@ class Quote extends Base
         }
 
         $statuses = $this->createArraySelectConnector()->configure(QuoteDefinition::getStatuses())->getElementData();
+        $priorities = $this->createArraySelectConnector()->configure(PriorityDefinition::getStatuses())->getElementData();
         $filterSet->addFilter(
             $status = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
                 ->setLabelName('Status')
                 ->setFormName('status')
                 ->setSelectOptions($statuses)
+        );
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Priority')
+                ->setFormName('priority')
+                ->setSelectOptions($priorities)
         );
 
         $tenderStatuses = $this->createArraySelectConnector()->configure(QuoteDefinition::getTenderStatuses())->getElementData();
@@ -219,8 +228,8 @@ class Quote extends Base
         $filterSet->addFilter(
             /** @var \SuttonBaker\Impresario\Block\Form\Filter\DateRange $range */
             $range = $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\DateRange::class)
-            ->setLabelName('Required By')
-            ->setFormName('date_required')
+                ->setLabelName('Required By')
+                ->setFormName('date_required')
         );
 
         $range->getMainElement()->addAttribute(['data-date-settings' => json_encode(

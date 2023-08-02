@@ -27,7 +27,8 @@ class ReportController
             'date_completed' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
             'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
-            'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
+            'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
+            'priority' => $this->getEnquiryHelper()->getPriorityOutputProcessor()
         ]);
 
         $output = fopen("php://output", "w");

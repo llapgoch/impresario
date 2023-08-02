@@ -48,6 +48,7 @@ class Enquiry
               `site_name` varchar(255) DEFAULT NULL,
               `date_received` datetime DEFAULT NULL,
               `status` varchar(255) DEFAULT NULL,
+              `priority` int(11) DEFAULT 1000,
               `target_date` datetime DEFAULT NULL,
               `notes` text,
               `assigned_to_id` int(11) DEFAULT NULL,
@@ -60,7 +61,8 @@ class Enquiry
               `updated_at` datetime DEFAULT NULL,
               `is_deleted` int(1) DEFAULT 0,
               PRIMARY KEY (`enquiry_id`),
-              KEY `status` (`status`)
+              KEY `status` (`status`),
+              KEY `priority` (`priority`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;'
         );
     }

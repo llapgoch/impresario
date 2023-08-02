@@ -46,7 +46,8 @@ implements \DaveBaker\Core\Block\BlockInterface
             ->addOutputProcessors([
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'target_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
-                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor()
+                'status' => $this->getEnquiryHelper()->getStatusOutputProcessor(),
+                'priority' => $this->getEnquiryHelper()->getPriorityOutputProcessor()
             ]);
 
         $mainTile->addChildBlock(

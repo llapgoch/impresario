@@ -48,7 +48,8 @@ implements \DaveBaker\Core\Block\BlockInterface
                 'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
                 'edit_column' => $this->getCustomOutputProcessor()->setCallback([$this, 'getEditLinkHtml']),
                 'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor(),
-                'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency()
+                'net_sell' => $this->getLocaleHelper()->getOutputProcessorCurrency(),
+                'priority' => $this->getQuoteHelper()->getPriorityOutputProcessor()
             ]);
 
         $mainTile = $this->getBlockManager()->getBlock("{$this->getBlockPrefix()}.tile.main");

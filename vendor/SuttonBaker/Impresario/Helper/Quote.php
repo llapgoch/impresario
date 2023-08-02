@@ -26,6 +26,7 @@ class Quote extends Base
         'date_received',
         'client_id',
         'enquiry_id',
+        'priority',
         'site_name',
         'po_number',
         'mi_number',
@@ -745,10 +746,10 @@ class Quote extends Base
 
         $quoteCollection = $this->getQuoteHelper()->getQuotesForEnquiry($quote->getEnquiryId());
         $quoteIds = $quoteCollection->getAllIds();
-        
+
         // If the main quote has been deleted, the quote collection will contain no Ids. We now check if the 
         // parent ID is in the array and always add it.
-        if(!in_array($quote->getId(), $quoteIds)) {
+        if (!in_array($quote->getId(), $quoteIds)) {
             $quoteIds[] = $quote->getId();
         }
 
