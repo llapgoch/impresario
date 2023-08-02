@@ -4,7 +4,7 @@ namespace SuttonBaker\Impresario\Layout;
 
 use SuttonBaker\Impresario\Definition\Page as PageDefinition;
 use \SuttonBaker\Impresario\Definition\Enquiry as EnquiryDefinition;
-
+use SuttonBaker\Impresario\Definition\Priority as PriorityDefinition;
 /**
  * Class Enquiry
  * @package SuttonBaker\Impresario\Layout
@@ -170,12 +170,23 @@ class Enquiry extends Base
                 ->setFormName('client_id')
                 ->setSelectOptions($clients)
         );
+
         
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
-                ->setLabelName('Site Name')
-                ->setFormName('site_name')
+            ->setLabelName('Site Name')
+            ->setFormName('site_name')
         );
+
+        $priorities = $this->createArraySelectConnector()->configure(PriorityDefinition::getStatuses())->getElementData();
+
+        $filterSet->addFilter(
+            $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Select::class)
+                ->setLabelName('Priority')
+                ->setFormName('priority')
+                ->setSelectOptions($priorities)
+        );
+
 
         $filterSet->addFilter(
             $filterSet->createBlock(\SuttonBaker\Impresario\Block\Form\Filter\Text::class)
@@ -198,6 +209,7 @@ class Enquiry extends Base
         );
 
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
+        
         $status->setSelectOptions($statuses);
 
         /** @var \SuttonBaker\Impresario\Block\Form\Filter\Select $assignee */

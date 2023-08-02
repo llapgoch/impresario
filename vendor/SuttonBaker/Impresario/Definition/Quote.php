@@ -55,6 +55,11 @@ class Quote
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{quote}}.status"
         ],
+        'priority' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.priority"
+        ],
         'tender_status' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,

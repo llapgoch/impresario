@@ -41,6 +41,11 @@ class Enquiry
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{enquiry}}.status"
         ],
+        'priority' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{enquiry}}.priority"
+        ],
         'client_id' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
