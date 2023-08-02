@@ -28,7 +28,8 @@ extends DownloadController
                 'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'status' => $this->getQuoteHelper()->getStatusOutputProcessor(),
                 'revision_number' => $this->getQuoteHelper()->getRevisionOutputProcessor(),
-                'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor()
+                'tender_status' => $this->getQuoteHelper()->getTenderStatusOutputProcessor(),
+                'priority' => $this->getQuoteHelper()->getPriorityOutputProcessor()
             ]);
 
 
