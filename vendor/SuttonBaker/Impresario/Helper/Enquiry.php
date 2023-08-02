@@ -168,6 +168,8 @@ extends Base
         return $this->getDisplayName($status, EnquiryDefinition::getStatuses());
     }
 
+
+
     /**
      * @param int|null $enquiryId
      * @return \SuttonBaker\Impresario\Model\Db\Enquiry

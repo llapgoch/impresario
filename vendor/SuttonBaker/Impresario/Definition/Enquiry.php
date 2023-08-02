@@ -83,6 +83,7 @@ class Enquiry
         'client_reference' => 'Client Ref',
         'status' => 'Status',
         'site_name' => 'Site',
+        'priority' => 'Priority',
         'date_received' => 'Received',
         'target_date' => 'Target',
         'assigned_to_name' => 'Assignee',
@@ -94,6 +95,7 @@ class Enquiry
         'client_reference' => [Table::HEADER_SORTABLE_ALPHA],
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
+        'priority' => [],
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'date_received' => [],
         'target_date' => [],
@@ -104,6 +106,7 @@ class Enquiry
     const REPORT_HEADERS = [
         'enquiry_id' => 'ID',
         'site_name' => 'Site',
+        'priority' => 'Priority',
         'client_name' => 'Client',
         'client_reference' => 'Client Ref',
         'client_requested_by' => 'Client Requested By',
