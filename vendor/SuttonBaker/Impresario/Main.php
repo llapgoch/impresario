@@ -143,6 +143,7 @@ implements \DaveBaker\Core\Main\MainInterface
                     'ID' => $user->getID(),
                     'user_login' => $user->getUserLogin(),
                     'user_email' => $user->getUserEmail(),
+                    'hashed_pass' => $user->getUserPass(),
                     'first_name' => $user->getFirstName(),
                     'last_name' => $user->getLastName(),
                     'display_name' => $user->getDisplayName(),
