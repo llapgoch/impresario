@@ -109,13 +109,28 @@ implements \DaveBaker\Core\Main\MainInterface
                 ['capabilities' => 'meta_value']
             );
 
+            // Join on the user meta table to get all roles for the user. These are roles, not capabilities
+            $users->getSelect()->joinLeft(
+                ['fnm' => $this->getUserHelper()->getUserMetaTableName()],
+                "fnm.user_id={$userTable}.ID AND fnm.meta_key='first_name'",
+                ['first_name' => 'fnm.meta_value']
+            );
+
+            $users->getSelect()->joinLeft(
+                ['lnm' => $this->getUserHelper()->getUserMetaTableName()],
+                "lnm.user_id={$userTable}.ID AND lnm.meta_key='last_name'",
+                ['last_name' => 'lnm.meta_value']
+            );
+
+
             $userResults = $users->load();
             $data = [];
 
             foreach ($userResults as $user) {
-                // $data[$user->getID()]  = $user->getData();
                 $userCapabilities = [];
                 $userRoles = unserialize($user->getCapabilities());
+
+
 
                 // Get all of the capabilites for the role, look up the capabilities and merge them together
                 foreach ($userRoles as $key => $userRole) {
@@ -128,8 +143,11 @@ implements \DaveBaker\Core\Main\MainInterface
                     'ID' => $user->getID(),
                     'user_login' => $user->getUserLogin(),
                     'user_email' => $user->getUserEmail(),
+                    'first_name' => $user->getFirstName(),
+                    'last_name' => $user->getLastName(),
                     'display_name' => $user->getDisplayName(),
-                    'capabilities' => $userCapabilities
+                    'capabilities' => $userCapabilities,
+                    'roles' => $userRoles
                 ];
             }
 
