@@ -148,6 +148,7 @@ implements \DaveBaker\Core\Main\MainInterface
                     'last_name' => $user->getLastName(),
                     'display_name' => $user->getDisplayName(),
                     'capabilities' => $userCapabilities,
+                    'created_at' => $user->getUserRegistered(),
                     'roles' => $userRoles
                 ];
             }
