@@ -439,27 +439,29 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'js-button-loader btn-block js-action-switcher',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-8'
                 ]
 
-            ], [
-                'name' => 'create_new_revision_button',
-                'rowIdentifier' => 'button_bar',
-                'type' => '\DaveBaker\Form\Block\Button',
-                'formGroup' => true,
-                'attributes' => $reviseAttrs,
-                'data' => [
-                    'button_name' => 'Create New Revision',
-                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
-                    'js_data_items' => [
-                        'action' => 'revise'
-                    ]
-                ],
-                'class' => 'btn-block btn-info js-action-switcher',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ]
-            ], [
+            ],
+            //  [
+            //     'name' => 'create_new_revision_button',
+            //     'rowIdentifier' => 'button_bar',
+            //     'type' => '\DaveBaker\Form\Block\Button',
+            //     'formGroup' => true,
+            //     'attributes' => $reviseAttrs,
+            //     'data' => [
+            //         'button_name' => 'Create New Revision',
+            //         'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
+            //         'js_data_items' => [
+            //             'action' => 'revise'
+            //         ]
+            //     ],
+            //     'class' => 'btn-block btn-info js-action-switcher',
+            //     'formGroupSettings' => [
+            //         'class' => 'col-md-4'
+            //     ]
+            // ],
+             [
                 'name' => 'delete_button',
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
@@ -479,7 +481,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'btn-block btn-danger js-delete-confirm',
                 'formGroupSettings' => [
-                    'class' => 'col-md-2'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'quote_id',
