@@ -9,6 +9,7 @@ use \SuttonBaker\Impresario\Definition\Quote as QuoteDefinition;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
+use SuttonBaker\Impresario\Definition\Priority as PriorityDefinition;
 use DaveBaker\Core\Definitions\Roles;
 
 /**
@@ -74,7 +75,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'type_id',
                 'name'
             )->getElementData();
-            
+
 
         // Estimators
         if ($estimators = $this->getRoleHelper()->getEstimators()) {
@@ -106,6 +107,8 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $statuses = $this->createArraySelectConnector()->configure(
             QuoteDefinition::getStatuses()
         )->getElementData();
+
+        $priorities = $this->createArraySelectConnector()->configure(PriorityDefinition::getStatuses())->getElementData();
 
         $tenderStatuses = $this->createArraySelectConnector()->configure(
             QuoteDefinition::getTenderStatuses()
@@ -174,11 +177,29 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 'formGroupSettings' => [
                     'class' => 'col-md-6'
                 ]
-            ],[
+            ], [
                 'name' => 'project_name',
                 'formGroup' => true,
+                'rowIdentifier' => 'project_name_priority',
                 'labelName' => 'Project Name *',
-                'type' => 'Input\Text'
+                'type' => 'Input\Text',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'priority',
+                'labelName' => 'Priority *',
+                'rowIdentifier' => 'project_name_priority',
+                'formGroup' => true,
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $priorities,
+                    'show_first_option' => false,
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
             ], [
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',
@@ -418,27 +439,29 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'js-button-loader btn-block js-action-switcher',
                 'formGroupSettings' => [
-                    'class' => 'col-md-6'
+                    'class' => 'col-md-8'
                 ]
 
-            ], [
-                'name' => 'create_new_revision_button',
-                'rowIdentifier' => 'button_bar',
-                'type' => '\DaveBaker\Form\Block\Button',
-                'formGroup' => true,
-                'attributes' => $reviseAttrs,
-                'data' => [
-                    'button_name' => 'Create New Revision',
-                    'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
-                    'js_data_items' => [
-                        'action' => 'revise'
-                    ]
-                ],
-                'class' => 'btn-block btn-info js-action-switcher',
-                'formGroupSettings' => [
-                    'class' => 'col-md-4'
-                ]
-            ], [
+            ],
+            //  [
+            //     'name' => 'create_new_revision_button',
+            //     'rowIdentifier' => 'button_bar',
+            //     'type' => '\DaveBaker\Form\Block\Button',
+            //     'formGroup' => true,
+            //     'attributes' => $reviseAttrs,
+            //     'data' => [
+            //         'button_name' => 'Create New Revision',
+            //         'capabilities' => $this->getQuoteHelper()->getEditCapabilities(),
+            //         'js_data_items' => [
+            //             'action' => 'revise'
+            //         ]
+            //     ],
+            //     'class' => 'btn-block btn-info js-action-switcher',
+            //     'formGroupSettings' => [
+            //         'class' => 'col-md-4'
+            //     ]
+            // ],
+             [
                 'name' => 'delete_button',
                 'rowIdentifier' => 'button_bar',
                 'type' => '\DaveBaker\Form\Block\Button',
@@ -458,7 +481,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
                 ],
                 'class' => 'btn-block btn-danger js-delete-confirm',
                 'formGroupSettings' => [
-                    'class' => 'col-md-2'
+                    'class' => 'col-md-4'
                 ]
             ], [
                 'name' => 'quote_id',
@@ -531,7 +554,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->taskTableBlock = $this->createBlock(
             '\SuttonBaker\Impresario\Block\Task\TableContainer',
             "{$this->blockPrefix}.task.table"
-        )->setOrder('after', 'quote.edit.project.name.form.group')
+        )->setOrder('after', 'quote.edit.project.name.priority')
             ->setCapabilities($this->getTaskHelper()->getViewCapabilities());
 
 
@@ -566,7 +589,7 @@ class Edit extends \SuttonBaker\Impresario\Block\Form\Base
         $this->revisionsBlock = $this->createBlock(
             \SuttonBaker\Impresario\Block\Quote\RevisionsTableContainer::class,
             "{$this->blockPrefix}.past.revisions.table"
-        )->setOrder('after', 'quote.edit.project.name.form.group')
+        )->setOrder('after', 'quote.edit.project.name.priority')
             ->setCapabilities($this->getQuoteHelper()->getViewCapabilities())
             ->setRevisions($revisions)
             ->setQuote($this->modelInstance);

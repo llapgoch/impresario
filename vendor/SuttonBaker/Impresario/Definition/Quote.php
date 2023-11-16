@@ -55,6 +55,11 @@ class Quote
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
             FilterDefinition::MAP => "{{quote}}.status"
         ],
+        'priority' => [
+            FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
+            FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
+            FilterDefinition::MAP => "{{quote}}.priority"
+        ],
         'tender_status' => [
             FilterDefinition::COMPARE_TYPE => FilterDefinition::COMPARE_TYPE_EQ,
             FilterDefinition::FIELD_TYPE => FilterDefinition::FIELD_TYPE_TEXT,
@@ -96,6 +101,7 @@ class Quote
         'client_name' => 'Client',
         'site_name' => 'Site Name',
         'project_name' => 'Project',
+        'priority' => 'Priority',
         'date_required' => 'Required By',
         'estimator_name' => 'Estimator',
         'net_sell' => 'Net Sell',
@@ -116,6 +122,7 @@ class Quote
         'client_name' => [Table::HEADER_SORTABLE_ALPHA],
         'site_name' => [Table::HEADER_SORTABLE_ALPHA],
         'status' => [],
+        'priority' => [],
         'tender_status' => [],
         'date_required' => [],
         'created_by_name' => [Table::HEADER_SORTABLE_ALPHA],
@@ -130,6 +137,7 @@ class Quote
         'site_name' => 'Site',
         'type_name' => 'Type Category',
         'project_name' => 'Project',
+        'priority' => 'Priority',
         'date_received' => 'Date Received',
         'client_name' => 'Client',
         'client_reference' => 'Client Reference',

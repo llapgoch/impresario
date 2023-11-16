@@ -10,6 +10,7 @@ use SuttonBaker\Impresario\Definition\Page;
 use \SuttonBaker\Impresario\Definition\Task as TaskDefinition;
 use SuttonBaker\Impresario\Definition\Upload;
 use DaveBaker\Core\Definitions\Upload as CoreUploadDefinition;
+use SuttonBaker\Impresario\Definition\Priority as PriorityDefinition;
 use DaveBaker\Core\Definitions\Roles;
 
 /**
@@ -98,6 +99,8 @@ extends \SuttonBaker\Impresario\Block\Form\Base
 
         // Statuses
         $statuses = $this->createArraySelectConnector()->configure(EnquiryDefinition::getStatuses())->getElementData();
+        // Priorities
+        $priorities = $this->createArraySelectConnector()->configure(PriorityDefinition::getStatuses())->getElementData();
         $ignoreLockValue = false;
 
         if ($this->getEnquiryHelper()->currentUserCanEdit() && !$modelInstance->getIsDeleted()) {
@@ -135,7 +138,26 @@ extends \SuttonBaker\Impresario\Block\Form\Base
                 'labelName' => 'Site Name *',
                 'type' => 'Input\Text',
                 'formGroup' => true,
-            ], [
+                'rowIdentifier' => 'site_name_priority',
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
+                'name' => 'priority',
+                'labelName' => 'Priority *',
+                'rowIdentifier' => 'site_name_priority',
+                'formGroup' => true,
+                'type' => 'Select',
+                'data' => [
+                    'select_options' => $priorities,
+                    'show_first_option' => false,
+                ],
+                'formGroupSettings' => [
+                    'class' => 'col-md-6'
+                ]
+            ],
+            [
 
                 'name' => 'date_received',
                 'labelName' => 'Date Received *',

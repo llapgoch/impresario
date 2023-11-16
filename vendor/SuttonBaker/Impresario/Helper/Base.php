@@ -4,6 +4,7 @@ namespace SuttonBaker\Impresario\Helper;
 
 use DaveBaker\Core\Block\Template;
 use SuttonBaker\Impresario\Definition\Flow;
+use SuttonBaker\Impresario\Definition\Priority as PriorityDefinition;
 
 /**
  * Class Base
@@ -80,6 +81,25 @@ abstract class Base extends \DaveBaker\Core\Helper\Base
         )->setTabs($tabs);
 
         return $tabBlock;
+    }
+
+
+    /**
+     * @param $priority
+     * @return string
+     */
+    public function getPriorityDisplayName($priority)
+    {
+        return $this->getDisplayName($priority, PriorityDefinition::getStatuses());
+    }
+
+    /**
+     * @return \SuttonBaker\Impresario\Helper\OutputProcessor\Priority
+     * @throws \DaveBaker\Core\Object\Exception
+     */
+    public function getPriorityOutputProcessor()
+    {
+        return $this->createAppObject(\SuttonBaker\Impresario\Helper\OutputProcessor\Priority::class);
     }
 
     /**
