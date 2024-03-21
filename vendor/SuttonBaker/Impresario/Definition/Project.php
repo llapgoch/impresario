@@ -158,7 +158,8 @@ class Project
         'rebate_amount' => 'Rebate Amount',
         'project_manager_closing_feedback' => 'Project Manager Closing Feedback',
         'comments' => 'Comments',
-        'status' => 'Status'
+        'status' => 'Status',
+        'date_received' => 'Received',
     ];
 
     const INVOICE_REPORT_SINGLE_HEADERS = [

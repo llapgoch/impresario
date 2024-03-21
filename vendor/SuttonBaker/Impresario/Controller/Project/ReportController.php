@@ -28,6 +28,7 @@ extends DownloadController
             ->addOutputProcessors([
                 'project_start_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'project_end_date' => $this->getDateHelper()->getOutputProcessorShortDate(),
+                'date_received' => $this->getDateHelper()->getOutputProcessorShortDate(),
                 'status' => $this->getProjectHelper()->getStatusOutputProcessor(),
                 'has_rebate' => $this->getProjectHelper()->getYesNoOutputProcessor()
             ]);
