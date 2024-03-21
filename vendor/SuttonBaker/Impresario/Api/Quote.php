@@ -62,7 +62,7 @@ class Quote
         $navigatingAway = isset($params['navigatingAway']) && $params['navigatingAway'] ? true : false;
         $converter = $this->createAppObject(QuoteConverter::class);
         $formValues = $converter->convert($params['formValues']);
-        /** @var \SuttonBaker\Impresarwio\Model\Db\Quote */
+        /** @var \SuttonBaker\Impresario\Model\Db\Quote */
         $modelInstance = $this->loadQuote($formValues);
         $validateResult = $this->validateValues($modelInstance, $formValues);
 
